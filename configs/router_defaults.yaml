@@ -1,0 +1,11 @@
+alpha: 0.40
+beta_t: 0.20
+beta_c: 0.15
+beta_d: 0.15
+beta_s: 0.10
+metric:
+  D: 35
+  rank: 8
+  delta: 1.0e-3
+update_stride: 8
+cold_start_threshold: 16
