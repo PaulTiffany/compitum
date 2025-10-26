@@ -1,0 +1,108 @@
+# compitum
+
+A production-ready, geometrically-aware AI router with SPD metric learning, constraint-aware
+selection (shadow prices), metric-aware KDE coherence, and Lyapunov-stable online updates.
+
+## Install
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+## Quick demo
+
+```bash
+compitum route --prompt "Prove the binomial identity using generating functions."
+```
+
+## Run tests
+
+```bash
+pytest
+```
+
+See `configs/` and `examples/` for constraints and a synthetic benchmark.
+
+## Testing Strategy
+
+The project maintains a rigorous, deterministic testing program.
+
+*   **CI Profile (default):** `pytest` runs with `HYPOTHESIS_PROFILE=ci`. This uses a fixed random seed and a moderate number of examples (`max_examples=100`) for fast, repeatable builds.
+*   **Mutation Profile:** For mutation testing with `cosmic-ray`, a dedicated `HYPOTHESIS_PROFILE=mutation` is used via a wrapper script. This allows for a different number of examples to balance thoroughness and speed.
+*   **Invariants Suite:** A dedicated property-based test suite in `tests/invariants/` validates the core mathematical and operational invariants of the system. These tests are marked with `@pytest.mark.invariants`.
+
+To run the full verification suite, including mutation testing:
+```bat
+set HYPOTHESIS_PROFILE=ci && ruff check . && pytest --cov=compitum --cov-branch && CALL .\.venv-routerbench\Scripts\activate.bat && python -m pytest --cov=compitum --cov-branch --cov-append src/routerbench && coverage report -m && del /q session.sqlite 2>nul && cosmic-ray init --force cosmic-ray.toml session.sqlite && cosmic-ray exec cosmic-ray.toml session.sqlite && cr-report session.sqlite
+```
+**Note:** The `mypy` check has been temporarily removed from this command due to a path resolution issue. See `plan3.txt` for details.
+
+## Export Control
+
+This project is open-source research code (MIT). Use is subject to U.S. export laws and sanctions compliance. Do not use if you are a sanctioned person/region.
+
+## Benchmark Profiles
+
+Three run profiles are provided for benchmarking. They are configured via environment variables.
+
+*   **SMOKE:** A very fast run to ensure the benchmarks execute without error.
+    ```bat
+    set COMPITUM_SKIP_PERF_ASSERTIONS=1 && set COMPITUM_STEPS=400 && set COMPITUM_REFIT_POLICY=never && set COMPITUM_UPDATE_BATCH_SIZE=100000 && pytest -q -k "test_energy_drift or test_constraint_violation_rate or test_spd_det_and_trust_radius_bounds" --benchmark-min-time=0.01
+    ```
+
+*   **DEV:** A standard development run for quick performance checks.
+    ```bat
+    set COMPITUM_STEPS=800 && set COMPITUM_REFIT_POLICY=adaptive && set COMPITUM_UPDATE_BATCH_SIZE=4000 && pytest -q -k "test_energy_drift or test_constraint_violation_rate or test_spd_det_and_trust_radius_bounds or test_iso_utility_savings_vs_fixed_best or test_router_throughput_and_latency" --benchmark-autosave --benchmark-save=DEV
+    ```
+
+*   **FULL:** The complete diagnostic run, including the heavy benchmarks.
+    ```bat
+    set COMPITUM_STEPS=4000 && set COMPITUM_REFIT_POLICY=periodic && set COMPITUM_UPDATE_BATCH_SIZE=2000 && pytest -q -m heavy_bench --benchmark-autosave --benchmark-save=FULL
+    ```
+
+### A Note on Threading
+
+For performance-critical benchmark runs, it is advisable to set the following environment variables to prevent thread over-subscription from libraries like NumPy, which can interfere with measurements:
+
+```bat
+set OMP_NUM_THREADS=1
+set MKL_NUM_THREADS=1
+set OPENBLAS_NUM_THREADS=1
+set NUMEXPR_NUM_THREADS=1
+```
+
+## Running RouterBench Evaluation
+
+To run the full `routerbench` evaluation, follow these steps:
+
+### 1. Setup RouterBench Environment
+
+Create a new virtual environment for `routerbench` and install the dependencies from `src/routerbench/requirements.txt`.
+
+```bash
+python -m venv .venv-routerbench
+.venv-routerbench\Scripts\activate
+pip install -r src/routerbench/requirements.txt
+```
+
+### 2. Pre-train Predictors
+
+For fast evaluation, it's crucial to pre-train the `CalibratedPredictor` models to avoid lengthy fitting times during each run.
+
+Run the `pretrain_predictors.py` script using the `routerbench` virtual environment:
+
+```bash
+set PYTHONPATH=C:\Users\paulc\projects\compitum\src && .\.venv-routerbench\Scripts\python.exe -m scripts.pretrain_predictors
+```
+
+This will save the pre-trained predictors to `data/pretrain_predictors/predictors_all-MiniLM-L12-v2_0.1.joblib`.
+
+### 3. Run the RouterBench Evaluation
+
+Execute the `evaluate_routers.py` script as a module within the `routerbench` package. This command will run the full evaluation and generate the results.
+
+```bash
+set PYTHONPATH=C:\Users\paulc\projects\compitum\src && .\.venv-routerbench\Scripts\python.exe -m routerbench.evaluate_routers --config data\routerbench\evaluate_routers.yaml --local --data-path routerbench_5shot.pkl
+```
+
+This command will generate CSV and PKL files in the `data/eval_results` directory, containing the evaluation metrics for various router models.

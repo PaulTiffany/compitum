@@ -1,0 +1,123 @@
+[project]
+name = "compitum"
+version = "0.1.0"
+description = "compitum: A Production-Ready, Geometrically-Aware AI Router"
+authors = [{ name="compitum authors", email="dev@compitum.org" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+ "numpy>=1.24",
+ "scipy>=1.10",
+ "scikit-learn>=1.3",
+ "pydantic>=2.7",
+ "pyyaml>=6.0.1"
+]
+
+[project.optional-dependencies]
+dev = [
+ "pytest>=8.0",
+ "hypothesis>=6.98",
+ "pytest-cov>=5.0",
+ "ruff>=0.5.0",
+ "mypy>=1.10",
+ "lightgbm>=4.3 ; python_version < '3.13'",
+ "types-PyYAML",
+ "cosmic-ray",
+ "bandit",
+"pytest-benchmark"
+]
+
+[project.urls]
+Homepage = "https://github.com/PaulTiffany/compitum"
+Documentation = "https://paultiffany.github.io/compitum/"
+Repository = "https://github.com/PaulTiffany/compitum"
+Issues = "https://github.com/PaulTiffany/compitum/issues"
+
+[project.scripts]
+compitum = "compitum.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+compitum = ["py.typed"]
+
+# --------------------------- 
+# Ruff
+# --------------------------- 
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+extend-exclude = [
+  "src/routerbench",
+  "docs",
+  "data",
+  "tools",
+  "benchmarks",
+  "scripts",
+  ".venv*",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["I001", "E501"]
+"tools/**" = ["E501"]
+
+
+# --------------------------- 
+# MyPy
+# --------------------------- 
+
+[tool.mypy]
+mypy_path = "src"
+files = [
+  "src/compitum"
+]
+exclude = [
+  "^src/routerbench/"
+]
+
+[[tool.mypy.overrides]]
+module = ["numpy.*", "scipy.*", "sklearn.*", "yaml.*", "lightgbm.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["routerbench.*"]
+ignore_errors = true
+
+# --------------------------- 
+# PyTest
+# --------------------------- 
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = [
+  "-ra",
+  "--cov=compitum",
+  "--cov-branch",
+  "--cov-report=term-missing",
+  "-q",
+  "-m",
+  "not routerbench"
+]
+markers = [
+  "invariants: tests for core system invariants",
+  "routerbench: RouterBench integration tests (optional)"
+]
+
+# --------------------------- 
+# Coverage
+# --------------------------- 
+[tool.coverage.run]
+branch = true
+source = ["src/compitum", "src/routerbench"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 100
+

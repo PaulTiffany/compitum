@@ -1,0 +1,33 @@
+version: "1"
+tasks:
+  - id: setup
+    name: Create venv and install
+    shell: |
+      python -m venv .venv
+      . .venv/bin/activate
+      pip install -U pip
+      pip install -e ".[dev]"
+
+  - id: lint
+    needs: [setup]
+    shell: |
+      . .venv/bin/activate
+      ruff check compitum
+
+  - id: test
+    needs: [setup]
+    shell: |
+      . .venv/bin/activate
+      pytest
+
+  - id: bench-synth
+    needs: [setup]
+    shell: |
+      . .venv/bin/activate
+      python examples/synth_bench.py
+
+  - id: route-demo
+    needs: [setup]
+    shell: |
+      . .venv/bin/activate
+      compitum route --prompt "Write a SQL query to compute 7-day rolling average by user."

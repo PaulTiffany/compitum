@@ -1,0 +1,16 @@
+[cosmic-ray]
+module = "compitum"
+module-path = "src"
+test-command = "scripts/cr_pytest.cmd"
+timeout = 60.0
+coverage-file = ".coverage"
+
+excluded-modules = [
+    "tests/*",
+    "**/__init__.py",
+    "routerbench.*",
+]
+
+[cosmic-ray.distributor]
+name = "local"
+
