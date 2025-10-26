@@ -3,9 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Compitum  LLM routing that learns like Tess. 69% win rate. Near-zero regret. Riemannian geometry meets Montessori pedagogy.">
+    <meta name="description" content="Compitum  geometrically-aware LLM routing with instantaneous, judge-free feedback (SPD metrics, constraints, Lyapunov-inspired trustregion updates). Verifiable claims with links to reports and docs.">
     <meta name="theme-color" content="#0a0b0d">
     <title>Compitum  Geometric LLM Routing</title>
+    <link rel="manifest" href="assets/site.webmanifest" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Compitum",
+      "url": "https://paultiffany.github.io/compitum/",
+      "description": "Geometricallyaware routing with instantaneous, mechanistic feedback.",
+      "publisher": {"@type": "Organization", "name": "Compitum"},
+      "sameAs": [
+        "https://github.com/PaulTiffany/compitum"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareSourceCode",
+      "name": "Compitum",
+      "codeRepository": "https://github.com/PaulTiffany/compitum",
+      "url": "https://paultiffany.github.io/compitum/",
+      "programmingLanguage": "Python",
+      "license": "https://opensource.org/licenses/MIT",
+      "applicationCategory": "AI Router",
+      "description": "Geometrically-aware routing with instantaneous, mechanistic feedback (SPD metrics, constraints, Lyapunov-inspired trust-region updates)."
+    }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="assets/compitum-mark.svg" />
+    <link rel="alternate icon" href="assets/favicon.ico" />
+
+    <!-- Open Graph / Twitter cards -->
+    <meta property="og:title" content="Compitum - Geometric LLM Routing" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:description" content="Riemannian metric learning, constraint-aware selection, KDE coherence. Verifiable results  see reports and docs." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://paultiffany.github.io/compitum/" />
+    <meta property="og:image" content="assets/compitum-social-card.svg" />
+    <meta property="og:image:alt" content="Compitum  Geometricallyaware routing with instantaneous feedback" />
+    <meta property="og:site_name" content="Compitum" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Compitum - Geometric LLM Routing" />
+    <meta name="twitter:description" content="Riemannian metric learning, constraint-aware selection, KDE coherence. Verifiable results  see reports and docs." />
+    <meta name="twitter:image" content="assets/compitum-social-card.svg" />
+    <meta name="keywords" content="compitum, ai router, routing, spd metric, riemannian, constraints, lyapunov, process supervision, instantaneous feedback rl, coherence" />
+    <link rel="canonical" href="https://paultiffany.github.io/compitum/" />
+    <meta name="application-name" content="Compitum" />
+    <meta name="apple-mobile-web-app-title" content="Compitum" />
+    <link rel="apple-touch-icon" href="assets/compitum-mark.svg" />
 
     <style>
         * {
@@ -118,6 +166,21 @@
             align-items: center;
             gap: 12px;
         }
+
+        .nav .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: #f3f5f7;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .nav .share-btn:hover { background: rgba(255,255,255,0.10); }
+        .nav .share-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: #00d4ff; box-shadow: 0 0 10px #00d4ff; }
 
         /* Subject chips */
         .subject-buttons {
@@ -491,6 +554,10 @@
                 <a href="#details" class="nav-link">How It Works</a>
                 <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="Paper on Overleaf (opens in new tab)">Paper</a>
                 <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="GitHub (opens in new tab)">GitHub</a>
+                <a id="share-llm" href="docs/repo_snapshot.jsonl" class="share-btn" target="_blank" rel="noopener" aria-label="Open LLM snapshot JSONL in new tab">
+                    <span class="dot" aria-hidden="true"></span>
+                    Share to LLM
+                </a>
             </nav>
         </div>
     </header>
@@ -626,6 +693,32 @@
             </div>
         </div>
     </footer>
+
+    <script>
+    (function(){
+      const btn = document.getElementById('share-llm');
+      if (!btn) return;
+      async function copySnapshot() {
+        try {
+          const res = await fetch('docs/repo_snapshot.jsonl', { cache: 'no-store' });
+          if (!res.ok) throw new Error('fetch failed');
+          const text = await res.text();
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            const old = btn.textContent;
+            btn.textContent = 'Copied snapshot to clipboard';
+            setTimeout(()=>{ btn.textContent = old; }, 2200);
+          }
+        } catch (e) {
+          // Fallback is the default anchor behavior opening the JSONL
+        }
+      }
+      btn.addEventListener('click', function(ev){
+        // Try to copy, but still allow opening in new tab as fallback
+        copySnapshot();
+      }, { passive: true });
+    })();
+    </script>
 </body>
 </html>
 
