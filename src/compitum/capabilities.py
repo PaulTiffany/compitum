@@ -9,6 +9,6 @@ class Capabilities:
     deterministic: bool = False
 
     def supports(self, pgd_vector: Any, context: Dict[str, Any] | None = None) -> bool:
-        # Hook for model-specific gates; extend as needed.
-        # Example: block if context["region"] not in self.regions
+        if context and "region" in context:
+            return context["region"] in self.regions
         return True

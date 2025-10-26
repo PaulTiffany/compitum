@@ -1,10 +1,17 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple, TypedDict
 
 import numpy as np
 
 from .models import Model
+
+
+class InfoDict(TypedDict):
+    status: str
+    violations: List[str]
+    feasible: bool
+    shadow_prices: Dict[str, float]
 
 
 class ReflectiveConstraintSolver:
@@ -12,41 +19,83 @@ class ReflectiveConstraintSolver:
         self.A, self.b = A, b
         self.last_viable_models: List[Any] = []
 
-    def _is_feasible(self, model: Model, pgd_banach: np.ndarray) -> bool:
-        if not np.all(self.A @ pgd_banach <= self.b + 1e-10):
+    def _is_feasible(
+        self, model: "Model", xB: np.ndarray, context: Optional[Dict[str, Any]] = None
+    ) -> bool:
+        """Checks if a model is feasible given the PGD vector and optional context."""
+        if context is None:
+            ok = model.capabilities.supports(xB)
+        else:
+            ok = model.capabilities.supports(xB, context=context)
+        if not ok:
             return False
-        return model.capabilities.supports(pgd_banach)
+        if not np.all(self.A @ xB <= self.b + 1e-10):
+            return False
+        return True
 
-    def select(self, pgd_banach: np.ndarray, models: List[Model],
-               utilities: Dict[str, float], eps: float = 1e-3) -> Tuple[Model, Dict[str, Any]]:
-        viable = [m for m in models if self._is_feasible(m, pgd_banach)]
-        self.last_viable_models = viable
+    def select(
+        self,
+        xB: np.ndarray,
+        models: List[Model],
+        utilities: Dict[str, float],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[Model, InfoDict]:
+        sorted_models = sorted(models, key=lambda m: utilities.get(m.name, -np.inf), reverse=True)
+
+        viable = []
+        for model in sorted_models:
+            if self._is_feasible(model, xB, context=context):
+                viable.append(model)
+
+        info: InfoDict
         if not viable:
-            m_star = max(models, key=lambda m: utilities[m.name])
-            return m_star, {"feasible": False, "minimal_violation": True,
-                            "binding_constraints": [], "shadow_prices": {}}
+            info = {
+                "status": "infeasible_fallback",
+                "violations": ["all_models_violate_constraints"],
+                "feasible": False,
+                "shadow_prices": {},
+            }
+            for i in range(len(self.b)):
+                info["shadow_prices"][f"lambda_{i}"] = 0.0
+            return sorted_models[0], info
 
-        m_star = max(viable, key=lambda m: utilities[m.name])
-
-        # BRIDGEBLOCK_START alg:shadow_price_calculation
-        lambdas: Dict[str, float] = {}
-        for j in range(self.b.size):
+        m_star = viable[0]
+        info = {
+            "status": "optimal",
+            "violations": [],
+            "feasible": True,
+            "shadow_prices": {},
+        }
+        # Shadow price calculation
+        for i in range(len(self.b)):
             b_relaxed = self.b.copy()
-            b_relaxed[j] += eps
-            # if relaxation changes feasibility of better competitors, estimate ∂U/∂b_j
-            best_util = utilities[m_star.name]
-            for comp in models:
-                if comp in viable or utilities[comp.name] <= best_util:
-                    continue
-                ok = (
-                    np.all(self.A @ pgd_banach <= b_relaxed + 1e-10) and
-                    comp.capabilities.supports(pgd_banach)
-                )
-                if ok:
-                    best_util = max(best_util, utilities[comp.name])
-            lambdas[f"lambda_{j}"] = max(0.0, (best_util - utilities[m_star.name]) / eps)
-        # BRIDGEBLOCK_END alg:shadow_price_calculation
+            b_relaxed[i] += 1e-5
 
-        binding = [j for j, val in enumerate(self.A @ pgd_banach) if val >= self.b[j] - 1e-9]
-        return m_star, {"feasible": True, "minimal_violation": False,
-                        "binding_constraints": binding, "shadow_prices": lambdas}
+            shadow_price = 0.0
+            for competitor in sorted_models:
+                if competitor == m_star:
+                    continue
+
+                # Check if competitor is viable under relaxed constraints
+                is_competitor_viable_relaxed = True
+                if context is None:
+                    ok_cap = competitor.capabilities.supports(xB)
+                else:
+                    ok_cap = competitor.capabilities.supports(xB, context=context)
+                if not ok_cap:
+                    is_competitor_viable_relaxed = False
+
+                # Create a temporary solver with the relaxed constraints
+                temp_solver = ReflectiveConstraintSolver(self.A, b_relaxed)
+                if not temp_solver._is_feasible(competitor, xB, context=context):
+                    is_competitor_viable_relaxed = False
+
+                if is_competitor_viable_relaxed:
+                    utility_competitor = utilities.get(competitor.name, -np.inf)
+                    utility_m_star = utilities.get(m_star.name, -np.inf)
+                    if utility_competitor > utility_m_star:
+                        shadow_price = (utility_competitor - utility_m_star) / 1e-5
+                        break
+            info["shadow_prices"][f"lambda_{i}"] = shadow_price
+
+        return m_star, info

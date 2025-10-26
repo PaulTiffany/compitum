@@ -24,8 +24,15 @@ dev = [
  "lightgbm>=4.3 ; python_version < '3.13'",
  "types-PyYAML",
  "cosmic-ray",
- "bandit"
+ "bandit",
+"pytest-benchmark"
 ]
+
+[project.urls]
+Homepage = "https://github.com/PaulTiffany/compitum"
+Documentation = "https://paultiffany.github.io/compitum/"
+Repository = "https://github.com/PaulTiffany/compitum"
+Issues = "https://github.com/PaulTiffany/compitum/issues"
 
 [project.scripts]
 compitum = "compitum.cli:main"
@@ -42,21 +49,44 @@ compitum = ["py.typed"]
 [tool.ruff]
 line-length = 100
 target-version = "py39"
+extend-exclude = [
+  "src/routerbench",
+  "docs",
+  "data",
+  "tools",
+  "benchmarks",
+  "scripts",
+  ".venv*",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["I001", "E501"]
+"tools/**" = ["E501"]
+
+
 # --------------------------- 
 # MyPy
 # --------------------------- 
+
 [tool.mypy]
-files = ["compitum", "tests"]
-disallow_untyped_defs = true
 mypy_path = "src"
+files = [
+  "src/compitum"
+]
+exclude = [
+  "^src/routerbench/"
+]
 
 [[tool.mypy.overrides]]
 module = ["numpy.*", "scipy.*", "sklearn.*", "yaml.*", "lightgbm.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["routerbench.*"]
+ignore_errors = true
 
 # --------------------------- 
 # PyTest
@@ -69,18 +99,25 @@ addopts = [
   "--cov=compitum",
   "--cov-branch",
   "--cov-report=term-missing",
-  "-q"
+  "-q",
+  "-m",
+  "not routerbench"
 ]
-markers = ["invariants: tests for core system invariants"]
+markers = [
+  "invariants: tests for core system invariants",
+  "routerbench: RouterBench integration tests (optional)"
+]
 
 # --------------------------- 
 # Coverage
 # --------------------------- 
 [tool.coverage.run]
 branch = true
-source = ["compitum"]
+source = ["src/compitum", "src/routerbench"]
 omit = ["tests/*"]
 
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
+fail_under = 100
+

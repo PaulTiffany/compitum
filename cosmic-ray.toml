@@ -8,7 +8,9 @@ coverage-file = ".coverage"
 excluded-modules = [
     "tests/*",
     "**/__init__.py",
+    "routerbench.*",
 ]
 
 [cosmic-ray.distributor]
 name = "local"
+

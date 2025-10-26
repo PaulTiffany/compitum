@@ -10,6 +10,7 @@ def test_solve_effort_1d_positive_grad() -> None:
     assert lambdas["lambda_low"] == 0.0
     assert lambdas["lambda_high"] > 0.0
 
+
 def test_solve_effort_1d_negative_grad() -> None:
     """Test case where the gradient is negative, expecting effort to be 0.0."""
     # grad = alpha*q1 - bt*t1 - bc*c1 = 0.1*1 - 0.5*1 - 0.5*1 = -0.9 < 0

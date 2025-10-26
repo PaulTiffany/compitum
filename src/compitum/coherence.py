@@ -24,6 +24,7 @@ class WeightedReservoir:
             if j < self.k:
                 self.buf[j] = (x.copy(), w)
 
+
 class CoherenceFunctional:
     def __init__(self, k: int = 1000) -> None:
         self.res: defaultdict[str, WeightedReservoir] = defaultdict(lambda: WeightedReservoir(k))
@@ -53,4 +54,12 @@ class CoherenceFunctional:
             return 0.0
         val = float(kde.score_samples([xw])[0])
         return float(np.clip(val, -10.0, 10.0))
+
+    def batch_log_evidence(self, model_name: str, xw_batch: np.ndarray) -> np.ndarray:
+        kde = self.kde_cache.get(model_name) or self._fit(model_name)
+        if kde is None:
+            return np.zeros(xw_batch.shape[0])  # Return array of zeros for batch
+        val_batch = kde.score_samples(xw_batch)
+        return np.clip(val_batch, -10.0, 10.0)
+
     # BRIDGEBLOCK_END def:coherence_log_evidence

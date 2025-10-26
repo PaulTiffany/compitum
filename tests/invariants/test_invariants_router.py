@@ -3,16 +3,19 @@ from typing import Any, List, Tuple
 
 import numpy as np
 import pytest
-from hypothesis import assume, given
-from hypothesis import strategies as st
-from hypothesis.strategies import SearchStrategy
+try:
+    from hypothesis import assume, given
+    from hypothesis import strategies as st
+    from hypothesis.strategies import SearchStrategy
+except Exception:
+    pytest.skip("hypothesis not installed", allow_module_level=True)
 
 from compitum.capabilities import Capabilities
 from compitum.coherence import CoherenceFunctional
 from compitum.energy import SymbolicFreeEnergy
 from compitum.metric import SymbolicManifoldMetric
 from compitum.models import Model
-from compitum.pgd import ProductionPGDExtractor
+from compitum.pgd import RegexPromptExtractor
 from compitum.predictors import CalibratedPredictor
 from compitum.utils import split_features
 
@@ -44,6 +47,7 @@ def dummy_calibrated_predictor() -> SearchStrategy[CalibratedPredictor]:
     Generates a dummy CalibratedPredictor instance.
     Since its internal logic isn't critical for this test, we can use a simple mock.
     """
+
     class DummyPredictor(CalibratedPredictor):
         def __init__(self) -> None:
             # CalibratedPredictor expects these to be initialized
@@ -59,7 +63,7 @@ def dummy_calibrated_predictor() -> SearchStrategy[CalibratedPredictor]:
             return val, val - 0.1, val + 0.1
 
         def update(self, x: np.ndarray, y: float) -> None:
-            pass # No-op update
+            pass  # No-op update
 
     return st.just(DummyPredictor())
 
@@ -106,16 +110,21 @@ def test_router_cost_inflation_reduces_utility(
 
     # Determine dimension from models
     dim = models[0].center.shape[0]
-    rank = min(dim, 2) # Example rank
+    rank = min(dim, 2)  # Example rank
 
     # Create dependencies for CompitumRouter
-    predictors = {m.name: {"utility": data.draw(dummy_calibrated_predictor()),
-                           "latency": data.draw(dummy_calibrated_predictor()),
-                           "cost": data.draw(dummy_calibrated_predictor()),
-                           "quality": data.draw(dummy_calibrated_predictor())} for m in models}
+    predictors = {
+        m.name: {
+            "utility": data.draw(dummy_calibrated_predictor()),
+            "latency": data.draw(dummy_calibrated_predictor()),
+            "cost": data.draw(dummy_calibrated_predictor()),
+            "quality": data.draw(dummy_calibrated_predictor()),
+        }
+        for m in models
+    }
 
     coherence = CoherenceFunctional()
-    pgd_extractor = ProductionPGDExtractor() # No dim argument
+    pgd_extractor = RegexPromptExtractor()  # No dim argument
     metric_map = {m.name: SymbolicManifoldMetric(D=dim, rank=rank) for m in models}
     energy = SymbolicFreeEnergy(
         alpha=alpha, beta_t=beta_t, beta_c=beta_c, beta_d=beta_d, beta_s=beta_s
@@ -130,8 +139,11 @@ def test_router_cost_inflation_reduces_utility(
     feats_initial = pgd_extractor.extract_features(prompt)
     xR_all_initial, _ = split_features(feats_initial)
     initial_utility_target, _, _ = energy.compute(
-        xR_all_initial, target_model_initial, predictors[model_name],
-        coherence, metric_map[model_name]
+        xR_all_initial,
+        target_model_initial,
+        predictors[model_name],
+        coherence,
+        metric_map[model_name],
     )
 
     # 2. Metamorphic Change: Inflate a model's cost
@@ -149,8 +161,11 @@ def test_router_cost_inflation_reduces_utility(
     feats_new = pgd_extractor.extract_features(prompt)
     xR_all_new, _ = split_features(feats_new)
     new_utility_target, _, _ = energy.compute(
-        xR_all_new, target_model_new, predictors_new[model_name],
-        coherence, metric_map_new[model_name]
+        xR_all_new,
+        target_model_new,
+        predictors_new[model_name],
+        coherence,
+        metric_map_new[model_name],
     )
 
     # 4. Assertion

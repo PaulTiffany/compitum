@@ -15,3 +15,9 @@ def test_split_features() -> None:
     np.testing.assert_array_equal(xB, np.array([1.0, 2.0]))
 
 
+def test_split_features_numpy_array() -> None:
+    # Riemannian: everything except the last 4, Banach: last 4 only
+    arr = np.array([0, 1, 2, 3, 4, 5, 6, 7], dtype=float)
+    xR, xB = split_features(arr)
+    np.testing.assert_array_equal(xR, np.array([0, 1, 2, 3], dtype=float))
+    np.testing.assert_array_equal(xB, np.array([4, 5, 6, 7], dtype=float))

@@ -1,0 +1,7 @@
+# Linear constraints Ax <= b over Banach (pragmatic) features (toy example)
+A:
+  - [1, 0, 0, 0]   # latency_class <= 2
+  - [0, 1, 0, 0]   # cost_class <= 2
+  - [0, 0, 1, 0]   # pii_level <= 0
+  - [0, 0, 0, 1]   # region_eu_only <= 0
+b: [2.0, 2.0, 0.0, 0.0]

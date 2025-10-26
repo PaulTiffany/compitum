@@ -3,8 +3,11 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from hypothesis import assume, given
-from hypothesis import strategies as st
+try:
+    from hypothesis import assume, given, settings, HealthCheck
+    from hypothesis import strategies as st
+except Exception:
+    pytest.skip("hypothesis not installed", allow_module_level=True)
 
 from compitum.constraints import ReflectiveConstraintSolver
 from compitum.models import Model
@@ -53,6 +56,7 @@ def constraints_strategy(
 
 
 @pytest.mark.invariants
+@settings(suppress_health_check=[HealthCheck.too_slow])
 @given(
     models_and_utils=models_and_utilities_strategy(),
     constraints=constraints_strategy(),

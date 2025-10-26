@@ -1,32 +1,49 @@
-from compitum.pgd import ProductionPGDExtractor
+import numpy as np
+
+from compitum.pgd import RegexPromptExtractor
 
 
-def test_pgd_extractor_basic() -> None:
-    extractor = ProductionPGDExtractor()
+def test_pgd_feature_extraction() -> None:
+    extractor = RegexPromptExtractor()
     prompt = (
-        "Prove that ∫(x^2)dx = x^3/3. This is a simple calculus proof. "
-        "Here is some code: ```python\nprint('hello')\n```"
+        "This is a test prompt with some, punctuation; and numbers 123. "
+        "It also has a ```code block```."
     )
-
     features = extractor.extract_features(prompt)
+    assert isinstance(features, np.ndarray)
+    assert features.shape == (39,)
+    assert np.all(np.isfinite(features))
 
-    assert isinstance(features, dict)
 
-    # Check that some feature values are being calculated
-    assert features["syn_0"] > 0  # Mean sentence length
-    assert features["syn_2"] > 0  # Number of sentences
+def test_pgd_byte_string_input() -> None:
+    extractor = RegexPromptExtractor()
+    prompt = b"This is a byte string prompt."
+    features = extractor.extract_features(prompt)
+    assert isinstance(features, np.ndarray)
+    assert features.shape == (39,)
 
-    # Check math features
-    assert features["math_0"] > 0  # Math ops
-    assert features["math_7"] > 0  # 'proof' keyword
 
-    # Check code features
-    assert features["code_0"] > 0  # Code blocks
-    assert features["code_1"] > 0  # Language hits ('python')
+def test_pgd_missing_key_fallback() -> None:
+    """
+    Tests that if a feature key is missing, it's safely added back as 0.
+    """
+    extractor = RegexPromptExtractor()
+    original_keys = list(extractor._r_keys)
+    try:
+        # Add a temporary, non-existent key to the list of Riemannian keys
+        extractor._r_keys.append("imaginary_feature_key")
 
-    # Check semantic features
-    assert features["sem_3"] > 0  # Unique tokens
-    assert features["sem_4"] > 0  # Total tokens
+        # Run feature extraction. The internal `feats` dict won't have this key.
+        # The safety loop should then catch it and add it with a value of 0.
+        features = extractor.extract_features("test prompt")
 
-    # Check pragmatic features are present
-    assert "prag_latency_class" in features
+        # The final array should be one larger than the standard size
+        # 35 standard Riemannian + 1 new key + 4 Banach = 40
+        assert features.shape == (40,)
+
+        # The value for our new key should be 0. It's the last of the Riemannian features.
+        assert features[35] == 0.0
+
+    finally:
+        # Clean up to ensure no side effects on other tests
+        extractor._r_keys = original_keys
