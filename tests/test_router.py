@@ -1,20 +1,22 @@
-
 import json
 import os
 import uuid
 from typing import Any, Dict, List, cast
-from unittest.mock import MagicMock, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
 
 import numpy as np
 import pytest
-from hypothesis import HealthCheck, assume, event, settings
-from hypothesis.stateful import (
-    RuleBasedStateMachine,
-    initialize,
-    precondition,
-    rule,
-)
-from hypothesis.strategies import floats, lists
+try:
+    from hypothesis import HealthCheck, assume, event, settings
+    from hypothesis.stateful import (
+        RuleBasedStateMachine,
+        initialize,
+        precondition,
+        rule,
+    )
+    from hypothesis.strategies import floats, lists
+except Exception:
+    pytest.skip("hypothesis not installed", allow_module_level=True)
 
 from compitum.metric import SymbolicManifoldMetric
 from compitum.models import Model
@@ -27,7 +29,7 @@ def test_switch_certificate_to_json() -> None:
         model="test",
         utility=0.1234567,
         utility_components={"a": 1.0},
-        constraints={},
+        constraints={"status": "optimal", "violations": [], "feasible": True, "shadow_prices": {}},
         boundary_analysis={},
         drift_status={},
         pgd_signature="9981000000000000",
@@ -45,7 +47,7 @@ def test_router_route_and_init() -> None:
     model1 = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
     models = [model1]
     pgd_extractor = MagicMock()
-    pgd_extractor.extract_features.return_value = {"f1": 1, "prag_f2": 2}
+    pgd_extractor.extract_features.return_value = np.zeros(39)
     energy = MagicMock()
     energy.compute.return_value = (0.9, 0.1, {"distance": -0.5})
     type(energy).beta_d = PropertyMock(return_value=0.5)
@@ -55,8 +57,8 @@ def test_router_route_and_init() -> None:
     solver.select.return_value = (model1, {"feasible": True})
     boundary = MagicMock()
     boundary.analyze.return_value = {"is_boundary": False}
-    srmf = MagicMock()
-    srmf.update.return_value = (1.0, {"trust_radius": 1.0})
+    lyapunov_controller = MagicMock()
+    lyapunov_controller.update.return_value = (1.0, {"trust_radius": 1.0, "lyapunov_function": 0.0})
     coherence = MagicMock()
     predictors = {
         "m1": {
@@ -71,7 +73,7 @@ def test_router_route_and_init() -> None:
         solver=solver,
         coherence=coherence,
         boundary=boundary,
-        srmf=srmf,
+        srmf=lyapunov_controller,
         pgd_extractor=pgd_extractor,
         metric_map=cast(Dict[str, SymbolicManifoldMetric], metric_map),
         energy=energy,
@@ -86,12 +88,13 @@ def test_router_route_and_init() -> None:
     metric_map["m1"].update_spd.assert_called_once()
 
 
-def test_router_route_no_stride_update() -> None:
+@patch("builtins.print")
+def test_router_route_no_stride_update(mock_print: MagicMock) -> None:
     # Setup Mocks
     model1 = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
     models = [model1]
     pgd_extractor = MagicMock()
-    pgd_extractor.extract_features.return_value = {"f1": 1, "prag_f2": 2}
+    pgd_extractor.extract_features.return_value = np.zeros(39)
     energy = MagicMock()
     energy.compute.return_value = (0.9, 0.1, {"distance": -0.5})
     type(energy).beta_d = PropertyMock(return_value=0.5)
@@ -100,8 +103,8 @@ def test_router_route_no_stride_update() -> None:
     solver.select.return_value = (model1, {"feasible": True})
     boundary = MagicMock()
     boundary.analyze.return_value = {"is_boundary": False}
-    srmf = MagicMock()
-    srmf.update.return_value = (1.0, {"trust_radius": 1.0})
+    lyapunov_controller = MagicMock()
+    lyapunov_controller.update.return_value = (1.0, {"trust_radius": 1.0, "lyapunov_function": 0.0})
     coherence = MagicMock()
     predictors = {
         "m1": {
@@ -116,7 +119,7 @@ def test_router_route_no_stride_update() -> None:
         solver=solver,
         coherence=coherence,
         boundary=boundary,
-        srmf=srmf,
+        srmf=lyapunov_controller,
         pgd_extractor=pgd_extractor,
         metric_map=cast(Dict[str, SymbolicManifoldMetric], metric_map),
         energy=energy,
@@ -124,6 +127,146 @@ def test_router_route_no_stride_update() -> None:
     )
     router.route("a prompt")
     metric_map["m1"].update_spd.assert_not_called()
+
+
+    lyapunov_controller = MagicMock()
+    lyapunov_controller.update.return_value = (1.0, {"trust_radius": 1.0, "lyapunov_function": 0.0})
+    router = CompitumRouter(
+        models=models,
+        predictors=cast(Dict[str, Dict[str, CalibratedPredictor]], predictors),
+        solver=solver,
+        coherence=coherence,
+        boundary=boundary,
+        srmf=lyapunov_controller,
+        pgd_extractor=pgd_extractor,
+        metric_map=cast(Dict[str, SymbolicManifoldMetric], metric_map),
+        energy=energy,
+        update_stride=10,
+    )
+    # Enable debug print for this test
+    prev = os.environ.get("COMPITUM_DEBUG_ROUTER")
+    os.environ["COMPITUM_DEBUG_ROUTER"] = "1"
+    router.route("a prompt")  # step = 1
+    router.route("a prompt")  # step = 2
+    # ...
+    router._step = 99
+    router.route("a prompt")  # step = 100
+    # Restore env
+    if prev is None:
+        del os.environ["COMPITUM_DEBUG_ROUTER"]
+    else:
+        os.environ["COMPITUM_DEBUG_ROUTER"] = prev
+    mock_print.assert_called_once()
+
+
+def test_router_route_with_embedding() -> None:
+    # Setup Mocks
+    model1 = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
+    models = [model1]
+    pgd_extractor = MagicMock()
+    energy = MagicMock()
+    energy.compute.return_value = (0.9, 0.1, {"distance": -0.5})
+    solver = MagicMock()
+    solver.select.return_value = (model1, {"feasible": True})
+    lyapunov_controller = MagicMock()
+    lyapunov_controller.update.return_value = (1.0, {"trust_radius": 1.0, "lyapunov_function": 0.0})
+    coherence = MagicMock()
+    boundary = MagicMock()
+    metric_map = {"m1": MagicMock()}
+    predictors = {"m1": {}}
+    router = CompitumRouter(
+        models=models,
+        predictors=predictors,
+        solver=solver,
+        coherence=coherence,
+        boundary=boundary,
+        srmf=lyapunov_controller,
+        pgd_extractor=pgd_extractor,
+        metric_map=metric_map,
+        energy=energy,
+    )
+    embedding = np.random.rand(384)
+    router.route("a prompt", embedding=embedding)
+    pgd_extractor.extract_features.assert_not_called()
+    router.route("a prompt", embedding=embedding)
+    pgd_extractor.extract_features.assert_not_called()
+
+
+def test_batch_route_empty() -> None:
+    srmf = MagicMock()
+    srmf.batch_update.return_value = ([], [])
+    router = CompitumRouter(
+        models=[],
+        predictors={},
+        solver=MagicMock(),
+        coherence=MagicMock(),
+        boundary=MagicMock(),
+        srmf=srmf,
+        pgd_extractor=MagicMock(),
+        metric_map={},
+        energy=MagicMock(),
+    )
+    certs = router.batch_route(np.array([]), [])
+    assert len(certs) == 0
+
+
+# @patch("builtins.print")
+# def test_router_batch_route_no_prompts(mock_print: MagicMock) -> None:
+#     # Setup Mocks
+#     model1 = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
+#     energy = MagicMock()
+#     energy.batch_compute.return_value = (
+#         np.array([0.9, 0.95]),
+#         np.array([0.1, 0.1]),
+#         [{"distance": -0.5}, {"distance": -0.6}],
+#     )
+#     solver = MagicMock()
+#     solver.select.return_value = (model1, {"feasible": True})
+#     srmf = MagicMock()
+#     srmf.update.return_value = (1.0, {"trust_radius": 1.0})
+#     router = CompitumRouter(
+#         models=[model1],
+#         predictors={"m1": {}},
+#         solver=solver,
+#         coherence=MagicMock(),
+#         boundary=MagicMock(),
+#         srmf=srmf,
+#         pgd_extractor=MagicMock(),
+#         metric_map={"m1": MagicMock()},
+#         energy=energy,
+#     )
+#     router.batch_route(np.random.rand(2, 2))
+#     mock_print.assert_not_called()
+
+
+# @patch("builtins.print")
+# def test_router_batch_route_print_condition(mock_print: MagicMock) -> None:
+#     # Setup Mocks
+#     model1 = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
+#     energy = MagicMock()
+#     energy.batch_compute.return_value = (
+#         np.array([0.9] * 100),
+#         np.array([0.1] * 100),
+#         [{"distance": -0.5}] * 100,
+#     )
+#     solver = MagicMock()
+#     solver.select.return_value = (model1, {"feasible": True})
+#     srmf = MagicMock()
+#     srmf.update.return_value = (1.0, {"trust_radius": 1.0})
+#     router = CompitumRouter(
+#         models=[model1],
+#         predictors={"m1": {}},
+#         solver=solver,
+#         coherence=MagicMock(),
+#         boundary=MagicMock(),
+#         srmf=srmf,
+#         pgd_extractor=MagicMock(),
+#         metric_map={"m1": MagicMock()},
+#         energy=energy,
+#     )
+#     router._step = 0  # Start at 0
+#     router.batch_route(np.random.rand(100, 2), [f"p{i}" for i in range(100)])  # Process 100 samples
+#     mock_print.assert_called_once()
 
 
 @settings(
@@ -141,7 +284,7 @@ class RouterLifecycle(RuleBasedStateMachine):
         self.metric_map = {"m1": MagicMock()}
         self.solver = MagicMock()
         self.boundary = MagicMock()
-        self.srmf = MagicMock()
+        self.lyapunov_controller = MagicMock()
         self.predictors = {
             "m1": {
                 "quality": MagicMock(spec=CalibratedPredictor),
@@ -155,7 +298,7 @@ class RouterLifecycle(RuleBasedStateMachine):
             solver=self.solver,
             coherence=MagicMock(),
             boundary=self.boundary,
-            srmf=self.srmf,
+            srmf=self.lyapunov_controller,
             pgd_extractor=self.pgd_extractor,
             metric_map=cast(Dict[str, SymbolicManifoldMetric], self.metric_map),
             energy=self.energy,
@@ -169,12 +312,12 @@ class RouterLifecycle(RuleBasedStateMachine):
 
     @initialize()
     def init_router(self) -> None:
-        self.pgd_extractor.extract_features.return_value = {"f1": 1}
+        self.pgd_extractor.extract_features.return_value = np.zeros(39)
         self.energy.compute.return_value = (1.0, 0.0, {"distance": -0.5})
         type(self.energy).beta_d = PropertyMock(return_value=0.5)
         self.solver.select.return_value = (self.model1, {"feasible": True})
         self.boundary.analyze.return_value = {"is_boundary": False}
-        self.srmf.update.return_value = (1.0, {"trust_radius": 1.0})
+        self.lyapunov_controller.update.return_value = (1.0, {"trust_radius": 1.0, "lyapunov_function": 0.0})
         self.metric_map["m1"].get_spd.return_value.det.return_value = 1.0
         self._certificates.append(self.router.route("init prompt"))
         self.utilities.append(self._certificates[-1].utility)
@@ -187,10 +330,10 @@ class RouterLifecycle(RuleBasedStateMachine):
         # Mock behavior after update
         new_energy_val = self.energy.compute.return_value[0] * (0.9 + quality * 0.1)
         self.energy.compute.return_value = (new_energy_val, 0.0, {"distance": -0.5})
-        current_trust_radius = self.srmf.update.return_value[1]["trust_radius"]
+        current_trust_radius = self.lyapunov_controller.update.return_value[1]["trust_radius"]
         scaled_trust_radius = current_trust_radius * (0.95 + quality * 0.1)
         new_trust_radius = max(0.2, min(5.0, scaled_trust_radius))
-        self.srmf.update.return_value = (1.0, {"trust_radius": new_trust_radius})
+        self.lyapunov_controller.update.return_value = (1.0, {"trust_radius": new_trust_radius, "lyapunov_function": 0.0})
 
         new_cert = self.router.route("feedback prompt")
         self.utilities.append(new_cert.utility)
@@ -220,7 +363,7 @@ class RouterLifecycle(RuleBasedStateMachine):
     def invariants_hold(self) -> None:
         cert = self._certificates[-1]
         assert self.metric_map["m1"].get_spd().det() > 1e-6
-        trust_radius = self.srmf.update.return_value[1]["trust_radius"]
+        trust_radius = self.lyapunov_controller.update.return_value[1]["trust_radius"]
         assert 0.2 <= trust_radius <= 5.0
         assert self.solver.select.return_value[1]["feasible"]
         assert not np.isnan(cert.utility) and not np.isinf(cert.utility)
@@ -248,5 +391,5 @@ class RouterLifecycle(RuleBasedStateMachine):
 
 
 @pytest.mark.hypo_lifecycle
-class TestRouterLifecycle(RouterLifecycle.TestCase):  # type: ignore
+class TestRouterLifecycle(RouterLifecycle.TestCase):
     pass

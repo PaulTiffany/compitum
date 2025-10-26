@@ -24,6 +24,7 @@ def test_solver_basic_feasible() -> None:
     assert m_star.name == "b"
     assert info["feasible"] is True
 
+
 def test_solver_no_viable_models() -> None:
     """Tests the case where no models are feasible due to constraints."""
     A = np.eye(1)
@@ -40,6 +41,7 @@ def test_solver_no_viable_models() -> None:
     m_star, info = solver.select(pgd_infeasible, models, utilities)
     assert info["feasible"] is False
     assert m_star.name == "b"  # Should return model with max utility
+
 
 def test_solver_capability_support_filters_model() -> None:
     """Tests that a model is correctly filtered out by its `supports` method."""
@@ -63,6 +65,7 @@ def test_solver_capability_support_filters_model() -> None:
     assert m_star.name == "a"
     assert info["feasible"] is True
     caps_b_mock.supports.assert_called_with(pgd)
+
 
 def test_solver_shadow_price_and_viable_competitor() -> None:
     """Final test to cover all branches in the shadow price calculation."""
@@ -95,6 +98,7 @@ def test_solver_shadow_price_and_viable_competitor() -> None:
     # The shadow price is 0 because the non-viable model is non-viable due to capabilities
     # and relaxing the b constraint doesn't change that.
     assert info["shadow_prices"]["lambda_0"] == 0
+
 
 def test_solver_shadow_price_positive_when_capability_becomes_true() -> None:
     """

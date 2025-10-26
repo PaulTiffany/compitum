@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Compitum mark">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#9A00FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="40" fill="#0a0b0d"/>
+  <g transform="translate(128,128)">
+    <circle r="84" fill="none" stroke="url(#g)" stroke-width="10"/>
+    <circle r="48" fill="none" stroke="#ffffff" opacity="0.25" stroke-width="6"/>
+    <path d="M -84 0 Q 0 -48 84 0 Q 0 48 -84 0 Z" fill="none" stroke="url(#g)" stroke-width="10"/>
+    <path d="M 0 -84 Q 48 0 0 84 Q -48 0 0 -84 Z" fill="none" stroke="#00d4ff" opacity="0.6" stroke-width="6"/>
+  </g>
+</svg>

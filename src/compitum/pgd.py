@@ -6,19 +6,26 @@ from typing import Dict
 import numpy as np
 
 
-class ProductionPGDExtractor:
+class RegexPromptExtractor:
     """
     Fast, regex-first extractor (spaCy optional). Returns a stable 35D Riemannian vector
     plus a small Banach vector attached separately by the caller if desired.
     """
-    def __init__(self) -> None:
-        self._r_keys = [f"syn_{i}" for i in range(6)] + \
-                       [f"math_{i}" for i in range(8)] + \
-                       [f"code_{i}" for i in range(7)] + \
-                       [f"sem_{i}" for i in range(6)] + \
-                       [f"aux_{i}" for i in range(8)]  # pad to 35 if some groups are light
 
-    def extract_features(self, prompt: str) -> Dict[str, float]:
+    def __init__(self) -> None:
+        self._r_keys = (
+            [f"syn_{i}" for i in range(6)]
+            + [f"math_{i}" for i in range(8)]
+            + [f"code_{i}" for i in range(7)]
+            + [f"sem_{i}" for i in range(6)]
+            + [f"aux_{i}" for i in range(8)]
+        )  # pad to 35 if some groups are light
+
+    # Last modified: 2025-10-07 01:00:01
+    def extract_features(self, prompt: str) -> np.ndarray:
+        # Ensure prompt is a string, handling bytes-like objects (e.g., numpy.bytes_)
+        if hasattr(prompt, "decode"):
+            prompt = prompt.decode("utf-8")
         feats: Dict[str, float] = {}
         # syntactic (cheap proxies)
         sents = [s for s in re.split(r"[.!?]\s+", prompt) if s]
@@ -37,7 +44,7 @@ class ProductionPGDExtractor:
             "math_1": latex,
             "math_2": float(len(re.findall(r"\bprove|derive|compute|solve\b", prompt, re.I))),
             "math_3": float(len(re.findall(r"[0-9]+(\\.[0-9]+)?", prompt))),
-            "math_4": float(prompt.count("^")+prompt.count("_")),
+            "math_4": float(prompt.count("^") + prompt.count("_")),
             "math_5": float("theorem" in prompt.lower()),
             "math_6": float("lemma" in prompt.lower()),
             "math_7": float("proof" in prompt.lower()),
@@ -60,16 +67,18 @@ class ProductionPGDExtractor:
 
         # semantic proxies
         tokens = prompt.split()
-        diffs = [
-            abs(len(tokens[i + 1]) - len(tokens[i])) for i in range(len(tokens) - 1)
-        ] if len(tokens) > 1 else []
+        diffs = (
+            [abs(len(tokens[i + 1]) - len(tokens[i])) for i in range(len(tokens) - 1)]
+            if len(tokens) > 1
+            else []
+        )
         feats |= {
             "sem_0": float(np.sum(diffs)) if diffs else 0.0,
             "sem_1": float(np.mean(diffs)) if diffs else 0.0,
             "sem_2": float(np.std(diffs)) if diffs else 0.0,
             "sem_3": float(len(set([t.lower() for t in tokens]))),
             "sem_4": float(len(tokens)),
-            "sem_5": float(len(set(w for w in tokens if len(w)>6))),
+            "sem_5": float(len(set(w for w in tokens if len(w) > 6))),
         }
 
         # aux padding (zeros)
@@ -81,4 +90,21 @@ class ProductionPGDExtractor:
         feats["prag_cost_class"] = 1.0
         feats["prag_pii_level"] = 0.0
         feats["prag_region_eu_only"] = 0.0
-        return feats
+
+        # Ensure all Riemannian keys are present
+        for k in self._r_keys:
+            if k not in feats:
+                feats[k] = 0.0
+
+        # Order the Riemannian features
+        riemannian_feats = [feats[k] for k in self._r_keys]
+
+        # Banach features
+        banach_feats = [
+            feats.get("prag_latency_class", 1.0),
+            feats.get("prag_cost_class", 1.0),
+            feats.get("prag_pii_level", 0.0),
+            feats.get("prag_region_eu_only", 0.0),
+        ]
+
+        return np.array(riemannian_feats + banach_feats, dtype=np.float32)

@@ -1,0 +1,1 @@
+Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '*evaluate_routers.py*' -or $_.CommandLine -like '*routerbench*' -or $_.CommandLine -like '*compitum*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }

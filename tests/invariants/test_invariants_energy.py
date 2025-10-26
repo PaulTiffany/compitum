@@ -3,7 +3,10 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from hypothesis import given
+try:
+    from hypothesis import given
+except Exception:
+    pytest.skip("hypothesis not installed", allow_module_level=True)
 
 from compitum.energy import SymbolicFreeEnergy
 from compitum.predictors import CalibratedPredictor

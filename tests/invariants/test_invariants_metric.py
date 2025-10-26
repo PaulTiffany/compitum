@@ -2,10 +2,13 @@ from typing import Any, Tuple
 
 import numpy as np
 import pytest
-from hypothesis import given
-from hypothesis import strategies as st
+try:
+    from hypothesis import given
+    from hypothesis import strategies as st
+except Exception:
+    pytest.skip("hypothesis not installed", allow_module_level=True)
 
-from compitum.control import SRMFController
+from compitum.control import LyapunovController
 from compitum.metric import SymbolicManifoldMetric
 
 from .harness import TOL
@@ -72,6 +75,7 @@ def test_metric_triangle_inequality(params: tuple[int, int], data: Any) -> None:
 
     assert d_xz <= d_xy + d_yz + TOL.abs
 
+
 @pytest.mark.invariants
 @given(
     params=metric_params(),
@@ -94,7 +98,7 @@ def test_metric_update_stability(
     """
     D, rank = params
     metric = SymbolicManifoldMetric(D, rank)
-    srmf_controller = SRMFController(kappa=0.1, r0=1.0)
+    srmf_controller = LyapunovController(kappa=0.1, r0=1.0)
 
     # Generate a large initial L to ensure the cap is tested
     metric.L = data.draw(st.just(np.random.rand(D, rank) * 20.0))
@@ -102,12 +106,11 @@ def test_metric_update_stability(
     x = data.draw(vectors(dim=D))
     mu = data.draw(vectors(dim=D))
 
-    metric.update_spd(
-        x=x, mu=mu, beta_d=beta_d, d=d, eta=eta, srmf_controller=srmf_controller
-    )
+    metric.update_spd(x=x, mu=mu, beta_d=beta_d, d=d, eta=eta, srmf_controller=srmf_controller)
 
     fnorm = np.linalg.norm(metric.L, "fro")
     assert fnorm <= 10.0 + TOL.abs
+
 
 @pytest.mark.invariants
 @given(params=metric_params(), data=st.data())
@@ -119,7 +122,7 @@ def test_metric_whitening_isometry(params: tuple[int, int], data: Any) -> None:
     """
     D, rank = params
     metric = SymbolicManifoldMetric(D, rank)
-    metric._update_cholesky() # Ensure W is calculated
+    metric._update_cholesky()  # Ensure W is calculated
 
     a = data.draw(vectors(dim=D))
     b = data.draw(vectors(dim=D))

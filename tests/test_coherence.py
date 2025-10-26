@@ -12,6 +12,7 @@ def test_reservoir_add_below_k() -> None:
     assert len(reservoir.buf) == 4
     assert reservoir.tot_w == 4.0
 
+
 def test_reservoir_add_above_k_replace() -> None:
     """Test reservoir sampling with a mocked RNG to force replacement."""
     mock_rng = MagicMock()
@@ -31,6 +32,7 @@ def test_reservoir_add_above_k_replace() -> None:
     assert len(reservoir.buf) == 3
     assert reservoir.buf[0][0][0] == 99
 
+
 def test_coherence_not_enough_data() -> None:
     coherence = CoherenceFunctional()
     # Add only 5 data points, less than the threshold of 10
@@ -39,6 +41,7 @@ def test_coherence_not_enough_data() -> None:
 
     evidence = coherence.log_evidence("test_model", np.array([0]))
     assert evidence == 0.0
+
 
 def test_coherence_enough_data() -> None:
     coherence = CoherenceFunctional()
@@ -55,9 +58,10 @@ def test_coherence_enough_data() -> None:
     assert "test_model" in coherence.kde_cache
 
     # A second call should use the cache and not call _fit
-    with patch.object(coherence, '_fit', wraps=coherence._fit) as mock_fit:
+    with patch.object(coherence, "_fit", wraps=coherence._fit) as mock_fit:
         coherence.log_evidence("test_model", rng.random(2))
         mock_fit.assert_not_called()
+
 
 def test_reservoir_add_above_k_no_replace() -> None:
     """Test reservoir sampling where the random number is out of range, causing no replacement."""
@@ -79,3 +83,22 @@ def test_reservoir_add_above_k_no_replace() -> None:
     # Assert that the buffer is unchanged
     for i in range(3):
         assert reservoir.buf[i][0][0] == original_buf_content[i]
+
+
+def test_batch_log_evidence() -> None:
+    coherence = CoherenceFunctional()
+    xw_batch = np.array([[1.0, 2.0], [3.0, 4.0]])
+
+    # Test case with not enough data
+    result_no_data = coherence.batch_log_evidence("test_model_1", xw_batch)
+    assert np.all(result_no_data == 0)
+    assert result_no_data.shape == (2,)
+
+    # Add enough data for KDE to be fitted
+    for i in range(15):
+        coherence.update("test_model_2", np.random.rand(2), 1.0)
+
+    # Test case with enough data
+    result_with_data = coherence.batch_log_evidence("test_model_2", xw_batch)
+    assert result_with_data.shape == (2,)
+    assert np.any(result_with_data != 0)

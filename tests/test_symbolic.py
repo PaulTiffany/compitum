@@ -1,4 +1,3 @@
-
 from typing import Any
 
 import numpy as np
@@ -48,12 +47,14 @@ def test_symbolic_expression_unknown_operator() -> None:
     with pytest.raises(ValueError):
         expr.evaluate()
 
+
 def test_symbolic_matrix_transpose_evaluation() -> None:
     """Test the evaluation of a transposed SymbolicMatrix."""
     m_val = np.array([[1, 2], [3, 4]])
     m = SymbolicMatrix(name="M", value=m_val)
     mT = m.T
     assert np.array_equal(mT.evaluate(), m_val.T)
+
 
 def test_symbolic_expression_to_latex() -> None:
     """Test the to_latex method of SymbolicExpression."""

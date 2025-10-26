@@ -10,6 +10,7 @@ def test_spd_properties() -> None:
     eig = np.linalg.eigvalsh(M)
     assert np.all(eig > 0)
 
+
 def test_triangle_inequality() -> None:
     m = SymbolicManifoldMetric(12, 4)
     x, y, z = np.random.randn(12), np.random.randn(12), np.random.randn(12)
@@ -17,6 +18,7 @@ def test_triangle_inequality() -> None:
     d_yz, _ = m.distance(y, z)
     d_xz, _ = m.distance(x, z)
     assert d_xz <= d_xy + d_yz + 1e-9
+
 
 def test_whitening_isometry() -> None:
     m = SymbolicManifoldMetric(10, 3)

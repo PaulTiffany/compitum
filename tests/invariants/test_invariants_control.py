@@ -1,8 +1,11 @@
 import numpy as np
 import pytest
-from hypothesis import given
+try:
+    from hypothesis import given
+except Exception:
+    pytest.skip("hypothesis not installed", allow_module_level=True)
 
-from compitum.control import SRMFController
+from compitum.control import LyapunovController
 
 from .harness import boundary_floats
 
@@ -21,10 +24,10 @@ def test_srmf_stability_invariants(
     # This property test checks that the SRMF controller's trust radius `r`
     # remains within its prescribed bounds [0.2, 5.0] and that the learning
     # rate `eta_cap` is non-negative.
-    controller = SRMFController(kappa=kappa, r0=r0)
+    controller = LyapunovController(kappa=kappa, r0=r0)
 
     # Initial state
-    assert 0.2 <= controller.r <= 5.0
+    assert 0.2 <= controller.trust_radius <= 5.0
 
     # Update step
     eta_cap, info = controller.update(d_star=d_star, grad_norm=grad_norm)
@@ -32,6 +35,6 @@ def test_srmf_stability_invariants(
     # Assert invariants
     assert eta_cap >= 0.0, "Learning rate cap must be non-negative"
     assert 0.2 <= info["trust_radius"] <= 5.0, "Trust radius escaped its bounds"
-    assert np.isclose(
-        info["trust_radius"], controller.r
-    ), "Returned radius must match internal state"
+    assert np.isclose(info["trust_radius"], controller.trust_radius), (
+        "Returned radius must match internal state"
+    )
