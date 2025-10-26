@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Compitum  geometrically-aware LLM routing with instantaneous, judge-free feedback (SPD metrics, constraints, Lyapunov-inspired trustregion updates). Verifiable claims with links to reports and docs.">
+    <meta name="description" content="Compitum — geometrically-aware LLM routing with instantaneous, judge-free feedback (SPD metrics, constraints, Lyapunov-inspired trust‑region updates). Verifiable claims with links to reports and docs.">
     <meta name="theme-color" content="#0a0b0d">
-    <title>Compitum  Geometric LLM Routing</title>
+    <title>Compitum — Geometric LLM Routing</title>
     <link rel="manifest" href="assets/site.webmanifest" />
     <script type="application/ld+json">
     {
@@ -13,7 +13,7 @@
       "@type": "WebSite",
       "name": "Compitum",
       "url": "https://paultiffany.github.io/compitum/",
-      "description": "Geometricallyaware routing with instantaneous, mechanistic feedback.",
+      "description": "Geometrically‑aware routing with instantaneous, mechanistic feedback.",
       "publisher": {"@type": "Organization", "name": "Compitum"},
       "sameAs": [
         "https://github.com/PaulTiffany/compitum"
@@ -34,20 +34,19 @@
     }
     </script>
     <link rel="icon" type="image/svg+xml" href="assets/compitum-mark.svg" />
-    <link rel="alternate icon" href="assets/favicon.ico" />
-
-    <!-- Open Graph / Twitter cards -->
+    <!-- Single source favicon (SVG) to avoid extra binary asset -->
+    <link rel="alternate icon" href="assets/compitum-mark.svg" />
     <meta property="og:title" content="Compitum - Geometric LLM Routing" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:description" content="Riemannian metric learning, constraint-aware selection, KDE coherence. Verifiable results  see reports and docs." />
+    <meta property="og:description" content="Riemannian metric learning, constraint-aware selection, KDE coherence. Verifiable results — see reports and docs." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://paultiffany.github.io/compitum/" />
     <meta property="og:image" content="assets/compitum-social-card.svg" />
-    <meta property="og:image:alt" content="Compitum  Geometricallyaware routing with instantaneous feedback" />
+    <meta property="og:image:alt" content="Compitum — Geometrically‑aware routing with instantaneous feedback" />
     <meta property="og:site_name" content="Compitum" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Compitum - Geometric LLM Routing" />
-    <meta name="twitter:description" content="Riemannian metric learning, constraint-aware selection, KDE coherence. Verifiable results  see reports and docs." />
+    <meta name="twitter:description" content="Riemannian metric learning, constraint-aware selection, KDE coherence. Verifiable results — see reports and docs." />
     <meta name="twitter:image" content="assets/compitum-social-card.svg" />
     <meta name="keywords" content="compitum, ai router, routing, spd metric, riemannian, constraints, lyapunov, process supervision, instantaneous feedback rl, coherence" />
     <link rel="canonical" href="https://paultiffany.github.io/compitum/" />
@@ -156,53 +155,13 @@
             color: #f3f5f7;
         }
 
-        .brand svg {
-            width: 24px;
-            height: 24px;
-        }
+        .brand img, .brand svg { width: 24px; height: 24px; display: inline-block; }
 
         .nav {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
-        .nav .share-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.06);
-            color: #f3f5f7;
-            text-decoration: none;
-            font-weight: 700;
-        }
-        .nav .share-btn:hover { background: rgba(255,255,255,0.10); }
-        .nav .share-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: #00d4ff; box-shadow: 0 0 10px #00d4ff; }
-
-        /* Subject chips */
-        .subject-buttons {
-            margin-top: 18px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.08);
-            color: #f3f5f7;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            border: 1px solid rgba(255,255,255,0.12);
-        }
-        .chip:hover { background: rgba(255,255,255,0.12); }
 
         .nav-link {
             padding: 8px 16px;
@@ -535,7 +494,7 @@
 
     <!-- Video Background -->
     <div class="bg-video" aria-hidden="true">
-        <video class="bg-video__media" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" poster="hero_poster.jpg">
+        <video class="bg-video__media" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" poster="assets/compitum-social-card.svg">
             <source src="tess.mp4" type="video/mp4">
         </video>
     </div>
@@ -543,21 +502,14 @@
     <header role="banner">
         <div class="header-content">
             <a href="#main-content" class="brand" aria-label="Compitum homepage">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M12 3v18"></path>
-                    <path d="M12 6L7.5 8"></path><path d="M12 9L7.5 11"></path><path d="M12 12L7.5 14"></path><path d="M12 15L7.5 17"></path><path d="M12 18L7.5 20"></path>
-                    <path d="M12 6L16.5 8"></path><path d="M12 9L16.5 11"></path><path d="M12 12L16.5 14"></path><path d="M12 15L16.5 17"></path><path d="M12 18L16.5 20"></path>
-                </svg>
+                <img src="assets/compitum-mark.svg" alt="Compitum logo" width="24" height="24" />
                 Compitum
             </a>
             <nav class="nav" role="navigation" aria-label="Primary">
                 <a href="#details" class="nav-link">How It Works</a>
                 <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="Paper on Overleaf (opens in new tab)">Paper</a>
                 <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="GitHub (opens in new tab)">GitHub</a>
-                <a id="share-llm" href="docs/repo_snapshot.jsonl" class="share-btn" target="_blank" rel="noopener" aria-label="Open LLM snapshot JSONL in new tab">
-                    <span class="dot" aria-hidden="true"></span>
-                    Share to LLM
-                </a>
+                <button id="share-llm" class="nav-link" style="background:none;border:none;cursor:pointer" aria-label="Share snapshot to an LLM">Share to LLM</button>
             </nav>
         </div>
     </header>
@@ -566,28 +518,28 @@
         <div class="overlay">
             <div class="hero-content">
                 <h1 class="hero-title">Meet Tess</h1>
-                <p class="hero-tagline">She routes LLMs like she sorts shapes.</p>
+                <p class="hero-tagline">Instantaneous, judge‑free feedback for LLM routing.</p>
                 <p class="hero-subtitle">
-                    Inspired by Montessori's Control of Error, Tess learns through Riemannian geometry. Near-zero regret. 69% win rate. Deterministic. Reproducible. Open source.
+                    Inspired by Montessori’s Control of Error and geometric ML: feasibility‑first selection, SPD metric learning, and a Lyapunov‑inspired trust‑region. Claims below link to verifiable reports.
                 </p>
 
                 <div class="stats-container">
                     <div class="stats-row">
                         <div class="stat-card">
-                            <div class="stat-number">0.04</div>
-                            <div class="stat-label">Mean Regret</div>
+                            <div class="stat-number"><a href="reports/fixed_wtp_summary.md" style="color:#00d4ff;text-decoration:none">Mean</a></div>
+                            <div class="stat-label">Regret (fixed λ)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">69%</div>
-                            <div class="stat-label">Win Rate</div>
+                            <div class="stat-number"><a href="reports/fixed_wtp_summary.md" style="color:#00d4ff;text-decoration:none">Rate</a></div>
+                            <div class="stat-label">Win Rate (panel)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">100%</div>
-                            <div class="stat-label">Test Coverage</div>
+                            <div class="stat-number"><a href="reports/mutation_summary.json" style="color:#00d4ff;text-decoration:none">100%</a></div>
+                            <div class="stat-label">Test Coverage (CI)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number">$0.13</div>
-                            <div class="stat-label">Cost Savings</div>
+                            <div class="stat-number"><a href="docs/RouterBench-Summary.md" style="color:#00d4ff;text-decoration:none">Δ$</a></div>
+                            <div class="stat-label">Cost Delta (wins)</div>
                         </div>
                     </div>
                 </div>
@@ -597,17 +549,9 @@
                         <div class="pulse-dot"></div>
                         View on GitHub
                     </a>
-                    <a href="#details" class="btn secondary">How Tess Learns</a>
-                    <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" class="btn secondary" target="_blank" rel="noopener">Read the Paper</a>
+                    <a href="#details" class="btn secondary" aria-label="Jump to how Tess learns">How Tess Learns</a>
+                    <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" class="btn secondary" target="_blank" rel="noopener" aria-label="Open paper on Overleaf in a new tab">Read the Paper</a>
                 </div>
-
-                <!-- Subject area quick links -->
-                <nav class="subject-buttons" aria-label="Subject areas">
-                    <a class="chip" href="reports/lg_summary.md" target="_blank" rel="noopener" aria-label="cs.LG summary (opens in new tab)">cs.LG</a>
-                    <a class="chip" href="reports/cl_summary.md" target="_blank" rel="noopener" aria-label="cs.CL summary (opens in new tab)">cs.CL</a>
-                    <a class="chip" href="docs/SRMF-as-Lyapunov.md" target="_blank" rel="noopener" aria-label="cs.SY notes (opens in new tab)">cs.SY</a>
-                    <a class="chip" href="docs/Statistical-Notes.md" target="_blank" rel="noopener" aria-label="stat.ML notes (opens in new tab)">stat.ML</a>
-                </nav>
             </div>
 
             <div class="scroll-indicator">
@@ -623,32 +567,32 @@
                 <div class="feature-grid">
                     <div class="feature-card">
                         <h3>Riemannian Geometry</h3>
-                        <p>Prompts and models live in curved space. Tess learns the metricdistance measured by semantic fit, not flat Euclidean position.</p>
+                        <p>Prompts and models live in a learned curved space (SPD Mahalanobis metric). Distance reflects semantic fit, not raw position.</p>
                     </div>
 
                     <div class="feature-card">
-                        <h3>Free Energy Optimization</h3>
-                        <p>Physics-inspired utility function balances quality, latency, cost, distance, and evidence in a unified energy landscape.</p>
+                        <h3>Utility (free‑energy) optimization</h3>
+                        <p>We balance quality, latency, cost, distance, and evidence in a single scalarized utility. See <a href="docs/PEER_REVIEW.md">protocol</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Control of Error</h3>
-                        <p>Inspired by Montessori: immediate feedback, intrinsic structure, embodied learning. Tess learns by doing, adapts through experience.</p>
+                        <p>Immediate, judge‑free signals (feasibility, ambiguity, uncertainty) drive bounded updates. See <a href="docs/Control-of-Error.md">Control of Error</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Boundary Detection</h3>
-                        <p>High entropy? Low utility gap? Tess flags ambiguous decisions. Humans decide when the system is uncertain.</p>
+                        <p>High entropy, low utility gap, high uncertainty → flag for deferral. See decision curves in <a href="docs/Language-Perspective.md">cs.CL</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Constraint Satisfaction</h3>
-                        <p>Lagrangian duality enforces hard limits: regional compliance, cost caps, capability filters. Your rules, guaranteed.</p>
+                        <p>Feasibility‑first selection enforces region/policy/capability limits. Approximate shadow prices are diagnostic. See <a href="docs/PEER_REVIEW.md#constraints-summary">constraints</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Adaptive Learning</h3>
-                        <p>The metric updates via stochastic trust-region methods. Tess routes better tomorrow than today. Institutional learning built in.</p>
+                        <p>Trust‑region (Lyapunov‑inspired) caps step size for online metric updates. Stability indicators in <a href="docs/Control-Perspective.md">cs.SY</a>.</p>
                     </div>
                 </div>
             </div>
@@ -661,18 +605,71 @@
 
                 <div class="feature-grid">
                     <div class="feature-card">
-                        <h3>100% Test Coverage</h3>
-                        <p>84 tests passed. 100% line + branch coverage. Hypothesis deterministic. Cosmic Ray mutation testing: all mutants killed.</p>
+                        <h3>Tests &amp; QA</h3>
+                        <p>Hypothesis derandomized profile; invariants; mutation testing; coverage target 100%. See CI and <a href="docs/PEER_REVIEW.md#environment-seeds-and-determinism">determinism</a>.</p>
                     </div>
 
                     <div class="feature-card">
-                        <h3>One-Shot Reproducible</h3>
-                        <p>Run <code style="color: #00d4ff; font-weight: 600;">scripts/run_peer_review.bat</code>. Tests, baselines, bootstrap CIs, HTML report, SHA256 manifest. Done.</p>
+                        <h3>One‑Shot Reproducible</h3>
+                        <p>Run <code>scripts/run_peer_review.bat</code> to regenerate tables, CEI, KPIs, and a consolidated HTML report with a SHA‑256 manifest.</p>
                     </div>
 
                     <div class="feature-card">
-                        <h3>Peer-Review Ready</h3>
-                        <p>Consolidated HTML report. Glossary, moneyshot metrics, regret charts, performance analysis, per-task summary, ablations. Documented protocol.</p>
+                        <h3>Peer‑Review Ready</h3>
+                        <p>Docs for cs.LG, cs.CL, cs.SY, stat.ML; CEI; decision curves; control KPIs; fixed‑λ summaries. See <a href="docs/index.md">documentation</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="details-section" aria-labelledby="audiences-title">
+            <div class="details-content">
+                <h2 id="audiences-title" class="section-title">For Reviewers</h2>
+                <p class="section-subtitle">Direct links to audience‑specific notes.</p>
+                <div class="feature-grid">
+                    <div class="feature-card"><h3><a href="docs/Learning-Perspective.md">cs.LG</a></h3><p>Problem setup, decision rule, evaluation protocol, significance of instantaneous feedback.</p></div>
+                    <div class="feature-card"><h3><a href="docs/Language-Perspective.md">cs.CL</a></h3><p>Per‑task routing behavior, decision curves, deferral quality, calibration.</p></div>
+                    <div class="feature-card"><h3><a href="docs/Control-Perspective.md">cs.SY</a></h3><p>Closed loop, trust‑region controller, stability indicators, control KPIs.</p></div>
+                    <div class="feature-card"><h3><a href="docs/Statistical-Notes.md">stat.ML</a></h3><p>Paired bootstrap, calibration, KDE/shrinkage, robustness notes.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="details-section" aria-labelledby="srmf-title">
+            <div class="details-content">
+                <h2 id="srmf-title" class="section-title">SRMF ⇄ Lyapunov (Compitum)</h2>
+                <p class="section-subtitle">Instantaneous feedback, bounded updates, falsifiable claims.</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Statement</h3>
+                        <p>
+                          In Compitum, the Self‑Regulating Mapping Function (SRMF) plays the role of a Lyapunov functional for the discrete update map: metric updates decrease a surrogate energy via line search; the controller’s integral decays under zero drift; stride separation isolates timescales.
+                        </p>
+                        <p>See the brief: <a href="docs/SRMF-as-Lyapunov.md">SRMF as a Lyapunov Functional</a>.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Falsifiability (Tests)</h3>
+                        <p>
+                          Learning descent, zero‑error decay, two‑timescale isolation, and routing‑level distance descent are tested under <code>tests/invariants/</code>.
+                        </p>
+                        <ul>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/tests/invariants/test_invariants_lg.py" target="_blank" rel="noopener">cs.LG invariants</a></li>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/tests/invariants/test_invariants_control_sy.py" target="_blank" rel="noopener">cs.SY invariants</a></li>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/tests/invariants/test_invariants_pgd_cl.py" target="_blank" rel="noopener">cs.CL invariants</a></li>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/tests/invariants/test_invariants_statml.py" target="_blank" rel="noopener">stat.ML invariants</a></li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Discipline Hubs</h3>
+                        <ul>
+                          <li><a href="docs/Learning-Perspective.md">cs.LG notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                          <li><a href="docs/Language-Perspective.md">cs.CL notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                          <li><a href="docs/Control-Perspective.md">cs.SY notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                          <li><a href="docs/Statistical-Notes.md">stat.ML notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                        </ul>
+                        <p>
+                          Repository: <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener">github.com/PaulTiffany/compitum</a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -683,43 +680,56 @@
         <div class="footer-content">
             <div class="footer-links">
                 <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/PEER_REVIEW.md" target="_blank" rel="noopener">Protocol</a>
+                <a href="docs/PEER_REVIEW.md" target="_blank" rel="noopener">Protocol</a>
                 <a href="reports/report_release.html" target="_blank" rel="noopener">Full Report</a>
+                <a href="benchmarks/" target="_blank" rel="noopener">Benchmarks</a>
                 <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" target="_blank" rel="noopener">Paper (Overleaf)</a>
-                <a href="https://github.com/PaulTiffany/Compitum-A-Geometrically-Aware-AI-Router" target="_blank" rel="noopener">Paper Repo</a>
             </div>
             <div class="copyright">
-                 2025 Compitum  MIT License  Tess learns through geometry.
+                 2025 Compitum — MIT License — Tess learns through geometry.
             </div>
         </div>
-    </footer>
+</footer>
 
     <script>
     (function(){
       const btn = document.getElementById('share-llm');
       if (!btn) return;
-      async function copySnapshot() {
+      const SNAPSHOT_URL = 'docs/repo_snapshot.jsonl';
+      const PROMPT = 'Use the attached repo snapshot (JSONL lines with type, path, content). Build an index by path and cite path:line in answers.';
+
+      async function copyTextFallback(text){
         try {
-          const res = await fetch('docs/repo_snapshot.jsonl', { cache: 'no-store' });
-          if (!res.ok) throw new Error('fetch failed');
-          const text = await res.text();
-          if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(text);
-            const old = btn.textContent;
-            btn.textContent = 'Copied snapshot to clipboard';
-            setTimeout(()=>{ btn.textContent = old; }, 2200);
-          }
-        } catch (e) {
-          // Fallback is the default anchor behavior opening the JSONL
+          await navigator.clipboard.writeText(text);
+          const old = btn.textContent;
+          btn.textContent = 'Copied snapshot';
+          setTimeout(()=>btn.textContent=old, 1600);
+        } catch(e){
+          window.open(SNAPSHOT_URL, '_blank', 'noopener');
         }
       }
-      btn.addEventListener('click', function(ev){
-        // Try to copy, but still allow opening in new tab as fallback
-        copySnapshot();
-      }, { passive: true });
+
+      async function doShare(){
+        try {
+          const res = await fetch(SNAPSHOT_URL, { credentials: 'omit', cache: 'no-store' });
+          if (!res.ok) throw new Error('fetch failed');
+          const blob = await res.blob();
+          const file = new File([blob], 'repo_snapshot.jsonl', { type: 'application/json' });
+
+          if (navigator.canShare && navigator.canShare({ files: [file] })){
+            await navigator.share({ title: 'Compitum Repo Snapshot', text: PROMPT, files: [file] });
+            return;
+          }
+
+          const text = await blob.text();
+          await copyTextFallback(text);
+        } catch(e){
+          await copyTextFallback(SNAPSHOT_URL + '\n\n' + PROMPT);
+        }
+      }
+
+      btn.addEventListener('click', (ev)=>{ ev.preventDefault(); doShare(); });
     })();
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994c19a7edc55866',t:'MTc2MTUwNDIxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
