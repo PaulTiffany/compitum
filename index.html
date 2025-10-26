@@ -119,6 +119,28 @@
             gap: 12px;
         }
 
+        /* Subject chips */
+        .subject-buttons {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            color: #f3f5f7;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .chip:hover { background: rgba(255,255,255,0.12); }
+
         .nav-link {
             padding: 8px 16px;
             border-radius: 8px;
@@ -511,6 +533,14 @@
                     <a href="#details" class="btn secondary">How Tess Learns</a>
                     <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" class="btn secondary" target="_blank" rel="noopener">Read the Paper</a>
                 </div>
+
+                <!-- Subject area quick links -->
+                <nav class="subject-buttons" aria-label="Subject areas">
+                    <a class="chip" href="reports/lg_summary.md" target="_blank" rel="noopener" aria-label="cs.LG summary (opens in new tab)">cs.LG</a>
+                    <a class="chip" href="reports/cl_summary.md" target="_blank" rel="noopener" aria-label="cs.CL summary (opens in new tab)">cs.CL</a>
+                    <a class="chip" href="docs/SRMF-as-Lyapunov.md" target="_blank" rel="noopener" aria-label="cs.SY notes (opens in new tab)">cs.SY</a>
+                    <a class="chip" href="docs/Statistical-Notes.md" target="_blank" rel="noopener" aria-label="stat.ML notes (opens in new tab)">stat.ML</a>
+                </nav>
             </div>
 
             <div class="scroll-indicator">
