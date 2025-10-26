@@ -1,0 +1,602 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compitum  LLM routing that learns like Tess. 69% win rate. Near-zero regret. Riemannian geometry meets Montessori pedagogy.">
+    <meta name="theme-color" content="#0a0b0d">
+    <title>Compitum  Geometric LLM Routing</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+            color: #f3f5f7;
+            text-rendering: optimizelegibility;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            background: #0a0b0d;
+        }
+
+        /* Video Background (fixed; single frame loop) */
+        .bg-video {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: #0a0b0d;
+            overflow: hidden;
+        }
+
+        .bg-video__media {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: auto;
+            height: 90%;
+            max-width: 90%;
+            object-fit: contain;
+            transform: translate(-50%, -50%);
+            filter: brightness(0.55);
+        }
+        
+        /* Fill letterbox areas with gradient */
+        .bg-video::before {
+            content: '';
+            position: absolute;
+            inset: 0; height: 100%;
+            background: linear-gradient(135deg, #0a0b0d, #1a1a2e);
+            z-index: -1;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bg-video__media {
+                display: none;
+            }
+            .bg-video {
+                background: linear-gradient(135deg, #0a0b0d, #1a1a2e);
+            }
+        }
+
+        /* On narrow screens, bias a bit more to the top */
+        @media (max-width: 768px) {
+            .bg-video__media {
+                height: 88%;
+                max-width: 92%;
+            }
+        }
+
+        /* Header */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(10, 11, 13, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: -0.3px;
+            text-decoration: none;
+            color: #f3f5f7;
+        }
+
+        .brand svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #a1a8b1;
+            transition: 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #f3f5f7;
+            background: rgba(255, 255, 255, 0.05);
+            text-decoration: underline;
+        }
+
+        /* Focus visibility */
+        a:focus-visible, button:focus-visible, .nav-link:focus-visible, .btn:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        /* Main Content Overlay (hero panel) */
+        .overlay {
+            position: relative;
+            min-height: calc(100vh / 3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 24px 80px;
+            /* subtle scrim to ensure legibility without hiding video */
+            background: linear-gradient(to bottom right, rgba(10,11,13,0.18), rgba(10,11,13,0.12));
+            backdrop-filter: blur(2px);
+        }
+
+        .hero-content { width: 100%; max-width: 1400px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; align-items: center; text-align: initial; }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            margin: 0 0 24px;
+            color: #fff;
+            text-shadow: 0 2px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero-tagline {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: #00d4ff;
+            margin: 0 0 16px;
+            text-shadow: 0 2px 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .hero-subtitle { font-size: clamp(1rem, 2vw, 1.3rem); color: #cbd5e1; max-width: 520px; margin: 0 0 16px; line-height: 1.6; text-shadow: 0 1px 10px rgba(0,0,0,0.8); }
+
+        /* Stats Row with Scrim */
+        .stats-container { background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(255,0,110,0.05)); backdrop-filter: blur(12px) saturate(150%); border: 1px solid rgba(0,212,255,0.2); border-radius: 24px; padding: 24px; margin: 0; max-width: 520px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #00d4ff;
+            line-height: 1;
+            margin-bottom: 12px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+        }
+
+        .stat-label { font-size: 0.9rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        /* Place hero elements on sides; keep center empty */
+        .hero-title, .hero-tagline, .hero-subtitle, .cta-group { grid-column: 1; justify-self: start; }
+        .stats-container { grid-column: 3; justify-self: end; }
+
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 36px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: #0a0b0d;
+            box-shadow: 0 10px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.6);
+        }
+
+        .btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f3f5f7;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        /* Details Section */
+        .details-section {
+            /* Keep Tess visible: lighter scrim and softer blur */
+            background: rgba(10, 11, 13, 0.25);
+            backdrop-filter: blur(3px) saturate(140%);
+            padding: 80px 24px;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            min-height: calc(100vh / 3);
+        }
+
+        .details-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 0 0 16px;
+            color: #fff;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #a1a8b1;
+            text-align: center;
+            margin: 0 0 64px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(255, 0, 110, 0.04));
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: 16px;
+            padding: 32px;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00d4ff;
+            margin: 0 0 16px;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 11, 13, 0.35);
+            backdrop-filter: blur(6px) saturate(140%);
+            padding: 60px 24px 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #a1a8b1;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+        }
+
+        .copyright {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 12px 16px;
+            }
+            
+            .overlay {
+                padding: 100px 16px 60px;
+            }
+
+            .stats-container {
+                padding: 32px 24px;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 10px;
+            background: #00d4ff;
+            color: #0a0b0d;
+            padding: 12px 16px;
+            z-index: 200;
+            border-radius: 0 0 8px 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: top 0.3s ease;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Video Background -->
+    <div class="bg-video" aria-hidden="true">
+        <video class="bg-video__media" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" poster="hero_poster.jpg">
+            <source src="tess.mp4" type="video/mp4">
+        </video>
+    </div>
+    
+    <header role="banner">
+        <div class="header-content">
+            <a href="#main-content" class="brand" aria-label="Compitum homepage">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M12 3v18"></path>
+                    <path d="M12 6L7.5 8"></path><path d="M12 9L7.5 11"></path><path d="M12 12L7.5 14"></path><path d="M12 15L7.5 17"></path><path d="M12 18L7.5 20"></path>
+                    <path d="M12 6L16.5 8"></path><path d="M12 9L16.5 11"></path><path d="M12 12L16.5 14"></path><path d="M12 15L16.5 17"></path><path d="M12 18L16.5 20"></path>
+                </svg>
+                Compitum
+            </a>
+            <nav class="nav" role="navigation" aria-label="Primary">
+                <a href="#details" class="nav-link">How It Works</a>
+                <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="Paper on Overleaf (opens in new tab)">Paper</a>
+                <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="GitHub (opens in new tab)">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" role="main">
+        <div class="overlay">
+            <div class="hero-content">
+                <h1 class="hero-title">Meet Tess</h1>
+                <p class="hero-tagline">She routes LLMs like she sorts shapes.</p>
+                <p class="hero-subtitle">
+                    Inspired by Montessori's Control of Error, Tess learns through Riemannian geometry. Near-zero regret. 69% win rate. Deterministic. Reproducible. Open source.
+                </p>
+
+                <div class="stats-container">
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-number">0.04</div>
+                            <div class="stat-label">Mean Regret</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">69%</div>
+                            <div class="stat-label">Win Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Test Coverage</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$0.13</div>
+                            <div class="stat-label">Cost Savings</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cta-group">
+                    <a href="https://github.com/PaulTiffany/compitum" class="btn primary" target="_blank" rel="noopener">
+                        <div class="pulse-dot"></div>
+                        View on GitHub
+                    </a>
+                    <a href="#details" class="btn secondary">How Tess Learns</a>
+                    <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" class="btn secondary" target="_blank" rel="noopener">Read the Paper</a>
+                </div>
+            </div>
+
+            <div class="scroll-indicator">
+                 Scroll to explore
+            </div>
+        </div>
+
+        <section class="details-section" id="details">
+            <div class="details-content">
+                <h2 class="section-title">How Tess Learns</h2>
+                <p class="section-subtitle">Geometry meets pedagogy. Montessori meets machine learning.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Riemannian Geometry</h3>
+                        <p>Prompts and models live in curved space. Tess learns the metricdistance measured by semantic fit, not flat Euclidean position.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Free Energy Optimization</h3>
+                        <p>Physics-inspired utility function balances quality, latency, cost, distance, and evidence in a unified energy landscape.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Control of Error</h3>
+                        <p>Inspired by Montessori: immediate feedback, intrinsic structure, embodied learning. Tess learns by doing, adapts through experience.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Boundary Detection</h3>
+                        <p>High entropy? Low utility gap? Tess flags ambiguous decisions. Humans decide when the system is uncertain.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Constraint Satisfaction</h3>
+                        <p>Lagrangian duality enforces hard limits: regional compliance, cost caps, capability filters. Your rules, guaranteed.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Adaptive Learning</h3>
+                        <p>The metric updates via stochastic trust-region methods. Tess routes better tomorrow than today. Institutional learning built in.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="details-section">
+            <div class="details-content">
+                <h2 class="section-title">Built for Science</h2>
+                <p class="section-subtitle">Rigorous. Reproducible. Open.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>100% Test Coverage</h3>
+                        <p>84 tests passed. 100% line + branch coverage. Hypothesis deterministic. Cosmic Ray mutation testing: all mutants killed.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>One-Shot Reproducible</h3>
+                        <p>Run <code style="color: #00d4ff; font-weight: 600;">scripts/run_peer_review.bat</code>. Tests, baselines, bootstrap CIs, HTML report, SHA256 manifest. Done.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <h3>Peer-Review Ready</h3>
+                        <p>Consolidated HTML report. Glossary, moneyshot metrics, regret charts, performance analysis, per-task summary, ablations. Documented protocol.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/PEER_REVIEW.md" target="_blank" rel="noopener">Protocol</a>
+                <a href="reports/report_release.html" target="_blank" rel="noopener">Full Report</a>
+                <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" target="_blank" rel="noopener">Paper (Overleaf)</a>
+                <a href="https://github.com/PaulTiffany/Compitum-A-Geometrically-Aware-AI-Router" target="_blank" rel="noopener">Paper Repo</a>
+            </div>
+            <div class="copyright">
+                 2025 Compitum  MIT License  Tess learns through geometry.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+
