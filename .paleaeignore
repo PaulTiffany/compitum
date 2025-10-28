@@ -1,0 +1,59 @@
+# .paleaeignore - Aggressive Pruning Strategy
+
+# ===================================================================
+# 1. Ignore common project noise and virtual environments
+# ===================================================================
+build/
+dist/
+__pycache__/
+.venv/
+env/
+node_modules/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.DS_Store
+.vscode/
+.idea/
+
+# ===================================================================
+# 2. Aggressively ignore all common data, log, and report files
+# This is the main strategy to reduce snapshot size.
+# ===================================================================
+*.csv
+*.json
+*.pkl
+*.prof
+*.txt
+*.log
+*.jsonl
+*.prof
+*.bak
+
+# ===================================================================
+# 3. Specifically re-include (negate) important config files
+# that were excluded by the broad rules above.
+# ===================================================================
+!pyproject.toml
+!Gemini.yaml
+!cosmic-ray.toml
+!hypothesis.ini
+!pytest.ini
+!configs/constraints_us_default.yaml
+!configs/router_defaults.yaml
+
+# ===================================================================
+# 4. Ignore secrets
+# ===================================================================
+.env
+*.pem
+*.key
+id_rsa
+id_ed25519
+.aws/
+.gcloud/
+.azure/
+**/credentials/
+**/*secret*
+**/*password*
+**/*token*
