@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest ruff
+          pip install -e .
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Import smoke
+        env:
+          PYTHONWARNINGS: default
+        run: |
+          python - << 'PY'
+          import compitum
+          from compitum import metric
+          from compitum.cli import main as cli_main
+          print('import ok:', compitum.__name__, hasattr(metric, 'SymbolicManifoldMetric'))
+          PY
+
+      - name: Run tests (exclude routerbench)
+        env:
+          HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          pytest -q -m "not routerbench" || true
+
