@@ -29,11 +29,13 @@ def _build_router() -> CompitumRouter:
         q = rng.random(256)
         t = rng.random(256)
         c = rng.random(256)
-        predictors[m.name] = {
-            "quality": CalibratedPredictor().fit(X, q),
-            "latency": CalibratedPredictor().fit(X, t),
-            "cost": CalibratedPredictor().fit(X, c),
-        }
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
+        predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=128)
@@ -61,7 +63,9 @@ def _build_router() -> CompitumRouter:
 
 def test_certificate_minimal_schema():
     router = _build_router()
-    cert = router.route("Prove the AM-GM inequality.")
+    import numpy as np
+    emb = np.zeros(64, dtype=np.float32)
+    cert = router.route("Prove the AM-GM inequality.", embedding=emb)
     data = json.loads(cert.to_json())
 
     # Minimal structural checks (no jsonschema dependency)
@@ -74,4 +78,3 @@ def test_certificate_minimal_schema():
     assert isinstance(data["constraints"], dict) and "feasible" in data["constraints"]
     assert isinstance(data["boundary"], dict)
     assert isinstance(data["drift"], dict)
-
