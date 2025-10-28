@@ -1,0 +1,36 @@
+{
+  "0.1":{
+    "mean_regret":[
+      0.6378085416,
+      0.5048957321,
+      0.8134663573
+    ],
+    "win_rate":[
+      0.0,
+      0.0,
+      0.0
+    ],
+    "avg_cost_delta_on_wins":[
+      null,
+      null,
+      null
+    ]
+  },
+  "1.0":{
+    "mean_regret":[
+      2.7695450376,
+      1.4195855972,
+      4.7053668136
+    ],
+    "win_rate":[
+      0.0,
+      0.0,
+      0.0
+    ],
+    "avg_cost_delta_on_wins":[
+      null,
+      null,
+      null
+    ]
+  }
+}

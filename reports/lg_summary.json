@@ -1,0 +1,62 @@
+{
+  "alpha": 0.05,
+  "bootstrap": 1000,
+  "slices": {
+    "0.1": {
+      "overall": {
+        "mean_regret": {
+          "mean": null,
+          "ci": [
+            null,
+            null
+          ],
+          "n": 0
+        },
+        "win_rate": {
+          "mean": null,
+          "ci": [
+            null,
+            null
+          ],
+          "n": 0
+        },
+        "feasible_rate": {
+          "mean": null,
+          "ci": [
+            null,
+            null
+          ],
+          "n": 0
+        }
+      }
+    },
+    "1.0": {
+      "overall": {
+        "mean_regret": {
+          "mean": null,
+          "ci": [
+            null,
+            null
+          ],
+          "n": 0
+        },
+        "win_rate": {
+          "mean": null,
+          "ci": [
+            null,
+            null
+          ],
+          "n": 0
+        },
+        "feasible_rate": {
+          "mean": null,
+          "ci": [
+            null,
+            null
+          ],
+          "n": 0
+        }
+      }
+    }
+  }
+}
