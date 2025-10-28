@@ -723,7 +723,17 @@
             return;
           }
 
-          // Desktop fallback: copy absolute URL + prompt instead of large JSONL content
+          // Desktop fallback: copy raw JSONL content to clipboard
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            const text = await blob.text();
+            await navigator.clipboard.writeText(text);
+            const old = btn.textContent;
+            btn.textContent = 'Copied raw snapshot';
+            setTimeout(()=>btn.textContent=old, 1600);
+            return;
+          }
+
+          // Last resort: copy absolute URL + prompt
           await copyTextFallback(SNAPSHOT_URL + '\n\n' + PROMPT);
         } catch(e){
           await copyTextFallback(SNAPSHOT_URL + '\n\n' + PROMPT);
