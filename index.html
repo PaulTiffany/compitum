@@ -695,8 +695,7 @@
     (function(){
       const btn = document.getElementById('share-llm');
       if (!btn) return;
-      const SNAPSHOT_PATH = 'docs/repo_snapshot.jsonl';
-      const SNAPSHOT_URL = new URL(SNAPSHOT_PATH, document.baseURI).href;
+      const SNAPSHOT_URL = 'https://compitum.space/docs/repo_snapshot.jsonl';
       const PROMPT = 'Use the attached repo snapshot (JSONL lines with type, path, content). Build an index by path and cite path:line in answers.';
 
       async function copyTextFallback(text){
@@ -723,17 +722,7 @@
             return;
           }
 
-          // Desktop fallback: copy raw JSONL content to clipboard
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            const text = await blob.text();
-            await navigator.clipboard.writeText(text);
-            const old = btn.textContent;
-            btn.textContent = 'Copied raw snapshot';
-            setTimeout(()=>btn.textContent=old, 1600);
-            return;
-          }
-
-          // Last resort: copy absolute URL + prompt
+          // Desktop fallback: copy absolute URL + prompt
           await copyTextFallback(SNAPSHOT_URL + '\n\n' + PROMPT);
         } catch(e){
           await copyTextFallback(SNAPSHOT_URL + '\n\n' + PROMPT);
