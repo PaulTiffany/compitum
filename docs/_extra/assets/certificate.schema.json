@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CompitumRoutingCertificate",
+  "type": "object",
+  "required": [
+    "model",
+    "utility",
+    "utility_components",
+    "constraints",
+    "boundary",
+    "drift"
+  ],
+  "properties": {
+    "model": { "type": "string" },
+    "utility": { "type": "number" },
+    "utility_components": {
+      "type": "object",
+      "properties": {
+        "quality": { "type": "number" },
+        "latency": { "type": "number" },
+        "cost": { "type": "number" }
+      },
+      "additionalProperties": { "type": "number" }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["feasible", "shadow_prices"],
+      "properties": {
+        "feasible": { "type": "boolean" },
+        "shadow_prices": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "properties": {
+        "gap": { "type": "number" },
+        "entropy": { "type": "number" },
+        "sigma": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "drift": {
+      "type": "object",
+      "properties": {
+        "trust_radius": { "type": "number" },
+        "ema": { "type": "number" },
+        "integral": { "type": "number" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+
