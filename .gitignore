@@ -209,3 +209,24 @@ __marimo__/
 # RouterBench data artifacts
 /data/routerbench_5shot.pkl
 /src/routerbench/routerbench_5shot.pkl
+
+# Local environments and benchmarks
+/.venv-routerbench/
+/.benchmarks/
+
+# Build output
+/docs_build/
+
+# Local artifacts and reports cache
+/artifacts/
+/bench_summary.csv
+
+# Data caches and generated results
+/data/embedding_cache_*.pkl
+/data/eval_results/
+/data/pretrain_predictors/
+/data/rb_clean/
+/data/rb_fast/
+/data/routerbench/
+/data/test_gated_models/eval_results/
+/data/None/
