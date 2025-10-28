@@ -1,0 +1,32 @@
+data_path: data/routerbench_5shot.pkl
+cache_url: ''
+train_fraction: 0.7
+willingness_to_pay: false
+local: true
+wanted_eval_name: abstract2title
+out_of_distribution: false
+gcp_token: gcs_credentials.json
+gcp_bucket: model-saving-bucket
+data_name: test_gated_models
+knn:
+  neighbors:
+  - 3
+  - 5
+  metrics:
+  - cosine
+mlp:
+  hidden_layer_sizes:
+  - 100
+  activation:
+  - relu
+  learning_rates:
+  - 0.001
+cascading_router: {}
+local_cache: true
+compitum_router:
+  constraints_path: configs/constraints_routerbench_default.yaml
+max_prompts: 2
+hf_token: ""
+num_workers: 1
+
+

@@ -205,3 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# RouterBench data artifacts
+/data/routerbench_5shot.pkl
+/src/routerbench/routerbench_5shot.pkl

@@ -23,6 +23,23 @@ pytest
 
 See `configs/` and `examples/` for constraints and a synthetic benchmark.
 
+## RouterBench Data (5‑shot pickle)
+
+Some RouterBench‑based scripts expect a local copy of `routerbench_5shot.pkl` (not redistributed here).
+
+- Download from: https://huggingface.co/datasets/withmartian/routerbench/blob/main/routerbench_5shot.pkl
+- Or use the resolve URL in the fetch script (recommended):
+
+```bat
+python scripts\fetch_routerbench.py --also-copy-to-src
+```
+
+This places the file at `data/routerbench_5shot.pkl` and also copies it to
+`src/routerbench/routerbench_5shot.pkl` for compatibility with existing defaults.
+You can provide `--sha256 <HEX>` to verify integrity.
+
+Security note: `.pkl` files can execute code when loaded; download only from trusted sources.
+
 ## Testing Strategy
 
 The project maintains a rigorous, deterministic testing program.
