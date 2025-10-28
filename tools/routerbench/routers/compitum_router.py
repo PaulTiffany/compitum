@@ -68,7 +68,20 @@ class CompitumRouterAdapter:
         )
         router_defaults_path = project_root / router_defaults_path
         constraints_path = project_root / constraints_path
-        data_path = project_root / data_path
+        # Resolve data_path with fallbacks: env var -> data/ -> provided default
+        env_path = os.getenv("ROUTERBENCH_PKL", "").strip()
+        if env_path:
+            data_path = Path(env_path)
+        else:
+            candidate = project_root / "data" / "routerbench_5shot.pkl"
+            data_path = candidate if candidate.exists() else project_root / data_path
+        if not Path(data_path).exists():
+            msg = (
+                f"RouterBench 5-shot file not found at '{data_path}'.\n"
+                f"Set ROUTERBENCH_PKL to an absolute path or place the file at 'data/routerbench_5shot.pkl'.\n"
+                f"Use: python scripts/fetch_routerbench.py --also-copy-to-src"
+            )
+            raise FileNotFoundError(msg)
         print(f"Path setup took {time.time() - t:.2f} seconds")
 
         t = time.time()

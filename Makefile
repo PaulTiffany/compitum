@@ -26,3 +26,10 @@ bench:
 	.venv\Scripts\python examples/synth_bench.py
 
 all: test lint mypy
+
+fetch-routerbench:
+	.venv\Scripts\python scripts/fetch_routerbench.py --also-copy-to-src
+
+docs:
+	.venv\Scripts\python -m pip install -r docs/requirements.txt
+	sphinx-build -b html docs docs_build/html

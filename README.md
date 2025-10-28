@@ -23,6 +23,17 @@ pytest
 
 See `configs/` and `examples/` for constraints and a synthetic benchmark.
 
+## Community
+- Philosophy: `PHILOSOPHY.md`
+- Contributing: `CONTRIBUTING.md`
+- Code of Conduct: `CODE_OF_CONDUCT.md`
+- Security: `SECURITY.md`
+- Support: `SUPPORT.md`
+
+## Release Artifacts
+- Consolidated report: `reports/report_release.html`
+- Certificate schema (JSON): `docs/_extra/assets/certificate.schema.json`
+
 ## RouterBench Data (5‑shot pickle)
 
 Some RouterBench‑based scripts expect a local copy of `routerbench_5shot.pkl` (not redistributed here).

@@ -1,0 +1,12 @@
+* text=auto eol=lf
+
+# Keep Windows scripts with CRLF
+*.bat eol=crlf
+*.ps1 eol=crlf
+
+# Images and binaries
+*.png binary
+*.jpg binary
+*.svg text eol=lf
+*.pkl binary
+
