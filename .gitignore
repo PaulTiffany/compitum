@@ -230,3 +230,9 @@ __marimo__/
 /data/routerbench/
 /data/test_gated_models/eval_results/
 /data/None/
+
+# Large RouterBench artifact (not tracked)
+routerbench_5shot.pkl
+src/routerbench/routerbench_5shot.pkl
+data/routerbench_5shot.pkl
+

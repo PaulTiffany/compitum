@@ -42,6 +42,22 @@ jobs:
         run: |
           sphinx-build -W -b html docs docs_build/html
 
+      - name: Assemble site (hero index + docs)
+        run: |
+          set -euo pipefail
+          mkdir -p site_out/docs
+          # Copy Sphinx docs under /docs
+          cp -R docs_build/html/* site_out/docs/
+          # Bring hero landing page and assets to root
+          cp index.html site_out/index.html
+          if [ -d assets ]; then cp -R assets site_out/; fi
+          # Optional root files (CNAME/404)
+          if [ -f CNAME ]; then cp CNAME site_out/; fi
+          if [ -f 404.html ]; then cp 404.html site_out/; fi
+          # Also surface docs sitemap/robots at root for SEO
+          if [ -f docs_build/html/sitemap.xml ]; then cp docs_build/html/sitemap.xml site_out/sitemap.xml; fi
+          if [ -f docs_build/html/robots.txt ]; then cp docs_build/html/robots.txt site_out/robots.txt; fi
+
       - name: Accessibility (WCAG2AA) on index.html and docs
         continue-on-error: true
         run: |
@@ -52,7 +68,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs_build/html
+          path: site_out
 
   deploy:
     if: github.ref == 'refs/heads/main'
