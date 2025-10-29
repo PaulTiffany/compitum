@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Page Not Found — Compitum</title>
   <meta http-equiv="refresh" content="10; url=/" />
+  <script>
+    (function() {
+      try {
+        var href = window.location.pathname || '';
+        // Redirect .md doc links to corresponding .html pages
+        if (href.endsWith('.md')) {
+          var target = href.replace(/\.md$/, '.html');
+          window.location.replace(target + window.location.search + window.location.hash);
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; color: #1b1f23; }
     .wrap { max-width: 720px; margin: 10vh auto; text-align: center; }

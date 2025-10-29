@@ -42,21 +42,23 @@ jobs:
         run: |
           sphinx-build -W -b html docs docs_build/html
 
-      - name: Assemble site (hero index + docs)
+      - name: Assemble site (hero index + docs at root and /docs)
         run: |
           set -euo pipefail
+          mkdir -p site_out
           mkdir -p site_out/docs
-          # Copy Sphinx docs under /docs
+          # Copy Sphinx docs to root (preserve cool /Page.html links)
+          cp -R docs_build/html/* site_out/
+          # Also provide docs under /docs for stable hub navigation
           cp -R docs_build/html/* site_out/docs/
-          # Bring hero landing page and assets to root
+          # Overwrite root index with hero landing page and include assets
           cp index.html site_out/index.html
           if [ -d assets ]; then cp -R assets site_out/; fi
           # Optional root files (CNAME/404)
           if [ -f CNAME ]; then cp CNAME site_out/; fi
           if [ -f 404.html ]; then cp 404.html site_out/; fi
-          # Also surface docs sitemap/robots at root for SEO
-          if [ -f docs_build/html/sitemap.xml ]; then cp docs_build/html/sitemap.xml site_out/sitemap.xml; fi
-          if [ -f docs_build/html/robots.txt ]; then cp docs_build/html/robots.txt site_out/robots.txt; fi
+          # Ensure sitemap/robots present (already in docs build)
+          true
 
       - name: Accessibility (WCAG2AA) on index.html and docs
         continue-on-error: true
