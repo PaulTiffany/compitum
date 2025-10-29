@@ -241,3 +241,7 @@ data/routerbench_5shot.pkl
 tess.mp4
 assets/tess.mp4
 
+
+# Track hero video asset when placed under assets/
+!assets/tess.mp4
+
