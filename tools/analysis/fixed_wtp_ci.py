@@ -92,20 +92,41 @@ def main() -> None:
     Path(args.out_json).write_text(pd.Series(results).to_json(indent=2), encoding="utf-8")
 
     # Markdown summary
-    lines = ["# Fixed-WTP Analysis (95% CI)", "", "| WTP | Mean Regret | Win Rate | Avg Cost Δ (wins) |", "|---:|---:|---:|---:|"]
+    def _fmt_ci(mu: float, lo: float, hi: float, *, pct: bool = False) -> str:
+        def _f(x: float) -> str:
+            if x != x:
+                return "-"
+            return (f"{x*100:.1f}%" if pct else f"{x:.6f}")
+        return f"{_f(mu)} [{_f(lo)}, {_f(hi)}]"
+
+    lines = [
+        "# Fixed-WTP Analysis (95% CI)",
+        "",
+        "| WTP | Mean Regret | Win Rate | Avg Cost Delta (wins) |",
+        "|---:|---:|---:|---:|",
+    ]
     for w in sorted(results.keys()):
         mr = results[w]["mean_regret"]
         wr = results[w]["win_rate"]
         cd = results[w]["avg_cost_delta_on_wins"]
         lines.append(
-            f"| {w:.2f} | {mr[0]:.6f} [{mr[1]:.6f}, {mr[2]:.6f}] | "
-            f"{wr[0]*100:.1f}% [{wr[1]*100:.1f}%, {wr[2]*100:.1f}%] | "
-            f"{cd[0]:.6f} [{cd[1]:.6f}, {cd[2]:.6f}] |"
+            f"| {w:.2f} | {_fmt_ci(*mr)} | {_fmt_ci(*wr, pct=True)} | {_fmt_ci(*cd)} |"
         )
+    if all(results[w]["win_rate"][0] == 0.0 for w in results):
+        lines.append("")
+        lines.append("_Note: No per-eval wins observed at these WTP slices; cost deltas on wins are undefined. See per-baseline win-rate and panel summaries for context._")
+        lines.append("")
+        lines.append("_Note: No per-eval wins observed at these WTP slices; cost deltas on wins are undefined. See per-baseline win-rate and panel summaries for context._")
+
     Path(args.out_md).write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote: {args.out_json}\nWrote: {args.out_md}")
 
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
 

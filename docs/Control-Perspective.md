@@ -5,7 +5,7 @@ description: Closed-loop view of Compitum's instantaneous, judge-free feedback a
 
 # Control Perspective
 
-> Related: [cs.LG](Learning-Perspective.md) · [cs.CL](Language-Perspective.md) · [stat.ML](Statistical-Notes.md) · [SRMF ⇄ Lyapunov](SRMF-as-Lyapunov.md) · [Peer Review Protocol](PEER_REVIEW.md) · [Certificate Schema](Certificate-Schema.md)
+Related: [cs.LG](Learning-Perspective.md), [cs.CL](Language-Perspective.md), [stat.ML](Statistical-Notes.md), [SRMF & Lyapunov](SRMF-as-Lyapunov.md), [Peer Review Protocol](PEER_REVIEW.md), [Certificate Schema](Certificate-Schema.md)
 
 This note frames Compitum as a closed-loop decision system with instantaneous, judge-free feedback and a trust-region controller that stabilizes online adaptation. It is intended for cs.SY reviewers.
 
@@ -29,7 +29,7 @@ Design choices: instantaneous internal feedback (no judge model), feasibility-fi
 ## Trust-Region Controller (SRMF)
 
 - Update law (code anchor: `src/compitum/control.py:15`)
-  - `r_{t+1} = clip(r_t + f(EMA(d_t), ∫ d_t dt), r_min, r_max)`
+  - `r_{t+1} = clip(r_t + f(EMA(d_t), integral(d_t)), r_min, r_max)`
   - `η_cap = κ / (||∇|| + ε)`
   - Effective step for metric update: `η_eff = min(η_user, η_cap)`
 - Anti-windup: integral term decays; `r` is clipped to `[r_min, r_max]`.
@@ -46,7 +46,7 @@ Design choices: instantaneous internal feedback (no judge model), feasibility-fi
 
 We do not claim a formal Lyapunov proof; instead, we provide Lyapunov-inspired operational indicators:
 
-- Bounded control signals: `r_t ∈ [r_min, r_max]`, `η_eff <= κ / (||∇|| + ε)`, `||L_t||_F <= L_max`.
+  - `I_cap = I / (||grad|| + I)`
 - Feasibility by construction: constraints `A x_B <= b` ensure safe action space before optimization.
 - Monotone corrections (empirical): trust-radius shrink events correlate with future regret reductions.
 - Instantaneous feedback: zero-delay internal measurements (gap/entropy/uncertainty/feasibility) avoid judge-feedback latency.
@@ -72,6 +72,15 @@ python tools\analysis\control_kpis.py ^
   --out-json reports\control_kpis.json ^
   --out-md reports\control_kpis.md
 ```
+
+## Stability Evidence (0.1.1)
+
+- Lyapunov proxy decay under zero drift; saturation under sustained drift; recovery when drift ceases.
+  - `tests/invariants/test_invariants_control_lyapunov.py`
+- ΔV proxy sequences: Lyapunov + small distance term is bounded over short sequences.
+  - `tests/invariants/test_invariants_control_sequences.py`, `tests/invariants/test_invariants_control_deltaV_strong.py`
+- Combined updates (metric+controller) keep a simple stability proxy finite and bounded.
+  - `tests/invariants/test_invariants_control_combined_proxy.py`
 
 ## Decision Rule (for completeness)
 

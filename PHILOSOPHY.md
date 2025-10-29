@@ -109,3 +109,43 @@ Compitum turns model routing into a principled, auditable control problem. We re
 
 When gradients, constraints, and coherence disagree, Compitum makes the tradeoffs explicit, bounded, and reproducible.
 
+## Core Science 0.1.1 — Validated Claims
+
+These claims are backed by property‑based tests and structural checks. Each bullet links to representative test files (see `tests/`).
+
+- Geometry (cs.LG)
+  - SPD bounds, triangle inequality, ray monotonicity, update descent.
+    - tests/metric/test_metric_spd_bounds.py
+    - tests/invariants/test_invariants_metric_triangle.py
+    - tests/invariants/test_invariants_metric_ray.py
+    - tests/invariants/test_invariants_metric_update.py
+- Stability (cs.SY)
+  - Lyapunov decay/saturation/recovery; ΔV proxy bounded over sequences; combined metric+controller boundedness.
+    - tests/invariants/test_invariants_control_lyapunov.py
+    - tests/invariants/test_invariants_control_sequences.py
+    - tests/invariants/test_invariants_control_deltaV_strong.py
+    - tests/invariants/test_invariants_control_combined_proxy.py
+- Coherence/OOD (cs.LG/stat.ML)
+  - Monotone outward, ±v symmetry, inward score direction (finite diff), mixture discrimination.
+    - tests/invariants/test_invariants_coherence.py
+    - tests/invariants/test_invariants_coherence_symmetry.py
+    - tests/invariants/test_invariants_coherence_score_dir.py
+    - tests/coherence/test_coherence_mixture_discrimination.py
+- Constraints/Duals (cs.SY/stat.ML)
+  - Feasibility monotone in b; duals: slack≈0, boundary≥0; monotone near binding; scaling sanity.
+    - tests/invariants/test_invariants_constraints_monotone.py
+    - tests/invariants/test_invariants_constraints_duals.py
+    - tests/invariants/test_invariants_duals_near_binding.py
+    - tests/invariants/test_invariants_duals_monotone.py
+    - tests/invariants/test_invariants_duals_scaling.py
+- Determinism/Explainability (cs.CL)
+  - Repeated/batch determinism; paraphrase flip budget; flip explainability via certificate deltas.
+    - tests/invariants/test_invariants_router_determinism.py
+    - tests/router/test_router_batch_determinism.py
+    - tests/invariants/test_paraphrase_invariance.py
+    - tests/invariants/test_paraphrase_explainability.py
+- Pedagogy (Control of Error)
+  - Practice (coherence) increases evidence and utility when βs>0; prepared environment fixes constraints; boundary override reduces uncertainty.
+    - tests/pedagogy/test_control_of_error_practice_improves.py
+    - tests/pedagogy/test_control_of_error_constraints_loop.py
+    - tests/pedagogy/test_boundary_override_teacher_action.py

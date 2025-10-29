@@ -1,0 +1,20 @@
+Test layout and markers
+
+- invariants: property-based and structural invariants in tests/invariants
+- lg: geometry/learning tests (metric, coherence)
+- cl: explainability/determinism tests (router, certificates)
+- sy: control/stability tests (Lyapunov/trust-region)
+- stat: estimation/uncertainty tests (predictors, duals)
+- pedagogy: “control of error” behavior (practice and prepared environment)
+- deep: longer-running profiles (nightly)
+
+Quick runs
+- All invariants (smoke):
+  - pytest -q tests/invariants
+- Discipline subsets:
+  - pytest -q -m lg
+  - pytest -q -m cl
+  - pytest -q -m sy
+  - pytest -q -m stat
+  - pytest -q -m pedagogy
+

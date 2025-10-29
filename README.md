@@ -21,6 +21,11 @@ compitum route --prompt "Prove the binomial identity using generating functions.
 pytest
 ```
 
+For local parity with CI Hypothesis settings, set the profile:
+
+- PowerShell: `$env:HYPOTHESIS_PROFILE='ci'; pytest -q`
+- Bash: `HYPOTHESIS_PROFILE=ci pytest -q`
+
 See `configs/` and `examples/` for constraints and a synthetic benchmark.
 
 ## Community
@@ -34,7 +39,33 @@ See `configs/` and `examples/` for constraints and a synthetic benchmark.
 - Consolidated report: `reports/report_release.html`
 - Certificate schema (JSON): `docs/_extra/assets/certificate.schema.json`
 
-## RouterBench Data (5‑shot pickle)
+## Examples
+
+- Docs page: docs/Examples.md
+- Folder on GitHub: https://github.com/PaulTiffany/compitum/tree/main/examples
+- In-repo overview: examples/README.md
+
+## Core Science 0.1.1
+
+- Geometry: SPD bounds, triangle inequality, ray monotonicity, update descent.
+- Stability: Lyapunov decay/saturation/recovery; ΔV proxy sequences; combined update boundedness.
+- Coherence: monotone outward, ±v symmetry, inward score direction, mixture discrimination.
+- Constraints: feasibility monotone; duals slack ≈ 0, boundary ≈ 0; monotone/scale sanity.
+- Determinism: repeated/batch determinism; paraphrase flip budget + explainability.
+- Pedagogy: practice raises evidence/utility (beta_s > 0); prepared environment fixes constraints.
+
+Run invariants
+
+```bash
+pytest -q tests/invariants           # smoke
+pytest -q -m lg                      # geometry/learning
+pytest -q -m cl                      # explainability/determinism
+pytest -q -m sy                      # control/stability
+pytest -q -m stat                    # estimation/uncertainty
+pytest -q -m pedagogy                # control of error
+```
+
+## RouterBench Data (5-shot pickle)
 
 Some RouterBench‑based scripts expect a local copy of `routerbench_5shot.pkl` (not redistributed here).
 
@@ -134,3 +165,19 @@ set PYTHONPATH=C:\Users\paulc\projects\compitum\src && .\.venv-routerbench\Scrip
 ```
 
 This command will generate CSV and PKL files in the `data/eval_results` directory, containing the evaluation metrics for various router models.
+
+## Dev Tips
+
+- Hypothesis CI parity locally:
+  - PowerShell: `$env:HYPOTHESIS_PROFILE='ci'; pytest -q`
+  - Bash: `HYPOTHESIS_PROFILE=ci pytest -q`
+
+## Educator Pack
+
+Generate a small, self-contained pack for workshops:
+
+```bash
+python scripts/generate_classroom_pack.py
+```
+
+This writes `artifacts/pedagogy_pack.zip` with the lab worksheet (`docs/Pedagogy-Lab.md`), a demo script, a sample certificate JSONL (if available), and a tiny prompt set.

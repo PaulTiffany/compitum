@@ -13,7 +13,7 @@ from compitum.router import CompitumRouter
 
 
 def _router() -> CompitumRouter:
-    D = 48
+    D = 35
     models = _toy_models(D)
     from compitum.predictors import CalibratedPredictor
     import numpy as np
@@ -26,9 +26,9 @@ def _router() -> CompitumRouter:
         t = rng.random(128)
         c = rng.random(128)
         predictors[m.name] = {
-            "quality": CalibratedPredictor().fit(X, q),
-            "latency": CalibratedPredictor().fit(X, t),
-            "cost": CalibratedPredictor().fit(X, c),
+            "quality": (lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): cp.fit(X,q) or cp)(),
+            "latency": (lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): cp.fit(X,t) or cp)(),
+            "cost": (lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): cp.fit(X,c) or cp)(),
         }
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=6, delta=1e-3) for m in models}

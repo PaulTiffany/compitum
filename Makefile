@@ -9,10 +9,10 @@ test:
 	PYTHONWARNINGS="ignore::RuntimeWarning" .venv\Scripts\python -m pytest
 
 lint:
-	.venv\Scripts\ruff check compitum
+	.venv\Scripts\ruff check .
 
 mypy:
-	.venv\Scripts\mypy -p compitum --ignore-missing-imports
+	.venv\Scripts\mypy -p compitum --ignore-missing-imports --hide-error-context
 
 mutate:
 	.venv\Scripts\cosmic-ray init cosmic-ray.toml session.sqlite
@@ -33,3 +33,14 @@ fetch-routerbench:
 docs:
 	.venv\Scripts\python -m pip install -r docs/requirements.txt
 	sphinx-build -b html docs docs_build/html
+
+pedagogy-demo:
+	.venv\Scripts\python examples/pedagogy_control_of_error.py
+
+classroom-pack:
+	.venv\Scripts\python scripts/generate_classroom_pack.py
+
+examples-run:
+	.venv\Scripts\python scripts/examples_run.py list
+	.venv\Scripts\python scripts/examples_run.py run --subset quick
+

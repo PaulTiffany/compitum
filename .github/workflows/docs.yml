@@ -35,9 +35,19 @@ jobs:
           pip install -r docs/requirements.txt
           pip install -e .
 
+      - name: Link check
+        run: sphinx-build -W -b linkcheck docs docs_build/linkcheck
+
       - name: Build Sphinx HTML
         run: |
           sphinx-build -W -b html docs docs_build/html
+
+      - name: Accessibility (WCAG2AA) on index.html and docs
+        continue-on-error: true
+        run: |
+          npm --version || (curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs)
+          npx --yes pa11y-ci file://${{ github.workspace }}/index.html || true
+          npx --yes pa11y-ci file://${{ github.workspace }}/docs_build/html/index.html || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -55,4 +65,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-

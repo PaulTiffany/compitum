@@ -15,7 +15,9 @@ Compitum routes prompts across models using SPD metric geometry, constraint-awar
 
 Getting-Started
 CLI
+Examples
 API-Quickstart
+ACCESSIBILITY
 LLM-Usage
 Philosophy
 Invariants
@@ -50,6 +52,7 @@ Compliance
 Operations-Runbook
 Performance-Notes
 Pedagogy
+Pedagogy-Lab
 Teach-Compitum
 FUTURE
 Executive-Overview
@@ -71,4 +74,10 @@ Notes:
 
 - Attach the JSONL in chat and say: "Use the attached repo snapshot (JSONL lines with path+content). Cite `path:line` in answers."
 - Or with browsing enabled, ask it to fetch: `https://compitum.space/docs/repo_snapshot.jsonl`.
+
+
+
+
+
+
 
