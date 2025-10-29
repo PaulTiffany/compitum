@@ -89,13 +89,18 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            /* Fit entirely within viewport without cropping */
+            width: auto;
+            height: auto;
+            max-width: 100vw;
+            max-height: 100vh;
+            object-fit: contain;
+            object-position: center center;
             transform: translate(-50%, -50%);
             filter: brightness(0.55);
             border: 0;
             pointer-events: none;
+            background: transparent; /* show gradient/pattern in letterbox */
         }
         
         /* Fill letterbox areas with gradient */
@@ -134,8 +139,10 @@
         /* On narrow screens, bias a bit more to the top */
         @media (max-width: 768px) {
             .bg-video__media {
-                height: 88%;
-                max-width: 92%;
+                width: auto;
+                height: auto;
+                max-width: 100vw;
+                max-height: 100vh;
             }
         }
 
@@ -521,7 +528,10 @@
 
     <!-- Video Background -->
     <div class="bg-video" aria-hidden="true">
-        <video class="bg-video__media" id="tess-video" autoplay muted playsinline loop preload="metadata" aria-hidden="true" tabindex="-1" poster="assets/compitum-mark.svg?v=014"></video>
+        <video class="bg-video__media" id="tess-video" autoplay muted playsinline webkit-playsinline loop preload="auto" aria-hidden="true" tabindex="-1" poster="assets/compitum-mark.svg?v=015">
+            <source src="assets/tess.mp4?v=015" type="video/mp4">
+            <source src="assets/tess.mp4" type="video/mp4">
+        </video>
         <button id="tess-play" class="bg-video__cta" aria-label="Play background animation" hidden>
             Play Background
         </button>
@@ -539,7 +549,7 @@
                 <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="GitHub (opens in new tab)">GitHub</a>
                 <button id="share-llm" class="nav-link" style="background:none;border:none;cursor:pointer" aria-label="Share snapshot to an LLM">Share to LLM</button>
             
-                <a href="/Examples.html" class="nav-link" aria-label="Sphinx documentation">Docs (Site)</a>
+                <a href="docs/index.html" class="nav-link" aria-label="Sphinx documentation">Docs (Site)</a>
                 <a href="https://github.com/PaulTiffany/compitum/tree/main/docs" class="nav-link" aria-label="Repository documentation on GitHub">Docs (Repo)</a>
                 <a href="https://github.com/PaulTiffany/compitum/tree/main/examples" class="nav-link">Examples Folder</a></nav>
         </div>
@@ -658,10 +668,10 @@
                 <h2 id="audiences-title" class="section-title">For Reviewers</h2>
                 <p class="section-subtitle">Direct links to audience-specific notes.</p>
                 <div class="feature-grid">
-                    <div class="feature-card"><h3><a href="docs/Learning-Perspective.md">cs.LG</a></h3><p>Problem setup, decision rule, evaluation protocol, significance of instantaneous feedback.</p></div>
-                    <div class="feature-card"><h3><a href="docs/Language-Perspective.md">cs.CL</a></h3><p>Per-task routing behavior, decision curves, deferral quality, calibration.</p></div>
-                    <div class="feature-card"><h3><a href="docs/Control-Perspective.md">cs.SY</a></h3><p>Closed loop, trust-region controller, stability indicators, control KPIs.</p></div>
-                    <div class="feature-card"><h3><a href="docs/Statistical-Notes.md">stat.ML</a></h3><p>Paired bootstrap, calibration, KDE/shrinkage, robustness notes.</p></div>
+                    <div class="feature-card"><h3><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Learning-Perspective.md" target="_blank" rel="noopener">cs.LG</a></h3><p>Problem setup, decision rule, evaluation protocol, significance of instantaneous feedback.</p></div>
+                    <div class="feature-card"><h3><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Language-Perspective.md" target="_blank" rel="noopener">cs.CL</a></h3><p>Per-task routing behavior, decision curves, deferral quality, calibration.</p></div>
+                    <div class="feature-card"><h3><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Control-Perspective.md" target="_blank" rel="noopener">cs.SY</a></h3><p>Closed loop, trust-region controller, stability indicators, control KPIs.</p></div>
+                    <div class="feature-card"><h3><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Statistical-Notes.md" target="_blank" rel="noopener">stat.ML</a></h3><p>Paired bootstrap, calibration, KDE/shrinkage, robustness notes.</p></div>
                 </div>
             </div>
         </section>
@@ -676,7 +686,7 @@
                         <p>
                           In Compitum, the Self-Regulating Mapping Function (SRMF) plays the role of a Lyapunov functional for the discrete update map: metric updates decrease a surrogate energy via line search; the controllers integral decays under zero drift; stride separation isolates timescales.
                         </p>
-                        <p>See the brief: <a href="docs/SRMF-as-Lyapunov.md">SRMF as a Lyapunov Functional</a>.</p>
+                        <p>See the brief: <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/SRMF-as-Lyapunov.md" target="_blank" rel="noopener">SRMF as a Lyapunov Functional</a>.</p>
                     </div>
                     <div class="feature-card">
                         <h3>Falsifiability (Tests)</h3>
@@ -693,10 +703,10 @@
                     <div class="feature-card">
                         <h3>Discipline Hubs</h3>
                         <ul>
-                          <li><a href="docs/Learning-Perspective.md">cs.LG notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
-                          <li><a href="docs/Language-Perspective.md">cs.CL notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
-                          <li><a href="docs/Control-Perspective.md">cs.SY notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
-                          <li><a href="docs/Statistical-Notes.md">stat.ML notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Learning-Perspective.md" target="_blank" rel="noopener">cs.LG notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Language-Perspective.md" target="_blank" rel="noopener">cs.CL notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Control-Perspective.md" target="_blank" rel="noopener">cs.SY notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
+                          <li><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Statistical-Notes.md" target="_blank" rel="noopener">stat.ML notes</a> · <a target="_blank" rel="noopener" href="https://github.com/PaulTiffany/compitum/tree/main/tests/invariants#readme">tests</a></li>
                         </ul>
                         <p>
                           Repository: <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener">github.com/PaulTiffany/compitum</a>
@@ -718,7 +728,7 @@
                 <li><strong>Pedagogy</strong>: practice raises evidence/utility (ßs&gt;0); prepared environment fixes constraints</li>
             </ul>
             <div class="cta-row">
-                <a class="btn" href="docs/Invariants.md">Run Invariants</a>
+                <a class="btn" href="https://github.com/PaulTiffany/compitum/blob/main/docs/Invariants.md" target="_blank" rel="noopener">Run Invariants</a>
                 <a class="btn secondary" href="reports/report_release.html">View Report</a>
             </div>
             <div class="badges">
@@ -737,9 +747,9 @@
         <div class="footer-content">
             <div class="footer-links">
                 <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener">GitHub</a>
-                <a href="docs/PEER_REVIEW.md" target="_blank" rel="noopener">Protocol</a>
+                <a href="docs/PEER_REVIEW.html" target="_blank" rel="noopener">Protocol</a>
                 <a href="reports/report_release.html" target="_blank" rel="noopener">Full Report</a>
-                <a href="benchmarks/" target="_blank" rel="noopener">Benchmarks</a>
+                <a href="docs/RouterBench-Summary.html" target="_blank" rel="noopener">Benchmarks</a>
                 <a href="https://www.overleaf.com/read/dmncwghrkxnk#3fae93" target="_blank" rel="noopener">Paper (Overleaf)</a>
             </div>
             <div class="copyright">
@@ -757,11 +767,18 @@
       // Optional meta override
       const meta = document.querySelector('meta[name="tess-video"]');
       const candidates = [];
-      // Preferred: local repo asset under assets/ (small, <100MB; ideally <25MB)
-      candidates.push('/assets/tess.mp4');
-      // Optional: release asset if attached to the tag
+      // Compute absolute URL for assets to handle subpaths/custom domains
+      try {
+        const abs = new URL('assets/tess.mp4', document.baseURI).toString();
+        candidates.push(abs);
+      } catch (e) {
+        candidates.push('assets/tess.mp4');
+      }
+      // Local fallback (dev servers)
+      candidates.push('tess.mp4');
+      // Release asset fallback
       candidates.push('https://github.com/PaulTiffany/compitum/releases/download/v0.1.1/tess.mp4');
-      // Optional: explicit override via meta
+      // Explicit override via meta
       if (meta && meta.content) candidates.push(meta.content);
 
       let idx = 0;
@@ -771,19 +788,24 @@
           return;
         }
         const src = candidates[idx++];
-        v.src = src + (src.includes('?') ? '&' : '?') + 'v=014';
+        v.src = src + (src.includes('?') ? '&' : '?') + 'v=015';
         // Attempt autoplay
         try { v.muted = true; v.playsInline = true; } catch(e){}
         v.load();
         const p = v.play();
         if (p && typeof p.catch === 'function') {
-          p.catch(() => setTimeout(tryNext, 300));
+          p.catch(() => setTimeout(tryNext, 400));
         }
       };
 
       const init = () => { tryNext(); };
       if (document.readyState === 'complete' || document.readyState === 'interactive') init();
       else window.addEventListener('DOMContentLoaded', init, { once: true });
+
+      // If network load errors, advance to next candidate
+      v.addEventListener('error', () => setTimeout(tryNext, 400), { once: false });
+      v.addEventListener('stalled', () => setTimeout(tryNext, 600), { once: false });
+      v.addEventListener('abort', () => setTimeout(tryNext, 600), { once: false });
 
       btn.addEventListener('click', () => {
         btn.hidden = true;
@@ -831,8 +853,8 @@
       btn.addEventListener('click', (ev)=>{ ev.preventDefault(); doShare(); });
     })();
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'994c19a7edc55866',t:'MTc2MTUwNDIxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+    </body>
+    </html>
 
 
 
