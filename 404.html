@@ -9,10 +9,20 @@
     (function() {
       try {
         var href = window.location.pathname || '';
-        // Redirect .md doc links to corresponding .html pages
+        // Redirect .md and .html doc links at root to /docs counterparts
         if (href.endsWith('.md')) {
           var target = href.replace(/\.md$/, '.html');
-          window.location.replace(target + window.location.search + window.location.hash);
+          // If already under /docs, don't double-prefix
+          if (target.startsWith('/docs/')) {
+            window.location.replace(target + window.location.search + window.location.hash);
+          } else {
+            window.location.replace('/docs' + target + window.location.search + window.location.hash);
+          }
+          return;
+        }
+        if (href.endsWith('.html') && !href.startsWith('/docs/')) {
+          window.location.replace('/docs' + href + window.location.search + window.location.hash);
+          return;
         }
       } catch (e) {}
     })();

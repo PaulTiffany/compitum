@@ -505,8 +505,9 @@
 
     <!-- Video Background -->
     <div class="bg-video" aria-hidden="true">
-        <video class="bg-video__media" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1" poster="assets/compitum-social-card.svg">
-            <source src="tess.mp4" type="video/mp4">
+        <video class="bg-video__media" autoplay muted playsinline loop preload="auto" aria-hidden="true" tabindex="-1" poster="assets/compitum-mark.svg?v=011">
+            <source src="/tess.mp4?v=011" type="video/mp4">
+            <source src="assets/tess.mp4?v=011" type="video/mp4">
         </video>
     </div>
     
@@ -522,7 +523,7 @@
                 <a href="https://github.com/PaulTiffany/compitum" target="_blank" rel="noopener noreferrer" class="nav-link" aria-label="GitHub (opens in new tab)">GitHub</a>
                 <button id="share-llm" class="nav-link" style="background:none;border:none;cursor:pointer" aria-label="Share snapshot to an LLM">Share to LLM</button>
             
-                <a href="Examples.html" class="nav-link" aria-label="Sphinx documentation">Docs (Site)</a>
+                <a href="/Examples.html" class="nav-link" aria-label="Sphinx documentation">Docs (Site)</a>
                 <a href="https://github.com/PaulTiffany/compitum/tree/main/docs" class="nav-link" aria-label="Repository documentation on GitHub">Docs (Repo)</a>
                 <a href="https://github.com/PaulTiffany/compitum/tree/main/examples" class="nav-link">Examples Folder</a></nav>
         </div>
@@ -540,19 +541,19 @@
                 <div class="stats-container">
                     <div class="stats-row">
                         <div class="stat-card">
-                            <div class="stat-number"><a href="docs/Results-Summary.md" style="color:#00d4ff;text-decoration:none">Mean</a></div>
+                            <div class="stat-number"><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Results-Summary.md" style="color:#00d4ff;text-decoration:none">Mean</a></div>
                             <div class="stat-label">Regret (fixed WTP)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number"><a href="docs/Results-Summary.md" style="color:#00d4ff;text-decoration:none">Rate</a></div>
+                            <div class="stat-number"><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Results-Summary.md" style="color:#00d4ff;text-decoration:none">Rate</a></div>
                             <div class="stat-label">Win Rate (panel)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number"><a href="docs/Invariants.md" style="color:#00d4ff;text-decoration:none">100%</a></div>
+                            <div class="stat-number"><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Invariants.md" style="color:#00d4ff;text-decoration:none">100%</a></div>
                             <div class="stat-label">Test Coverage (CI)</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-number"><a href="docs/Results-Fixed-WTP.md" style="color:#00d4ff;text-decoration:none">?$</a></div>
+                            <div class="stat-number"><a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Results-Fixed-WTP.md" style="color:#00d4ff;text-decoration:none">?$</a></div>
                             <div class="stat-label">Cost Delta (wins)</div>
                         </div>
                     </div>
@@ -586,27 +587,27 @@
 
                     <div class="feature-card">
                         <h3>Utility (free-energy) optimization</h3>
-                        <p>We balance quality, latency, cost, distance, and evidence in a single scalarized utility. See <a href="docs/PEER_REVIEW.md">protocol</a>.</p>
+                        <p>We balance quality, latency, cost, distance, and evidence in a single scalarized utility. See <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/PEER_REVIEW.md">protocol</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Control of Error</h3>
-                        <p>Immediate, judge-free signals (feasibility, ambiguity, uncertainty) drive bounded updates. See <a href="docs/Control-of-Error.md">Control of Error</a>.</p>
+                        <p>Immediate, judge-free signals (feasibility, ambiguity, uncertainty) drive bounded updates. See <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Control-of-Error.md">Control of Error</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Boundary Detection</h3>
-                        <p>High entropy, low utility gap, high uncertainty ? flag for deferral. See decision curves in <a href="docs/Language-Perspective.md">cs.CL</a>.</p>
+                        <p>High entropy, low utility gap, high uncertainty ? flag for deferral. See decision curves in <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Language-Perspective.md">cs.CL</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Constraint Satisfaction</h3>
-                        <p>Feasibility-first selection enforces region/policy/capability limits. Approximate shadow prices are diagnostic. See <a href="docs/PEER_REVIEW.md#constraints-summary">constraints</a>.</p>
+                        <p>Feasibility-first selection enforces region/policy/capability limits. Approximate shadow prices are diagnostic. See <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/PEER_REVIEW.md#constraints-summary">constraints</a>.</p>
                     </div>
 
                     <div class="feature-card">
                         <h3>Adaptive Learning</h3>
-                        <p>Trust-region (Lyapunov-inspired) caps step size for online metric updates. Stability indicators in <a href="docs/Control-Perspective.md">cs.SY</a>.</p>
+                        <p>Trust-region (Lyapunov-inspired) caps step size for online metric updates. Stability indicators in <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/Control-Perspective.md">cs.SY</a>.</p>
                     </div>
                 </div>
             </div>
@@ -620,7 +621,7 @@
                 <div class="feature-grid">
                     <div class="feature-card">
                         <h3>Tests &amp; QA</h3>
-                        <p>Hypothesis derandomized profile; invariants; mutation testing; coverage target 100%. See CI and <a href="docs/PEER_REVIEW.md#environment-seeds-and-determinism">determinism</a>.</p>
+                        <p>Hypothesis derandomized profile; invariants; mutation testing; coverage target 100%. See CI and <a href="https://github.com/PaulTiffany/compitum/blob/main/docs/PEER_REVIEW.md#environment-seeds-and-determinism">determinism</a>.</p>
                     </div>
 
                     <div class="feature-card">
@@ -630,7 +631,7 @@
 
                     <div class="feature-card">
                         <h3>Peer-Review Ready</h3>
-                        <p>Docs for cs.LG, cs.CL, cs.SY, stat.ML; CEI; decision curves; control KPIs; fixed-? summaries. See <a href="docs/index.md">documentation</a>.</p>
+                        <p>Docs for cs.LG, cs.CL, cs.SY, stat.ML; CEI; decision curves; control KPIs; fixed-? summaries. See <a href="https://github.com/PaulTiffany/compitum/tree/main/docs">documentation</a>.</p>
                     </div>
                 </div>
             </div>
@@ -732,6 +733,23 @@
 </footer>
 
     <script>
+    // Ensure background video attempts to play after load (browsers may block auto-play until muted)
+    (function(){
+      const tryPlay = () => {
+        const v = document.querySelector('.bg-video__media');
+        if (!v) return;
+        try { v.muted = true; } catch(e){}
+        const p = v.play();
+        if (p && typeof p.catch === 'function') {
+          p.catch(() => setTimeout(() => { v.play().catch(()=>{}); }, 400));
+        }
+      };
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        tryPlay();
+      } else {
+        window.addEventListener('DOMContentLoaded', tryPlay, { once: true });
+      }
+    })();
     (function(){
       const btn = document.getElementById('share-llm');
       if (!btn) return;

@@ -236,3 +236,8 @@ routerbench_5shot.pkl
 src/routerbench/routerbench_5shot.pkl
 data/routerbench_5shot.pkl
 
+
+# External-hosted hero video (do not commit)
+tess.mp4
+assets/tess.mp4
+
