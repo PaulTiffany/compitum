@@ -56,6 +56,10 @@ def _sanitize_html_text(s: str) -> str:
     s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)0\.00 USD\.", r"\g<1>0.00 USD (parity on wins).", s)
     # If cost delta is blank (no wins), mark as N/A
     s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)\s*USD\.", r"\g<1>N/A (no wins at this WTP).", s)
+    # Clean win-rate phrasing mojibake to ASCII with >=
+    s = re.sub(r"Compitum[^\x00-\x7F]+s utility [^<]+ best baseline", "Compitum's utility &gt;= best baseline", s)
+    # Add explicit scope to 'Lower is better.' statements
+    s = s.replace("Lower is better.", "(on this evaluation suite). Lower is better.")
     return s
 
 @dataclass
@@ -144,6 +148,7 @@ def build_metrics_summary(
                 cost_deltas = []
                 base_regrets: Dict[str, List[float]] = {}
                 evals_considered = 0
+                comp_evals_count = len(set(c_subset.get("eval_name", pd.Series([], dtype=str)).astype(str))) if not c_subset.empty else 0
                 for ev in evals:
                     cv = c_subset[c_subset["eval_name"] == ev]
                     if cv.empty:
@@ -175,6 +180,8 @@ def build_metrics_summary(
                     "win_rate": float(wins / max(1, evals_considered)),
                     "avg_cost_delta_on_wins": float(np.mean(cost_deltas)) if cost_deltas else None,
                     "regrets_by_model": regrets_by_model,
+                    "coverage_overlap": int(evals_considered),
+                    "coverage_compitum": int(comp_evals_count),
                 }
 
             if wtp_list and len(wtp_list) > 1:
@@ -191,6 +198,12 @@ def build_metrics_summary(
                     rbm = dict(m_best.get("regrets_by_model", {}))
                     rbm["compitum"] = float(metrics.mean_regret)
                     metrics.regrets_by_model = rbm
+                    # coverage fields (best-WTP)
+                    try:
+                        metrics.coverage_overlap = int(m_best.get("coverage_overlap", 0))
+                        metrics.coverage_compitum = int(m_best.get("coverage_compitum", 0))
+                    except Exception:
+                        pass
             else:
                 m = regret_at_wtp(wtp)
                 if m:
@@ -201,6 +214,11 @@ def build_metrics_summary(
                     rbm = dict(m.get("regrets_by_model", {}))
                     rbm["compitum"] = float(metrics.mean_regret)
                     metrics.regrets_by_model = rbm
+                    try:
+                        metrics.coverage_overlap = int(m.get("coverage_overlap", 0))
+                        metrics.coverage_compitum = int(m.get("coverage_compitum", 0))
+                    except Exception:
+                        pass
     except Exception as e:
         metrics.notes.append(f"Regret computation skipped: {e}")
 
