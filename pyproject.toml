@@ -1,6 +1,6 @@
 [project]
 name = "compitum"
-version = "0.1.1"
+version = "0.1.3"
 description = "compitum: A Production-Ready, Geometrically-Aware AI Router"
 authors = [{ name="compitum authors", email="dev@compitum.org" }]
 license = "MIT"

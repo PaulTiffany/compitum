@@ -50,8 +50,12 @@ def _sanitize_html_text(s: str) -> str:
     s = re.sub(r"utility = performance[^<]+WTP[^<]+cost", "utility = performance - WTP * cost", s)
     # Avg cost delta on wins parenthetical: normalize to ASCII hyphen
     s = re.sub(r"\(Compitum[^)]*best baseline cost on wins\)", "(Compitum - best baseline cost on wins)", s)
-    # If the cost delta prints as exactly 0 in Topline, add parity note for clarity
-    s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)0\.0+ USD\.", r"\g<1>0.000000 USD (parity on wins).", s)
+    # Reduce currency precision to 2 decimals for the Topline cost delta
+    s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)([0-9]+)\.([0-9]{2})[0-9]{4}(\sUSD)", r"\g<1>\g<2>.\g<3>\g<4>", s)
+    # If the cost delta prints as exactly 0, add parity note for clarity
+    s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)0\.00 USD\.", r"\g<1>0.00 USD (parity on wins).", s)
+    # If cost delta is blank (no wins), mark as N/A
+    s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)\s*USD\.", r"\g<1>N/A (no wins at this WTP).", s)
     return s
 
 @dataclass

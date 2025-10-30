@@ -141,6 +141,12 @@ def main() -> None:
                 metrics = build_metrics_summary(Path(compitum_file), wtp=1.0, wtp_list=wgrid)
             else:
                 metrics = build_metrics_summary(Path(compitum_file), wtp=wfixed, wtp_list=[wfixed])
+            # Append a clear policy note for the report UI
+            if metrics:
+                if wsel == "best":
+                    metrics.notes.append(f"WTP policy: best-of-grid {wgrid} (regret at best WTP)")
+                else:
+                    metrics.notes.append(f"WTP policy: fixed WTP={wfixed}")
         except Exception:
             metrics = None
 
