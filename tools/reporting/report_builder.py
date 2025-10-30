@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import base64
 import io
@@ -198,6 +198,17 @@ def build_metrics_summary(
                     rbm = dict(m_best.get("regrets_by_model", {}))
                     rbm["compitum"] = float(metrics.mean_regret)
                     metrics.regrets_by_model = rbm
+                    # Ensure compitum averages reflect the selected WTP for visuals
+                    try:
+                        if "willingness_to_pay" in df.columns:
+                            c_best = df[(df["model_name"] == "compitum") & (df["willingness_to_pay"] == w_best)]
+                        else:
+                            c_best = df[df["model_name"] == "compitum"]
+                        if not c_best.empty:
+                            metrics.compitum_perf = float(c_best["performance"].mean())
+                            metrics.compitum_cost = float(c_best["total_cost"].mean())
+                    except Exception:
+                        pass
                     # coverage fields (best-WTP)
                     try:
                         metrics.coverage_overlap = int(m_best.get("coverage_overlap", 0))
@@ -278,7 +289,7 @@ def build_html_report(
         ax.tick_params(axis='x', rotation=20)
         charts["cost"] = _fig_to_data_url(fig)
 
-        # Regret chart â€“ compare compitum and baselines (baseline best has 0 mean regret by definition)
+        # Regret chart – compare compitum and baselines (baseline best has 0 mean regret by definition)
         if metrics.regrets_by_model:
             items = list(metrics.regrets_by_model.items())
             items = [(k, (v if v == v else 0.0)) for k, v in items]
@@ -301,15 +312,16 @@ def build_html_report(
             xs = [metrics.compitum_cost] + [metrics.llm_cost[k] for k in metrics.llm_cost.keys()]
             ys = [metrics.compitum_perf] + [metrics.llm_perf[k] for k in metrics.llm_perf.keys()]
             fig, ax = plt.subplots(figsize=(7, 3.2))
-            for i, (x, y) in enumerate(zip(xs, ys)):
-                ax.scatter([x], [y], s=40, c=["#22c55e"] if i == 0 else ["#60a5fa"], label=labels[i] if i < 6 else None)
+            # Plot compitum first in green
+            ax.scatter([xs[0]], [ys[0]], s=60, c=["#22c55e"], label=labels[0], zorder=3)
+            # Plot all baselines in gray with labels
+            for i in range(1, len(labels)):
+                ax.scatter([xs[i]], [ys[i]], s=40, c=["#9ca3af"], label=labels[i], zorder=2)
             ax.set_xlabel("Avg Total Cost (USD)")
             ax.set_ylabel("Avg Performance")
             ax.set_title("Average Cost vs Performance (lower cost, higher performance is better)")
-            # Avoid duplicate legend entries
-            handles, leg_labels = ax.get_legend_handles_labels()
-            if handles:
-                ax.legend(handles[:min(6,len(handles))], leg_labels[:min(6,len(handles))], loc="best")
+            # Show legend with all entries, positioned to avoid overlap
+            ax.legend(loc="best", fontsize=8, framealpha=0.9)
             charts["frontier"] = _fig_to_data_url(fig)
         except Exception:
             pass
@@ -326,9 +338,9 @@ def build_html_report(
         <div class=\"card\">
           <h2>Topline Takeaways</h2>
           <ul>
-            <li><b>Win rate</b> (share of evaluations where Compitumâ€™s utility â‰¥ best baseline): {'' if metrics.win_rate is None else f'{metrics.win_rate*100:.1f}%'}.</li>
+            <li><b>Win rate</b> (share of evaluations where Compitum's utility ≥ best baseline): {'' if metrics.win_rate is None else f'{metrics.win_rate*100:.1f}%'}.</li>
             <li><b>Mean regret</b> (utility gap to best baseline at selected/best WTP): {'' if metrics.mean_regret is None else f'{metrics.mean_regret:.6f}'}. Lower is better.</li>
-            <li><b>Avg cost delta on wins</b> (Compitum âˆ’ best baseline cost on wins): {'' if metrics.avg_cost_delta_on_wins is None else f'{metrics.avg_cost_delta_on_wins:.6f}'} USD.</li>
+            <li><b>Avg cost delta on wins</b> (Compitum − best baseline cost on wins): {'' if metrics.avg_cost_delta_on_wins is None else f'{metrics.avg_cost_delta_on_wins:.6f}'} USD.</li>
             <li><b>Average performance</b>: Compitum {metrics.compitum_perf:.4f}{(' vs ' + best_perf_name + ' ' + f'{best_perf_val:.4f}' if best_perf_name else '')}.</li>
             <li><b>Average cost</b>: Compitum {metrics.compitum_cost:.6f}{(' vs ' + best_cost_name + ' ' + f'{best_cost_val:.6f}' if best_cost_name else '')} USD.</li>
           </ul>
@@ -362,7 +374,7 @@ def build_html_report(
             if rows:
                 fixed_ci_html = (
                     "<div class=\"card\"><h2>Fixed WTP Analysis (95% CI)</h2>"
-                    "<table><tr><th>WTP</th><th>Mean Regret</th><th>Win Rate</th><th>Avg Cost Î” (wins)</th></tr>"
+                    "<table><tr><th>WTP</th><th>Mean Regret</th><th>Win Rate</th><th>Avg Cost Δ (wins)</th></tr>"
                     + "".join(rows) + "</table></div>"
                 )
     except Exception:
@@ -396,8 +408,8 @@ def build_html_report(
             if rows:
                 top = sorted(rows, key=lambda t: t[1])[:10]
                 per_task_html = (
-                    "<div class=\"card\"><h2>Perâ€‘Task Summary (WTP = 1.0)</h2>"
-                    "<table><tr><th>Eval Name</th><th>Mean Regret</th><th>Win (Utility â‰¥ Best)</th></tr>"
+                    "<div class=\"card\"><h2>Per-Task Summary (WTP = 1.0)</h2>"
+                    "<table><tr><th>Eval Name</th><th>Mean Regret</th><th>Win (Utility ≥ Best)</th></tr>"
                     + "".join(f"<tr><td>{ev}</td><td>{reg:.6f}</td><td>{wr:.0f}%</td></tr>" for ev, reg, wr in top)
                     + "</table><p class=\"muted\">Top 10 tasks by lowest regret shown.</p></div>"
                 )
@@ -439,10 +451,10 @@ def build_html_report(
       <ul>
         <li><b>Performance</b>: Average task accuracy across the evaluation set (higher is better).</li>
         <li><b>Total cost</b>: Average token and compute cost in USD (lower is better).</li>
-        <li><b>Willingness to Pay (WTP)</b>: How much performance is worth relative to cost; utility = performance âˆ’ WTP Ã— cost.</li>
+        <li><b>Willingness to Pay (WTP)</b>: How much performance is worth relative to cost; utility = performance − WTP × cost.</li>
         <li><b>Utility</b>: Single-number trade-off of performance and cost at a chosen WTP.</li>
         <li><b>Mean regret</b>: Average utility gap to the best baseline at the chosen WTP (lower is better).</li>
-        <li><b>Win rate</b>: Share of evaluations where Compitumâ€™s utility â‰¥ best baseline utility.</li>
+        <li><b>Win rate</b>: Share of evaluations where Compitum's utility ≥ best baseline utility.</li>
       </ul>
     </div>
     """
@@ -520,6 +532,22 @@ def build_html_report(
           {('<p class="muted">' + ' '.join(metrics.notes) + '</p>') if metrics.notes else ''}
         </div>
         """
+    
+    # Visible policy and coverage under Topline for clarity
+    wtp_coverage_html = ""
+    try:
+        if metrics:
+            wn = next((n for n in metrics.notes if isinstance(n, str) and n.startswith("WTP policy:")), "")
+            co = getattr(metrics, "coverage_overlap", None)
+            cc = getattr(metrics, "coverage_compitum", None)
+            parts = []
+            if wn:
+                parts.append(f'<p class="muted">{wn}</p>')
+            if isinstance(co, int) and isinstance(cc, int):
+                parts.append(f'<p class="muted">Coverage: win-rate denominator = {co} evals; Compitum evals at this WTP = {cc}.</p>')
+            wtp_coverage_html = "".join(parts)
+    except Exception:
+        wtp_coverage_html = ""
 
     html = f"""
     <html><head><meta charset="utf-8"><title>Compitum Report</title>
@@ -530,18 +558,19 @@ def build_html_report(
 
       <div class="card">
         <h2>Overview</h2>
-        <p>This report summarizes Compitumâ€™s test and benchmark results alongside common baselines.</p>
+        <p>This report summarizes Compitum's test and benchmark results alongside common baselines.</p>
         <ul>
           <li><b>Performance</b>: average task accuracy (higher is better).</li>
           <li><b>Total cost</b>: average token-compute cost in USD (lower is better).</li>
-          <li><b>Utility</b>: performance âˆ’ WTP Ã— cost, where <b>WTP</b> (willingness to pay) scales the cost penalty.</li>
+          <li><b>Utility</b>: performance − WTP × cost, where <b>WTP</b> (willingness to pay) scales the cost penalty.</li>
           <li><b>Mean regret</b>: average gap to the best baseline utility at a selected WTP (lower is better).</li>
-          <li><b>Win rate</b>: fraction of evaluations where Compitumâ€™s utility â‰¥ best baseline utility at the selected WTP.</li>
+          <li><b>Win rate</b>: fraction of evaluations where Compitum's utility ≥ best baseline utility at the selected WTP.</li>
         </ul>
         <p class="muted">Charts: bars include Compitum (blue/green) and baselines (gray). The scatter shows average cost vs performance for all models.</p>
       </div>
 
       {topline_html}
+      {wtp_coverage_html}
 
       <div class="card">
         <h2>Unit Tests</h2>
@@ -572,5 +601,3 @@ def build_html_report(
     html = _sanitize_html_text(html)
     out_path.write_text(html, encoding="utf-8")
     return out_path
-
-
