@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#0a0b0d">
     <title>Compitum  Geometric LLM Routing</title>
     <link rel="manifest" href="assets/site.webmanifest" />
+    <link rel="preload" as="video" href="assets/tess.mp4" type="video/mp4">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -101,7 +102,11 @@
             border: 0;
             pointer-events: none;
             background: transparent; /* show gradient/pattern in letterbox */
+            opacity: 0; /* fade-in after canplay for zero jank */
+            transition: opacity 0.6s ease 60ms;
         }
+
+        .bg-video__media.is-ready { opacity: 1; }
         
         /* Fill letterbox areas with gradient */
         .bg-video::before {
@@ -535,6 +540,9 @@
         <button id="tess-play" class="bg-video__cta" aria-label="Play background animation" hidden>
             Play Background
         </button>
+        <noscript>
+            <img src="assets/compitum-social-card.svg" alt="Compitum" style="position:absolute;inset:0;margin:auto;display:block;max-width:100%;max-height:100%;filter:brightness(0.55);" />
+        </noscript>
     </div>
     
     <header role="banner">
@@ -801,6 +809,11 @@
       const init = () => { tryNext(); };
       if (document.readyState === 'complete' || document.readyState === 'interactive') init();
       else window.addEventListener('DOMContentLoaded', init, { once: true });
+
+      // Fade in video when it can play
+      v.addEventListener('canplay', () => {
+        v.classList.add('is-ready');
+      }, { once: true });
 
       // If network load errors, advance to next candidate
       v.addEventListener('error', () => setTimeout(tryNext, 400), { once: false });

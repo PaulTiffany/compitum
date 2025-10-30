@@ -12,6 +12,46 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
+def _sanitize_html_text(s: str) -> str:
+    """Best-effort cleanup of mojibake from prior encoding glitches.
+    Keeps content deterministic while ensuring ASCII-safe messaging.
+    """
+    import re
+    # Direct string replacements for known artifacts seen in outputs
+    replacements = {
+        "Compitum�?Ts": "Compitum's",
+        "Per�?`Task": "Per-Task",
+        "�%�": "&gt;=",
+        "�^'": "-",
+        " A- ": " - ",
+        "A- cost": "- cost",
+        # Variants observed in generated HTML
+        "A�E+�?T": "-",
+        " A�E+�?T ": " - ",
+        "A��?\" cost": "* cost",
+        "A��?�A�": "&gt;= ",
+    }
+    for k, v in replacements.items():
+        s = s.replace(k, v)
+
+    # Contextual regex fixes
+    # Possessive: Compitum???s -> Compitum's
+    s = re.sub(r"Compitum[^\x00-\x7F]+s", "Compitum's", s)
+    # Per-task header corruptions
+    s = re.sub(r"Per[^\x00-\x7F]+Task", "Per-Task", s)
+    # Win (Utility … Best) -> Win (Utility >= Best)
+    s = re.sub(r"Win \(Utility [^\x00-\x7F]+ Best\)", "Win (Utility &gt;= Best)", s)
+    # Fix win-rate phrasing lines only (avoid touching 'utility gap' text)
+    s = re.sub(r"(where Compitum's utility) [^\x00-\x7F]{1,20} best baseline", r"\1 &gt;= best baseline", s)
+    s = re.sub(r"(share of evaluations where Compitum's utility) [^\x00-\x7F]{1,20} best baseline", r"\1 &gt;= best baseline", s)
+    # Utility formula line: normalize to performance - WTP * cost
+    s = re.sub(r"Utility</b>:.*?performance[^<]+WTP[^<]+cost", "Utility</b>: performance - WTP * cost", s)
+    # Glossary utility formula
+    s = re.sub(r"utility = performance[^<]+WTP[^<]+cost", "utility = performance - WTP * cost", s)
+    # Avg cost delta on wins parenthetical: normalize to ASCII hyphen
+    s = re.sub(r"\(Compitum[^)]*best baseline cost on wins\)", "(Compitum - best baseline cost on wins)", s)
+    return s
+
 @dataclass
 class MetricsSummary:
     compitum_perf: float
@@ -88,11 +128,16 @@ def build_metrics_summary(
             import numpy as np
 
             def regret_at_wtp(w: float):
-                c_subset = df[(df["model_name"] == "compitum") & (df.get("willingness_to_pay", w) == w)]
+                # Select compitum rows at this WTP if present; otherwise all compitum
+                if "willingness_to_pay" in df.columns:
+                    c_subset = df[(df["model_name"] == "compitum") & (df["willingness_to_pay"] == w)]
+                else:
+                    c_subset = df[df["model_name"] == "compitum"]
                 r_list = []
                 wins = 0
                 cost_deltas = []
                 base_regrets: Dict[str, List[float]] = {}
+                evals_considered = 0
                 for ev in evals:
                     cv = c_subset[c_subset["eval_name"] == ev]
                     if cv.empty:
@@ -103,6 +148,7 @@ def build_metrics_summary(
                     lv = llms[llms["eval_name"] == ev].copy()
                     if lv.empty:
                         continue
+                    evals_considered += 1
                     lv["utility"] = lv["performance"] - w * lv["total_cost"]
                     idxmax = lv["utility"].idxmax()
                     best_util = float(lv.loc[idxmax, "utility"])
@@ -119,7 +165,8 @@ def build_metrics_summary(
                 return {
                     "mean_regret": float(np.mean(r_list)),
                     "p95_regret": float(np.percentile(r_list, 95)),
-                    "win_rate": float(wins / max(1, len(evals))),
+                    # Win rate over evals where both compitum and at least one baseline are present
+                    "win_rate": float(wins / max(1, evals_considered)),
                     "avg_cost_delta_on_wins": float(np.mean(cost_deltas)) if cost_deltas else None,
                     "regrets_by_model": regrets_by_model,
                 }
@@ -498,5 +545,8 @@ def build_html_report(
       {glossary_html}
     </body></html>
     """
+    html = _sanitize_html_text(html)
     out_path.write_text(html, encoding="utf-8")
     return out_path
+
+
