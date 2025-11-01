@@ -32,7 +32,15 @@ def _router(D: int = 32) -> CompitumRouter:
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=128)
     from pathlib import Path
-    A, B = _load_constraints(Path("configs/constraints_us_default.yaml"))
+    # Resolve constraints relative to a parent containing configs/ for mutation compatibility
+    cur = Path(__file__).resolve().parent
+    repo_root = None
+    for p in [cur] + list(cur.parents):
+        if (p / "configs" / "constraints_us_default.yaml").exists():
+            repo_root = p
+            break
+    assert repo_root is not None, "Could not locate repo root with configs/"
+    A, B = _load_constraints(repo_root / "configs" / "constraints_us_default.yaml")
     solver = ReflectiveConstraintSolver(A, B)
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)
     ctrl = LyapunovController()
@@ -50,4 +58,3 @@ def test_certificate_feasible_false_when_region_unsupported():
     cert = r.route("any", context={"region": "JP"}, embedding=emb)
     data = json.loads(cert.to_json())
     assert data["constraints"]["feasible"] in (False,)
-
