@@ -21,13 +21,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            pyproject.toml
+            docs/requirements.txt
 
       - name: Install docs dependencies
         run: |
@@ -41,6 +43,11 @@ jobs:
       - name: Build Sphinx HTML
         run: |
           sphinx-build -W -b html docs docs_build/html
+
+      - name: Build LLM snapshot (Paleae)
+        run: |
+          git clone --depth 1 https://github.com/PaulTiffany/paleae.git "$RUNNER_TEMP/paleae"
+          python tools/build_llm_context_pack.py --paleae-path "$RUNNER_TEMP/paleae/paleae.py" --out docs/repo_snapshot.jsonl --format jsonl --target-size 1MB
 
       - name: Assemble site (hero index + docs under /docs)
         run: |
@@ -57,6 +64,8 @@ jobs:
           if [ -f Examples.html ]; then cp Examples.html site_out/Examples.html; fi
           # Publish reports (static HTML/JSON/CSV) under /reports
           if [ -d reports ]; then mkdir -p site_out/reports; cp -R reports/* site_out/reports/; fi
+          # Include updated LLM snapshot under /docs
+          if [ -f docs/repo_snapshot.jsonl ]; then cp docs/repo_snapshot.jsonl site_out/docs/; fi
           # Optional root files (CNAME/404)
           if [ -f CNAME ]; then cp CNAME site_out/; fi
           if [ -f 404.html ]; then cp 404.html site_out/; fi

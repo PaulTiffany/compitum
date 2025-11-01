@@ -22,7 +22,6 @@ from typing import Iterable, List, Dict, Any, Tuple
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent
-PALEAE = REPO_ROOT.parent / "paleae" / "paleae.py"
 
 
 def parse_size(s: str) -> int:
@@ -34,8 +33,10 @@ def parse_size(s: str) -> int:
     return int(s)
 
 
-def run_paleae(out: Path, fmt: str, includes: List[str]) -> None:
-    cmd = [sys.executable, str(PALEAE), "-f", fmt, "-o", str(out)]
+def run_paleae(paleae_path: Path, out: Path, fmt: str, includes: List[str]) -> None:
+    if not paleae_path.exists():
+        raise FileNotFoundError(f"paleae.py not found at: {paleae_path}. Provide --paleae-path.")
+    cmd = [sys.executable, str(paleae_path), "-f", fmt, "-o", str(out)]
     for inc in includes:
         cmd += ["--include", inc]
     # Be conservative: rely on Paleae defaults for excludes; user .paleaeignore applies.
@@ -127,6 +128,7 @@ def main() -> None:
     ap.add_argument("--out", default="compitum_context.jsonl", help="Output snapshot path")
     ap.add_argument("--format", choices=["json", "jsonl"], default="jsonl")
     ap.add_argument("--target-size", default="1MB", help="Size budget (e.g., 512KB, 1MB)")
+    ap.add_argument("--paleae-path", default="paleae/paleae.py", help="Path to paleae.py (external repo)")
     args = ap.parse_args()
 
     target_bytes = parse_size(args.target_size)
@@ -135,18 +137,17 @@ def main() -> None:
         r"^src/compitum/",
         r"^README.md$",
         r"^PHILOSOPHY.md$",
-        r"^ACCESSIBILITY.md$",
         r"^SECURITY.md$",
         r"^CONTRIBUTING.md$",
         r"^SUPPORT.md$",
         r"^CHANGELOG.md$",
-        r"^compitum/docs/(Getting-Started|CLI|Philosophy|Invariants|LLM-Usage|API-Reference)\.md$",
-        r"^compitum/.paleaeignore$",
+        r"^docs/(Getting-Started|CLI|Philosophy|Invariants|LLM-Usage|API-Reference)\.md$",
+        r"^\.paleaeignore$",
     ]
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    run_paleae(out_path, args.format, includes)
+    run_paleae(Path(args.paleae_path), out_path, args.format, includes)
 
     kind, data = load_snapshot(out_path)
     # Trim if needed

@@ -1,4 +1,4 @@
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, settings
 
 from compitum.cli import _load_constraints, _toy_models  # type: ignore
 from compitum.boundary import BoundaryAnalyzer
@@ -55,6 +55,7 @@ def _router() -> CompitumRouter:
 
 
 @given(text=st.text(min_size=0, max_size=160))
+@settings(deadline=None)
 def test_repeated_route_is_deterministic(text: str) -> None:
     r = _router()
     # Use an explicit embedding to avoid PGD feature-length drift

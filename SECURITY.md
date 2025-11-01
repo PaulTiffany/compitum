@@ -21,3 +21,10 @@ We will acknowledge receipt within 3 business days and aim to provide an initial
 
 This policy covers the Compitum codebase and configuration artifacts in this repository. It does not cover third‑party datasets or upstream projects (e.g., RouterBench). For upstream issues, please report directly to their maintainers.
 
+## Known Security Considerations
+
+### Use of Pickle in `routerbench`
+
+The `src/routerbench` submodule, which is used for research and benchmarking, uses the `pickle` module for data serialization. Deserializing data with `pickle` can execute arbitrary code and is only safe with trusted data.
+
+The use of `pickle` in `routerbench` is a known and accepted risk for the intended use case (research with deterministic inputs). However, you should be aware of this and only use the `routerbench` components with data from trusted sources.

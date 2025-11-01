@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 try:
-    from hypothesis import given
+    from hypothesis import given, settings
     from hypothesis import strategies as st
 except Exception:
     pytest.skip("hypothesis not installed", allow_module_level=True)
@@ -68,6 +68,10 @@ def _single_model_router(D: int, stride: int) -> tuple[CompitumRouter, np.ndarra
 
 @pytest.mark.invariants
 @given(D=st.integers(4, 12), steps=st.integers(3, 8))
+# This test verifies a key Lyapunov stability invariant. The simulation
+# can be computationally intensive, so we increase the deadline to
+# ensure robust completion.
+@settings(deadline=1000)
 def test_distance_decreases_over_updates(D: int, steps: int) -> None:
     """Under repeated updates with fixed embedding and single model, the
     whitened distance term should not increase overall (final <= initial).

@@ -50,6 +50,19 @@ Some integration tests and evaluation scripts depend on RouterBench.
 - [ ] No large artifacts or secrets included
 - [ ] Screenshots or short notes for UI/docs changes (if helpful)
 
+## Security Considerations
+
+Our security philosophy mirrors our core principles: we favor continuous monitoring and adaptive boundaries over rigid, static rules. We distinguish between the production-grade **Core Engine (`src/compitum`)** and the less-strict **Research and Benchmarking code (`src/routerbench`, `benchmarks/`)**.
+
+When contributing, please help us build a more secure system:
+
+*   **Be vigilant with the Core Engine.** Treat all user input as untrusted.
+*   **Understand the context.** A vulnerability in the core is more severe than one in a research script.
+*   **Engage with us.** Security is a shared responsibility. If you see a potential issue, please raise it.
+*   **Research and Benchmarking (`src/routerbench`, `benchmarks/`):** This code is for research and evaluation. It has lower security requirements than the core engine. For example, it uses `pickle` for data serialization, which is not a secure practice for production code. **If you are concerned about potential vulnerabilities in this code, consider running it in an isolated environment (e.g., a Docker container or a dedicated virtual machine).**
+
+For more details, see our [Security Policy](SECURITY.md).
+
 ## Code of Conduct & Security
 - By participating you agree to the project’s [Code of Conduct](CODE_OF_CONDUCT.md)
 - Report vulnerabilities privately to: paulctiffany@gmail.com (see [SECURITY.md](SECURITY.md))

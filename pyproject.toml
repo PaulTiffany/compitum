@@ -11,7 +11,8 @@ dependencies = [
  "scipy>=1.10",
  "scikit-learn>=1.3",
  "pydantic>=2.7",
- "pyyaml>=6.0.1"
+ "pyyaml>=6.0.1",
+ "pandas>=2.0" # Added for data manipulation in various scripts and tests
 ]
 
 [project.optional-dependencies]
@@ -26,7 +27,8 @@ dev = [
  "types-PyYAML",
  "cosmic-ray",
  "bandit",
-"pytest-benchmark"
+ "pytest-benchmark",
+ "build"
 ]
 
 [project.urls]
@@ -38,8 +40,14 @@ Issues = "https://github.com/PaulTiffany/compitum/issues"
 [project.scripts]
 compitum = "compitum.cli:main"
 
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["compitum*"]
+exclude = ["routerbench*"]
 
 [tool.setuptools.package-data]
 compitum = ["py.typed"]
@@ -120,4 +128,7 @@ omit = ["tests/*"]
 show_missing = true
 skip_covered = false
 fail_under = 100
+
+[tool.bandit]
+skips = ["B101", "B301", "B403", "B112"]
 

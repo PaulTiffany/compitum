@@ -4,3 +4,4 @@ furo>=2024.1.29
 sphinx-autodoc-typehints>=2.0
 sphinx-sitemap>=2.6
 sphinxext-opengraph>=0.9
+pandas>=2.0

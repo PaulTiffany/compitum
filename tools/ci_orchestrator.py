@@ -7,7 +7,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from tools.reporting.report_builder import MetricsSummary, build_html_report, build_metrics_summary
+from tools.reporting.report_builder import (
+    MetricsSummary,
+    build_html_report,
+    build_metrics_summary,
+)
 
 
 def run_cmd(cmd: List[str], cwd: Optional[Path] = None, env: Optional[dict] = None, timeout: Optional[int] = None):
@@ -80,13 +84,25 @@ def main() -> None:
     compitum_file: Optional[Path] = None
     metrics: Optional[MetricsSummary] = None
 
+    # Helper: detect presence of RouterBench dataset (either location)
+    def _has_rb_data() -> bool:
+        candidates = [
+            project_root / "src" / "routerbench" / "routerbench_5shot.pkl",
+            project_root / "data" / "routerbench_5shot.pkl",
+        ]
+        override = env.get("ROUTERBENCH_DATA")
+        if override:
+            candidates.append(Path(override))
+        return any(p.exists() for p in candidates)
+
     if args.tests or args.all:
         # Run unit tests quietly
         res = run_cmd([str(project_root / ".venv-routerbench" / "Scripts" / "python"), "-m", "pytest", "-q"], cwd=project_root, timeout=args.timeout_tests)
         test_summary = {k: res.get(k) for k in ("stdout","returncode","stderr","timed_out","duration_sec")}
         run_meta["tests"] = res
 
-    if args.bench_routerbench or args.all:
+    rb_available = _has_rb_data()
+    if (args.bench_routerbench or args.all) and rb_available:
         # Run upstream RouterBench via clean wrapper
         env_rb = env.copy()
         if args.max_evals and args.max_evals > 0:
@@ -100,7 +116,11 @@ def main() -> None:
             rb_files.append(latest_collection)
         run_meta["routerbench"] = res
 
-    if args.bench_compitum or args.all:
+    elif (args.bench_routerbench or args.all) and not rb_available:
+        # Note: dataset missing; record a skipped RB run
+        run_meta["routerbench"] = {"skipped": True, "reason": "routerbench_5shot.pkl not found"}
+
+    if (args.bench_compitum or args.all) and rb_available:
         # Run Compitum evaluation (uses pretrained predictors if available)
         py = str(project_root / ".venv-routerbench" / "Scripts" / "python")
         cmd = [py, str(project_root / "tools" / "evaluate_compitum.py"), f"--config={args.config}"]
@@ -117,6 +137,9 @@ def main() -> None:
             wlist = [float(x.strip()) for x in args.wtp_list.split(',')] if args.wtp_list else None
             metrics = build_metrics_summary(compitum_file, wtp=args.wtp, wtp_list=wlist)
         run_meta["compitum"] = res
+
+    elif (args.bench_compitum or args.all) and not rb_available:
+        run_meta["compitum"] = {"skipped": True, "reason": "routerbench_5shot.pkl not found"}
 
     # Report
     ts = datetime.utcnow().strftime("%Y%m%d-%H%M")

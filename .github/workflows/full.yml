@@ -1,0 +1,79 @@
+name: Full Validation
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 7 * * *'
+
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            pyproject.toml
+            src/routerbench/requirements.txt
+
+      - name: Install dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Run heavy benchmarks
+        env:
+          HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          pytest -q -m heavy_bench
+
+      - name: Run mutation testing (cosmic-ray)
+        run: |
+          cosmic-ray init cosmic-ray.toml session.sqlite
+          cosmic-ray exec cosmic-ray.toml session.sqlite
+          cr-report session.sqlite > reports/mutation_summary.txt
+
+      - name: Prepare routerbench venv and deps
+        run: |
+          python -m venv .venv-routerbench
+          . .venv-routerbench/bin/activate
+          pip install --upgrade pip
+          pip install -r src/routerbench/requirements.txt
+          pip install -e .
+
+      - name: RouterBench tests (guarded)
+        env:
+          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
+          HYPOTHESIS_PROFILE: ci
+        run: |
+          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ]; then \
+            . .venv-routerbench/bin/activate && python -m pytest -q -m routerbench ; \
+          else \
+            echo "RouterBench dataset missing; skipping routerbench tests" ; \
+          fi
+
+      - name: Peer-review orchestration (guarded)
+        run: |
+          . .venv-routerbench/bin/activate
+          python tools/ci_orchestrator.py --all --config data/rb_clean/evaluate_routers.yaml --wtp-list "0.0001,0.001,0.01,0.1,1.0"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-validation-artifacts
+          path: |
+            reports/**
+            data/rb_clean/eval_results/**/*.csv
+            data/rb_clean/eval_results/**/*.pkl
+

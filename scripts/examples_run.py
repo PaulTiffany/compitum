@@ -72,6 +72,7 @@ def build_examples(repo_root: Path) -> List[Example]:
 def run(cmd: Sequence[str]) -> int:
     env = os.environ.copy()
     env.setdefault("HYPOTHESIS_PROFILE", "ci")
+    env.setdefault("PYTHONUNBUFFERED", "1") # Mitigate Windows subprocess issues
     # Ensure local package is importable without install
     try:
         repo_root = Path(__file__).resolve().parents[1]

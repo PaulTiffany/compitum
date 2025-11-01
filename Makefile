@@ -1,4 +1,4 @@
-.PHONY: setup test lint mypy mutate demo bench all
+.PHONY: setup test lint mypy bandit mutate demo bench all check peer-review dist
 
 setup:
 	python -m venv .venv
@@ -14,6 +14,9 @@ lint:
 mypy:
 	.venv\Scripts\mypy -p compitum --ignore-missing-imports --hide-error-context
 
+bandit:
+	.venv\Scripts\bandit -q -r src\compitum -x src\routerbench
+
 mutate:
 	.venv\Scripts\cosmic-ray init cosmic-ray.toml session.sqlite
 	.venv\Scripts\cosmic-ray exec cosmic-ray.toml session.sqlite
@@ -26,6 +29,14 @@ bench:
 	.venv\Scripts\python examples/synth_bench.py
 
 all: test lint mypy
+
+check: lint mypy bandit test
+
+peer-review:
+	scripts\run_peer_review.bat
+
+dist:
+	.venv\Scripts\python -m build
 
 fetch-routerbench:
 	.venv\Scripts\python scripts/fetch_routerbench.py --also-copy-to-src

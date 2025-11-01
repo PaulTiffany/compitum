@@ -245,3 +245,7 @@ assets/tess.mp4
 # Track hero video asset when placed under assets/
 !assets/tess.mp4
 
+
+# External tools cloned locally (not tracked)
+/paleae/
+

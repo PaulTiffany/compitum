@@ -36,9 +36,12 @@
     "boundary": {
       "type": "object",
       "properties": {
-        "gap": { "type": "number" },
+        "winner": { "type": "string" },
+        "runner_up": { "type": "string" },
+        "utility_gap": { "type": "number" },
         "entropy": { "type": "number" },
-        "sigma": { "type": "number" }
+        "uncertainty": { "type": "number" },
+        "is_boundary": { "type": "boolean" }
       },
       "additionalProperties": false
     },
@@ -46,11 +49,15 @@
       "type": "object",
       "properties": {
         "trust_radius": { "type": "number" },
-        "ema": { "type": "number" },
-        "integral": { "type": "number" }
+        "drift_ema": { "type": "number" },
+        "drift_integral": { "type": "number" },
+        "lyapunov_function": { "type": "number" }
       },
       "additionalProperties": false
-    }
+    },
+    "pgd_signature": { "type": "string" },
+    "timestamp": { "type": "number" },
+    "router_version": { "type": "string" }
   },
   "additionalProperties": false
 }
