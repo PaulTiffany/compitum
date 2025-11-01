@@ -73,11 +73,8 @@ jobs:
           mkdir -p reports
           # Baseline: ensure selected tests pass before mutation
           pytest tests/router tests/metric tests/predictors
-          # Run mutmut scoped to stable suites
-          mutmut run \
-            --tests-dir tests/router \
-            --tests-dir tests/metric \
-            --tests-dir tests/predictors
+          # Run mutmut using pyproject config (tests_dir + paths_to_mutate)
+          mutmut run
           mutmut results | tee reports/mutmut_results.txt
           # Fail if any mutants survived
           if grep -qi "survived" reports/mutmut_results.txt; then \
