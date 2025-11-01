@@ -68,7 +68,7 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           # Narrow test selection to stable suites for mutation
-          PYTEST_ADDOPTS: -q -m "not routerbench"
+          PYTEST_ADDOPTS: --rootdir=${{ github.workspace }} -q -m "not routerbench"
         run: |
           mkdir -p reports
           # Baseline: ensure selected tests pass before mutation
