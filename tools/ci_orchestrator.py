@@ -95,9 +95,13 @@ def main() -> None:
             candidates.append(Path(override))
         return any(p.exists() for p in candidates)
 
+    # Resolve venv python path cross-platform
+    venv_dir = project_root / ".venv-routerbench"
+    py_exe = venv_dir / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+
     if args.tests or args.all:
         # Run unit tests quietly
-        res = run_cmd([str(project_root / ".venv-routerbench" / "Scripts" / "python"), "-m", "pytest", "-q"], cwd=project_root, timeout=args.timeout_tests)
+        res = run_cmd([str(py_exe), "-m", "pytest", "-q"], cwd=project_root, timeout=args.timeout_tests)
         test_summary = {k: res.get(k) for k in ("stdout","returncode","stderr","timed_out","duration_sec")}
         run_meta["tests"] = res
 
@@ -107,7 +111,7 @@ def main() -> None:
         env_rb = env.copy()
         if args.max_evals and args.max_evals > 0:
             env_rb["RB_MAX_EVALS"] = str(args.max_evals)
-        py = str(project_root / ".venv-routerbench" / "Scripts" / "python")
+        py = str(py_exe)
         cmd = [py, str(project_root / "tools" / "run_routerbench_clean.py"), f"--config={args.config}", "--local", f"--tokenizer-backend={args.tokenizer_backend}"]
         res = run_cmd(cmd, cwd=project_root, env=env_rb, timeout=args.timeout_rb)
         # Collect artifacts
@@ -122,7 +126,7 @@ def main() -> None:
 
     if (args.bench_compitum or args.all) and rb_available:
         # Run Compitum evaluation (uses pretrained predictors if available)
-        py = str(project_root / ".venv-routerbench" / "Scripts" / "python")
+        py = str(py_exe)
         cmd = [py, str(project_root / "tools" / "evaluate_compitum.py"), f"--config={args.config}"]
         if args.max_evals and args.max_evals > 0:
             cmd.append(f"--max-evals={args.max_evals}")
