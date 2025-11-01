@@ -69,7 +69,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
         run: |
           mkdir -p reports
-          mutmut run --CI
+          mutmut run
           mutmut results | tee reports/mutmut_results.txt
           # Fail if any mutants survived
           if grep -qi "survived" reports/mutmut_results.txt; then \
