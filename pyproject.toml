@@ -137,7 +137,7 @@ skips = ["B101", "B301", "B403", "B112"]
 # --------------------------- 
 [tool.mutmut]
 paths_to_mutate = ["src/compitum"]
-tests_dir = "tests"
+tests_dir = ["tests"]
 use_coverage = false
 backup = false
 
