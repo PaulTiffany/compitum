@@ -248,4 +248,7 @@ assets/tess.mp4
 
 # External tools cloned locally (not tracked)
 /paleae/
+session*.sqlite
+*.sqlite
+/.pytest_cache/
 

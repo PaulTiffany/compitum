@@ -42,13 +42,9 @@ jobs:
       - name: Import smoke
         env:
           PYTHONWARNINGS: default
-        run: |
-          python - << 'PY'
-          import compitum
-          from compitum import metric
-          from compitum.cli import main as cli_main
-          print('import ok:', compitum.__name__, hasattr(metric, 'SymbolicManifoldMetric'))
-          PY
+        run: >
+          python -c "import compitum; from compitum import metric; from compitum.cli import main as cli_main; \
+          print('import ok:', __import__('compitum').__name__, hasattr(metric, 'SymbolicManifoldMetric'))"
 
       - name: Run tests (exclude routerbench)
         env:

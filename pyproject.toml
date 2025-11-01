@@ -132,3 +132,13 @@ fail_under = 100
 [tool.bandit]
 skips = ["B101", "B301", "B403", "B112"]
 
+# --------------------------- 
+# Mutmut (optional mutation testing)
+# --------------------------- 
+[tool.mutmut]
+paths_to_mutate = ["src/compitum"]
+tests_dir = "tests"
+runner = "pytest -q"
+use_coverage = false
+backup = false
+

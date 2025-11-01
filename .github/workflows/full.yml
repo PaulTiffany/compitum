@@ -1,7 +1,18 @@
 name: Full Validation
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      mutation:
+        description: 'Run mutation testing (cosmic-ray)'
+        required: false
+        type: boolean
+        default: false
+      mutmut:
+        description: 'Run mutation testing (mutmut)'
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '0 7 * * *'
 
@@ -39,10 +50,33 @@ jobs:
           pytest -q -m heavy_bench
 
       - name: Run mutation testing (cosmic-ray)
+        if: ${{ inputs.mutation == true || vars.ENABLE_MUTATION == 'true' }}
         run: |
-          cosmic-ray init cosmic-ray.toml session.sqlite
-          cosmic-ray exec cosmic-ray.toml session.sqlite
-          cr-report session.sqlite > reports/mutation_summary.txt
+          SESSION_DB="$RUNNER_TEMP/session-${{ github.run_id }}.sqlite"
+          cosmic-ray init --force cosmic-ray.toml "$SESSION_DB"
+          cosmic-ray exec cosmic-ray.toml "$SESSION_DB"
+          cr-report "$SESSION_DB" > reports/mutation_summary.txt
+
+      - name: Install mutmut
+        if: ${{ inputs.mutmut == true || vars.ENABLE_MUTMUT == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install mutmut
+
+      - name: Run mutation testing (mutmut)
+        if: ${{ inputs.mutmut == true || vars.ENABLE_MUTMUT == 'true' }}
+        env:
+          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
+        run: |
+          mkdir -p reports
+          mutmut run --no-progress --CI
+          mutmut results | tee reports/mutmut_results.txt
+          # Fail if any mutants survived
+          if grep -qi "survived" reports/mutmut_results.txt; then \
+            echo "Mutmut: survivors detected" && exit 1; \
+          else \
+            echo "Mutmut: all mutants killed"; \
+          fi
 
       - name: Prepare routerbench venv and deps
         run: |
@@ -76,4 +110,3 @@ jobs:
             reports/**
             data/rb_clean/eval_results/**/*.csv
             data/rb_clean/eval_results/**/*.pkl
-

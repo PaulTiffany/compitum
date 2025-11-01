@@ -1,7 +1,8 @@
 [cosmic-ray]
 module = "compitum"
 module-path = "src"
-test-command = "scripts/cr_pytest.cmd"
+# Use a POSIX shell script on Linux runners; Windows has .cmd equivalent
+test-command = "bash scripts/cr_pytest.sh"
 timeout = 60.0
 coverage-file = ".coverage"
 
