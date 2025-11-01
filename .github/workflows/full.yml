@@ -98,6 +98,8 @@ jobs:
           fi
 
       - name: Peer-review orchestration (guarded)
+        env:
+          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
         run: |
           . .venv-routerbench/bin/activate
           python tools/ci_orchestrator.py --all --config data/rb_clean/evaluate_routers.yaml --wtp-list "0.0001,0.001,0.01,0.1,1.0"
