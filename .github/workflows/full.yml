@@ -74,7 +74,7 @@ jobs:
           # Baseline: ensure selected tests pass before mutation
           pytest tests/router tests/metric tests/predictors
           # Run mutmut scoped to stable suites
-          mutmut run --paths-to-mutate src/compitum \
+          mutmut run \
             --tests-dir tests/router \
             --tests-dir tests/metric \
             --tests-dir tests/predictors
