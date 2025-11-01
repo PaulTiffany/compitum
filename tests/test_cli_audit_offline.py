@@ -9,10 +9,19 @@ from compitum.cli import route_command
 
 def test_cli_offline_and_audit_creates_record(tmp_path: Path) -> None:
     # Ensure offline is toggled and an audit record is written without errors
+    # Locate repo root that contains configs/
+    cur = Path(__file__).resolve().parent
+    repo_root = None
+    for p in [cur] + list(cur.parents):
+        if (p / "configs" / "router_defaults.yaml").exists():
+            repo_root = p
+            break
+    assert repo_root is not None, "Could not locate repo root with configs/"
+
     args = Namespace(
         prompt="Test prompt for audit.",
-        constraints=Path("configs/constraints_us_default.yaml"),
-        defaults=Path("configs/router_defaults.yaml"),
+        constraints=repo_root / "configs" / "constraints_us_default.yaml",
+        defaults=repo_root / "configs" / "router_defaults.yaml",
         verbose=False,
         trace=False,
         seed=123,

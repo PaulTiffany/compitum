@@ -29,8 +29,16 @@ def _toy_models(D: int) -> list[Model]:
     return [Model(name=k, center=v, capabilities=caps, cost=0.1) for k, v in centers.items()]
 
 
+def _repo_root() -> Path:
+    cur = Path(__file__).resolve().parent
+    for p in [cur] + list(cur.parents):
+        if (p / "configs" / "router_defaults.yaml").exists():
+            return p
+    raise RuntimeError("Could not locate repo root with configs/")
+
+
 def _build_router(enable_metric_update: bool, enable_controller: bool) -> CompitumRouter:
-    dcfg = yaml.safe_load(Path("configs/router_defaults.yaml").read_text())
+    dcfg = yaml.safe_load((_repo_root() / "configs" / "router_defaults.yaml").read_text())
     D = int(dcfg["metric"]["D"])
     rank = int(dcfg["metric"]["rank"])
     delta = float(dcfg["metric"]["delta"])
@@ -55,7 +63,7 @@ def _build_router(enable_metric_update: bool, enable_controller: bool) -> Compit
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank, delta) for m in models}
     coherence = CoherenceFunctional(k=64)
-    ccfg = yaml.safe_load(Path("configs/constraints_us_default.yaml").read_text())
+    ccfg = yaml.safe_load((_repo_root() / "configs" / "constraints_us_default.yaml").read_text())
     A, b = ccfg["A"], ccfg.get("b", ccfg.get("B"))
     solver = ReflectiveConstraintSolver(np.array(A, float), np.array(b, float))  # type: ignore[name-defined]
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)
@@ -86,7 +94,7 @@ def test_router_flags_disable_paths() -> None:
 
 
 def test_router_embedding_branch_and_batch_disable() -> None:
-    dcfg = yaml.safe_load(Path("configs/router_defaults.yaml").read_text())
+    dcfg = yaml.safe_load((_repo_root() / "configs" / "router_defaults.yaml").read_text())
     D = int(dcfg["metric"]["D"])
     router = _build_router(enable_metric_update=False, enable_controller=False)
     # Cover embedding path in route with correct dimension
@@ -100,7 +108,7 @@ def test_router_embedding_branch_and_batch_disable() -> None:
 
 
 def test_router_batch_metric_update_continue_branch() -> None:
-    dcfg = yaml.safe_load(Path("configs/router_defaults.yaml").read_text())
+    dcfg = yaml.safe_load((_repo_root() / "configs" / "router_defaults.yaml").read_text())
     D = int(dcfg["metric"]["D"])
     # Build with metric updates enabled and stride=1 to populate update_data for selected models only
     router = _build_router(enable_metric_update=True, enable_controller=True)
