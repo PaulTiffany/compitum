@@ -67,11 +67,17 @@ jobs:
         if: ${{ inputs.mutmut == true || vars.ENABLE_MUTMUT == 'true' }}
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
-          # Narrow test selection to avoid auxiliary tool tests that require extra context
-          PYTEST_ADDOPTS: -k "not tools" -q -m "not routerbench"
+          # Narrow test selection to stable suites for mutation
+          PYTEST_ADDOPTS: -q -m "not routerbench"
         run: |
           mkdir -p reports
-          mutmut run
+          # Baseline: ensure selected tests pass before mutation
+          pytest tests/router tests/metric tests/predictors
+          # Run mutmut scoped to stable suites
+          mutmut run --paths-to-mutate src/compitum \
+            --tests-dir tests/router \
+            --tests-dir tests/metric \
+            --tests-dir tests/predictors
           mutmut results | tee reports/mutmut_results.txt
           # Fail if any mutants survived
           if grep -qi "survived" reports/mutmut_results.txt; then \
