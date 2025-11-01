@@ -67,6 +67,8 @@ jobs:
         if: ${{ inputs.mutmut == true || vars.ENABLE_MUTMUT == 'true' }}
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
+          # Narrow test selection to avoid auxiliary tool tests that require extra context
+          PYTEST_ADDOPTS: -k "not tools" -q -m "not routerbench"
         run: |
           mkdir -p reports
           mutmut run
