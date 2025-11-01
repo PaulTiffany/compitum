@@ -51,11 +51,32 @@ jobs:
 
       - name: Run mutation testing (cosmic-ray)
         if: ${{ inputs.mutation == true || vars.ENABLE_MUTATION == 'true' }}
+        env:
+          # Use a lighter profile on CI for throughput; script defaults to 'mutation' locally
+          HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
         run: |
+          mkdir -p reports
           SESSION_DB="$RUNNER_TEMP/session-${{ github.run_id }}.sqlite"
-          cosmic-ray init --force cosmic-ray.toml "$SESSION_DB"
-          cosmic-ray exec cosmic-ray.toml "$SESSION_DB"
+          # Use CI-tuned config with a higher timeout
+          cosmic-ray init --force cosmic-ray.ci.toml "$SESSION_DB"
+          cosmic-ray exec cosmic-ray.ci.toml "$SESSION_DB"
+          # Human-readable text report
           cr-report "$SESSION_DB" > reports/mutation_summary.txt
+          # Machine-readable dump + compact JSON summary and gate on score
+          cosmic-ray dump "$SESSION_DB" > reports/cr_dump.jsonl
+          python tools/mutation_summary.py reports/cr_dump.jsonl reports/mutation_summary.json
+          python - << 'PY'
+          import json, sys
+          s = json.load(open('reports/mutation_summary.json','r',encoding='utf-8'))
+          score = float(s.get('mutation_score', 0.0))
+          print('Cosmic Ray mutation score:', score)
+          # Fail if any survivors (score < 1.0)
+          sys.exit(0 if score >= 1.0 else 1)
+          PY
 
       - name: Install mutmut
         if: ${{ inputs.mutmut == true || vars.ENABLE_MUTMUT == 'true' }}
@@ -68,11 +89,16 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           # Narrow test selection to stable suites for mutation
-          PYTEST_ADDOPTS: --no-cov --rootdir=${{ github.workspace }} -q -m "not routerbench"
+          PYTEST_ADDOPTS: --no-cov -q -m "not routerbench and not examples and not heavy_bench"
+          HYPOTHESIS_PROFILE: mutation
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
         run: |
           mkdir -p reports
           # Baseline: ensure selected tests pass before mutation
-          pytest tests/router tests/metric tests/predictors
+          pytest -q -m "not routerbench and not examples and not heavy_bench"
           # Run mutmut using pyproject config (tests_dir + paths_to_mutate)
           mutmut run
           mutmut results | tee reports/mutmut_results.txt
