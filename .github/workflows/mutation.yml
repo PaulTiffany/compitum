@@ -63,7 +63,7 @@ jobs:
           # Baseline quick tests limited to robust suites
           pytest -q tests/router tests/metric tests/predictors
           # Mutate corresponding core modules for fast CI signal
-          mutmut run --timeout 120 \
+          mutmut run \
             --paths-to-mutate \
               src/compitum/metric.py \
               src/compitum/constraints.py \
