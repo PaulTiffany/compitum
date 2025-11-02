@@ -51,6 +51,7 @@ jobs:
 
       - name: Run mutation testing (cosmic-ray)
         if: ${{ inputs.mutation == true || vars.ENABLE_MUTATION == 'true' }}
+        timeout-minutes: 45
         env:
           # Use a lighter profile on CI for throughput; script defaults to 'mutation' locally
           HYPOTHESIS_PROFILE: ci
