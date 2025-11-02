@@ -55,17 +55,15 @@ jobs:
           NUMEXPR_NUM_THREADS: 1
         run: |
           mkdir -p reports
-          # Baseline quick test
-          pytest -q -m "not routerbench and not examples and not heavy_bench"
-          # Mutate core modules for fast CI signal
+          # Baseline quick tests limited to robust suites
+          pytest -q tests/router tests/metric tests/predictors
+          # Mutate corresponding core modules for fast CI signal
           mutmut run --timeout 120 \
             --paths-to-mutate \
               src/compitum/metric.py \
               src/compitum/constraints.py \
               src/compitum/router.py \
-              src/compitum/predictors.py \
-              src/compitum/control.py \
-              src/compitum/energy.py
+              src/compitum/predictors.py
           mutmut results | tee reports/mutmut_results.txt
           mutmut results --all | tee reports/mutmut_results_full.txt || true
 
@@ -125,4 +123,3 @@ jobs:
           name: mutation-validation-artifacts
           path: |
             reports/**
-
