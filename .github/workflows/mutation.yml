@@ -52,7 +52,7 @@ jobs:
         if: ${{ inputs.mutmut == true }}
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
-          PYTEST_ADDOPTS: --no-cov -q -m "not routerbench and not examples and not heavy_bench"
+          PYTEST_ADDOPTS: -q -m "not routerbench and not examples and not heavy_bench"
           HYPOTHESIS_PROFILE: mutation_ci
           OMP_NUM_THREADS: 1
           MKL_NUM_THREADS: 1
@@ -60,15 +60,10 @@ jobs:
           NUMEXPR_NUM_THREADS: 1
         run: |
           mkdir -p reports
-          # Baseline quick tests limited to robust suites
-          pytest -q tests/router tests/metric tests/predictors
-          # Mutate corresponding core modules for fast CI signal
-          mutmut run \
-            --paths-to-mutate \
-              src/compitum/metric.py \
-              src/compitum/constraints.py \
-              src/compitum/router.py \
-              src/compitum/predictors.py || true
+          # Baseline quick tests with coverage to guide mutmut
+          pytest -q --cov=compitum --cov-branch tests/router tests/metric tests/predictors
+          # Use pyproject mutmut config (paths_to_mutate, use_coverage)
+          mutmut run || true
           mutmut results | tee reports/mutmut_results.txt
           mutmut results --all | tee reports/mutmut_results_full.txt || true
 
