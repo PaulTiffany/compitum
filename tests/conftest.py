@@ -43,6 +43,7 @@ def pytest_configure(config: Any) -> None:
 settings.register_profile("dev", max_examples=25, deadline=200)
 settings.register_profile("ci", max_examples=50, derandomize=True, deadline=500)
 settings.register_profile("mutation", max_examples=100, derandomize=True, deadline=750)
+settings.register_profile("mutation_ci", max_examples=30, derandomize=True, deadline=400)
 settings.register_profile("stress", max_examples=400, derandomize=True, deadline=None)
 
 # Select profile via env var if present; otherwise prefer CI in CI environments, else dev.
