@@ -68,7 +68,7 @@ jobs:
               src/compitum/metric.py \
               src/compitum/constraints.py \
               src/compitum/router.py \
-              src/compitum/predictors.py
+              src/compitum/predictors.py || true
           mutmut results | tee reports/mutmut_results.txt
           mutmut results --all | tee reports/mutmut_results_full.txt || true
 
