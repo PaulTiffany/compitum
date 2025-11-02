@@ -1,0 +1,128 @@
+name: Mutation Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      mutmut:
+        description: 'Run mutmut (CI-tuned)'
+        required: false
+        type: boolean
+        default: true
+      mutmut_gate:
+        description: 'Fail job if mutmut finds survivors'
+        required: false
+        type: boolean
+        default: false
+      cr_quick:
+        description: 'Run Cosmic Ray (quick core modules)'
+        required: false
+        type: boolean
+        default: false
+      cr_full:
+        description: 'Run Cosmic Ray (CI full)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Mutmut (CI tuned)
+        if: ${{ inputs.mutmut == true }}
+        env:
+          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
+          PYTEST_ADDOPTS: --no-cov -q -m "not routerbench and not examples and not heavy_bench"
+          HYPOTHESIS_PROFILE: mutation_ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          mkdir -p reports
+          # Baseline quick test
+          pytest -q -m "not routerbench and not examples and not heavy_bench"
+          # Mutate core modules for fast CI signal
+          mutmut run --timeout 120 \
+            --paths-to-mutate \
+              src/compitum/metric.py \
+              src/compitum/constraints.py \
+              src/compitum/router.py \
+              src/compitum/predictors.py \
+              src/compitum/control.py \
+              src/compitum/energy.py
+          mutmut results | tee reports/mutmut_results.txt
+          mutmut results --all | tee reports/mutmut_results_full.txt || true
+
+      - name: Gate on survivors (mutmut)
+        if: ${{ inputs.mutmut == true && inputs.mutmut_gate == true }}
+        run: |
+          if grep -qi "survived" reports/mutmut_results.txt; then \
+            echo "Mutmut gate: survivors detected" && exit 1; \
+          else \
+            echo "Mutmut gate: all mutants killed"; \
+          fi
+
+      - name: Cosmic Ray (quick core modules)
+        if: ${{ inputs.cr_quick == true }}
+        env:
+          HYPOTHESIS_PROFILE: mutation_ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          mkdir -p reports
+          SESSION_DB="$RUNNER_TEMP/cr-quick-${{ github.run_id }}.sqlite"
+          cosmic-ray init --force cosmic-ray.quick.toml "$SESSION_DB"
+          cosmic-ray exec cosmic-ray.quick.toml "$SESSION_DB"
+          cr-report "$SESSION_DB" > reports/cr_quick_summary.txt
+          cosmic-ray dump "$SESSION_DB" > reports/cr_quick_dump.jsonl
+          python tools/mutation_summary.py reports/cr_quick_dump.jsonl reports/cr_quick_summary.json
+          python - << 'PY'
+          import json, sys
+          s=json.load(open('reports/cr_quick_summary.json','r',encoding='utf-8'))
+          print('Cosmic Ray (quick) score:', s.get('mutation_score'))
+          sys.exit(0 if float(s.get('mutation_score',0))>=1.0 else 1)
+          PY
+
+      - name: Cosmic Ray (CI full)
+        if: ${{ inputs.cr_full == true }}
+        timeout-minutes: 45
+        env:
+          HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          mkdir -p reports
+          SESSION_DB="$RUNNER_TEMP/cr-full-${{ github.run_id }}.sqlite"
+          cosmic-ray init --force cosmic-ray.ci.toml "$SESSION_DB"
+          cosmic-ray exec cosmic-ray.ci.toml "$SESSION_DB"
+          cr-report "$SESSION_DB" > reports/cr_full_summary.txt
+          cosmic-ray dump "$SESSION_DB" > reports/cr_full_dump.jsonl
+          python tools/mutation_summary.py reports/cr_full_dump.jsonl reports/cr_full_summary.json
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-validation-artifacts
+          path: |
+            reports/**
+
