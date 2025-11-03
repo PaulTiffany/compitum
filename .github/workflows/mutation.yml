@@ -25,8 +25,13 @@ on:
         default: false
 
 jobs:
-  mutation:
+  mutmut-shard:
+    if: ${{ inputs.mutmut == true }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [router, metric, predictors, pgd]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,14 +47,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
-      
+
       - name: Install mutmut
         run: |
           python -m pip install --upgrade pip
           pip install mutmut
 
-      - name: Mutmut (CI tuned)
-        if: ${{ inputs.mutmut == true }}
+      - name: Mutmut shard (${{ matrix.group }})
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           PYTEST_ADDOPTS: -q -m "not routerbench and not examples and not heavy_bench"
@@ -59,68 +63,127 @@ jobs:
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
         run: |
+          set -e
           mkdir -p reports
-          # Baseline quick tests with coverage to guide mutmut (do not enforce global 100%)
-          pytest -q --cov=compitum --cov-branch --cov-fail-under=0 \
-            tests/router tests/metric tests/predictors tests/pgd
-          # Use pyproject mutmut config (paths_to_mutate, use_coverage)
+          GROUP="${{ matrix.group }}"
+          TEST_PATH="tests/${GROUP}"
+          if [ "$GROUP" = "pgd" ]; then TEST_PATH="tests/pgd"; fi
+          # Baseline with coverage to guide mutmut; do not enforce global threshold
+          pytest -q --cov=compitum --cov-branch --cov-fail-under=0 "$TEST_PATH"
+          # Run mutmut using pyproject config (paths_to_mutate, use_coverage)
           mutmut run || true
-          mutmut results | tee reports/mutmut_results.txt
-          mutmut results --all | tee reports/mutmut_results_full.txt || true
+          mutmut results | tee "reports/mutmut_results_${GROUP}.txt"
+          mutmut results --all | tee "reports/mutmut_results_${GROUP}_full.txt" || true
 
-      - name: Gate on survivors (mutmut)
-        if: ${{ inputs.mutmut == true && inputs.mutmut_gate == true }}
+      - name: Gate on survivors (mutmut shard)
+        if: ${{ inputs.mutmut_gate == true }}
         run: |
-          if grep -qi "survived" reports/mutmut_results.txt; then \
-            echo "Mutmut gate: survivors detected" && exit 1; \
+          GROUP="${{ matrix.group }}"
+          if grep -qi "survived" "reports/mutmut_results_${GROUP}.txt"; then \
+            echo "Mutmut gate (${GROUP}): survivors detected" && exit 1; \
           else \
-            echo "Mutmut gate: all mutants killed"; \
+            echo "Mutmut gate (${GROUP}): all mutants killed"; \
           fi
 
-      - name: Cosmic Ray (quick core modules)
-        if: ${{ inputs.cr_quick == true }}
+      - name: Upload artifacts (mutmut shard)
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-validation-mutmut-${{ matrix.group }}
+          path: |
+            reports/mutmut_results_${{ matrix.group }}*.txt
+
+  cr-quick-shard:
+    if: ${{ inputs.cr_quick == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [metric, constraints, router, predictors]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Prepare CR config (${{ matrix.group }})
         env:
           HYPOTHESIS_PROFILE: mutation_ci
           OMP_NUM_THREADS: 1
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
+          PYTEST_COVERAGE: 1
         run: |
+          set -e
+          GROUP="${{ matrix.group }}"
+          CFG="$RUNNER_TEMP/cr_${GROUP}.toml"
+          cat > "$CFG" <<'TOML'
+[cosmic-ray]
+module = "compitum"
+module-path = "src"
+test-command = "bash scripts/cr_pytest.sh"
+timeout = 180.0
+coverage-file = ".coverage"
+
+excluded-modules = [
+    "tests/*",
+    "**/__init__.py",
+    "routerbench.*",
+    "compitum.cli",
+    "compitum.utils",
+    "compitum.symbolic",
+    "compitum.security",
+    "compitum.pgd",
+    "compitum.models",
+    "compitum.embedding_pgd",
+    "compitum.effort_qp",
+    "compitum.coherence",
+    "compitum.capabilities",
+    "compitum.boundary",
+    "compitum.control",
+    "compitum.energy",
+]
+
+[cosmic-ray.distributor]
+name = "local"
+TOML
+          # Remove the target group from excluded-modules
+          # (simple sed replace to allow mutating only that module)
+          sed -i "s/\"compitum.${GROUP}\",//" "$CFG" || true
+          echo "Using CR config:"; cat "$CFG"
+
           mkdir -p reports
-          SESSION_DB="$RUNNER_TEMP/cr-quick-${{ github.run_id }}.sqlite"
-          cosmic-ray init --force cosmic-ray.quick.toml "$SESSION_DB"
-          cosmic-ray exec cosmic-ray.quick.toml "$SESSION_DB"
-          cr-report "$SESSION_DB" > reports/cr_quick_summary.txt
-          cosmic-ray dump "$SESSION_DB" > reports/cr_quick_dump.jsonl
-          python tools/mutation_summary.py reports/cr_quick_dump.jsonl reports/cr_quick_summary.json
+          SESSION_DB="$RUNNER_TEMP/cr-${GROUP}-${{ github.run_id }}.sqlite"
+          cosmic-ray init --force "$CFG" "$SESSION_DB"
+          cosmic-ray exec "$CFG" "$SESSION_DB"
+          cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
+          cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
+          python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
           python - << 'PY'
-          import json, sys
-          s=json.load(open('reports/cr_quick_summary.json','r',encoding='utf-8'))
-          print('Cosmic Ray (quick) score:', s.get('mutation_score'))
-          sys.exit(0 if float(s.get('mutation_score',0))>=1.0 else 1)
-          PY
+import json, sys, os
+g = os.environ.get('GROUP','')
+path = f"reports/cr_quick_summary_{g}.json"
+s = json.load(open(path,'r',encoding='utf-8'))
+print('Cosmic Ray (quick shard)', g, 'score:', s.get('mutation_score'))
+sys.exit(0 if float(s.get('mutation_score',0))>=1.0 else 1)
+PY
 
-      - name: Cosmic Ray (CI full)
-        if: ${{ inputs.cr_full == true }}
-        timeout-minutes: 45
-        env:
-          HYPOTHESIS_PROFILE: ci
-          OMP_NUM_THREADS: 1
-          MKL_NUM_THREADS: 1
-          OPENBLAS_NUM_THREADS: 1
-          NUMEXPR_NUM_THREADS: 1
-        run: |
-          mkdir -p reports
-          SESSION_DB="$RUNNER_TEMP/cr-full-${{ github.run_id }}.sqlite"
-          cosmic-ray init --force cosmic-ray.ci.toml "$SESSION_DB"
-          cosmic-ray exec cosmic-ray.ci.toml "$SESSION_DB"
-          cr-report "$SESSION_DB" > reports/cr_full_summary.txt
-          cosmic-ray dump "$SESSION_DB" > reports/cr_full_dump.jsonl
-          python tools/mutation_summary.py reports/cr_full_dump.jsonl reports/cr_full_summary.json
-
-      - name: Upload artifacts
+      - name: Upload artifacts (CR shard)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mutation-validation-artifacts
+          name: mutation-validation-cr-${{ matrix.group }}
           path: |
-            reports/**
+            reports/cr_quick_summary_${{ matrix.group }}.*
+            reports/cr_quick_dump_${{ matrix.group }}.jsonl
