@@ -31,7 +31,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: [router, metric, predictors, pgd]
+        file: [
+          metric.py,
+          constraints.py,
+          router.py,
+          predictors.py,
+          control.py,
+          energy.py,
+          models.py,
+          pgd.py,
+          utils.py,
+          symbolic.py,
+          coherence.py,
+          security.py,
+          embedding_pgd.py,
+          effort_qp.py,
+          capabilities.py,
+          boundary.py
+        ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,7 +70,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install mutmut
 
-      - name: Mutmut shard (${{ matrix.group }})
+      - name: Mutmut shard (${{ matrix.file }})
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           PYTEST_ADDOPTS: -q -m "not routerbench and not examples and not heavy_bench"
@@ -65,33 +82,33 @@ jobs:
         run: |
           set -e
           mkdir -p reports
-          GROUP="${{ matrix.group }}"
-          TEST_PATH="tests/${GROUP}"
-          if [ "$GROUP" = "pgd" ]; then TEST_PATH="tests/pgd"; fi
+          TARGET_FILE="${{ matrix.file }}"
+          TEST_PATHS="tests/router tests/metric tests/predictors tests/pgd"
           # Baseline with coverage to guide mutmut; do not enforce global threshold
-          pytest -q --cov=compitum --cov-branch --cov-fail-under=0 "$TEST_PATH"
+          pytest -q --cov="src/compitum/${TARGET_FILE}" --cov-branch --cov-fail-under=0 $TEST_PATHS
           # Run mutmut using pyproject config (paths_to_mutate, use_coverage)
           mutmut run || true
-          mutmut results | tee "reports/mutmut_results_${GROUP}.txt"
-          mutmut results --all | tee "reports/mutmut_results_${GROUP}_full.txt" || true
+          BASE="${TARGET_FILE%.py}"
+          mutmut results | tee "reports/mutmut_results_${BASE}.txt"
+          mutmut results --all | tee "reports/mutmut_results_${BASE}_full.txt" || true
 
-      - name: Mutmut survivor details (${{ matrix.group }})
+      - name: Mutmut survivor details (${{ matrix.file }})
         if: always()
         run: |
           set -e
-          GROUP="${{ matrix.group }}"
-          OUT="reports/mutmut_survivors_${GROUP}.txt"
-          echo "# Mutmut survivors for ${GROUP}" > "$OUT" || true
+          TARGET_FILE="${{ matrix.file }}"; BASE="${TARGET_FILE%.py}"
+          OUT="reports/mutmut_survivors_${BASE}.txt"
+          echo "# Mutmut survivors for ${BASE}" > "$OUT" || true
           # Extract candidate IDs from results; show details if any
           python - << 'PY'
 import subprocess, re, sys, os
-g = os.environ.get('GROUP','')
-path = f'reports/mutmut_results_{g}.txt'
+base = os.environ.get('BASE','')
+path = f'reports/mutmut_results_{base}.txt'
 if not os.path.exists(path):
     sys.exit(0)
 txt = open(path,'r',encoding='utf-8',errors='ignore').read()
 ids = re.findall(r'\((\d+)\)', txt)
-out = f'reports/mutmut_survivors_{g}.txt'
+out = f'reports/mutmut_survivors_{base}.txt'
 with open(out,'a',encoding='utf-8') as f:
     for mid in ids:
         try:
@@ -115,10 +132,10 @@ PY
       - name: Upload artifacts (mutmut shard)
         uses: actions/upload-artifact@v4
         with:
-          name: mutation-validation-mutmut-${{ matrix.group }}
+          name: mutation-validation-mutmut-${{ matrix.file }}
           path: |
-            reports/mutmut_results_${{ matrix.group }}*.txt
-            reports/mutmut_survivors_${{ matrix.group }}.txt
+            reports/mutmut_results_${{ matrix.file }}*.txt
+            reports/mutmut_survivors_${{ matrix.file }}.txt
 
   cr-quick-shard:
     if: ${{ inputs.cr_quick == true }}
@@ -127,7 +144,24 @@ PY
     strategy:
       fail-fast: false
       matrix:
-        group: [metric, constraints, router, predictors]
+        group: [
+          metric,
+          constraints,
+          router,
+          predictors,
+          control,
+          energy,
+          models,
+          pgd,
+          utils,
+          symbolic,
+          coherence,
+          security,
+          embedding_pgd,
+          effort_qp,
+          capabilities,
+          boundary
+        ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
