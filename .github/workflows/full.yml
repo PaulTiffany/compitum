@@ -144,3 +144,12 @@ jobs:
             reports/**
             data/rb_clean/eval_results/**/*.csv
             data/rb_clean/eval_results/**/*.pkl
+  mutation-sharded:
+    if: {{ inputs.mutation_sharded == true || vars.ENABLE_MUTATION_SHARDED == 'true' }}
+    uses: ./.github/workflows/mutation.yml
+    with:
+      mutmut: true
+      mutmut_gate: false
+      cr_quick: true
+      cr_full: false
+    secrets: inherit

@@ -24,6 +24,25 @@ on:
         type: boolean
         default: false
 
+  workflow_call:
+    inputs:
+      mutmut:
+        required: false
+        type: boolean
+        default: true
+      mutmut_gate:
+        required: false
+        type: boolean
+        default: false
+      cr_quick:
+        required: false
+        type: boolean
+        default: false
+      cr_full:
+        required: false
+        type: boolean
+        default: false
+
 jobs:
   mutmut-shard:
     if: ${{ inputs.mutmut == true }}
