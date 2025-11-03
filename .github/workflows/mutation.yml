@@ -75,6 +75,33 @@ jobs:
           mutmut results | tee "reports/mutmut_results_${GROUP}.txt"
           mutmut results --all | tee "reports/mutmut_results_${GROUP}_full.txt" || true
 
+      - name: Mutmut survivor details (${{ matrix.group }})
+        if: always()
+        run: |
+          set -e
+          GROUP="${{ matrix.group }}"
+          OUT="reports/mutmut_survivors_${GROUP}.txt"
+          echo "# Mutmut survivors for ${GROUP}" > "$OUT" || true
+          # Extract candidate IDs from results; show details if any
+          python - << 'PY'
+import subprocess, re, sys, os
+g = os.environ.get('GROUP','')
+path = f'reports/mutmut_results_{g}.txt'
+if not os.path.exists(path):
+    sys.exit(0)
+txt = open(path,'r',encoding='utf-8',errors='ignore').read()
+ids = re.findall(r'\((\d+)\)', txt)
+out = f'reports/mutmut_survivors_{g}.txt'
+with open(out,'a',encoding='utf-8') as f:
+    for mid in ids:
+        try:
+            det = subprocess.check_output(['mutmut','show',mid], text=True, errors='ignore')
+            f.write(f"\n## survivor {mid}\n\n{det}\n")
+        except Exception:
+            pass
+PY
+          echo "Wrote survivor details (if any) to $OUT"
+
       - name: Gate on survivors (mutmut shard)
         if: ${{ inputs.mutmut_gate == true }}
         run: |
@@ -91,6 +118,7 @@ jobs:
           name: mutation-validation-mutmut-${{ matrix.group }}
           path: |
             reports/mutmut_results_${{ matrix.group }}*.txt
+            reports/mutmut_survivors_${{ matrix.group }}.txt
 
   cr-quick-shard:
     if: ${{ inputs.cr_quick == true }}
