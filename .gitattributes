@@ -1,12 +1,11 @@
-* text=auto eol=lf
+# Normalize line endings across platforms
+* text=auto
 
-# Keep Windows scripts with CRLF
-*.bat eol=crlf
-*.ps1 eol=crlf
+# Force LF for scripts and YAML
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
 
-# Images and binaries
-*.png binary
-*.jpg binary
-*.svg text eol=lf
-*.pkl binary
-
+# Force CRLF for Windows batch files
+*.bat text eol=crlf
