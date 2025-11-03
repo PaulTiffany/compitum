@@ -62,8 +62,7 @@ jobs:
           mkdir -p reports
           # Baseline quick tests with coverage to guide mutmut (do not enforce global 100%)
           pytest -q --cov=compitum --cov-branch --cov-fail-under=0 \
-            tests/router tests/metric tests/predictors \
-            tests/pgd/test_regex_prompt_extractor_ci.py
+            tests/router tests/metric tests/predictors tests/pgd
           # Use pyproject mutmut config (paths_to_mutate, use_coverage)
           mutmut run || true
           mutmut results | tee reports/mutmut_results.txt
