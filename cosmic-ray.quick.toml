@@ -22,8 +22,10 @@ excluded-modules = [
     "compitum.coherence",
     "compitum.capabilities",
     "compitum.boundary",
+    # Further narrow for quick CI pass
+    "compitum.control",
+    "compitum.energy",
 ]
 
 [cosmic-ray.distributor]
 name = "local"
-

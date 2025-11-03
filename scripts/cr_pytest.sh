@@ -11,4 +11,9 @@ export MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
 export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
 export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-1}"
 
-pytest -q
+# Optionally enable coverage to guide mutation tools (writes .coverage)
+if [[ "${PYTEST_COVERAGE:-0}" == "1" ]]; then
+  pytest -q --cov=compitum --cov-branch --cov-report=term-missing
+else
+  pytest -q
+fi
