@@ -1,4 +1,4 @@
-name: Mutation Validation
+name: Mutation Sharded
 
 on:
   workflow_dispatch:
