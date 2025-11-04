@@ -1,4 +1,4 @@
-﻿name: Full Validation
+name: Full Validation
 
 on:
   workflow_dispatch:
@@ -163,4 +163,6 @@ jobs:
       mutmut_gate: false
       cr_quick: true
       cr_full: false
+      cr_score_threshold: '1.0'
     secrets: inherit
+
