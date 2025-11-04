@@ -19,6 +19,14 @@ on:
         required: false
         type: boolean
         default: false
+      cr_score_threshold:
+        description: 'Minimum CR mutation score to pass (0.0–1.0)'
+        required: false
+        type: string
+        default: '1.0'
+
+permissions:
+  contents: read
 
 concurrency:
   group: mutation-${{ github.workflow }}-${{ github.ref }}
@@ -180,6 +188,7 @@ PY
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
           PYTEST_COVERAGE: 1
+          CR_SCORE_THRESHOLD: ${{ inputs.cr_score_threshold }}
         run: |
           set -e
           GROUP="${{ matrix.group }}"
@@ -230,9 +239,11 @@ TOML
 import json, sys, os
 g = os.environ.get('GROUP','')
 path = f"reports/cr_quick_summary_{g}.json"
+threshold = float(os.environ.get('CR_SCORE_THRESHOLD','1.0'))
 s = json.load(open(path,'r',encoding='utf-8'))
-print('Cosmic Ray (quick shard)', g, 'score:', s.get('mutation_score'))
-sys.exit(0 if float(s.get('mutation_score',0))>=1.0 else 1)
+score = float(s.get('mutation_score', 0))
+print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold)
+sys.exit(0 if score >= threshold else 1)
 PY
 
       - name: Upload artifacts (CR shard)

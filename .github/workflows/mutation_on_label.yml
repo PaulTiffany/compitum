@@ -1,0 +1,25 @@
+name: Mutation (PR Label)
+
+on:
+  pull_request:
+    types: [opened, reopened, labeled, synchronize]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation-label-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-on-label:
+    if: ${{ contains(join(github.event.pull_request.labels.*.name, ' '), 'mutation') }}
+    uses: ./.github/workflows/mutation.yml
+    with:
+      mutmut: true
+      mutmut_gate: false
+      cr_quick: true
+      cr_full: false
+      cr_score_threshold: '0.99'
+    secrets: inherit
+
