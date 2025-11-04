@@ -46,6 +46,7 @@ jobs:
           pip install -e .[dev]
 
       - name: Run heavy benchmarks
+        if: ${{ github.event_name == 'schedule' }}
         env:
           HYPOTHESIS_PROFILE: ci
           OMP_NUM_THREADS: 1
@@ -151,7 +152,7 @@ jobs:
             data/rb_clean/eval_results/**/*.csv
             data/rb_clean/eval_results/**/*.pkl
   mutation-sharded:
-    if: ${{ inputs.mutation_sharded == 'true' || vars.ENABLE_MUTATION_SHARDED == 'true' }}
+    if: ${{ github.event_name == 'schedule' || inputs.mutation_sharded == 'true' || vars.ENABLE_MUTATION_SHARDED == 'true' }}
     uses: ./.github/workflows/mutation.yml
     with:
       mutmut: true
