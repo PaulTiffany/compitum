@@ -133,7 +133,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           HYPOTHESIS_PROFILE: ci
         run: |
-          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ]; then \
+          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ] || [ -f routerbench_5shot.pkl ]; then \
             . .venv-routerbench/bin/activate && python -m pytest -q -m routerbench ; \
           else \
             echo "RouterBench dataset missing; skipping routerbench tests" ; \

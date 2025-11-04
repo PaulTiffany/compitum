@@ -99,6 +99,25 @@ jobs:
         run: |
           bandit -r src/compitum examples scripts -lll -iii
 
+  types-strict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: pyproject.toml
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: mypy strict (src/compitum)
+        run: mypy --strict src/compitum
+
   invariants:
     runs-on: ubuntu-latest
     timeout-minutes: 20
