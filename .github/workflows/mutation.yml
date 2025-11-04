@@ -130,6 +130,7 @@ PY
           name: mutation-validation-mutmut-${{ matrix.file }}
           path: |
             reports/*.txt
+          retention-days: 7
 
   cr-quick-shard:
     runs-on: ubuntu-latest
@@ -242,3 +243,4 @@ PY
           path: |
             reports/cr_quick_summary_${{ matrix.group }}.*
             reports/cr_quick_dump_${{ matrix.group }}.jsonl
+          retention-days: 7

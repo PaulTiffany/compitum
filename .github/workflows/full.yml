@@ -151,6 +151,7 @@ jobs:
             reports/**
             data/rb_clean/eval_results/**/*.csv
             data/rb_clean/eval_results/**/*.pkl
+          retention-days: 14
   mutation-sharded:
     if: ${{ github.event_name == 'schedule' || inputs.mutation_sharded == 'true' || vars.ENABLE_MUTATION_SHARDED == 'true' }}
     uses: ./.github/workflows/mutation.yml
