@@ -1,5 +1,5 @@
-name: Full Validation
-        if: ${{ github.event_name == 'schedule' }}
+﻿name: Full Validation
+
 on:
   workflow_dispatch:
     inputs:
