@@ -1,0 +1,35 @@
+name: Mutation (Sharded Dispatch)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mutmut:
+        description: 'Run mutmut shards'
+        required: false
+        type: boolean
+        default: true
+      cr_quick:
+        description: 'Run Cosmic Ray quick shards'
+        required: false
+        type: boolean
+        default: true
+      mutmut_gate:
+        description: 'Fail if mutmut survivors'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: mutation-dispatch-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-sharded-mutation:
+    uses: ./.github/workflows/mutation.yml
+    with:
+      mutmut: ${{ inputs.mutmut }}
+      mutmut_gate: ${{ inputs.mutmut_gate }}
+      cr_quick: ${{ inputs.cr_quick }}
+      cr_full: false
+    secrets: inherit
+
