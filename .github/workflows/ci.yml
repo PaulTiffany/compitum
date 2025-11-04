@@ -3,8 +3,24 @@
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'assets/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'Examples.html'
+      - 'index.html'
+      - 'compitum.md'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'assets/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - 'Examples.html'
+      - 'index.html'
+      - 'compitum.md'
   schedule:
     - cron: '0 6 * * *'
 
