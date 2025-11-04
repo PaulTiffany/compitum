@@ -24,6 +24,11 @@ on:
         required: false
         type: string
         default: '1.0'
+      cr_timeout:
+        description: 'CR per-mutant timeout seconds'
+        required: false
+        type: string
+        default: '180'
 
 permissions:
   contents: read
@@ -255,4 +260,5 @@ PY
             reports/cr_quick_summary_${{ matrix.group }}.*
             reports/cr_quick_dump_${{ matrix.group }}.jsonl
           retention-days: 7
+
 
