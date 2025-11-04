@@ -1,5 +1,8 @@
 # compitum
 
+![CI](https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml/badge.svg)
+![Mutation (Sharded Dispatch)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml/badge.svg)
+
 A production-ready, geometrically-aware AI router with SPD metric learning, constraint-aware
 selection (shadow prices), metric-aware KDE coherence, and Lyapunov-stable online updates.
 
