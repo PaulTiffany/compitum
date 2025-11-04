@@ -29,6 +29,11 @@ on:
         required: false
         type: string
         default: '180'
+      target_files:
+        description: 'JSON array of filenames (e.g., ["metric.py"]) to shard mutmut over; fallback to full list if empty'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -44,24 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        file: [
-          metric.py,
-          constraints.py,
-          router.py,
-          predictors.py,
-          control.py,
-          energy.py,
-          models.py,
-          pgd.py,
-          utils.py,
-          symbolic.py,
-          coherence.py,
-          security.py,
-          embedding_pgd.py,
-          effort_qp.py,
-          capabilities.py,
-          boundary.py
-        ]
+        file: ${{ inputs.target_files != '' && fromJSON(inputs.target_files) || fromJSON('["metric.py","constraints.py","router.py","predictors.py","control.py","energy.py","models.py","pgd.py","utils.py","symbolic.py","coherence.py","security.py","embedding_pgd.py","effort_qp.py","capabilities.py","boundary.py"]') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
