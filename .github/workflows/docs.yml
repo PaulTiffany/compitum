@@ -40,9 +40,9 @@ jobs:
       - name: Link check
         run: sphinx-build -W -b linkcheck docs docs_build/linkcheck
 
-      - name: Build Sphinx HTML
+      - name: Build Sphinx HTML (nitpicky)
         run: |
-          sphinx-build -W -b html docs docs_build/html
+          sphinx-build -n -W -b html docs docs_build/html
 
       - name: Build LLM snapshot (Paleae)
         run: |

@@ -13,6 +13,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx_sitemap",
     "sphinxext.opengraph",
+    "sphinx.ext.intersphinx",
 ]
 
 autosectionlabel_prefix_document = True
@@ -44,3 +45,15 @@ napoleon_numpy_docstring = True
 myst_enable_extensions = [
     "colon_fence",
 ]
+
+# Professional-grade docs: fail on unresolved cross-references
+nitpicky = True
+
+# Common intersphinx inventories to resolve external references
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", {}),
+    "numpy": ("https://numpy.org/doc/stable/", {}),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", {}),
+    "sklearn": ("https://scikit-learn.org/stable/", {}),
+    "pandas": ("https://pandas.pydata.org/docs/", {}),
+}

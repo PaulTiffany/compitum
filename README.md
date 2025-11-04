@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml/badge.svg)
 ![Mutation (Sharded Dispatch)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml/badge.svg)
+![Mutation (PR Label)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_on_label.yml/badge.svg)
+![Types: Strict (compitum)](https://img.shields.io/badge/types-mypy%20strict-brightgreen)
 
 Status quick links:
 - CI runs: https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml
