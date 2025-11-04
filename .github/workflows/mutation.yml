@@ -28,7 +28,7 @@ on:
         description: 'CR per-mutant timeout seconds'
         required: false
         type: string
-        default: '180'
+        default: '240'
       target_files:
         description: 'JSON array of filenames (e.g., ["metric.py"]) to shard mutmut over; fallback to full list if empty'
         required: false

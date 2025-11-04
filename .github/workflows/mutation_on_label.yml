@@ -39,7 +39,7 @@ jobs:
 
   run-on-label:
     needs: compute-files
-    if: ${{ contains(join(github.event.pull_request.labels.*.name, ' '), 'mutation') }}
+    if: ${{ contains(join(github.event.pull_request.labels.*.name, ' '), 'mutation') && needs.compute-files.outputs.files != '' }}
     uses: ./.github/workflows/mutation.yml
     with:
       mutmut: true

@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 7 * * *'
 
+permissions:
+  contents: read
+
 concurrency:
   group: mutation-dispatch-${{ github.ref }}
   cancel-in-progress: true

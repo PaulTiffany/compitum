@@ -3,6 +3,11 @@
 ![CI](https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml/badge.svg)
 ![Mutation (Sharded Dispatch)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml/badge.svg)
 
+Status quick links:
+- CI runs: https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml
+- Mutation (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml
+- Full Validation (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/full.yml
+
 A production-ready, geometrically-aware AI router with SPD metric learning, constraint-aware
 selection (shadow prices), metric-aware KDE coherence, and Lyapunov-stable online updates.
 
