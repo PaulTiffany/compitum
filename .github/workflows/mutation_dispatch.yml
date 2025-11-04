@@ -6,18 +6,15 @@ on:
       mutmut:
         description: 'Run mutmut shards'
         required: false
-        type: boolean
-        default: true
+        default: 'true'
       cr_quick:
         description: 'Run Cosmic Ray quick shards'
         required: false
-        type: boolean
-        default: true
+        default: 'true'
       mutmut_gate:
         description: 'Fail if mutmut survivors'
         required: false
-        type: boolean
-        default: false
+        default: 'false'
 
 concurrency:
   group: mutation-dispatch-${{ github.ref }}
@@ -27,9 +24,8 @@ jobs:
   run-sharded-mutation:
     uses: ./.github/workflows/mutation.yml
     with:
-      mutmut: ${{ inputs.mutmut }}
-      mutmut_gate: ${{ inputs.mutmut_gate }}
-      cr_quick: ${{ inputs.cr_quick }}
+      mutmut: ${{ inputs.mutmut == 'true' }}
+      mutmut_gate: ${{ inputs.mutmut_gate == 'true' }}
+      cr_quick: ${{ inputs.cr_quick == 'true' }}
       cr_full: false
     secrets: inherit
-

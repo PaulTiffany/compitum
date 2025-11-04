@@ -6,18 +6,15 @@ on:
       mutation:
         description: 'Run mutation testing (cosmic-ray)'
         required: false
-        type: boolean
-        default: false
+        default: 'false'
       mutmut:
         description: 'Run mutation testing (mutmut)'
         required: false
-        type: boolean
-        default: false
+        default: 'false'
       mutation_sharded:
         description: 'Run sharded mutation workflow (mutmut + CR quick)'
         required: false
-        type: boolean
-        default: false
+        default: 'false'
   schedule:
     - cron: '0 7 * * *'
 
@@ -59,7 +56,7 @@ jobs:
           pytest -q -m heavy_bench
 
       - name: Run mutation testing (cosmic-ray)
-        if: ${{ inputs.mutation == true || vars.ENABLE_MUTATION == 'true' }}
+        if: ${{ inputs.mutation == 'true' || vars.ENABLE_MUTATION == 'true' }}
         timeout-minutes: 45
         env:
           # Use a lighter profile on CI for throughput; script defaults to 'mutation' locally
@@ -89,13 +86,13 @@ jobs:
           PY
 
       - name: Install mutmut
-        if: ${{ inputs.mutmut == true || vars.ENABLE_MUTMUT == 'true' }}
+        if: ${{ inputs.mutmut == 'true' || vars.ENABLE_MUTMUT == 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install mutmut
 
       - name: Run mutation testing (mutmut)
-        if: ${{ inputs.mutmut == true || vars.ENABLE_MUTMUT == 'true' }}
+        if: ${{ inputs.mutmut == 'true' || vars.ENABLE_MUTMUT == 'true' }}
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           # Narrow test selection to stable suites for mutation
@@ -154,7 +151,7 @@ jobs:
             data/rb_clean/eval_results/**/*.csv
             data/rb_clean/eval_results/**/*.pkl
   mutation-sharded:
-    if: ${{ inputs.mutation_sharded == true || vars.ENABLE_MUTATION_SHARDED == 'true' }}
+    if: ${{ inputs.mutation_sharded == 'true' || vars.ENABLE_MUTATION_SHARDED == 'true' }}
     uses: ./.github/workflows/mutation.yml
     with:
       mutmut: true
