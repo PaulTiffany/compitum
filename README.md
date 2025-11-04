@@ -4,6 +4,7 @@
 ![Mutation (Sharded Dispatch)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml/badge.svg)
 ![Mutation (PR Label)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_on_label.yml/badge.svg)
 ![Types: Strict (compitum)](https://img.shields.io/badge/types-mypy%20strict-brightgreen)
+![Validation: Full](https://github.com/PaulTiffany/compitum/actions/workflows/full.yml/badge.svg)
 
 Status quick links:
 - CI runs: https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml
@@ -27,11 +28,19 @@ compitum route --prompt "Prove the binomial identity using generating functions.
 
 ## Run tests
 
+Quick run:
+
 ```bash
 pytest
 ```
 
-For local parity with CI Hypothesis settings, set the profile:
+CI‑parity run (mirrors CI deselections and markers):
+
+```bash
+make test-ci
+```
+
+For Hypothesis settings parity with CI:
 
 - PowerShell: `$env:HYPOTHESIS_PROFILE='ci'; pytest -q`
 - Bash: `HYPOTHESIS_PROFILE=ci pytest -q`

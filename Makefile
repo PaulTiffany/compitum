@@ -8,6 +8,13 @@ setup:
 test:
 	PYTHONWARNINGS="ignore::RuntimeWarning" .venv\Scripts\python -m pytest
 
+test-ci:
+	# Mirror CI selection locally: exclude routerbench and known strict cases
+	.venv\Scripts\python -m pytest -q -m "not routerbench" \
+	  --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords \
+	  --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths \
+	  --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
+
 lint:
 	.venv\Scripts\ruff check .
 
@@ -54,4 +61,3 @@ classroom-pack:
 examples-run:
 	.venv\Scripts\python scripts/examples_run.py list
 	.venv\Scripts\python scripts/examples_run.py run --subset quick
-
