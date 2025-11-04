@@ -25,6 +25,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  no-op-on-push:
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: No-op for non-call events
+        run: echo "Reusable workflow; no-op on push/PR"
+
   mutmut-shard:
     runs-on: ubuntu-latest
     timeout-minutes: 20
