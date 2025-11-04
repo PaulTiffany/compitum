@@ -57,3 +57,14 @@ intersphinx_mapping = {
     "sklearn": ("https://scikit-learn.org/stable/", {}),
     "pandas": ("https://pandas.pydata.org/docs/", {}),
 }
+
+# Ignore a small set of well-known third-party types that may not resolve
+# uniformly across versions/inventories during CI builds.
+nitpick_ignore = [
+    ("py:class", "ndarray"),
+    ("py:class", "numpy.ndarray"),
+    ("py:class", "np.ndarray"),
+    ("py:class", "scipy.sparse.spmatrix"),
+    ("py:class", "pandas.DataFrame"),
+    ("py:class", "sklearn.neighbors.KernelDensity"),
+]
