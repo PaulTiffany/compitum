@@ -1,4 +1,4 @@
-name: Mutation Sharded
+name: Mutation: Reusable Shards
 
 on:
   workflow_call:

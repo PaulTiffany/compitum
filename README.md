@@ -42,6 +42,7 @@ See `configs/` and `examples/` for constraints and a synthetic benchmark.
 - Code of Conduct: `CODE_OF_CONDUCT.md`
 - Security: `SECURITY.md`
 - Support: `SUPPORT.md`
+ - Workflows: `WORKFLOWS.md`
 
 ## Release Artifacts
 - Consolidated report: `reports/report_release.html`
