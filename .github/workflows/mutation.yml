@@ -1,29 +1,6 @@
 name: Mutation Sharded
 
 on:
-  workflow_dispatch:
-    inputs:
-      mutmut:
-        description: 'Run mutmut (CI-tuned)'
-        required: false
-        type: boolean
-        default: true
-      mutmut_gate:
-        description: 'Fail job if mutmut finds survivors'
-        required: false
-        type: boolean
-        default: false
-      cr_quick:
-        description: 'Run Cosmic Ray (quick core modules)'
-        required: false
-        type: boolean
-        default: false
-      cr_full:
-        description: 'Run Cosmic Ray (CI full)'
-        required: false
-        type: boolean
-        default: false
-
   workflow_call:
     inputs:
       mutmut:
