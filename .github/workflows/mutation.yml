@@ -1,6 +1,9 @@
 name: Mutation Sharded
 
 on:
+  push:
+    paths:
+      - '.github/workflows/mutation.yml'
   workflow_call:
     inputs:
       mutmut:
