@@ -43,10 +43,15 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: mutation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   mutmut-shard:
     if: ${{ inputs.mutmut == true }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -105,8 +110,11 @@ jobs:
           TEST_PATHS="tests/router tests/metric tests/predictors tests/pgd"
           # Baseline with coverage to guide mutmut; do not enforce global threshold
           pytest -q --cov="src/compitum/${TARGET_FILE}" --cov-branch --cov-fail-under=0 $TEST_PATHS
-          # Run mutmut using pyproject config (paths_to_mutate, use_coverage)
-          mutmut run || true
+          # Run mutmut restricted to this shard for speed and determinism
+          mutmut run \
+            --paths-to-mutate "src/compitum/${TARGET_FILE}" \
+            --tests-dir tests \
+            --use-coverage || true
           BASE="${TARGET_FILE%.py}"
           mutmut results | tee "reports/mutmut_results_${BASE}.txt"
           mutmut results --all | tee "reports/mutmut_results_${BASE}_full.txt" || true
@@ -141,11 +149,11 @@ PY
       - name: Gate on survivors (mutmut shard)
         if: ${{ inputs.mutmut_gate == true }}
         run: |
-          GROUP="${{ matrix.group }}"
-          if grep -qi "survived" "reports/mutmut_results_${GROUP}.txt"; then \
-            echo "Mutmut gate (${GROUP}): survivors detected" && exit 1; \
+          TARGET_FILE="${{ matrix.file }}"; BASE="${TARGET_FILE%.py}"
+          if grep -qi "survived" "reports/mutmut_results_${BASE}.txt"; then \
+            echo "Mutmut gate (${BASE}): survivors detected" && exit 1; \
           else \
-            echo "Mutmut gate (${GROUP}): all mutants killed"; \
+            echo "Mutmut gate (${BASE}): all mutants killed"; \
           fi
 
       - name: Upload artifacts (mutmut shard)
@@ -153,8 +161,7 @@ PY
         with:
           name: mutation-validation-mutmut-${{ matrix.file }}
           path: |
-            reports/mutmut_results_${{ matrix.file }}*.txt
-            reports/mutmut_survivors_${{ matrix.file }}.txt
+            reports/*.txt
 
   cr-quick-shard:
     if: ${{ inputs.cr_quick == true }}

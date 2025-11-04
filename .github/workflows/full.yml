@@ -13,8 +13,17 @@ on:
         required: false
         type: boolean
         default: false
+      mutation_sharded:
+        description: 'Run sharded mutation workflow (mutmut + CR quick)'
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '0 7 * * *'
+
+concurrency:
+  group: full-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   full:
@@ -145,7 +154,7 @@ jobs:
             data/rb_clean/eval_results/**/*.csv
             data/rb_clean/eval_results/**/*.pkl
   mutation-sharded:
-    if: {{ inputs.mutation_sharded == true || vars.ENABLE_MUTATION_SHARDED == 'true' }}
+    if: ${{ inputs.mutation_sharded == true || vars.ENABLE_MUTATION_SHARDED == 'true' }}
     uses: ./.github/workflows/mutation.yml
     with:
       mutmut: true
