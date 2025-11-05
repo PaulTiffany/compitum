@@ -1,4 +1,4 @@
-name: Mutation: PR Label
+name: "Mutation: PR Label"
 
 on:
   pull_request:
