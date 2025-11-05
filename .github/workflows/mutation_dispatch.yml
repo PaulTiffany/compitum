@@ -1,4 +1,4 @@
-name: Mutation: Dispatcher
+name: "Mutation: Dispatcher"
 
 on:
   workflow_dispatch:

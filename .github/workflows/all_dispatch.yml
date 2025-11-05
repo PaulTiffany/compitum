@@ -1,4 +1,4 @@
-name: Validation: All (dry-run)
+name: "Validation: All (dry-run)"
 
 on:
   workflow_dispatch:
@@ -83,4 +83,3 @@ jobs:
               workflow_id: '.github/workflows/mutation_dispatch.yml',
               ref: core.getInput('ref') || context.ref,
             });
-
