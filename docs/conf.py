@@ -51,11 +51,11 @@ nitpicky = True
 
 # Common intersphinx inventories to resolve external references
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", {}),
-    "numpy": ("https://numpy.org/doc/stable/", {}),
-    "scipy": ("https://docs.scipy.org/doc/scipy/", {}),
-    "sklearn": ("https://scikit-learn.org/stable/", {}),
-    "pandas": ("https://pandas.pydata.org/docs/", {}),
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "sklearn": ("https://scikit-learn.org/stable/", None),
+    "pandas": ("https://pandas.pydata.org/docs/", None),
 }
 
 # Ignore a small set of well-known third-party types that may not resolve

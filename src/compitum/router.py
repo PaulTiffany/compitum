@@ -5,7 +5,7 @@ import json
 import os
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple, cast
 
 import numpy as np
 
@@ -204,7 +204,10 @@ class CompitumRouter:
             all_u_sigmas[name] = sig_batch
 
         certificates: List[SwitchCertificate] = []
-        update_data: Dict[str, List] = {name: [] for name in self.models}
+        # Help mypy: initialize typed lists explicitly for each model key
+        update_data: Dict[str, List[Tuple[np.ndarray, np.ndarray, float]]] = {
+            name: cast(List[Tuple[np.ndarray, np.ndarray, float]], []) for name in self.models
+        }
         d_star_drift_batch: List[float] = []
         grad_norm_drift_batch: List[float] = []
 

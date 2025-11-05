@@ -1,0 +1,16 @@
+{
+  "overall": {
+    "win_rate": {
+      "mean": null,
+      "n": 0
+    },
+    "mean_regret": {
+      "mean": null,
+      "n": 0
+    },
+    "boundary_rate": {
+      "mean": null,
+      "n": 0
+    }
+  }
+}

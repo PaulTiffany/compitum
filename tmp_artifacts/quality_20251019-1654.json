@@ -1,0 +1,53 @@
+{
+  "ruff": {
+    "cmd": [
+      "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+      "-m",
+      "ruff",
+      "check",
+      "--quiet",
+      "src",
+      "tests"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "timed_out": false,
+    "started_at": "2025-10-19T16:54:38.145513Z",
+    "duration_sec": 0.08
+  },
+  "mypy": {
+    "cmd": [
+      "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+      "-m",
+      "mypy",
+      "--hide-error-codes",
+      "--install-types",
+      "--non-interactive",
+      "src/compitum"
+    ],
+    "returncode": 0,
+    "stdout": "Success: no issues found in 17 source files\n",
+    "stderr": "",
+    "timed_out": false,
+    "started_at": "2025-10-19T16:54:38.216729Z",
+    "duration_sec": 0.257
+  },
+  "pytest": {
+    "cmd": [
+      "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+      "-m",
+      "pytest",
+      "-q",
+      "--cov=src",
+      "--cov-branch",
+      "--cov-report=term-missing"
+    ],
+    "returncode": 0,
+    "stdout": "........................................................................ [ 84%]\n...s.........                                                            [100%]\n=============================== tests coverage ================================\n_______________ coverage: platform win32, python 3.11.9-final-0 _______________\n\nName                            Stmts   Miss Branch BrPart  Cover   Missing\n---------------------------------------------------------------------------\nsrc\\compitum\\__init__.py            1      0      0      0   100%\nsrc\\compitum\\boundary.py           17      0      2      0   100%\nsrc\\compitum\\capabilities.py       11      0      2      0   100%\nsrc\\compitum\\cli.py                67      0      4      0   100%\nsrc\\compitum\\coherence.py          49      0     10      0   100%\nsrc\\compitum\\constraints.py        53      0     26      0   100%\nsrc\\compitum\\control.py            22      0      4      0   100%\nsrc\\compitum\\effort_qp.py           8      0      0      0   100%\nsrc\\compitum\\embedding_pgd.py       8      0      0      0   100%\nsrc\\compitum\\energy.py             54      0      2      0   100%\nsrc\\compitum\\metric.py             72      0     14      0   100%\nsrc\\compitum\\models.py              9      0      0      0   100%\nsrc\\compitum\\pgd.py                39      0      8      0   100%\nsrc\\compitum\\predictors.py         25      0      0      0   100%\nsrc\\compitum\\router.py            105      0     12      0   100%\nsrc\\compitum\\symbolic.py           53      0     12      0   100%\nsrc\\compitum\\utils.py              12      0      2      0   100%\n---------------------------------------------------------------------------\nTOTAL                             605      0     98      0   100%\nRequired test coverage of 100.0% reached. Total coverage: 100.00%\n84 passed, 8 skipped in 5.05s\n",
+    "stderr": "",
+    "timed_out": false,
+    "started_at": "2025-10-19T16:54:38.482268Z",
+    "duration_sec": 5.647
+  }
+}
