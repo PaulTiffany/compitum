@@ -180,7 +180,9 @@ PY
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
-          PYTEST_COVERAGE: 1`n          CR_SCORE_THRESHOLD: ${{ inputs.cr_score_threshold }}`n          CR_TIMEOUT: ${{ inputs.cr_timeout }}
+          PYTEST_COVERAGE: 1
+          CR_SCORE_THRESHOLD: ${{ inputs.cr_score_threshold }}
+          CR_TIMEOUT: ${{ inputs.cr_timeout }}
         run: |
           set -e
           GROUP="${{ matrix.group }}"
@@ -213,7 +215,9 @@ excluded-modules = [
 ]
 
 [cosmic-ray.distributor]
-name = "local"`nTOML`n          sed -i "s/^timeout = .*/timeout = ${CR_TIMEOUT}.0/" "$CFG" || true
+name = "local"
+TOML
+          sed -i "s/^timeout = .*/timeout = ${CR_TIMEOUT}.0/" "$CFG" || true
           # Remove the target group from excluded-modules
           # (simple sed replace to allow mutating only that module)
           sed -i "s/\"compitum.${GROUP}\",//" "$CFG" || true
