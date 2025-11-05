@@ -104,23 +104,11 @@ jobs:
           OUT="reports/mutmut_survivors_${BASE}.txt"
           echo "# Mutmut survivors for ${BASE}" > "$OUT" || true
           # Extract candidate IDs from results; show details if any
-          python - << 'PY'
-          import subprocess, re, sys, os
-          base = os.environ.get('BASE','')
-          path = f'reports/mutmut_results_{base}.txt'
-          if not os.path.exists(path):
-              sys.exit(0)
-          txt = open(path,'r',encoding='utf-8',errors='ignore').read()
-          ids = re.findall(r'\((\d+)\)', txt)
-          out = f'reports/mutmut_survivors_{base}.txt'
-          with open(out,'a',encoding='utf-8') as f:
-              for mid in ids:
-                  try:
-                      det = subprocess.check_output(['mutmut','show',mid], text=True, errors='ignore')
-                      f.write(f"\n## survivor {mid}\n\n{det}\n")
-                  except Exception:
-                      pass
-PY
+          BASE="$BASE" python -c "import subprocess, re, sys, os; base=os.environ.get('BASE',''); path=f'reports/mutmut_results_{base}.txt';\
+txt=open(path,'r',encoding='utf-8',errors='ignore').read() if os.path.exists(path) else None;\
+ids=re.findall(r'\\((\\d+)\\)', txt) if txt is not None else []; out=f'reports/mutmut_survivors_{base}.txt';\
+f=open(out,'a',encoding='utf-8');\
+[f.write('\n## survivor '+mid+'\n\n'+subprocess.check_output(['mutmut','show',mid], text=True, errors='ignore')+'\n') for mid in ids]; f.close()"
           echo "Wrote survivor details (if any) to $OUT"
 
       # Gating is handled in the caller (e.g., Full Validation); this shard always uploads reports
@@ -230,16 +218,10 @@ TOML
           cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
           python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
-          python - << 'PY'
-          import json, sys, os
-          g = os.environ.get('GROUP','')
-          path = f"reports/cr_quick_summary_{g}.json"
-          threshold = float(os.environ.get('CR_SCORE_THRESHOLD','1.0'))
-          s = json.load(open(path,'r',encoding='utf-8'))
-          score = float(s.get('mutation_score', 0))
-          print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold)
-          sys.exit(0 if score >= threshold else 1)
-PY
+          GROUP="$GROUP" python -c "import json, sys, os; g=os.environ.get('GROUP',''); path=f'reports/cr_quick_summary_{g}.json';\
+threshold=float(os.environ.get('CR_SCORE_THRESHOLD','1.0')); s=json.load(open(path,'r',encoding='utf-8'));\
+score=float(s.get('mutation_score',0)); print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold);\
+sys.exit(0 if score>=threshold else 1)"
 
       - name: Upload artifacts (CR shard)
         if: always()
