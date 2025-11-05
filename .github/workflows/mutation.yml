@@ -175,36 +175,36 @@ f=open(out,'a',encoding='utf-8');\
           set -e
           GROUP="${{ matrix.group }}"
           CFG="$RUNNER_TEMP/cr_${GROUP}.toml"
-          cat > "$CFG" <<'TOML'
-[cosmic-ray]
-module = "compitum"
-module-path = "src"
-test-command = "bash scripts/cr_pytest.sh"
-timeout = 180.0
-coverage-file = ".coverage"
-
-excluded-modules = [
-    "tests/*",
-    "**/__init__.py",
-    "routerbench.*",
-    "compitum.cli",
-    "compitum.utils",
-    "compitum.symbolic",
-    "compitum.security",
-    "compitum.pgd",
-    "compitum.models",
-    "compitum.embedding_pgd",
-    "compitum.effort_qp",
-    "compitum.coherence",
-    "compitum.capabilities",
-    "compitum.boundary",
-    "compitum.control",
-    "compitum.energy",
-]
-
-[cosmic-ray.distributor]
-name = "local"
-TOML
+          printf '%s\n' \
+            "[cosmic-ray]" \
+            "module = \"compitum\"" \
+            "module-path = \"src\"" \
+            "test-command = \"bash scripts/cr_pytest.sh\"" \
+            "timeout = 180.0" \
+            "coverage-file = \".coverage\"" \
+            "" \
+            "excluded-modules = [" \
+            "    \"tests/*\"," \
+            "    \"**/__init__.py\"," \
+            "    \"routerbench.*\"," \
+            "    \"compitum.cli\"," \
+            "    \"compitum.utils\"," \
+            "    \"compitum.symbolic\"," \
+            "    \"compitum.security\"," \
+            "    \"compitum.pgd\"," \
+            "    \"compitum.models\"," \
+            "    \"compitum.embedding_pgd\"," \
+            "    \"compitum.effort_qp\"," \
+            "    \"compitum.coherence\"," \
+            "    \"compitum.capabilities\"," \
+            "    \"compitum.boundary\"," \
+            "    \"compitum.control\"," \
+            "    \"compitum.energy\"," \
+            "]" \
+            "" \
+            "[cosmic-ray.distributor]" \
+            "name = \"local\"" \
+            > "$CFG"
           sed -i "s/^timeout = .*/timeout = ${CR_TIMEOUT}.0/" "$CFG" || true
           # Remove the target group from excluded-modules
           # (simple sed replace to allow mutating only that module)
