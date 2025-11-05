@@ -1,4 +1,4 @@
-name: "Validation: Full"
+name: Validation Full
 
 on:
   workflow_dispatch:

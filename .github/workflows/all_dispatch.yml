@@ -1,4 +1,4 @@
-name: "Validation: All (dry-run)"
+name: Validation All (dry-run)
 
 on:
   workflow_dispatch:
