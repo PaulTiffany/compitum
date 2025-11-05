@@ -1,0 +1,86 @@
+name: Validation: All (dry-run)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git ref to run on (branch/tag)'
+        required: false
+        default: 'main'
+      run_full:
+        description: 'Also dispatch Full validation (heavy)'
+        required: false
+        default: 'false'
+      run_mutation:
+        description: 'Also dispatch Mutation dispatcher (sharded)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dispatch CI
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'CI',
+              ref: core.getInput('ref') || context.ref,
+            });
+
+      - name: Dispatch Docs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'Docs',
+              ref: core.getInput('ref') || context.ref,
+            });
+
+      - name: Dispatch Release (dry-run)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'Release',
+              ref: core.getInput('ref') || context.ref,
+            });
+
+      - name: Optionally dispatch Full validation
+        if: inputs.run_full == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: '.github/workflows/full.yml',
+              ref: core.getInput('ref') || context.ref,
+              inputs: { mutation: 'true', mutmut: 'false', mutation_sharded: 'false' }
+            });
+
+      - name: Optionally dispatch Mutation (sharded)
+        if: inputs.run_mutation == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: '.github/workflows/mutation_dispatch.yml',
+              ref: core.getInput('ref') || context.ref,
+            });
+
