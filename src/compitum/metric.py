@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import os
-from typing import Optional, Tuple
+from typing import Optional, Tuple, cast
 
 import numpy as np
+from numpy.typing import NDArray
 from scipy import linalg
 from sklearn.covariance import LedoitWolf
 
@@ -20,7 +21,7 @@ class SymbolicManifoldMetric:
         self.whitened_residuals: list[np.ndarray] = []
         # BRIDGEBLOCK_END alg:init_low_rank_factor
 
-    def metric_matrix(self) -> np.ndarray:
+    def metric_matrix(self) -> NDArray[np.float64]:
         # BRIDGEBLOCK_START eq:spd_metric_matrix
         from .symbolic import SymbolicMatrix, SymbolicScalar
 
@@ -32,7 +33,7 @@ class SymbolicManifoldMetric:
 
         # The M_expression object now contains both the computation and its own
         # LaTeX representation, which can be accessed via M_expression.to_latex()
-        return M_expression.evaluate()
+        return cast(NDArray[np.float64], M_expression.evaluate())
         # BRIDGEBLOCK_END eq:spd_metric_matrix
 
     # BRIDGEBLOCK_START alg:cholesky_decomposition
@@ -148,7 +149,7 @@ class SymbolicManifoldMetric:
         # Sum gradients over the batch
         grad_L = 2 * np.sum(np.einsum("bij,jk->bik", A_batch, self.L), axis=0)
 
-        grad_norm = float(np.linalg.norm(grad_L, 2))
+        grad_norm: float = float(np.linalg.norm(grad_L, 2))
 
         # For the SRMF controller, we can either pass the average d_star or the last one.
         # Let's use the average for a more stable update.
@@ -164,7 +165,8 @@ class SymbolicManifoldMetric:
 
         def surrogate_energy(L: np.ndarray) -> float:
             v_batch = np.einsum("jd,bd->bj", L.T, z_batch)
-            return 0.5 * beta_d * np.sum(np.sum(v_batch * v_batch, axis=1))
+            # Help mypy: numpy reductions are untyped; coerce to float explicitly
+            return float(0.5 * beta_d * float(np.sum(np.sum(v_batch * v_batch, axis=1))))
 
         e0 = surrogate_energy(self.L)
         new_L = self.L - eta_eff * grad_L
@@ -194,4 +196,4 @@ class SymbolicManifoldMetric:
         while len(self.whitened_residuals) > 100:
             self.whitened_residuals.pop(0)
 
-        return grad_norm
+        return float(grad_norm)

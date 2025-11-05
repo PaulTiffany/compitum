@@ -1,0 +1,54 @@
+{
+  "run_meta": {
+    "tests": {
+      "cmd": [
+        "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\paulc\\projects\\compitum",
+      "timeout_sec": 600,
+      "returncode": 4,
+      "stdout": "",
+      "stderr": "ImportError while loading conftest 'C:\\Users\\paulc\\projects\\compitum\\tests\\conftest.py'.\ntests\\conftest.py:7: in <module>\n    from hypothesis import settings\nE   ModuleNotFoundError: No module named 'hypothesis'\n",
+      "timed_out": false,
+      "started_at": "2025-10-17T03:51:11.081937Z",
+      "duration_sec": 0.369
+    },
+    "routerbench": {
+      "cmd": [
+        "python",
+        "C:\\Users\\paulc\\projects\\compitum\\tools\\run_routerbench_clean.py",
+        "--config=data\\\\rb_clean\\\\evaluate_routers.yaml",
+        "--local",
+        "--tokenizer-backend=tiktoken"
+      ],
+      "cwd": "C:\\Users\\paulc\\projects\\compitum",
+      "timeout_sec": 900,
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\paulc\\projects\\compitum\\tools\\run_routerbench_clean.py\", line 133, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\paulc\\projects\\compitum\\tools\\run_routerbench_clean.py\", line 129, in main\n    runpy.run_module(\"routerbench.evaluate_routers\", run_name=\"__main__\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<frozen runpy>\", line 229, in run_module\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\paulc\\projects\\compitum\\src\\routerbench\\evaluate_routers.py\", line 9, in <module>\n    import modal\nModuleNotFoundError: No module named 'modal'\n",
+      "timed_out": false,
+      "started_at": "2025-10-17T03:51:11.451470Z",
+      "duration_sec": 0.439
+    },
+    "compitum": {
+      "cmd": [
+        "python",
+        "C:\\Users\\paulc\\projects\\compitum\\tools\\evaluate_compitum.py",
+        "--config=data\\\\rb_clean\\\\evaluate_routers.yaml",
+        "--max-evals=1000",
+        "--wtp-list=0.0001,0.001,0.01,0.1,1"
+      ],
+      "cwd": "C:\\Users\\paulc\\projects\\compitum",
+      "timeout_sec": 600,
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\Users\\paulc\\projects\\compitum\\tools\\evaluate_compitum.py\", line 154, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\Users\\paulc\\projects\\compitum\\tools\\evaluate_compitum.py\", line 87, in main\n    from routerbench.evaluate_utils import (\n    ...<2 lines>...\n    )\n  File \"C:\\Users\\paulc\\projects\\compitum\\src\\routerbench\\evaluate_utils.py\", line 4, in <module>\n    import gcsfs\nModuleNotFoundError: No module named 'gcsfs'\n",
+      "timed_out": false,
+      "started_at": "2025-10-17T03:51:11.891253Z",
+      "duration_sec": 0.652
+    }
+  }
+}

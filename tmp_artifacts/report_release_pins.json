@@ -1,0 +1,15 @@
+{
+  "compitum_csv": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-all-10-26-17-07-val_split.csv",
+  "rb_csvs": [
+    "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-26-17__rb_clean.csv"
+  ],
+  "wtp_selection": "best",
+  "wtp_grid": [
+    0.0001,
+    0.001,
+    0.01,
+    0.1,
+    1.0
+  ],
+  "wtp": null
+}

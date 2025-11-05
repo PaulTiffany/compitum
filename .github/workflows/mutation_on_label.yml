@@ -46,7 +46,7 @@ jobs:
       mutmut_gate: false
       cr_quick: true
       cr_full: false
-      cr_score_threshold: '0.99'
+      cr_score_threshold: '1.0'
       target_files: ${{ needs.compute-files.outputs.files }}
     secrets: inherit
 

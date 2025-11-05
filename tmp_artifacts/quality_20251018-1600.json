@@ -1,0 +1,37 @@
+{
+  "bandit": {
+    "cmd": [
+      "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+      "-m",
+      "bandit",
+      "-q",
+      "-r",
+      "src/compitum",
+      "-x",
+      "src/routerbench"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "timed_out": false,
+    "started_at": "2025-10-18T16:00:45.711493Z",
+    "duration_sec": 0.378
+  },
+  "pytest": {
+    "cmd": [
+      "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+      "-m",
+      "pytest",
+      "-q",
+      "--cov=src",
+      "--cov-branch",
+      "--cov-report=term-missing"
+    ],
+    "returncode": 0,
+    "stdout": "........................................................................ [ 84%]\n...s.........                                                            [100%]\n=============================== tests coverage ================================\n_______________ coverage: platform win32, python 3.11.9-final-0 _______________\n\nName                            Stmts   Miss Branch BrPart  Cover   Missing\n---------------------------------------------------------------------------\nsrc\\compitum\\__init__.py            1      0      0      0   100%\nsrc\\compitum\\boundary.py           17      0      2      0   100%\nsrc\\compitum\\capabilities.py       11      0      2      0   100%\nsrc\\compitum\\cli.py                67      0      4      0   100%\nsrc\\compitum\\coherence.py          49      0     10      0   100%\nsrc\\compitum\\constraints.py        53      0     26      0   100%\nsrc\\compitum\\control.py            22      0      4      0   100%\nsrc\\compitum\\effort_qp.py           8      0      0      0   100%\nsrc\\compitum\\embedding_pgd.py       8      0      0      0   100%\nsrc\\compitum\\energy.py             54      0      2      0   100%\nsrc\\compitum\\metric.py             72      0     14      0   100%\nsrc\\compitum\\models.py              9      0      0      0   100%\nsrc\\compitum\\pgd.py                39      0      8      0   100%\nsrc\\compitum\\predictors.py         25      0      0      0   100%\nsrc\\compitum\\router.py            105      0     12      0   100%\nsrc\\compitum\\symbolic.py           53      0     12      0   100%\nsrc\\compitum\\utils.py              12      0      2      0   100%\n---------------------------------------------------------------------------\nTOTAL                             605      0     98      0   100%\nRequired test coverage of 100.0% reached. Total coverage: 100.00%\n84 passed, 8 skipped in 5.14s\n",
+    "stderr": "",
+    "timed_out": false,
+    "started_at": "2025-10-18T16:00:46.092902Z",
+    "duration_sec": 5.745
+  }
+}

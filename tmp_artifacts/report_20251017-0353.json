@@ -1,0 +1,54 @@
+{
+  "run_meta": {
+    "tests": {
+      "cmd": [
+        "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\paulc\\projects\\compitum",
+      "timeout_sec": 900,
+      "returncode": 4,
+      "stdout": "",
+      "stderr": "ImportError while loading conftest 'C:\\Users\\paulc\\projects\\compitum\\tests\\conftest.py'.\ntests\\conftest.py:7: in <module>\n    from hypothesis import settings\nE   ModuleNotFoundError: No module named 'hypothesis'\n",
+      "timed_out": false,
+      "started_at": "2025-10-17T03:52:58.371741Z",
+      "duration_sec": 0.394
+    },
+    "routerbench": {
+      "cmd": [
+        "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+        "C:\\Users\\paulc\\projects\\compitum\\tools\\run_routerbench_clean.py",
+        "--config=data\\\\rb_clean\\\\evaluate_routers.yaml",
+        "--local",
+        "--tokenizer-backend=tiktoken"
+      ],
+      "cwd": "C:\\Users\\paulc\\projects\\compitum",
+      "timeout_sec": 1800,
+      "returncode": 1,
+      "stdout": "Total Training Tasks: 0\n[]\n[]\nTotal Training Samples: 0\nTotal Validation Samples: 0\ntraining svm models\nGetting embeddings for 0 prompts\nGot 0 embeddings from the local cache\n",
+      "stderr": "\n  0%|          | 0/1 [00:00<?, ?it/s]\n\n  0%|          | 0/11 [00:00<?, ?it/s]\u001b[A\n  0%|          | 0/11 [00:00<?, ?it/s]\n\n  0%|          | 0/1 [00:00<?, ?it/s]\nTraceback (most recent call last):\n  File \"C:\\Users\\paulc\\projects\\compitum\\tools\\run_routerbench_clean.py\", line 133, in <module>\n    main()\n  File \"C:\\Users\\paulc\\projects\\compitum\\tools\\run_routerbench_clean.py\", line 129, in main\n    runpy.run_module(\"routerbench.evaluate_routers\", run_name=\"__main__\")\n  File \"<frozen runpy>\", line 229, in run_module\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"C:\\Users\\paulc\\projects\\compitum\\src\\routerbench\\evaluate_routers.py\", line 424, in <module>\n    model_routers_and_names += generate_svm_routers(\n                               ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\paulc\\projects\\compitum\\src\\routerbench\\evaluate_utils.py\", line 153, in generate_svm_routers\n    svm = SVMRouter(\n          ^^^^^^^^^^\n  File \"C:\\Users\\paulc\\projects\\compitum\\src\\routerbench\\routers\\svm_router.py\", line 44, in __init__\n    input_embeddings = np.vstack(embeddings_to_fit)[non_nan_idxs]\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Lib\\site-packages\\numpy\\core\\shape_base.py\", line 289, in vstack\n    return _nx.concatenate(arrs, 0, dtype=dtype, casting=casting)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: need at least one array to concatenate\n",
+      "timed_out": false,
+      "started_at": "2025-10-17T03:52:58.766068Z",
+      "duration_sec": 23.118
+    },
+    "compitum": {
+      "cmd": [
+        "C:\\Users\\paulc\\projects\\compitum\\.venv-routerbench\\Scripts\\python",
+        "C:\\Users\\paulc\\projects\\compitum\\tools\\evaluate_compitum.py",
+        "--config=data\\\\rb_clean\\\\evaluate_routers.yaml",
+        "--max-evals=2000",
+        "--wtp-list=0.0001,0.001,0.01,0.1,1"
+      ],
+      "cwd": "C:\\Users\\paulc\\projects\\compitum",
+      "timeout_sec": 900,
+      "returncode": 0,
+      "stdout": "Path setup took 0.00 seconds\nConfig loading took 0.00 seconds\n_load_models took 0.22 seconds\nEmbeddingCache initialization took 0.00 seconds\nLoading pre-trained predictors from C:\\Users\\paulc\\projects\\compitum\\data\\pretrain_predictors\\predictors_all-MiniLM-L12-v2_0.1.joblib\nPredictors loaded successfully.\nDependency creation took 0.00 seconds\nCompitumRouter initialization took 0.00 seconds\nAdapterOK D=384 rank=8 delta=0.001 cache_local=True\nCompitumRouterAdapter.__init__ took 0.30 seconds\nEvaluating compitum|embedding:all-MiniLM-L12-v2|fraction:0.7\nUsing willingness_to_pay value: 0.0001\nGetting embeddings for 2000 prompts\nGot 2000 embeddings from the local cache\nSymbolicFreeEnergy.batch_compute took 0.0426 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0356 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0369 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0337 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0335 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0339 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0378 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0347 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0345 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0326 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0385 seconds for 2000 samples\nCompitumRouter.batch_route took 2.3293 seconds for 2000 samples\nUsing willingness_to_pay value: 0.001\nSymbolicFreeEnergy.batch_compute took 0.0306 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0313 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3617 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0343 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0298 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0289 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0310 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0264 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0296 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0254 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0314 seconds for 2000 samples\nCompitumRouter.batch_route took 2.5590 seconds for 2000 samples\nUsing willingness_to_pay value: 0.01\nSymbolicFreeEnergy.batch_compute took 0.0310 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0270 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3673 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0307 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3692 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0265 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0322 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0296 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0294 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0291 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0251 seconds for 2000 samples\nCompitumRouter.batch_route took 3.1056 seconds for 2000 samples\nUsing willingness_to_pay value: 0.1\nSymbolicFreeEnergy.batch_compute took 0.0337 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0276 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3577 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3534 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3535 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0282 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0312 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0288 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0230 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0229 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0287 seconds for 2000 samples\nCompitumRouter.batch_route took 3.2216 seconds for 2000 samples\nUsing willingness_to_pay value: 1.0\nSymbolicFreeEnergy.batch_compute took 0.0313 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0323 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.4354 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3558 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3513 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.3496 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0308 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0228 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0284 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0259 seconds for 2000 samples\nSymbolicFreeEnergy.batch_compute took 0.0277 seconds for 2000 samples\nCompitumRouter.batch_route took 3.6674 seconds for 2000 samples\nFinished running 1 results\nSaved to: C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-17-03-53-val_split.csv\nWarning: could not build EvaluationResultCollection for compitum.\nPer-eval CSV saved at: C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-17-03-53-val_split.csv\nError: 'neighbors'\n",
+      "stderr": "\n  0%|          | 0/5 [00:00<?, ?it/s]\n 20%|##        | 1/5 [00:03<00:13,  3.50s/it]\n 40%|####      | 2/5 [00:06<00:08,  2.95s/it]\n 60%|######    | 3/5 [00:09<00:06,  3.02s/it]\n 80%|########  | 4/5 [00:12<00:03,  3.10s/it]\n100%|##########| 5/5 [00:16<00:00,  3.31s/it]\n100%|##########| 5/5 [00:16<00:00,  3.21s/it]\n",
+      "timed_out": false,
+      "started_at": "2025-10-17T03:53:21.884565Z",
+      "duration_sec": 22.208
+    }
+  }
+}

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, cast
 
 import numpy as np
+from numpy.typing import NDArray
 from sklearn.neighbors import KernelDensity
 
 
@@ -55,11 +56,12 @@ class CoherenceFunctional:
         val = float(kde.score_samples([xw])[0])
         return float(np.clip(val, -10.0, 10.0))
 
-    def batch_log_evidence(self, model_name: str, xw_batch: np.ndarray) -> np.ndarray:
+    def batch_log_evidence(self, model_name: str, xw_batch: np.ndarray) -> NDArray[np.float64]:
         kde = self.kde_cache.get(model_name) or self._fit(model_name)
         if kde is None:
-            return np.zeros(xw_batch.shape[0])  # Return array of zeros for batch
+            return np.zeros(xw_batch.shape[0], dtype=float)  # Return array of zeros for batch
         val_batch = kde.score_samples(xw_batch)
-        return np.clip(val_batch, -10.0, 10.0)
+        # score_samples originates from an untyped third‑party lib; help mypy with a cast
+        return cast(NDArray[np.float64], np.clip(val_batch, -10.0, 10.0))
 
     # BRIDGEBLOCK_END def:coherence_log_evidence

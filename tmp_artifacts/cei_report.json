@@ -1,0 +1,15 @@
+{
+  "deferral_quality": {
+    "available": false
+  },
+  "calibration": {
+    "available": false
+  },
+  "stability": {
+    "available": false
+  },
+  "compliance": {
+    "available": false
+  },
+  "cei": null
+}
