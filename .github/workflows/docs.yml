@@ -38,6 +38,10 @@ jobs:
           pip install -r docs/requirements.txt
           pip install -e .
 
+      - name: Text hygiene (mojibake check)
+        run: |
+          python tools/check_mojibake.py
+
       - name: Link check
         run: sphinx-build -W -b linkcheck docs docs_build/linkcheck
 

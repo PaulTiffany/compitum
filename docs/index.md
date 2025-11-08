@@ -16,6 +16,7 @@ Compitum routes prompts across models using SPD metric geometry, constraint-awar
 Getting-Started
 CLI
 Examples
+Reviewer-Quickstart
 API-Quickstart
 ACCESSIBILITY
 LLM-Usage

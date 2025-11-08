@@ -52,6 +52,12 @@ docs:
 	.venv\Scripts\python -m pip install -r docs/requirements.txt
 	sphinx-build -b html docs docs_build/html
 
+normalize-docs:
+	.venv\Scripts\python tools/normalize_mojibake.py --write
+
+check-mojibake:
+	.venv\Scripts\python tools/check_mojibake.py
+
 pedagogy-demo:
 	.venv\Scripts\python examples/pedagogy_control_of_error.py
 

@@ -66,6 +66,18 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
   - Build sdist/wheel; twine check; smoke install test
   - Upload artifacts (dry-run by default)
 
+## Rigor (Unified)
+- Name: `Rigor`
+- Triggers: push, pull_request, workflow_dispatch
+- What it does:
+  - Lint (ruff 100-col), types (mypy --strict), Bandit
+  - Tests with 100% line+branch coverage and invariants suite
+  - PyTest benchmarks with JSON artifact
+  - RouterBench local evaluation (guarded) + Compitum eval + HTML analysis report
+  - Light mutation (mutmut shards + Cosmic Ray quick shards; gated at 1.0)
+  - Sphinx build (nitpicky) + linkcheck
+  - Uploads artifacts for each phase
+
 ## Notes on CI‑only test selection
 - A small number of strict tests are deselected in CI to keep runs stable on shared runners; local runs remain strict.
 - Mutation workflows (mutmut + CR) provide strong guarantees; nightly runs remain strict (`cr_score_threshold` = 1.0).
@@ -75,3 +87,6 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 - Nightly: Runs automatically
 - PRs: Add label `mutation` to run shards on changed modules
 
+## CI Note
+
+To enforce text hygiene in CI/CD, add a step to run `make check-mojibake`. This gate only scans `README.md` and `docs/**/*.md`, leaving `src/` and vendored code untouched.

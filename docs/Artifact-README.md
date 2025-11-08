@@ -22,6 +22,7 @@ One-Shot (Windows)
 make peer-review
 python tools\generate_eval_tables.py
 .\.venv\Scripts\python -m sphinx -b html docs docs\_build\html
+python tools\check_mojibake.py  # ensure no mojibake in README/docs
 ```
 
 POSIX Equivalents
@@ -53,6 +54,7 @@ Integrity & Determinism
 - Seeds are fixed for synthetic demo/predictors and evaluation scripts.
 - A manifest with SHA-256 checksums is generated for key artifacts.
 - Sphinx builds without warnings; evidence scripts are warning-free.
+- Text hygiene: a normalization/check pair (`tools/normalize_mojibake.py`, `tools/check_mojibake.py`) keeps README/docs free of mojibake without touching src/third‑party files.
 
 Runtime Notes (bounded panel)
 

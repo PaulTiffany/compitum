@@ -216,6 +216,20 @@ def main() -> int:
     out_path = reports_dir / "routerbench_report.md"
     out_path.write_text(md, encoding="utf-8")
     print(f"Wrote report: {out_path}")
+
+    # Also publish to docs as RouterBench-Summary.md for reviewer visibility
+    docs_dir = project_root / "docs"
+    if docs_dir.exists():
+        docs_out = docs_dir / "RouterBench-Summary.md"
+        # Prepend simple frontmatter if not present
+        header = (
+            "---\n"
+            "title: RouterBench Summary\n"
+            "description: Bounded comparison of Compitum against RouterBench baselines.\n"
+            "---\n\n"
+        )
+        docs_out.write_text(header + md + "\n", encoding="utf-8")
+        print(f"Wrote docs: {docs_out}")
     return 0
 
 
