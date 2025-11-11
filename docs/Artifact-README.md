@@ -49,6 +49,13 @@ Primary Outputs
   - `docs/Results-By-Task.md`
   - `docs/Panel-Summary.md`
 
+Pretrained Predictors (optional)
+
+- Location: `data/pretrain_predictors/`
+- Expected file: `predictors_all-MiniLM-L12-v2_0.1.joblib`
+- Bundle: attach `pretrain_predictors.zip` to the GitHub Release.
+- Verification: `python tools/verify_pretrained_bundle.py --verify-only` or provide `--bundle` to extract + verify.
+
 Integrity & Determinism
 
 - Seeds are fixed for synthetic demo/predictors and evaluation scripts.

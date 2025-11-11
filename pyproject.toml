@@ -121,7 +121,10 @@ markers = [
 # --------------------------- 
 [tool.coverage.run]
 branch = true
-source = ["src/compitum", "src/routerbench"]
+# Measure core package only in CI. RouterBench is exercised in scheduled jobs
+# and its coverage is reported separately to avoid penalizing CI runs that
+# intentionally skip those tests.
+source = ["src/compitum"]
 omit = ["tests/*"]
 
 [tool.coverage.report]
@@ -140,4 +143,3 @@ paths_to_mutate = ["src/compitum"]
 tests_dir = ["tests"]
 use_coverage = true
 backup = false
-

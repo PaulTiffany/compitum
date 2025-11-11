@@ -51,7 +51,11 @@ def sha256sum(path: Path, chunk_size: int = 1024 * 1024) -> str:
 
 def download(url: str, out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    with requests.get(url, stream=True, timeout=60) as r:
+    headers = {"User-Agent": "compitum-ci/0.1"}
+    hf_token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_TOKEN")
+    if hf_token:
+        headers["Authorization"] = f"Bearer {hf_token}"
+    with requests.get(url, stream=True, timeout=60, headers=headers) as r:
         r.raise_for_status()
         total = int(r.headers.get("Content-Length", 0))
         downloaded = 0

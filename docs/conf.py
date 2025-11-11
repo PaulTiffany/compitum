@@ -49,6 +49,16 @@ myst_enable_extensions = [
 # Professional-grade docs: fail on unresolved cross-references
 nitpicky = True
 
+# Linkcheck hardening for CI: avoid flakes from anchors/timeouts
+linkcheck_timeout = 10
+linkcheck_retries = 2
+linkcheck_workers = 5
+linkcheck_anchors = False
+linkcheck_ignore = [
+    r"^https://twitter.com/",
+    r"^https://www.linkedin.com/",
+]
+
 # Common intersphinx inventories to resolve external references
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),

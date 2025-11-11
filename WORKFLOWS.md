@@ -90,3 +90,15 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 ## CI Note
 
 To enforce text hygiene in CI/CD, add a step to run `make check-mojibake`. This gate only scans `README.md` and `docs/**/*.md`, leaving `src/` and vendored code untouched.
+
+## RouterBench in CI
+
+- The `CI` workflow includes a `routerbench` job that runs when any of the following are true:
+  - Scheduled nightly run
+  - Manually triggered via “Run workflow” (workflow_dispatch)
+  - A pull request is labeled `routerbench`
+- The dataset file `routerbench_5shot.pkl` is cached via `actions/cache`. On cache miss, the job downloads from Hugging Face using `scripts/fetch_routerbench.py` (with a short retry loop). Both `data/` and `src/routerbench/` paths are populated. We do not mirror or redistribute third‑party datasets in releases.
+- Sentence-Transformers/HF models are cached between runs. If you have a private or rate-limited setup, add a repo secret `HF_TOKEN`; CI will pass it as a bearer token to Hugging Face for dataset download.
+- The job caps work with `RB_MAX_EVALS` to keep PR runs fast; nightly runs can adjust this higher.
+- If present, a `pretrain_predictors.zip` GitHub Release asset is downloaded and verified with `tools/verify_pretrained_bundle.py`, providing `data/pretrain_predictors/predictors_all-MiniLM-L12-v2_0.1.joblib` for the Compitum adapter.
+ - In CI, the `routerbench` job runs a Compitum-only evaluation via `tools/evaluate_compitum.py` (no upstream baselines or paid APIs). Full upstream RouterBench runs remain in the `Rigor` workflow.

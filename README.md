@@ -17,6 +17,14 @@ Status quick links:
 - Full Validation (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/full.yml
 - Mutation Dispatcher (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml
 
+## Rigor Levels
+
+- Core CI (always): ruff + mypy + import smoke + unit/property tests with 100% coverage on `src/compitum`.
+- Extended CI (on-demand): add the `routerbench` label to a PR or Run workflow manually to run RouterBench with cached dataset and capped evals.
+- Full Rigor (nightly/manual): RouterBench full sweep + analysis, mutation (mutmut + Cosmic Ray quick/strict), Sphinx nitpicky + linkcheck, benchmarks, certificates, and artifact publishing.
+
+To run RouterBench in a PR: add the label `routerbench`.
+
 Core value
 
 - Deterministic routing decisions, continuous feedback signals, and fairness‑controlled evaluation; evidence and artifacts are reproducible offline with pinned environments.
@@ -53,6 +61,11 @@ For Hypothesis settings parity with CI:
 - Bash: `HYPOTHESIS_PROFILE=ci pytest -q`
 
 See `configs/` and `examples/` for constraints and a synthetic benchmark.
+
+Background and paper-in-progress
+
+- Lyapunov- and geometry-first framing that informs our rigor and CI is evolving with the draft: https://github.com/PaulTiffany/Lyapunov-Orchestration-Control-Lyapunov-Policies-for-Stable-LLM-Agents
+- The project wiki tracks workflows, invariants, and evaluation notes as they stabilize.
 
 For Reviewers (NeurIPS‑style)
 

@@ -149,7 +149,11 @@ jobs:
           pytest -q tests/invariants
 
   routerbench:
-    if: github.event_name == 'schedule'
+    # Run on schedule, manual dispatch, or PRs labeled `routerbench`
+    if: >
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'routerbench'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (with submodules)
@@ -172,22 +176,78 @@ jobs:
           pip install -e .
           pip install -r src/routerbench/requirements.txt
 
+      - name: Cache HF/Sentence-Transformers models
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/torch/sentence_transformers
+            ~/.cache/huggingface/hub
+          key: st-hf-cache-${{ runner.os }}-all-MiniLM-L12-v2
+
+      - name: Cache RouterBench dataset
+        id: rb-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/routerbench_5shot.pkl
+            src/routerbench/routerbench_5shot.pkl
+          key: routerbench-5shot-v1
+
+      - name: Prefer GitHub Release pretrained bundle (best-effort)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p data/pretrain_predictors
+          pred="predictors_all-MiniLM-L12-v2_0.1.joblib"
+          if [ -f "data/pretrain_predictors/$pred" ]; then
+            echo "Pretrained predictors already present; skipping download"
+            exit 0
+          fi
+          name="pretrain_predictors.zip"
+          api_url="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases"
+          json=$(curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "X-GitHub-Api-Version: 2022-11-28" "$api_url" || true)
+          [ -z "$json" ] && echo "No releases or API unavailable" && exit 0
+          dl_url=$(printf "%s" "$json" | jq -r ".. | objects | select(.name? == \"$name\") | .url | select(.)" | head -n1)
+          if [ -z "$dl_url" ]; then echo "Asset $name not found in releases"; exit 0; fi
+          echo "Found $name; downloading"
+          curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/octet-stream" -o "$name" "$dl_url" || true
+          if [ -f "$name" ]; then
+            python tools/verify_pretrained_bundle.py --bundle "$name" --out data/pretrain_predictors || true
+          fi
+
+      - name: Fetch RouterBench dataset (HF, if missing; retry)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f src/routerbench/routerbench_5shot.pkl ] && [ ! -f data/routerbench_5shot.pkl ]; then
+            echo "Cache status: ${{ steps.rb-cache.outputs.cache-hit }}"
+            for i in 1 2 3; do
+              if HF_TOKEN="${{ secrets.HF_TOKEN }}" python scripts/fetch_routerbench.py --also-copy-to-src; then
+                echo "Fetch succeeded on attempt $i"; break
+              else
+                echo "Fetch attempt $i failed; retrying in 5s"; sleep 5
+              fi
+            done
+          else
+            echo "RouterBench dataset present; skipping fetch"
+          fi
+
       - name: Import smoke (RouterBench)
         run: |
           python - << 'PY'
           import importlib
           import sys
-          sys.path.extend(['.', './src'])
+          sys.path[:0] = ['.', './src/routerbench', './src']
           rb = importlib.import_module('routerbench.evaluate_routers')
           print('routerbench import ok:', rb.__name__)
           PY
 
-      - name: Run RouterBench tests if data present
+      - name: Compitum evaluation (fast, local)
         env:
           HYPOTHESIS_PROFILE: ci
         run: |
-          if [ -f src/routerbench/routerbench_5shot.pkl ]; then \
-            pytest -q -m routerbench ; \
+          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ]; then \
+            python tools/evaluate_compitum.py --config data/rb_clean/evaluate_routers.yaml --max-evals 200 --wtp-list "0.0001,0.001,0.01,0.1,1.0" ; \
           else \
-            echo "RouterBench data not present; skipping routerbench tests" ; \
+            echo "RouterBench data not present; skipping compitum evaluation" ; \
           fi
