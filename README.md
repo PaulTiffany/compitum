@@ -1,15 +1,20 @@
 # compitum
 
 ![CI](https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml/badge.svg)
-![Mutation (Sharded Dispatch)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml/badge.svg)
+![Docs](https://github.com/PaulTiffany/compitum/actions/workflows/docs.yml/badge.svg)
+![Notebooks](https://github.com/PaulTiffany/compitum/actions/workflows/notebooks.yml/badge.svg)
 ![Mutation (PR Label)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_on_label.yml/badge.svg)
-![Types: Strict (compitum)](https://img.shields.io/badge/types-mypy%20strict-brightgreen)
+![Mutation (Sharded Dispatcher)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml/badge.svg)
 ![Validation: Full](https://github.com/PaulTiffany/compitum/actions/workflows/full.yml/badge.svg)
+![Types: Strict (compitum)](https://img.shields.io/badge/types-mypy%20strict-brightgreen)
 
 Status quick links:
-- CI runs: https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml
-- Mutation (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml
-- Full Validation (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/full.yml
+- CI: https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml
+- Docs: https://github.com/PaulTiffany/compitum/actions/workflows/docs.yml
+- Notebooks: https://github.com/PaulTiffany/compitum/actions/workflows/notebooks.yml
+- Full Validation (manual/scheduled): https://github.com/PaulTiffany/compitum/actions/workflows/full.yml
+- Mutation (PR label): https://github.com/PaulTiffany/compitum/actions/workflows/mutation_on_label.yml
+- Mutation Dispatcher (manual/scheduled): https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml
 
 A production-ready, geometrically-aware AI router with SPD metric learning, constraint-aware
 selection (shadow prices), metric-aware KDE coherence, and Lyapunov-stable online updates.
@@ -17,7 +22,7 @@ selection (shadow prices), metric-aware KDE coherence, and Lyapunov-stable onlin
 ## Install
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e .
 ```
 
 ## Quick demo
@@ -64,6 +69,13 @@ See `configs/` and `examples/` for constraints and a synthetic benchmark.
 - Docs page: docs/Examples.md
 - Folder on GitHub: https://github.com/PaulTiffany/compitum/tree/main/examples
 - In-repo overview: examples/README.md
+
+## Notebooks
+
+- Folder: notebooks/
+- Starter: notebooks/Getting_Started.ipynb
+- Setup: notebooks/README.md
+- Wiki walkthroughs: https://github.com/PaulTiffany/compitum/wiki
 
 ## Core Science 0.1.1
 
