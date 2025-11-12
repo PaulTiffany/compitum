@@ -14,6 +14,10 @@ concurrency:
 
 jobs:
   run-sharded-mutation:
+    # Run on schedule only if explicitly enabled; always allow manual dispatch
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'schedule' && vars.ENABLE_MUTATION_SCHEDULE == 'true')
     uses: ./.github/workflows/mutation.yml
     with:
       mutmut: true
