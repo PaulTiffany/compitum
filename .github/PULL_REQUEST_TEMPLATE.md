@@ -5,6 +5,7 @@
 
 ## Labels to consider
 
+- outerbench-online � run the opt-in capped online evaluation workflow
 - `routerbench` — to run RouterBench job (guarded; caches dataset/models if present)
 - `mutation` — to run sharded mutation (mutmut + CR quick) on changed modules
 
@@ -17,4 +18,5 @@
 ## Notes
 
 - Heavy jobs are opt-in via labels/dispatch. See `WORKFLOWS.md` for details.
+
 
