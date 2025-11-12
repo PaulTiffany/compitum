@@ -1,16 +1,20 @@
 ## Summary
 
-Describe what this PR changes and why.
+- [ ] Purpose of this change is clear
+- [ ] Tests pass locally (or explain)
 
-## Checklist
+## Labels to consider
 
-- [ ] Lint: `ruff check .` passes
-- [ ] Tests: `pytest -q -m "not routerbench"` passes locally
-- [ ] Docs/README updated if behavior/usage changed
-- [ ] No large binaries/datasets or secrets included
-- [ ] Linked issues referenced (e.g., Fixes #123)
+- `routerbench` — to run RouterBench job (guarded; caches dataset/models if present)
+- `mutation` — to run sharded mutation (mutmut + CR quick) on changed modules
 
-## Notes for Reviewers
+## Checklists
 
-Anything that would help reviewers (screenshots, benchmarks, decisions).
+- [ ] CI green (lint, types, tests)
+- [ ] Docs updated if needed
+- [ ] Notebooks updated if relevant (executed via nbmake)
+
+## Notes
+
+- Heavy jobs are opt-in via labels/dispatch. See `WORKFLOWS.md` for details.
 
