@@ -1,18 +1,33 @@
 # compitum
 
-![CI](https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml/badge.svg)
-![Mutation (Sharded Dispatch)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml/badge.svg)
-![Mutation (PR Label)](https://github.com/PaulTiffany/compitum/actions/workflows/mutation_on_label.yml/badge.svg)
-![Types: Strict (compitum)](https://img.shields.io/badge/types-mypy%20strict-brightgreen)
-![Validation: Full](https://github.com/PaulTiffany/compitum/actions/workflows/full.yml/badge.svg)
+[![CI](https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml)
+[![Rigor](https://github.com/PaulTiffany/compitum/actions/workflows/rigor.yml/badge.svg?branch=main)](https://github.com/PaulTiffany/compitum/actions/workflows/rigor.yml)
+[![Docs](https://github.com/PaulTiffany/compitum/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/PaulTiffany/compitum/actions/workflows/docs.yml)
+[![Types: Strict](https://img.shields.io/badge/types-mypy%20strict-brightgreen)](./WORKFLOWS.md)
+[![RouterBench Report](https://img.shields.io/badge/RouterBench-Report-4B8BF5)](./docs/RouterBench-Summary.md)
+
+What is Compitum (in one sentence)
+
+- A deterministic, geometry‑aware router that minimizes regret without judges, using SPD metric learning, constraint‑aware selection, and Lyapunov‑stable updates.
 
 Status quick links:
-- CI runs: https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml
-- Mutation (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml
+- CI: https://github.com/PaulTiffany/compitum/actions/workflows/ci.yml
+- Rigor (unified pre-release): https://github.com/PaulTiffany/compitum/actions/workflows/rigor.yml
+- Docs: https://github.com/PaulTiffany/compitum/actions/workflows/docs.yml
 - Full Validation (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/full.yml
+- Mutation Dispatcher (nightly/manual): https://github.com/PaulTiffany/compitum/actions/workflows/mutation_dispatch.yml
 
-A production-ready, geometrically-aware AI router with SPD metric learning, constraint-aware
-selection (shadow prices), metric-aware KDE coherence, and Lyapunov-stable online updates.
+## Rigor Levels
+
+- Core CI (always): ruff + mypy + import smoke + unit/property tests with 100% coverage on `src/compitum`.
+- Extended CI (on-demand): add the `routerbench` label to a PR or Run workflow manually to run RouterBench with cached dataset and capped evals.
+- Full Rigor (nightly/manual): RouterBench full sweep + analysis, mutation (mutmut + Cosmic Ray quick/strict), Sphinx nitpicky + linkcheck, benchmarks, certificates, and artifact publishing.
+
+To run RouterBench in a PR: add the label `routerbench`.
+
+Core value
+
+- Deterministic routing decisions, continuous feedback signals, and fairness‑controlled evaluation; evidence and artifacts are reproducible offline with pinned environments.
 
 ## Install
 ```bash
@@ -34,7 +49,7 @@ Quick run:
 pytest
 ```
 
-CI‑parity run (mirrors CI deselections and markers):
+CI parity run (mirrors CI deselections and markers):
 
 ```bash
 make test-ci
@@ -46,6 +61,25 @@ For Hypothesis settings parity with CI:
 - Bash: `HYPOTHESIS_PROFILE=ci pytest -q`
 
 See `configs/` and `examples/` for constraints and a synthetic benchmark.
+
+Background and paper-in-progress
+
+- Lyapunov- and geometry-first framing that informs our rigor and CI is evolving with the draft: https://github.com/PaulTiffany/Lyapunov-Orchestration-Control-Lyapunov-Policies-for-Stable-LLM-Agents
+- The project wiki tracks workflows, invariants, and evaluation notes as they stabilize.
+
+For Reviewers (NeurIPS‑style)
+
+- Start here: `docs/Reviewer-Quickstart.md` (one‑shot steps, claims→evidence map, offline path)
+- Repro guide: `docs/Artifact-README.md`
+- Full protocol: `docs/PEER_REVIEW.md`
+
+Claims → Evidence
+
+- Deterministic, judge‑free routing → `tests/invariants/` determinism tests; `docs/Instantaneous-Feedback.md`
+- Geometry + stability (SPD, Lyapunov) → `tests/invariants/` geometry/control tests; `docs/Math-Brief.md`, `docs/SRMF-as-Lyapunov.md`
+- Constraint‑aware selection → `tests/invariants/` constraints tests; `docs/Control-Perspective.md`
+- Better regret on bounded panels → `reports/routerbench_report.md`, `docs/RouterBench-Summary.md`
+- Authenticity/certificates → `tools/verify_certificate.py`, `docs/Certificate-Schema.md`
 
 ## Community
 - Philosophy: `PHILOSOPHY.md`
@@ -65,12 +99,19 @@ See `configs/` and `examples/` for constraints and a synthetic benchmark.
 - Folder on GitHub: https://github.com/PaulTiffany/compitum/tree/main/examples
 - In-repo overview: examples/README.md
 
+## Notebooks
+
+- Folder on GitHub: notebooks/
+- Starter notebook: notebooks/Getting_Started.ipynb
+- Setup guide: notebooks/README.md
+- Related docs and walkthroughs live in the project Wiki: https://github.com/PaulTiffany/compitum/wiki
+
 ## Core Science 0.1.1
 
 - Geometry: SPD bounds, triangle inequality, ray monotonicity, update descent.
 - Stability: Lyapunov decay/saturation/recovery; ΔV proxy sequences; combined update boundedness.
 - Coherence: monotone outward, ±v symmetry, inward score direction, mixture discrimination.
-- Constraints: feasibility monotone; duals slack ≈ 0, boundary ≈ 0; monotone/scale sanity.
+- Constraints: feasibility monotone; duals slack ≥ 0, boundary ≥ 0; monotone/scale sanity.
 - Determinism: repeated/batch determinism; paraphrase flip budget + explainability.
 - Pedagogy: practice raises evidence/utility (beta_s > 0); prepared environment fixes constraints.
 
@@ -87,7 +128,7 @@ pytest -q -m pedagogy                # control of error
 
 ## RouterBench Data (5-shot pickle)
 
-Some RouterBench‑based scripts expect a local copy of `routerbench_5shot.pkl` (not redistributed here).
+Some RouterBench-based scripts expect a local copy of `routerbench_5shot.pkl` (not redistributed here).
 
 - Download from: https://huggingface.co/datasets/withmartian/routerbench/blob/main/routerbench_5shot.pkl
 - Or use the resolve URL in the fetch script (recommended):
@@ -181,10 +222,18 @@ This will save the pre-trained predictors to `data/pretrain_predictors/predictor
 Execute the `evaluate_routers.py` script as a module within the `routerbench` package. This command will run the full evaluation and generate the results.
 
 ```bash
-set PYTHONPATH=C:\Users\paulc\projects\compitum\src && .\.venv-routerbench\Scripts\python.exe -m routerbench.evaluate_routers --config data\routerbench\evaluate_routers.yaml --local --data-path routerbench_5shot.pkl
+set PYTHONPATH=C:\Users\paulc\projects\compitum\src && .\.venv-routerbench\Scripts\python.exe -m routerbench.evaluate_routers --config data\routerbench\evaluate_routers.yaml --local --data-path data\routerbench_5shot.pkl
 ```
 
 This command will generate CSV and PKL files in the `data/eval_results` directory, containing the evaluation metrics for various router models.
+## Reproducibility & Authenticity
+
+- Standard dataset path: `data/routerbench_5shot.pkl` (config updated).
+- Quick checks:
+  - `python tools/verify_repro.py` (submodule clean/pinned, dataset present, pins detected)
+  - `python tools/verify_certificate.py <cert.json>` (schema-validate + canonical hash)
+- Attestations: release manifests enumerate artifact SHA-256 digests; see `docs/Artifact-README.md`.
+- CLI audits: add `--audit` to `compitum route` to write a redacted run record with commit provenance.
 
 ## Dev Tips
 
