@@ -152,7 +152,11 @@ jobs:
           pytest -q tests/invariants
 
   routerbench:
-    if: github.event_name == 'schedule'
+    # Run on schedule only if explicitly enabled, or on manual dispatch, or label `routerbench` on PRs
+    if: >
+      (github.event_name == 'schedule' && vars.ENABLE_ROUTERBENCH == 'true') ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'routerbench'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (with submodules)
