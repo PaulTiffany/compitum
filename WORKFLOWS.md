@@ -8,7 +8,8 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 - What it does:
   - Lint (ruff), types (mypy), import smoke
   - Tests with CI profile; excludes routerbench and a few CI‑unfriendly strict cases
-  - Matrix: ubuntu-latest, windows-latest
+- Matrix: ubuntu-latest, windows-latest
+- Deps: minimal (no `[dev]` extras); installs only ruff/mypy/pytest bits
 - Stability: concurrency enabled; job timeouts applied
 
 ## Docs
@@ -23,11 +24,15 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 - Name: `Validation: Full`
 - Triggers: workflow_dispatch, schedule (daily)
 - What it does:
-  - Installs dev deps; runs heavy benches (scheduled only)
-  - Optional Cosmic Ray (strict) and mutmut full runs
-  - RouterBench guarded tests if dataset present
+  - Installs minimal deps for core tasks
+  - Optional Cosmic Ray (strict) and mutmut full runs (dispatch inputs)
+  - Optional RouterBench steps (guarded by inputs)
   - Uploads artifacts
-- Notes: Strict CR gating set to 1.0; heavy benches skipped on manual run
+- Inputs:
+  - `mutation` / `mutmut` / `mutation_sharded`: toggle heavy mutation phases
+  - `rb_enable`: enable RouterBench venv/install/run
+  - `rb_fetch`: attempt dataset fetch if missing (best-effort)
+- Notes: Strict CR gating set to 1.0; heavy benches scheduled only
 
 ## Mutation: Reusable Shards
 - Name: `Mutation: Reusable Shards` (reusable via `workflow_call`)
@@ -45,7 +50,7 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 
 ## Mutation: Dispatcher
 - Name: `Mutation: Dispatcher`
-- Triggers: workflow_dispatch, schedule (daily)
+- Triggers: workflow_dispatch (schedule available but consider opt-in)
 - What it does:
   - Calls `Mutation: Reusable Shards` with mutmut + CR quick
   - Use for nightly or manual mutation validation across the codebase
@@ -65,6 +70,27 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
   - Quality gates (ruff, mypy, pytest)
   - Build sdist/wheel; twine check; smoke install test
   - Upload artifacts (dry-run by default)
+- Final stamping steps remain commented until v0.1.1 approval
+
+## Notebooks
+- Name: `Notebooks`
+- Triggers: pull_request changes under `notebooks/**`, push to main touching notebooks
+- What it does:
+  - Installs minimal runtime + nbmake
+  - Executes notebooks; skips gracefully if none present
+
+## RouterBench separation of concerns
+- Default CI/rigor runs do not install or execute RouterBench unless explicitly enabled.
+- Enable options:
+  - CI: add label `routerbench` to PR, or run `CI` via dispatch; optionally set repo var `ENABLE_ROUTERBENCH=true` for scheduled CI.
+  - Full validation: pass inputs `rb_enable=true` (and `rb_fetch=true` if dataset fetch desired).
+- Data caching: workflow caches dataset paths and HF/ST model caches when enabled.
+
+## Mutation separation of concerns
+- Heavy mutation phases are opt-in:
+  - PRs: add label `mutation` to run sharded mutmut + CR quick on changed modules.
+  - Manual: dispatch `Mutation: Dispatcher` or `Validation: Full` with mutation inputs.
+  - Nightly: scheduler can be enabled, but remains opt-in by default.
 
 ## Notes on CI‑only test selection
 - A small number of strict tests are deselected in CI to keep runs stable on shared runners; local runs remain strict.
