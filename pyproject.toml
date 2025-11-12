@@ -21,6 +21,7 @@ dev = [
  "hypothesis>=6.98",
  "jsonschema>=4.0",
  "pytest-cov>=5.0",
+ "pytest-nbmake>=1.5",
  "ruff>=0.5.0",
  "mypy>=1.10",
  "lightgbm>=4.3 ; python_version < '3.13'",
