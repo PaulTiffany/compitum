@@ -15,6 +15,14 @@ on:
         description: 'Run sharded mutation workflow (mutmut + CR quick)'
         required: false
         default: 'false'
+      rb_enable:
+        description: 'Enable RouterBench steps (install + run)'
+        required: false
+        default: 'false'
+      rb_fetch:
+        description: 'Attempt dataset fetch if missing (requires network)'
+        required: false
+        default: 'false'
   schedule:
     - cron: '0 7 * * *'
 
@@ -121,6 +129,7 @@ jobs:
           fi
 
       - name: Prepare routerbench venv and deps
+        if: ${{ inputs.rb_enable == 'true' }}
         run: |
           python -m venv .venv-routerbench
           . .venv-routerbench/bin/activate
@@ -128,7 +137,8 @@ jobs:
           pip install -r src/routerbench/requirements.txt
           pip install -e .
 
-      - name: Fetch RouterBench dataset (if missing)
+      - name: Fetch RouterBench dataset (if enabled and missing)
+        if: ${{ inputs.rb_enable == 'true' && inputs.rb_fetch == 'true' }}
         run: |
           . .venv-routerbench/bin/activate
           if [ ! -f src/routerbench/routerbench_5shot.pkl ] && [ ! -f data/routerbench_5shot.pkl ]; then \
@@ -138,6 +148,7 @@ jobs:
           fi
 
       - name: RouterBench (tests on Windows, local eval on Linux)
+        if: ${{ inputs.rb_enable == 'true' }}
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           HYPOTHESIS_PROFILE: ci
@@ -155,6 +166,7 @@ jobs:
           fi
 
       - name: Peer-review orchestration (guarded)
+        if: ${{ inputs.rb_enable == 'true' }}
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
         run: |
@@ -171,4 +183,3 @@ jobs:
             data/rb_clean/eval_results/**/*.pkl
           retention-days: 14
   # mutation-sharded job temporarily disabled due to reusable workflow YAML validation; re-enable after fix
-
