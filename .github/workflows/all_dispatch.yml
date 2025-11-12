@@ -33,7 +33,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'CI',
+              workflow_id: '.github/workflows/ci.yml',
               ref: core.getInput('ref') || context.ref,
             });
 
@@ -44,7 +44,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'Docs',
+              workflow_id: '.github/workflows/docs.yml',
               ref: core.getInput('ref') || context.ref,
             });
 
@@ -55,7 +55,7 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'Release',
+              workflow_id: '.github/workflows/release.yml',
               ref: core.getInput('ref') || context.ref,
             });
 
@@ -83,4 +83,3 @@ jobs:
               workflow_id: '.github/workflows/mutation_dispatch.yml',
               ref: core.getInput('ref') || context.ref,
             });
-
