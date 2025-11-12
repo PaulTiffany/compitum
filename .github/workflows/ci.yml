@@ -186,11 +186,13 @@ jobs:
           pip install -r src/routerbench/requirements.txt
 
       - name: Import smoke (RouterBench)
+        env:
+          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src:${{ github.workspace }}/src/routerbench
         run: |
           python - << 'PY'
           import importlib
           import sys
-          sys.path.extend(['.', './src'])
+          sys.path.extend(['.', './src', './src/routerbench'])
           rb = importlib.import_module('routerbench.evaluate_routers')
           print('routerbench import ok:', rb.__name__)
           PY
