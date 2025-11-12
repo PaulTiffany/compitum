@@ -128,15 +128,30 @@ jobs:
           pip install -r src/routerbench/requirements.txt
           pip install -e .
 
-      - name: RouterBench tests (guarded)
+      - name: Fetch RouterBench dataset (if missing)
+        run: |
+          . .venv-routerbench/bin/activate
+          if [ ! -f src/routerbench/routerbench_5shot.pkl ] && [ ! -f data/routerbench_5shot.pkl ]; then \
+            python scripts/fetch_routerbench.py --also-copy-to-src ; \
+          else \
+            echo "RouterBench dataset present; skipping fetch" ; \
+          fi
+
+      - name: RouterBench (tests on Windows, local eval on Linux)
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           HYPOTHESIS_PROFILE: ci
+          RB_MAX_EVALS: 200
         run: |
           if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ] || [ -f routerbench_5shot.pkl ]; then \
-            . .venv-routerbench/bin/activate && python -m pytest -q -m routerbench ; \
+            . .venv-routerbench/bin/activate ; \
+            if [ "$RUNNER_OS" = "Windows" ]; then \
+              python -m pytest -q -m routerbench ; \
+            else \
+              python tools/run_routerbench_clean.py --config data/rb_clean/evaluate_routers.yaml --local ; \
+            fi ; \
           else \
-            echo "RouterBench dataset missing; skipping routerbench tests" ; \
+            echo "RouterBench dataset missing; skipping routerbench run" ; \
           fi
 
       - name: Peer-review orchestration (guarded)

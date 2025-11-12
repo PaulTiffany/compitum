@@ -99,6 +99,13 @@ Claims → Evidence
 - Folder on GitHub: https://github.com/PaulTiffany/compitum/tree/main/examples
 - In-repo overview: examples/README.md
 
+## Notebooks
+
+- Folder on GitHub: notebooks/
+- Starter notebook: notebooks/Getting_Started.ipynb
+- Setup guide: notebooks/README.md
+- Related docs and walkthroughs live in the project Wiki: https://github.com/PaulTiffany/compitum/wiki
+
 ## Core Science 0.1.1
 
 - Geometry: SPD bounds, triangle inequality, ray monotonicity, update descent.
