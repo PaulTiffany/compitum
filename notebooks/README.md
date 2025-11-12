@@ -11,7 +11,7 @@ Quick start
 Commands
 - Windows (PowerShell)
   - python -m venv .venv
-  - .venv\\Scripts\\Activate.ps1
+  - .venv\Scripts\Activate.ps1
   - pip install --upgrade pip
   - pip install jupyter
   - pip install -e .
@@ -31,4 +31,4 @@ Notes
 - GitHub renders `.ipynb` files directly in the repository UI.
 - If running from a subfolder, make sure your working directory is the repo root so `pip install -e .` can find `pyproject.toml`.
 - Some examples may reference optional extras (e.g., RouterBench). See `README.md` for setup details.
-
+- New: notebooks/Router_Workflow_Tour.ipynb (lightweight tour; CI-friendly)

@@ -1,7 +1,12 @@
 name: Release
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry-run (do not publish assets)'
+        required: false
+        default: 'true'
   push:
     tags:
       - 'v*'
@@ -25,10 +30,11 @@ jobs:
             pyproject.toml
 
       # Preflight quality gates to fail fast before packaging
-      - name: Install dev dependencies
+      - name: Install quality deps (minimal)
         run: |
           python -m pip install --upgrade pip
-          pip install -e .[dev]
+          pip install -e .
+          pip install ruff mypy pytest pytest-cov hypothesis jsonschema types-PyYAML build twine
 
       - name: Ruff (lint)
         run: ruff check .
@@ -37,14 +43,19 @@ jobs:
         run: mypy -p compitum --ignore-missing-imports --hide-error-context
 
       - name: PyTest (unit + property tests)
+        shell: bash
         env:
           HYPOTHESIS_PROFILE: ci
           OMP_NUM_THREADS: 1
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
-        run: >
-          pytest -q -m "not routerbench" --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
+        run: |
+          set -e
+          pytest -m "not routerbench and not heavy_bench" -ra -vv --maxfail=1 \
+            --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords \
+            --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths \
+            --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
 
       - name: Install build tools
         run: |
@@ -81,19 +92,31 @@ jobs:
           git clone --depth 1 https://github.com/PaulTiffany/paleae.git "$RUNNER_TEMP/paleae"
           python tools/build_llm_context_pack.py --paleae-path "$RUNNER_TEMP/paleae/paleae.py" --out docs/repo_snapshot.jsonl --format jsonl --target-size 1MB
 
-      # DRY RUN: Commented out to avoid publishing during validation
-      # - name: Upload artifacts to GitHub Release
-      #   uses: softprops/action-gh-release@v2
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     files: |
-      #       dist/*
-      #       docs/repo_snapshot.jsonl
+      # Publish assets to GitHub Release when not a dry-run
+      - name: Upload artifacts to GitHub Release (tags, publish)
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') && github.event_name == 'push'
+        with:
+          files: |
+            dist/*
+            docs/repo_snapshot.jsonl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload artifacts (Actions, dry-run)
+      - name: Upload artifacts to GitHub Release (manual dispatch, publish)
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run != 'true'
+        with:
+          files: |
+            dist/*
+            docs/repo_snapshot.jsonl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts (Actions)
         uses: actions/upload-artifact@v4
         with:
-          name: release-dry-run
+          name: release-artifacts
           path: |
             dist/*
             docs/repo_snapshot.jsonl
