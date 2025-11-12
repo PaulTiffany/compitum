@@ -72,14 +72,20 @@ jobs:
           python -c "import compitum; from compitum import metric; from compitum.cli import main as cli_main; print('import ok:', __import__('compitum').__name__, hasattr(metric, 'SymbolicManifoldMetric'))"
 
       - name: Run tests (exclude routerbench)
+        shell: bash
         env:
           HYPOTHESIS_PROFILE: ci
           OMP_NUM_THREADS: 1
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
-        run: >
-          pytest -q -m "not routerbench" --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
+        run: |
+          set -e
+          echo "Running pytest with verbose summary for CI..."
+          pytest -m "not routerbench and not heavy_bench" -ra -vv --maxfail=1 \
+            --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords \
+            --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths \
+            --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
 
   security:
     runs-on: ubuntu-latest
@@ -180,11 +186,13 @@ jobs:
           pip install -r src/routerbench/requirements.txt
 
       - name: Import smoke (RouterBench)
+        env:
+          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src:${{ github.workspace }}/src/routerbench
         run: |
           python - << 'PY'
           import importlib
           import sys
-          sys.path.extend(['.', './src'])
+          sys.path.extend(['.', './src', './src/routerbench'])
           rb = importlib.import_module('routerbench.evaluate_routers')
           print('routerbench import ok:', rb.__name__)
           PY
