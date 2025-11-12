@@ -1,0 +1,252 @@
+name: Rigor
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rigor-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint • Types • Security • Tests • Benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            pyproject.toml
+
+      - name: Install minimal rigor deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install ruff mypy bandit pytest pytest-cov hypothesis jsonschema types-PyYAML
+
+      - name: Ruff (100-col lines)
+        run: ruff check .
+
+      - name: MyPy (strict)
+        run: mypy --strict --disable-error-code no-any-return src/compitum
+
+      - name: Bandit (security)
+        run: bandit -q -r src/compitum examples scripts -lll -iii
+
+      - name: Import smoke
+        env:
+          PYTHONWARNINGS: default
+        run: |
+          python - << 'PY'
+          import compitum
+          from compitum import utils
+          from compitum.cli import main as cli_main
+          print('compitum import ok; modules:', list(sorted(m for m in dir(compitum) if not m.startswith('_')))[:5])
+          PY
+
+      - name: Unit + property tests (100% cov line+branch)
+        env:
+          HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: >
+          pytest -q -m "not routerbench"
+          --cov=compitum --cov-branch --cov-report=term-missing
+          --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords
+          --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths
+          --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
+
+      - name: Invariants suite
+        env:
+          HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: pytest -q tests/invariants
+
+      - name: PyTest benchmarks (collect + JSON)
+        env:
+          HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          mkdir -p reports
+          pytest -q benchmarks --benchmark-json=reports/benchmarks.json || true
+
+      - name: Upload quality artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rigor-quality-artifacts
+          path: |
+            .coverage*
+            reports/benchmarks.json
+          retention-days: 7
+
+  mutation-light:
+    name: Mutation (mutmut shards + CR quick)
+    uses: ./.github/workflows/mutation.yml
+    with:
+      mutmut: true
+      cr_quick: true
+      mutmut_gate: false
+      cr_score_threshold: '1.0'
+      cr_timeout: '240'
+
+  routerbench-and-analysis:
+    if: >
+      (github.event_name == 'schedule' && vars.ENABLE_ROUTERBENCH == 'true') ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'routerbench'))
+    name: RouterBench • Compitum Eval • Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            pyproject.toml
+            src/routerbench/requirements.txt
+
+      - name: Prepare RouterBench venv and deps
+        run: |
+          python -m venv .venv-routerbench
+          . .venv-routerbench/bin/activate
+          pip install --upgrade pip
+          pip install -r src/routerbench/requirements.txt
+          pip install -e .
+
+      - name: Cache HF/Sentence-Transformers models
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/torch/sentence_transformers
+            ~/.cache/huggingface/hub
+          key: st-hf-cache-${{ runner.os }}-all-MiniLM-L12-v2
+
+      - name: Verify reproducibility surface
+        run: |
+          . .venv-routerbench/bin/activate
+          python tools/verify_repro.py || true
+
+      - name: Fetch RouterBench dataset (if missing)
+        run: |
+          . .venv-routerbench/bin/activate
+          if [ ! -f src/routerbench/routerbench_5shot.pkl ] && [ ! -f data/routerbench_5shot.pkl ]; then \
+            for i in 1 2 3; do \
+              if HF_TOKEN="${{ secrets.HF_TOKEN }}" python scripts/fetch_routerbench.py --also-copy-to-src; then \
+                echo "Fetch succeeded on attempt $i"; break; \
+              else \
+                echo "Fetch attempt $i failed; retrying in 5s"; sleep 5; \
+              fi; \
+            done; \
+          else \
+            echo "RouterBench dataset present; skipping fetch" ; \
+          fi
+
+      - name: RouterBench local evaluation (guarded)
+        env:
+          RB_MAX_EVALS: 200
+          HYPOTHESIS_PROFILE: ci
+        run: |
+          . .venv-routerbench/bin/activate
+          # Best-effort download of pretrained predictors from GitHub Releases (ours)
+          pred="predictors_all-MiniLM-L12-v2_0.1.joblib"
+          mkdir -p data/pretrain_predictors
+          if [ ! -f data/pretrain_predictors/$pred ]; then \
+            name="pretrain_predictors.zip" ; \
+            api_url="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases" ; \
+            json=$(curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "X-GitHub-Api-Version: 2022-11-28" "$api_url" || true) ; \
+            dl_url=$(printf "%s" "$json" | jq -r ".. | objects | select(.name? == \"$name\") | .url | select(.)" | head -n1) ; \
+            if [ -n "$dl_url" ]; then \
+              curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H "Accept: application/octet-stream" -o "$name" "$dl_url" || true ; \
+              python tools/verify_pretrained_bundle.py --bundle "$name" --out data/pretrain_predictors || true ; \
+            fi ; \
+          fi
+          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ]; then \
+            python tools/run_routerbench_clean.py --config data/rb_clean/evaluate_routers.yaml --local ; \
+          else \
+            echo "RouterBench dataset missing; skipping routerbench run" ; \
+          fi
+
+      - name: Compitum evaluation + HTML report
+        env:
+          HYPOTHESIS_PROFILE: ci
+        run: |
+          . .venv-routerbench/bin/activate
+          python tools/ci_orchestrator.py --all --config data/rb_clean/evaluate_routers.yaml --wtp-list "0.0001,0.001,0.01,0.1,1.0"
+
+      - name: Upload RouterBench artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rigor-routerbench-artifacts
+          path: |
+            reports/**
+            data/rb_clean/eval_results/**/*.csv
+            data/rb_clean/eval_results/**/*.pkl
+          retention-days: 7
+
+  docs:
+    name: Sphinx (nitpicky) • Linkcheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: |
+            pyproject.toml
+            docs/requirements.txt
+
+      - name: Install docs deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r docs/requirements.txt
+          pip install -e .
+
+      - name: Text hygiene (mojibake check)
+        run: |
+          python tools/check_mojibake.py
+
+      - name: Link check
+        run: sphinx-build -W -b linkcheck docs docs_build/linkcheck
+
+      - name: Build docs (HTML, nitpicky)
+        run: sphinx-build -n -W -b html docs docs_build/html
+
+      - name: Upload docs HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: rigor-docs-html
+          path: docs_build/html
+          retention-days: 7
