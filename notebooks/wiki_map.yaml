@@ -2,10 +2,12 @@
   notebook: notebooks/Examples_Tour.ipynb
   marker: examples_tour
   heading: Examples Tour Notebook
+  execute: true
 - page: compitum.wiki/Getting-Started.md
   notebook: notebooks/Getting_Started.ipynb
   marker: getting_started
   heading: Getting Started Notebook
+  execute: true
 - page: compitum.wiki/Glossary.md
   notebook: notebooks/wiki_snippets/Glossary/auto_glossary_1.ipynb
   marker: auto_glossary_1
