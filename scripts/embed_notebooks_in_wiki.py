@@ -46,6 +46,16 @@ except Exception:
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 
+def read_text_relaxed(path: pathlib.Path) -> str:
+    for enc in ("utf-8", "utf-8-sig", "cp1252", "latin-1"):
+        try:
+            return path.read_text(encoding=enc)
+        except UnicodeDecodeError:
+            continue
+    data = path.read_bytes()
+    return data.decode("utf-8", errors="ignore")
+
+
 def run(cmd: List[str]) -> None:
     proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     if proc.returncode != 0:
@@ -195,7 +205,7 @@ def main() -> None:
             md_text = links + "\n\n" + md_text
 
             # Update wiki page
-            page_text = page_path.read_text(encoding="utf-8")
+            page_text = read_text_relaxed(page_path)
             new_text = upsert_marker_block(page_text, marker, md_text, heading)
             if new_text != page_text:
                 page_path.write_text(new_text, encoding="utf-8")
@@ -210,4 +220,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
