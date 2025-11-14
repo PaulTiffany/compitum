@@ -103,7 +103,13 @@ def github_and_nbviewer_links(repo: str, branch: str, nb_rel: str) -> str:
     return "".join(parts)
 
 
-def nbconvert_to_markdown(nb_path: pathlib.Path, out_dir: pathlib.Path, out_name: str) -> pathlib.Path:
+def nbconvert_to_markdown(
+    nb_path: pathlib.Path,
+    out_dir: pathlib.Path,
+    out_name: str,
+    execute: bool = False,
+    timeout: int = 600,
+) -> pathlib.Path:
     ensure_dirs(out_dir)
     cmd = [
         sys.executable,
@@ -118,6 +124,8 @@ def nbconvert_to_markdown(nb_path: pathlib.Path, out_dir: pathlib.Path, out_name
         "--output-dir",
         str(out_dir),
     ]
+    if execute:
+        cmd.extend(["--execute", "--ExecutePreprocessor.timeout", str(timeout)])
     run(cmd)
     md_path = out_dir / f"{out_name}.md"
     if not md_path.exists():
@@ -167,6 +175,8 @@ def main() -> None:
     ap.add_argument("--repo", default="PaulTiffany/compitum")
     ap.add_argument("--branch", default="main")
     ap.add_argument("--check", action="store_true", help="Do not write files; only check commands.")
+    ap.add_argument("--execute-all", action="store_true", help="Execute all mapped notebooks before conversion.")
+    ap.add_argument("--timeout", type=int, default=600, help="Execution timeout per notebook (s)")
     args = ap.parse_args()
 
     mapping_path = pathlib.Path(args.map)
@@ -177,6 +187,7 @@ def main() -> None:
         nb_rel = entry["notebook"]
         marker = entry["marker"]
         heading = entry.get("heading")
+        execute = bool(entry.get("execute", False) or args.execute_all)
 
         page_path = ROOT / page_rel
         nb_path = ROOT / nb_rel
@@ -190,19 +201,30 @@ def main() -> None:
         md_path = gen_root / f"{out_name}.md"
         assets_dirname = f"_generated/{marker}/{out_name}_files"
 
-        print(f"[embed] Converting {nb_rel} -> {md_path}")
+        print(f"[embed] Converting {nb_rel} -> {md_path}{' (execute)' if execute else ''}")
         if not args.check:
             # Clean previous
             if gen_root.exists():
                 shutil.rmtree(gen_root)
             ensure_dirs(gen_root)
-            produced_md = nbconvert_to_markdown(nb_path, gen_root, out_name)
+            produced_md = nbconvert_to_markdown(nb_path, gen_root, out_name, execute=execute, timeout=args.timeout)
             md_text = produced_md.read_text(encoding="utf-8")
             md_text = rewrite_asset_paths(md_text, assets_dirname)
 
             # Prepend quick links
             links = github_and_nbviewer_links(args.repo, args.branch, nb_rel)
             md_text = links + "\n\n" + md_text
+
+            # Optional presentation tweaks
+            collapse = bool(entry.get("collapse", False))
+            strip_title = bool(entry.get("strip_title", False))
+            summary = entry.get("summary") or "Rendered notebook (click to expand)"
+
+            if strip_title:
+                md_text = re.sub(r"^# .*\n+", "", md_text, count=1)
+
+            if collapse:
+                md_text = f"<details><summary>{summary}</summary>\n\n" + md_text + "\n\n</details>"
 
             # Update wiki page
             page_text = read_text_relaxed(page_path)

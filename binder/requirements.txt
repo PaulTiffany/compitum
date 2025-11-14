@@ -1,5 +1,6 @@
 # Minimal Binder environment: install Jupyter and the project from source
 jupyter
 ipykernel
+matplotlib
 -e .
 
