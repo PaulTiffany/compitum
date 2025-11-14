@@ -146,3 +146,52 @@
   notebook: notebooks/wiki_snippets/Verification/auto_verification_1.ipynb
   marker: auto_verification_1
   heading: null
+- page: compitum.wiki/Examples.md
+  notebook: notebooks/examples/demo_route.ipynb
+  marker: examples_demo_route
+  heading: 'Example: demo_route'
+  collapse: true
+  strip_title: true
+  summary: 'Example: demo_route (rendered)'
+- page: compitum.wiki/Examples.md
+  notebook: notebooks/examples/certificate_card.ipynb
+  marker: examples_certificate_card
+  heading: 'Example: certificate_card'
+  collapse: true
+  strip_title: true
+  summary: 'Example: certificate_card (rendered)'
+- page: compitum.wiki/Examples.md
+  notebook: notebooks/examples/synth_bench.ipynb
+  marker: examples_synth_bench
+  heading: 'Example: synth_bench'
+  collapse: true
+  strip_title: true
+  summary: 'Example: synth_bench (rendered)'
+- page: compitum.wiki/Examples.md
+  notebook: notebooks/examples/pedagogy_control_of_error.ipynb
+  marker: examples_pedagogy_control_of_error
+  heading: 'Example: pedagogy_control_of_error'
+  collapse: true
+  strip_title: true
+  summary: 'Example: pedagogy_control_of_error (rendered)'
+- page: compitum.wiki/Examples.md
+  notebook: notebooks/examples/batch_route_demo.ipynb
+  marker: examples_batch_route_demo
+  heading: 'Example: batch_route_demo'
+  collapse: true
+  strip_title: true
+  summary: 'Example: batch_route_demo (rendered)'
+- page: compitum.wiki/Examples.md
+  notebook: notebooks/examples/explain_certificate_file.ipynb
+  marker: examples_explain_certificate_file
+  heading: 'Example: explain_certificate_file'
+  collapse: true
+  strip_title: true
+  summary: 'Example: explain_certificate_file (rendered)'
+- page: compitum.wiki/Examples.md
+  notebook: notebooks/examples/bridge_demo.ipynb
+  marker: examples_bridge_demo
+  heading: 'Example: bridge_demo'
+  collapse: true
+  strip_title: true
+  summary: 'Example: bridge_demo (rendered)'
