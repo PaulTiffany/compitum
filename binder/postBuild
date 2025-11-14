@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+# Install a friendly kernel name
+python -m ipykernel install --user --name compitum --display-name "Python (compitum)"
+
+echo "Binder postBuild completed."
+

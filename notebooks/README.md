@@ -32,3 +32,15 @@ Notes
 - If running from a subfolder, make sure your working directory is the repo root so `pip install -e .` can find `pyproject.toml`.
 - Some examples may reference optional extras (e.g., RouterBench). See `README.md` for setup details.
 
+- Router_Workflow_Tour.ipynb (lightweight tour; CI-friendly)
+- CLI_Routing_From_Prompt.ipynb (CLI usage in notebook form)
+- Examples_Tour.ipynb (examples index and import check)
+- Integration_Snippets.ipynb (integration scaffold and references)
+
+Embedding into the Wiki
+- Define notebook→page mappings in `notebooks/wiki_map.yaml`.
+- Generate and inject Markdown blocks into wiki pages:
+  - Dry run: `python scripts/embed_notebooks_in_wiki.py --check`
+  - Apply: `python scripts/embed_notebooks_in_wiki.py`
+- The script writes generated assets under `compitum.wiki/_generated/<marker>/` and
+  updates the target page between `<!-- NOTEBOOK:<marker>:BEGIN/END -->` markers.
