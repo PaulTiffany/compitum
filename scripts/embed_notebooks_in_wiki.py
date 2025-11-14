@@ -209,6 +209,18 @@ def main() -> None:
             links = github_and_nbviewer_links(args.repo, args.branch, nb_rel)
             md_text = links + "\n\n" + md_text
 
+            # Optional presentation tweaks
+            collapse = bool(entry.get("collapse", False))
+            strip_title = bool(entry.get("strip_title", False))
+            summary = entry.get("summary") or "Rendered notebook (click to expand)"
+
+            if strip_title:
+                # Remove the first H1 line if present to avoid double titles
+                md_text = re.sub(r"^# .*\n+", "", md_text, count=1)
+
+            if collapse:
+                md_text = f"<details><summary>{summary}</summary>\n\n" + md_text + "\n\n</details>"
+
             # Update wiki page
             page_text = read_text_relaxed(page_path)
             new_text = upsert_marker_block(page_text, marker, md_text, heading)
