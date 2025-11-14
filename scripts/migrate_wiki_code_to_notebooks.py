@@ -113,9 +113,9 @@ def make_notebook(code: str, title: str) -> str:
         ],
         "metadata": {
             "kernelspec": {
-                "display_name": "Python (compitum)",
+                "display_name": "Python 3",
                 "language": "python",
-                "name": "compitum",
+                "name": "python3",
             },
             "language_info": {"name": "python"},
         },
