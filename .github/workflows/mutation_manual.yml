@@ -1,0 +1,24 @@
+name: Mutation (manual)
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation-manual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-sharded-mutation:
+    uses: ./.github/workflows/mutation.yml
+    with:
+      mutmut: true
+      mutmut_gate: false
+      cr_quick: true
+      cr_full: false
+      cr_gate: false
+      cr_score_threshold: '0.0'
+    secrets: inherit
+
