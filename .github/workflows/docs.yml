@@ -19,6 +19,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,9 +47,23 @@ jobs:
           sphinx-build -n -W -b html docs docs_build/html
 
       - name: Build LLM snapshot (Paleae)
+        env:
+          PALEAE_REF: ${{ vars.PALEAE_REF }}
         run: |
-          git clone --depth 1 https://github.com/PaulTiffany/paleae.git "$RUNNER_TEMP/paleae"
-          python tools/build_llm_context_pack.py --paleae-path "$RUNNER_TEMP/paleae/paleae.py" --out docs/repo_snapshot.jsonl --format jsonl --target-size 1MB
+          set -euo pipefail
+          REPO_URL="https://github.com/PaulTiffany/paleae.git"
+          CLONE_DIR="$RUNNER_TEMP/paleae"
+          if [ -n "${PALEAE_REF:-}" ]; then
+            echo "Cloning Paleae at ref '${PALEAE_REF}' for determinism"
+            git clone --depth 1 --branch "$PALEAE_REF" "$REPO_URL" "$CLONE_DIR" || {
+              echo "Ref '${PALEAE_REF}' not found; falling back to default";
+              git clone --depth 1 "$REPO_URL" "$CLONE_DIR";
+            }
+          else
+            echo "PALEAE_REF not set; cloning default branch"
+            git clone --depth 1 "$REPO_URL" "$CLONE_DIR"
+          fi
+          python tools/build_llm_context_pack.py --paleae-path "$CLONE_DIR/paleae.py" --out docs/repo_snapshot.jsonl --format jsonl --target-size 1MB
 
       - name: Assemble site (hero index + docs under /docs)
         run: |
@@ -89,6 +104,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

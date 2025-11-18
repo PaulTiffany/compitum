@@ -19,10 +19,10 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'schedule' && vars.ENABLE_MUTATION_SCHEDULE == 'true')
     uses: ./.github/workflows/mutation.yml
+    timeout-minutes: 120
     with:
       mutmut: true
       mutmut_gate: false
       cr_quick: true
       cr_full: false
     secrets: inherit
-
