@@ -35,6 +35,8 @@ jobs:
       - name: Dispatch CI
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.DISPATCH_TOKEN != '' && secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
+        with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
@@ -46,6 +48,8 @@ jobs:
       - name: Dispatch Docs
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.DISPATCH_TOKEN != '' && secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
+        with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
@@ -56,6 +60,8 @@ jobs:
 
       - name: Dispatch Release (dry-run)
         uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.DISPATCH_TOKEN != '' && secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
@@ -69,6 +75,8 @@ jobs:
         if: inputs.run_full == 'true'
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.DISPATCH_TOKEN != '' && secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
+        with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
@@ -81,6 +89,8 @@ jobs:
       - name: Optionally dispatch Mutation (sharded)
         if: inputs.run_mutation == 'true'
         uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.DISPATCH_TOKEN != '' && secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
         with:
           script: |
             await github.rest.actions.createWorkflowDispatch({
