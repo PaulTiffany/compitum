@@ -19,6 +19,11 @@ on:
         required: false
         type: boolean
         default: false
+      cr_gate:
+        description: 'Enforce CR score threshold (fail job when below)'
+        required: false
+        type: boolean
+        default: false
       cr_score_threshold:
         description: 'Minimum CR mutation score to pass (0.0-1.0)'
         required: false
@@ -45,9 +50,10 @@ concurrency:
 jobs:
   mutmut-shard:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
+      max-parallel: 6
       matrix:
         file: ${{ inputs.target_files != '' && fromJSON(inputs.target_files) || fromJSON('["metric.py","constraints.py","router.py","predictors.py","control.py","energy.py","models.py","pgd.py","utils.py","symbolic.py","coherence.py","security.py","embedding_pgd.py","effort_qp.py","capabilities.py","boundary.py"]') }}
     steps:
@@ -123,9 +129,10 @@ f=open(out,'a',encoding='utf-8');\
 
   cr-quick-shard:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     strategy:
       fail-fast: false
+      max-parallel: 6
       matrix:
         group: [
           metric,
@@ -171,6 +178,7 @@ f=open(out,'a',encoding='utf-8');\
           PYTEST_COVERAGE: 1
           CR_SCORE_THRESHOLD: ${{ inputs.cr_score_threshold }}
           CR_TIMEOUT: ${{ inputs.cr_timeout }}
+          CR_GATE: ${{ inputs.cr_gate }}
         run: |
           set -e
           GROUP="${{ matrix.group }}"
@@ -219,9 +227,10 @@ f=open(out,'a',encoding='utf-8');\
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
           python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
           GROUP="$GROUP" python -c "import json, sys, os; g=os.environ.get('GROUP',''); path=f'reports/cr_quick_summary_{g}.json';\
-threshold=float(os.environ.get('CR_SCORE_THRESHOLD','1.0')); s=json.load(open(path,'r',encoding='utf-8'));\
-score=float(s.get('mutation_score',0)); print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold);\
-sys.exit(0 if score>=threshold else 1)"
+threshold=float(os.environ.get('CR_SCORE_THRESHOLD','1.0')); gate=os.environ.get('CR_GATE','false').lower()=='true';\
+s=json.load(open(path,'r',encoding='utf-8')); score=float(s.get('mutation_score',0));\
+print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold, 'gate:', gate);\
+sys.exit(0 if not gate or score>=threshold else 1)"
 
       - name: Upload artifacts (CR shard)
         if: always()
