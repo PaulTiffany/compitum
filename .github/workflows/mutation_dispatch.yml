@@ -2,6 +2,11 @@ name: Mutation Dispatcher
 
 on:
   workflow_dispatch:
+    inputs:
+      strict:
+        description: 'Enable CR gating (advisory artifacts still produced)'
+        required: false
+        default: 'false'
   schedule:
     - cron: '0 7 * * *'
 
