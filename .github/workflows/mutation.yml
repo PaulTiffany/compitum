@@ -109,12 +109,24 @@ jobs:
           TARGET_FILE="${{ matrix.file }}"; BASE="${TARGET_FILE%.py}"
           OUT="reports/mutmut_survivors_${BASE}.txt"
           echo "# Mutmut survivors for ${BASE}" > "$OUT" || true
-          # Extract candidate IDs from results; show details if any
-          BASE="$BASE" python -c "import subprocess, re, sys, os; base=os.environ.get('BASE',''); path=f'reports/mutmut_results_{base}.txt';\
-txt=open(path,'r',encoding='utf-8',errors='ignore').read() if os.path.exists(path) else None;\
-ids=re.findall(r'\\((\\d+)\\)', txt) if txt is not None else []; out=f'reports/mutmut_survivors_{base}.txt';\
-f=open(out,'a',encoding='utf-8');\
-[f.write('\n## survivor '+mid+'\n\n'+subprocess.check_output(['mutmut','show',mid], text=True, errors='ignore')+'\n') for mid in ids]; f.close()"
+          python - << 'PY'
+          import os, re, subprocess
+          base = os.environ.get('BASE','')
+          path = f'reports/mutmut_results_{base}.txt'
+          out = f'reports/mutmut_survivors_{base}.txt'
+          try:
+              txt = open(path,'r',encoding='utf-8',errors='ignore').read()
+          except Exception:
+              txt = None
+          ids = re.findall(r'\((\d+)\)', txt or '')
+          with open(out,'a',encoding='utf-8') as f:
+              for mid in ids:
+                  try:
+                      details = subprocess.check_output(['mutmut','show',mid], text=True, errors='ignore')
+                  except Exception as e:
+                      details = f'<error showing {mid}: {e}>'
+                  f.write('\n## survivor '+mid+'\n\n'+details+'\n')
+          PY
           echo "Wrote survivor details (if any) to $OUT"
 
       # Gating is handled in the caller (e.g., Full Validation); this shard always uploads reports
@@ -241,7 +253,6 @@ sys.exit(0 if not gate or score>=threshold else 1)"
             reports/cr_quick_summary_${{ matrix.group }}.*
             reports/cr_quick_dump_${{ matrix.group }}.jsonl
           retention-days: 7
-
 
 
 
