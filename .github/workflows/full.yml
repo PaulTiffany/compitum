@@ -44,9 +44,26 @@ jobs:
           pip install -r src/routerbench/requirements.txt
           pip install -e .
 
+          echo "INFO: Current working directory: $(pwd)"
+          echo "INFO: Contents of 'scripts' directory:"
+          ls -F scripts/
+          echo "INFO: Contents of 'data' directory:"
+          ls -F data/ || true # List data dir, don't fail if empty
+
           echo "INFO: Fetching RouterBench dataset"
           mkdir -p data # Ensure data directory exists
-          (cd data && python ../scripts/fetch_routerbench.py) # Run from data dir
+          # Run from data dir, capture output and exit code
+          (cd data && python ../scripts/fetch_routerbench.py > fetch_output.log 2>&1)
+          FETCH_EXIT_CODE=$?
+          echo "INFO: fetch_routerbench.py exited with code: $FETCH_EXIT_CODE"
+          echo "INFO: Output of fetch_routerbench.py:"
+          cat data/fetch_output.log
+
+          if [ $FETCH_EXIT_CODE -ne 0 ]; then
+            echo "::error::fetch_routerbench.py failed with exit code $FETCH_EXIT_CODE"
+            exit 1
+          fi
+
           if [ ! -f "data/routerbench_5shot.pkl" ]; then
             echo "::error::Failed to download routerbench_5shot.pkl to data/routerbench_5shot.pkl"
             exit 1
