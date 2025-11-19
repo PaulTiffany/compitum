@@ -53,7 +53,7 @@ jobs:
           echo "INFO: Fetching RouterBench dataset"
           mkdir -p data # Ensure data directory exists
           # Run from data dir, capture output and exit code
-          (cd data && python ../scripts/fetch_routerbench.py > fetch_output.log 2>&1)
+          python scripts/fetch_routerbench.py > data/fetch_output.log 2>&1 # Run from root
           FETCH_EXIT_CODE=$?
           echo "INFO: fetch_routerbench.py exited with code: $FETCH_EXIT_CODE"
           echo "INFO: Output of fetch_routerbench.py:"
