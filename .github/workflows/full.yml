@@ -30,6 +30,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
+
+      - name: Install Actionlint
+        run: |
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          sudo mv actionlint /usr/local/bin/
+
+      - name: Run Actionlint
+        run: actionlint -color -verbose -exclude 'full.yml' -exclude 'mutation.yml' .github/workflows
       
       - name: Run RouterBench Suite
         env:
