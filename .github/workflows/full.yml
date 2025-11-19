@@ -74,12 +74,13 @@ jobs:
           pip install -e .
 
           echo "INFO: Fetching RouterBench dataset"
-          python scripts/fetch_routerbench.py
-          if [ ! -f "routerbench_5shot.pkl" ]; then
-            echo "::error::Failed to download routerbench_5shot.pkl"
+          mkdir -p data # Ensure data directory exists
+          (cd data && python ../scripts/fetch_routerbench.py) # Run from data dir
+          if [ ! -f "data/routerbench_5shot.pkl" ]; then
+            echo "::error::Failed to download routerbench_5shot.pkl to data/routerbench_5shot.pkl"
             exit 1
           fi
-          echo "INFO: RouterBench dataset downloaded successfully."
+          echo "INFO: RouterBench dataset downloaded successfully to data/routerbench_5shot.pkl."
 
           echo "INFO: Running RouterBench tests"
           python -m pytest -q -m routerbench
