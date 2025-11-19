@@ -39,26 +39,40 @@ jobs:
             pyproject.toml
             src/routerbench/requirements.txt
 
-      - name: Install RouterBench deps (guarded)
+      - name: Install base deps
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-          if [ -f src/routerbench/requirements.txt ]; then pip install -r src/routerbench/requirements.txt; else echo "No routerbench requirements.txt; proceeding"; fi
 
-      - name: Attempt dataset fetch if missing (advisory)
-        continue-on-error: true
+      - name: Prepare venv for RouterBench
+        shell: bash
         run: |
-          set -e
-          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ] || [ -f routerbench_5shot.pkl ]; then
-            echo "RouterBench dataset present."
-          else
-            echo "Dataset missing; trying scripts/fetch_routerbench.py (advisory)"
-            if [ -f scripts/fetch_routerbench.py ]; then
-              python scripts/fetch_routerbench.py || true
-            else
-              echo "fetch_routerbench.py not found; skipping fetch."
-            fi
+          set -euo pipefail
+          python -m venv .venv-routerbench
+          . .venv-routerbench/bin/activate
+          pip install --upgrade pip
+          if [ -f src/routerbench/requirements.txt ]; then \
+            pip install -r src/routerbench/requirements.txt; \
+          else \
+            echo "No routerbench requirements.txt; proceeding"; \
           fi
+          pip install -e .
+
+      - name: Fetch dataset (required)
+        shell: bash
+        env:
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          set -euo pipefail
+          . .venv-routerbench/bin/activate
+          mkdir -p data
+          echo "INFO: Fetching RouterBench dataset to data/routerbench_5shot.pkl"
+          python scripts/fetch_routerbench.py --also-copy-to-src > data/fetch_output.log 2>&1 || {
+            echo "::error::fetch_routerbench.py failed"; cat data/fetch_output.log; exit 1; }
+          test -f data/routerbench_5shot.pkl || { echo "::error::routerbench_5shot.pkl missing"; exit 1; }
 
       - name: Import smoke
         env:
@@ -71,15 +85,18 @@ rb = importlib.import_module('routerbench.evaluate_routers')
 print('routerbench import ok:', rb.__name__)
 PY
 
-      - name: Run RouterBench subset if data present (advisory)
+      - name: Run RouterBench (orchestrator)
+        shell: bash
         env:
           HYPOTHESIS_PROFILE: ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
         run: |
-          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ] || [ -f routerbench_5shot.pkl ]; then \
-            pytest -q -m routerbench || true; \
-          else \
-            echo "RouterBench dataset missing; skipping tests"; \
-          fi
+          set -euo pipefail
+          # Use the orchestrator; it will detect the venv at .venv-routerbench
+          python tools/ci_orchestrator.py --bench-routerbench --config data/rb_clean/evaluate_routers.yaml --tokenizer-backend tiktoken --max-evals 200
 
       - name: Upload artifacts (advisory)
         if: always()
@@ -100,4 +117,3 @@ PY
           else
             echo "\n- Dataset: missing (fetch skipped/failed)" >> "$GITHUB_STEP_SUMMARY"
           fi
-
