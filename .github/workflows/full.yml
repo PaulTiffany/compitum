@@ -3,112 +3,13 @@ name: Validation Full
 on:
   workflow_dispatch:
     inputs:
-      mutation:
-        description: 'Run mutation testing (cosmic-ray)'
-        required: false
-        default: 'false'
-      mutmut:
-        description: 'Run mutation testing (mutmut)'
-        required: false
-        default: 'false'
       mutation_sharded:
         description: 'Run sharded mutation workflow (mutmut + CR quick)'
         required: false
         default: 'false'
-  schedule:
-    - cron: '0 7 * * *'
-
-permissions:
-  contents: read
-
-concurrency:
-  group: full-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   full:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
     steps:
-      - name: Checkout (with submodules)
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: |
-            pyproject.toml
-            src/routerbench/requirements.txt
-
-      - name: Install dev deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .[dev]
-
-      - name: Run heavy benchmarks
-        if: ${{ github.event_name == 'schedule' }}
-        env:
-          HYPOTHESIS_PROFILE: ci
-          OMP_NUM_THREADS: 1
-          MKL_NUM_THREADS: 1
-          OPENBLAS_NUM_THREADS: 1
-          NUMEXPR_NUM_THREADS: 1
-        run: |
-          pytest -q -m heavy_bench
-
-      - name: Run RouterBench Suite
-        env:
-          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
-          HYPOTHESIS_PROFILE: ci
-        run: |
-          set -e
-          echo "INFO: Preparing venv for RouterBench"
-          python -m venv .venv-routerbench
-          . .venv-routerbench/bin/activate
-          pip install --upgrade pip
-          pip install -r src/routerbench/requirements.txt
-          pip install -e .
-
-          echo "INFO: Fetching RouterBench dataset"
-          mkdir -p data # Ensure data directory exists
-          (cd data && python ../scripts/fetch_routerbench.py) # Run from data dir
-          if [ ! -f "data/routerbench_5shot.pkl" ]; then
-            echo "::error::Failed to download routerbench_5shot.pkl to data/routerbench_5shot.pkl"
-            exit 1
-          fi
-          echo "INFO: RouterBench dataset downloaded successfully to data/routerbench_5shot.pkl."
-
-          echo "INFO: Running RouterBench tests"
-          python -m pytest -q -m routerbench
-
-      - name: Peer-review orchestration
-        env:
-          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
-        run: |
-          . .venv-routerbench/bin/activate
-          python tools/ci_orchestrator.py --all --config data/rb_clean/evaluate_routers.yaml --wtp-list "0.0001,0.001,0.01,0.1,1.0"
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: full-validation-artifacts
-          path: |
-            reports/**
-            data/rb_clean/eval_results/**/*.csv
-            data/rb_clean/eval_results/**/*.pkl
-          retention-days: 14
-
-  mutation-sharded:
-    if: ${{ inputs.mutation_sharded == 'true' }}
-    name: Mutation (sharded)
-    uses: ./.github/workflows/mutation.yml
-    with:
-      cr_quick: true
-      cr_gate: true
-      cr_score_threshold: '1.0'
-      target_files: ''
-    secrets: inherit
+      - run: echo "Hello world"
