@@ -238,11 +238,17 @@ jobs:
           cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
           python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
-          GROUP="$GROUP" python -c "import json, sys, os; g=os.environ.get('GROUP',''); path=f'reports/cr_quick_summary_{g}.json';\
-threshold=float(os.environ.get('CR_SCORE_THRESHOLD','1.0')); gate=os.environ.get('CR_GATE','false').lower()=='true';\
-s=json.load(open(path,'r',encoding='utf-8')); score=float(s.get('mutation_score',0));\
-print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold, 'gate:', gate);\
-sys.exit(0 if not gate or score>=threshold else 1)"
+          python - << 'EOF'
+          import json, sys, os
+          g=os.environ.get('GROUP','')
+          path=f'reports/cr_quick_summary_{g}.json'
+          threshold=float(os.environ.get('CR_SCORE_THRESHOLD','1.0'))
+          gate=os.environ.get('CR_GATE','false').lower()=='true'
+          s=json.load(open(path,'r',encoding='utf-8'))
+          score=float(s.get('mutation_score',0))
+          print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold, 'gate:', gate)
+          sys.exit(0 if not gate or score>=threshold else 1)
+          EOF
 
       - name: Upload artifacts (CR shard)
         if: always()
