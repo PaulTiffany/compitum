@@ -98,7 +98,7 @@ jobs:
                 repo: context.repo.repo,
                 workflow_id: '.github/workflows/full.yml',
                 ref: core.getInput('ref') || context.ref,
-                inputs: { mutation: 'true', mutmut: 'false', mutation_sharded: 'false' }
+                inputs: { mutation: 'false', mutmut: 'false', mutation_sharded: 'true' }
               });
               core.summary.addRaw('Dispatched Full validation').write();
             } catch (e) {

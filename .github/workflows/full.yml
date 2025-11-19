@@ -60,87 +60,31 @@ jobs:
         run: |
           pytest -q -m heavy_bench
 
-      - name: Run mutation testing (cosmic-ray)
-        if: ${{ inputs.mutation == 'true' || vars.ENABLE_MUTATION == 'true' }}
-        timeout-minutes: 45
-        env:
-          # Use a lighter profile on CI for throughput; script defaults to 'mutation' locally
-          HYPOTHESIS_PROFILE: ci
-          OMP_NUM_THREADS: 1
-          MKL_NUM_THREADS: 1
-          OPENBLAS_NUM_THREADS: 1
-          NUMEXPR_NUM_THREADS: 1
-        run: |
-          mkdir -p reports
-          SESSION_DB="$RUNNER_TEMP/session-${{ github.run_id }}.sqlite"
-          # Use CI-tuned config with a higher timeout
-          cosmic-ray init --force cosmic-ray.ci.toml "$SESSION_DB"
-          cosmic-ray exec cosmic-ray.ci.toml "$SESSION_DB"
-          # Human-readable text report
-          cr-report "$SESSION_DB" > reports/mutation_summary.txt
-          # Machine-readable dump + compact JSON summary and gate on score
-          cosmic-ray dump "$SESSION_DB" > reports/cr_dump.jsonl
-          python tools/mutation_summary.py reports/cr_dump.jsonl reports/mutation_summary.json
-          python - << 'PY'
-          import json, sys
-          s = json.load(open('reports/mutation_summary.json','r',encoding='utf-8'))
-          score = float(s.get('mutation_score', 0.0))
-          print('Cosmic Ray mutation score:', score)
-          # Fail if any survivors (score < 1.0)
-          sys.exit(0 if score >= 1.0 else 1)
-          PY
-
-      - name: Install mutmut
-        if: ${{ inputs.mutmut == 'true' || vars.ENABLE_MUTMUT == 'true' }}
-        run: |
-          python -m pip install --upgrade pip
-          pip install mutmut
-
-      - name: Run mutation testing (mutmut)
-        if: ${{ inputs.mutmut == 'true' || vars.ENABLE_MUTMUT == 'true' }}
+      - name: Run RouterBench Suite
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
-          # Narrow test selection to stable suites for mutation
-          PYTEST_ADDOPTS: --no-cov -q -m "not routerbench and not examples and not heavy_bench"
-          HYPOTHESIS_PROFILE: mutation
-          OMP_NUM_THREADS: 1
-          MKL_NUM_THREADS: 1
-          OPENBLAS_NUM_THREADS: 1
-          NUMEXPR_NUM_THREADS: 1
+          HYPOTHESIS_PROFILE: ci
         run: |
-          mkdir -p reports
-          # Baseline: ensure selected tests pass before mutation
-          pytest -q -m "not routerbench and not examples and not heavy_bench"
-          # Run mutmut using pyproject config (tests_dir + paths_to_mutate)
-          mutmut run
-          mutmut results | tee reports/mutmut_results.txt
-          # Fail if any mutants survived
-          if grep -qi "survived" reports/mutmut_results.txt; then \
-            echo "Mutmut: survivors detected" && exit 1; \
-          else \
-            echo "Mutmut: all mutants killed"; \
-          fi
-
-      - name: Prepare routerbench venv and deps
-        run: |
+          set -e
+          echo "INFO: Preparing venv for RouterBench"
           python -m venv .venv-routerbench
           . .venv-routerbench/bin/activate
           pip install --upgrade pip
           pip install -r src/routerbench/requirements.txt
           pip install -e .
 
-      - name: RouterBench tests (guarded)
-        env:
-          PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
-          HYPOTHESIS_PROFILE: ci
-        run: |
-          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ] || [ -f routerbench_5shot.pkl ]; then \
-            . .venv-routerbench/bin/activate && python -m pytest -q -m routerbench ; \
-          else \
-            echo "RouterBench dataset missing; skipping routerbench tests" ; \
+          echo "INFO: Fetching RouterBench dataset"
+          python scripts/fetch_routerbench.py
+          if [ ! -f "routerbench_5shot.pkl" ]; then
+            echo "::error::Failed to download routerbench_5shot.pkl"
+            exit 1
           fi
+          echo "INFO: RouterBench dataset downloaded successfully."
 
-      - name: Peer-review orchestration (guarded)
+          echo "INFO: Running RouterBench tests"
+          python -m pytest -q -m routerbench
+
+      - name: Peer-review orchestration
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
         run: |
@@ -156,4 +100,14 @@ jobs:
             data/rb_clean/eval_results/**/*.csv
             data/rb_clean/eval_results/**/*.pkl
           retention-days: 14
-  # mutation-sharded job temporarily disabled due to reusable workflow YAML validation; re-enable after fix
+
+  mutation-sharded:
+    if: ${{ inputs.mutation_sharded == 'true' }}
+    name: Mutation (sharded)
+    uses: ./.github/workflows/mutation.yml
+    with:
+      cr_quick: true
+      cr_gate: true
+      cr_score_threshold: '1.0'
+      target_files: ''
+    secrets: inherit
