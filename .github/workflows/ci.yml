@@ -275,3 +275,29 @@ jobs:
           from compitum.cli import main as cli_main
           print('import ok; version:', getattr(compitum, '__version__', 'unknown'))
           PY
+
+  applications-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: pyproject.toml
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Applications import smoke
+        run: |
+          python - << 'PY'
+          import numpy as np
+          from compitum.applications import PlasmaMonitor
+          pm = PlasmaMonitor(state_dim=4, rank=2)
+          out = pm.ingest_profile(np.zeros(4), 0.0)
+          print('applications import ok:', isinstance(out, dict), out['confinement_distance'] >= 0.0)
+          PY
