@@ -213,3 +213,6 @@ python scripts/generate_classroom_pack.py
 ```
 
 This writes `artifacts/pedagogy_pack.zip` with the lab worksheet (`docs/Pedagogy-Lab.md`), a demo script, a sample certificate JSONL (if available), and a tiny prompt set.
+
+
+Binder (Supercon Quickstart): https://mybinder.org/v2/gh/PaulTiffany/compitum/HEAD?labpath=notebooks%2Fexamples%2FSupercon_Quickstart.ipynb
