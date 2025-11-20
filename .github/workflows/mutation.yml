@@ -90,7 +90,7 @@ jobs:
           set -e
           mkdir -p reports
           TARGET_FILE="${{ matrix.file }}"
-          TEST_PATHS="tests/router tests/metric tests/predictors tests/pgd"
+          TEST_PATHS="tests/router tests/metric tests/predictors tests/pgd tests/applications"
           # Baseline with coverage to guide mutmut; do not enforce global threshold
           pytest -q --cov="src/compitum/${TARGET_FILE}" --cov-branch --cov-fail-under=0 $TEST_PATHS
           # Run mutmut restricted to this shard for speed and determinism
@@ -259,6 +259,7 @@ jobs:
             reports/cr_quick_summary_${{ matrix.group }}.*
             reports/cr_quick_dump_${{ matrix.group }}.jsonl
           retention-days: 7
+
 
 
 

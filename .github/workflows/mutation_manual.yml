@@ -53,7 +53,7 @@ jobs:
           set -e
           mkdir -p reports
           TARGET_FILE="${{ matrix.file }}"
-          TEST_PATHS="tests/router tests/metric tests/predictors tests/pgd"
+          TEST_PATHS="tests/router tests/metric tests/predictors tests/pgd tests/applications"
           pytest -q --cov="src/compitum/${TARGET_FILE}" --cov-branch --cov-fail-under=0 $TEST_PATHS
           mutmut run \
             --paths-to-mutate "src/compitum/${TARGET_FILE}" \
@@ -218,3 +218,4 @@ jobs:
             sed 's/^/    /' MUTATION_SUMMARY.json >> "$GITHUB_STEP_SUMMARY" || true
             echo "\n</details>" >> "$GITHUB_STEP_SUMMARY"
           fi
+
