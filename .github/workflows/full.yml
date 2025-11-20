@@ -31,7 +31,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[dev]
       
-      - name: Run RouterBench Suite
+      - name: Run RouterBench Suite (prep only)
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           HYPOTHESIS_PROFILE: ci
@@ -70,8 +70,7 @@ jobs:
           fi
           echo "INFO: RouterBench dataset downloaded successfully to data/routerbench_5shot.pkl."
 
-          echo "INFO: Running RouterBench tests"
-          python -m pytest -q -m routerbench
+          echo "INFO: Skipping pytest for RouterBench on Linux; orchestrator runs next"
 
       - name: Peer-review orchestration
         env:
@@ -79,6 +78,27 @@ jobs:
         run: |
           . .venv-routerbench/bin/activate
           python tools/ci_orchestrator.py --all --config data/rb_clean/evaluate_routers.yaml --wtp-list "0.0001,0.001,0.01,0.1,1.0"
+
+      - name: Upload artifacts (RB + report)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-validation-artifacts
+          path: |
+            data/rb_clean/eval_results/**/*
+            reports/**/*
+          retention-days: 7
+
+      - name: Job summary (Full)
+        if: always()
+        shell: bash
+        run: |
+          echo "## Validation Full" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f data/routerbench_5shot.pkl ]; then
+            echo "\n- RouterBench dataset: present" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "\n- RouterBench dataset: missing" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
   mutation-sharded:
     if: ${{ inputs.mutation_sharded == 'true' }}

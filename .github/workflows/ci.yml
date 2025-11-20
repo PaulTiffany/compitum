@@ -190,6 +190,26 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
           pip install -r src/routerbench/requirements.txt
+          # Needed for the routerbench-marked pytest integration
+          pip install pytest
+
+      - name: Attempt dataset fetch (advisory)
+        if: >
+          (github.event_name == 'schedule' && vars.ENABLE_ROUTERBENCH == 'true') ||
+          (github.event_name == 'workflow_dispatch' && inputs.routerbench == 'true') ||
+          (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'routerbench'))
+        continue-on-error: true
+        shell: bash
+        env:
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          set -euo pipefail
+          mkdir -p data
+          echo "INFO: Fetching RouterBench dataset (advisory)"
+          python scripts/fetch_routerbench.py --also-copy-to-src > data/fetch_output.log 2>&1 || true
 
       - name: Import smoke (RouterBench)
         env:
@@ -211,6 +231,17 @@ jobs:
             pytest -q -m routerbench ; \
           else \
             echo "RouterBench data not present; skipping routerbench tests" ; \
+          fi
+
+      - name: Job summary (routerbench)
+        if: always()
+        shell: bash
+        run: |
+          echo "## RouterBench (CI)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f src/routerbench/routerbench_5shot.pkl ] || [ -f data/routerbench_5shot.pkl ]; then
+            echo "\n- Dataset: present" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "\n- Dataset: missing (fetch skipped/failed)" >> "$GITHUB_STEP_SUMMARY"
           fi
 
   package-smoke:
@@ -243,4 +274,30 @@ jobs:
           import compitum
           from compitum.cli import main as cli_main
           print('import ok; version:', getattr(compitum, '__version__', 'unknown'))
+          PY
+
+  applications-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: pyproject.toml
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Applications import smoke
+        run: |
+          python - << 'PY'
+          import numpy as np
+          from compitum.applications import PlasmaMonitor
+          pm = PlasmaMonitor(state_dim=4, rank=2)
+          out = pm.ingest_profile(np.zeros(4), 0.0)
+          print('applications import ok:', isinstance(out, dict), out['confinement_distance'] >= 0.0)
           PY
