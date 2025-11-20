@@ -16,14 +16,14 @@ def test_routerbench_integration() -> None:
     if os.name == "nt":
         command = [
             str(project_root / "scripts" / "run_routerbench.bat"),
-            "--config=data/routerbench/evaluate_routers.yaml",
+            f"--config=data/routerbench/evaluate_routers.yaml",
             "--local",
         ]
     else:
         command = [
             sys.executable,
             str(project_root / "tools" / "run_routerbench_clean.py"),
-            "--config=data/rb_clean/evaluate_routers.yaml",
+            f"--config=data/rb_clean/evaluate_routers.yaml",
             "--local",
             "--tokenizer-backend=tiktoken",
         ]
@@ -40,4 +40,3 @@ def test_routerbench_integration() -> None:
     assert (
         "Saved to:" in process.stdout or "Report written to:" in process.stdout
     ), "Expected results to be saved by RouterBench run."
-

@@ -29,4 +29,3 @@ def test_metric_distance_basic_invariants(dim: int):
     # Re-centering invariance: depends only on x - mu
     d3, _ = met.distance(x + v, mu + v)
     assert math.isclose(d1, d3, rel_tol=1e-9, abs_tol=1e-9)
-

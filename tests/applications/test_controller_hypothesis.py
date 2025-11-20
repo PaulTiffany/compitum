@@ -33,4 +33,3 @@ def test_controller_eta_cap_scales_inverse_grad(seq: List[float]):
     for (g1, e1), (g2, e2) in zip(zip(seq, eta_caps), zip(seq[1:], eta_caps[1:])):
         if g2 > g1 + 1e-12:
             assert e2 <= e1 + 1e-9
-
