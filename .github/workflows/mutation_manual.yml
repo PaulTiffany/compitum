@@ -30,7 +30,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.'
           cache: pip
           cache-dependency-path: pyproject.toml
 
@@ -45,10 +45,10 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
           PYTEST_ADDOPTS: -q -m "not routerbench and not examples and not heavy_bench"
           HYPOTHESIS_PROFILE: mutation_ci
-          OMP_NUM_THREADS: 1
-          MKL_NUM_THREADS: 1
-          OPENBLAS_NUM_THREADS: 1
-          NUMEXPR_NUM_THREADS: 1
+          OMP_NUM_THREADS: 
+          MKL_NUM_THREADS: 
+          OPENBLAS_NUM_THREADS: 
+          NUMEXPR_NUM_THREADS: 
         run: |
           set -e
           mkdir -p reports
@@ -116,7 +116,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.'
           cache: pip
           cache-dependency-path: pyproject.toml
 
@@ -129,10 +129,10 @@ jobs:
       - name: Prepare CR config (${{ matrix.group }})
         env:
           HYPOTHESIS_PROFILE: mutation_ci
-          OMP_NUM_THREADS: 1
-          MKL_NUM_THREADS: 1
-          OPENBLAS_NUM_THREADS: 1
-          NUMEXPR_NUM_THREADS: 1
+          OMP_NUM_THREADS: 
+          MKL_NUM_THREADS: 
+          OPENBLAS_NUM_THREADS: 
+          NUMEXPR_NUM_THREADS: 
         run: |
           set -e
           GROUP="${{ matrix.group }}"
@@ -218,4 +218,5 @@ jobs:
             sed 's/^/    /' MUTATION_SUMMARY.json >> "$GITHUB_STEP_SUMMARY" || true
             echo "\n</details>" >> "$GITHUB_STEP_SUMMARY"
           fi
+
 
