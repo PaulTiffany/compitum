@@ -81,3 +81,4 @@ if __name__ == "__main__":
     print("Simulating sawtooth instability...")
     res = simulate_sawtooth_cycle(steps=60, crash_at=50)
     plot_results(res)
+

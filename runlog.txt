@@ -1,0 +1,658 @@
+sync-wiki	Set up job	n++2025-11-14T00:33:44.3304140Z Current runner version: '2.329.0'
+sync-wiki	Set up job	2025-11-14T00:33:44.3330139Z ##[group]Runner Image Provisioner
+sync-wiki	Set up job	2025-11-14T00:33:44.3331017Z Hosted Compute Agent
+sync-wiki	Set up job	2025-11-14T00:33:44.3331590Z Version: 20251016.436
+sync-wiki	Set up job	2025-11-14T00:33:44.3332254Z Commit: 8ab8ac8bfd662a3739dab9fe09456aba92132568
+sync-wiki	Set up job	2025-11-14T00:33:44.3332950Z Build Date: 2025-10-15T20:44:12Z
+sync-wiki	Set up job	2025-11-14T00:33:44.3333562Z ##[endgroup]
+sync-wiki	Set up job	2025-11-14T00:33:44.3334065Z ##[group]Operating System
+sync-wiki	Set up job	2025-11-14T00:33:44.3334958Z Ubuntu
+sync-wiki	Set up job	2025-11-14T00:33:44.3335440Z 24.04.3
+sync-wiki	Set up job	2025-11-14T00:33:44.3335901Z LTS
+sync-wiki	Set up job	2025-11-14T00:33:44.3336413Z ##[endgroup]
+sync-wiki	Set up job	2025-11-14T00:33:44.3336907Z ##[group]Runner Image
+sync-wiki	Set up job	2025-11-14T00:33:44.3337476Z Image: ubuntu-24.04
+sync-wiki	Set up job	2025-11-14T00:33:44.3338048Z Version: 20251102.99.1
+sync-wiki	Set up job	2025-11-14T00:33:44.3339178Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20251102.99/images/ubuntu/Ubuntu2404-Readme.md
+sync-wiki	Set up job	2025-11-14T00:33:44.3340683Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20251102.99
+sync-wiki	Set up job	2025-11-14T00:33:44.3341920Z ##[endgroup]
+sync-wiki	Set up job	2025-11-14T00:33:44.3344667Z ##[group]GITHUB_TOKEN Permissions
+sync-wiki	Set up job	2025-11-14T00:33:44.3346918Z Actions: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3347524Z ArtifactMetadata: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3348165Z Attestations: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3348660Z Checks: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3349160Z Contents: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3349677Z Deployments: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3350251Z Discussions: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3350726Z Issues: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3351262Z Metadata: read
+sync-wiki	Set up job	2025-11-14T00:33:44.3351750Z Models: read
+sync-wiki	Set up job	2025-11-14T00:33:44.3352268Z Packages: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3352726Z Pages: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3353342Z PullRequests: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3353895Z RepositoryProjects: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3354728Z SecurityEvents: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3355379Z Statuses: write
+sync-wiki	Set up job	2025-11-14T00:33:44.3355857Z ##[endgroup]
+sync-wiki	Set up job	2025-11-14T00:33:44.3357939Z Secret source: Actions
+sync-wiki	Set up job	2025-11-14T00:33:44.3358771Z Prepare workflow directory
+sync-wiki	Set up job	2025-11-14T00:33:44.3746958Z Prepare all required actions
+sync-wiki	Set up job	2025-11-14T00:33:44.3784258Z Getting action download info
+sync-wiki	Set up job	2025-11-14T00:33:44.7571169Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+sync-wiki	Set up job	2025-11-14T00:33:44.8588029Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+sync-wiki	Set up job	2025-11-14T00:33:45.0379919Z Complete job name: sync-wiki
+sync-wiki	Checkout repo	n++2025-11-14T00:33:45.1098444Z ##[group]Run actions/checkout@v4
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1099397Z with:
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1099866Z   fetch-depth: 0
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1100363Z   repository: PaulTiffany/compitum
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1101071Z   token: ***
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1101531Z   ssh-strict: true
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1102005Z   ssh-user: git
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1102474Z   persist-credentials: true
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1102990Z   clean: true
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1103443Z   sparse-checkout-cone-mode: true
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1104017Z   fetch-tags: false
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1104654Z   show-progress: true
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1105155Z   lfs: false
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1105616Z   submodules: false
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1106084Z   set-safe-directory: true
+sync-wiki	Checkout repo	2025-11-14T00:33:45.1106826Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:45.2207234Z Syncing repository: PaulTiffany/compitum
+sync-wiki	Checkout repo	2025-11-14T00:33:45.2209146Z ##[group]Getting Git version info
+sync-wiki	Checkout repo	2025-11-14T00:33:45.2209969Z Working directory is '/home/runner/work/compitum/compitum'
+sync-wiki	Checkout repo	2025-11-14T00:33:45.2211080Z [command]/usr/bin/git version
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4109636Z git version 2.51.2
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4137439Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4153839Z Temporarily overriding HOME='/home/runner/work/_temp/74c776b5-e040-4b7f-8253-e744bfc6c1c4' before making global git config changes
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4156820Z Adding repository directory to the temporary git global config as a safe directory
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4168469Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/compitum/compitum
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4206625Z Deleting the contents of '/home/runner/work/compitum/compitum'
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4210373Z ##[group]Initializing the repository
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4215309Z [command]/usr/bin/git init /home/runner/work/compitum/compitum
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4354753Z hint: Using 'master' as the name for the initial branch. This default branch name
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4355921Z hint: is subject to change. To configure the initial branch name to use in all
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4357631Z hint: of your new repositories, which will suppress this warning, call:
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4359035Z hint:
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4359942Z hint: 	git config --global init.defaultBranch <name>
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4361030Z hint:
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4361858Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4362904Z hint: 'development'. The just-created branch can be renamed via this command:
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4363781Z hint:
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4364588Z hint: 	git branch -m <name>
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4365426Z hint:
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4366221Z hint: Disable this message with "git config set advice.defaultBranchName false"
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4367525Z Initialized empty Git repository in /home/runner/work/compitum/compitum/.git/
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4372911Z [command]/usr/bin/git remote add origin https://github.com/PaulTiffany/compitum
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4410386Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4411768Z ##[group]Disabling automatic garbage collection
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4415163Z [command]/usr/bin/git config --local gc.auto 0
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4442651Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4443424Z ##[group]Setting up auth
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4449447Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4478815Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4861463Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+sync-wiki	Checkout repo	2025-11-14T00:33:45.4890713Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+sync-wiki	Checkout repo	2025-11-14T00:33:45.5111187Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+sync-wiki	Checkout repo	2025-11-14T00:33:45.5144248Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:45.5145942Z ##[group]Fetching the repository
+sync-wiki	Checkout repo	2025-11-14T00:33:45.5161354Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+sync-wiki	Checkout repo	2025-11-14T00:33:46.4952905Z From https://github.com/PaulTiffany/compitum
+sync-wiki	Checkout repo	2025-11-14T00:33:46.4955693Z  * [new branch]      docs/wiki-notebooks-batch1 -> origin/docs/wiki-notebooks-batch1
+sync-wiki	Checkout repo	2025-11-14T00:33:46.4956934Z  * [new branch]      main           -> origin/main
+sync-wiki	Checkout repo	2025-11-14T00:33:46.4957948Z  * [new branch]      release/polish -> origin/release/polish
+sync-wiki	Checkout repo	2025-11-14T00:33:46.4958965Z  * [new tag]         v0.1.0         -> v0.1.0
+sync-wiki	Checkout repo	2025-11-14T00:33:46.4959811Z  * [new tag]         v0.1.1         -> v0.1.1
+sync-wiki	Checkout repo	2025-11-14T00:33:46.4996156Z [command]/usr/bin/git branch --list --remote origin/docs/wiki-notebooks-batch1
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5018981Z   origin/docs/wiki-notebooks-batch1
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5029189Z [command]/usr/bin/git rev-parse refs/remotes/origin/docs/wiki-notebooks-batch1
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5048578Z c93001d24d01f03316ce1a8d303ee70f66108317
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5054696Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5056196Z ##[group]Determining the checkout info
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5057565Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5060600Z [command]/usr/bin/git sparse-checkout disable
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5102043Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5128871Z ##[group]Checking out the ref
+sync-wiki	Checkout repo	2025-11-14T00:33:46.5133123Z [command]/usr/bin/git checkout --progress --force -B docs/wiki-notebooks-batch1 refs/remotes/origin/docs/wiki-notebooks-batch1
+sync-wiki	Checkout repo	2025-11-14T00:33:46.6632763Z Switched to a new branch 'docs/wiki-notebooks-batch1'
+sync-wiki	Checkout repo	2025-11-14T00:33:46.6636658Z branch 'docs/wiki-notebooks-batch1' set up to track 'origin/docs/wiki-notebooks-batch1'.
+sync-wiki	Checkout repo	2025-11-14T00:33:46.6656076Z ##[endgroup]
+sync-wiki	Checkout repo	2025-11-14T00:33:46.6691305Z [command]/usr/bin/git log -1 --format=%H
+sync-wiki	Checkout repo	2025-11-14T00:33:46.6712604Z c93001d24d01f03316ce1a8d303ee70f66108317
+sync-wiki	Checkout wiki repo	n++2025-11-14T00:33:46.7042043Z ##[group]Run actions/checkout@v4
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7043176Z with:
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7044073Z   repository: PaulTiffany/compitum.wiki
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7045435Z   path: compitum.wiki
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7046813Z   token: ***
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7047686Z   ssh-strict: true
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7048583Z   ssh-user: git
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7049479Z   persist-credentials: true
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7050502Z   clean: true
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7051401Z   sparse-checkout-cone-mode: true
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7052515Z   fetch-depth: 1
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7053370Z   fetch-tags: false
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7054253Z   show-progress: true
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7055328Z   lfs: false
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7056129Z   submodules: false
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7056999Z   set-safe-directory: true
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7057953Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7978660Z Syncing repository: PaulTiffany/compitum.wiki
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7985365Z ##[group]Getting Git version info
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.7986984Z Working directory is '/home/runner/work/compitum/compitum/compitum.wiki'
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8025439Z [command]/usr/bin/git version
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8062891Z git version 2.51.2
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8089439Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8103498Z Temporarily overriding HOME='/home/runner/work/_temp/2b73e10c-343e-489f-921f-032e92d3786b' before making global git config changes
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8108930Z Adding repository directory to the temporary git global config as a safe directory
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8113176Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/compitum/compitum/compitum.wiki
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8145704Z ##[group]Initializing the repository
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8151681Z [command]/usr/bin/git init /home/runner/work/compitum/compitum/compitum.wiki
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8190224Z hint: Using 'master' as the name for the initial branch. This default branch name
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8192881Z hint: is subject to change. To configure the initial branch name to use in all
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8195344Z hint: of your new repositories, which will suppress this warning, call:
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8197064Z hint:
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8198070Z hint: 	git config --global init.defaultBranch <name>
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8199275Z hint:
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8200721Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8202861Z hint: 'development'. The just-created branch can be renamed via this command:
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8204576Z hint:
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8205422Z hint: 	git branch -m <name>
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8206327Z hint:
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8207619Z hint: Disable this message with "git config set advice.defaultBranchName false"
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8210027Z Initialized empty Git repository in /home/runner/work/compitum/compitum/compitum.wiki/.git/
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8213629Z [command]/usr/bin/git remote add origin https://github.com/PaulTiffany/compitum.wiki
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8232346Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8233807Z ##[group]Disabling automatic garbage collection
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8235952Z [command]/usr/bin/git config --local gc.auto 0
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8263290Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8264910Z ##[group]Setting up auth
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8268701Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8297441Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8511466Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8539895Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8755848Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8789074Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8791649Z ##[group]Determining the default branch
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:46.8793853Z Retrieving the default branch name
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.0701505Z Default branch 'master'
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.0704727Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.0714561Z ##[group]Fetching the repository
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.0718952Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/master:refs/remotes/origin/master
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4701592Z From https://github.com/PaulTiffany/compitum.wiki
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4702437Z  * [new branch]      master     -> origin/master
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4728941Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4729356Z ##[group]Determining the checkout info
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4730992Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4737244Z [command]/usr/bin/git sparse-checkout disable
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4774989Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4801201Z ##[group]Checking out the ref
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4805261Z [command]/usr/bin/git checkout --progress --force -B master refs/remotes/origin/master
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4885786Z Reset branch 'master'
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4888583Z branch 'master' set up to track 'origin/master'.
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4893841Z ##[endgroup]
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4927962Z [command]/usr/bin/git log -1 --format=%H
+sync-wiki	Checkout wiki repo	2025-11-14T00:33:47.4949905Z e876a7cff3a221f585475272978d8644e9bd5888
+sync-wiki	Set up Python	n++2025-11-14T00:33:47.5107720Z ##[group]Run actions/setup-python@v5
+sync-wiki	Set up Python	2025-11-14T00:33:47.5108012Z with:
+sync-wiki	Set up Python	2025-11-14T00:33:47.5108200Z   python-version: 3.10
+sync-wiki	Set up Python	2025-11-14T00:33:47.5108421Z   check-latest: false
+sync-wiki	Set up Python	2025-11-14T00:33:47.5108731Z   token: ***
+sync-wiki	Set up Python	2025-11-14T00:33:47.5108918Z   update-environment: true
+sync-wiki	Set up Python	2025-11-14T00:33:47.5109144Z   allow-prereleases: false
+sync-wiki	Set up Python	2025-11-14T00:33:47.5109359Z   freethreaded: false
+sync-wiki	Set up Python	2025-11-14T00:33:47.5109555Z ##[endgroup]
+sync-wiki	Set up Python	2025-11-14T00:33:47.6874612Z ##[group]Installed versions
+sync-wiki	Set up Python	2025-11-14T00:33:47.7028962Z Successfully set up CPython (3.10.19)
+sync-wiki	Set up Python	2025-11-14T00:33:47.7030480Z ##[endgroup]
+sync-wiki	Install tools	n++2025-11-14T00:33:47.7139458Z ##[group]Run python -m pip install --upgrade pip
+sync-wiki	Install tools	2025-11-14T00:33:47.7139928Z [36;1mpython -m pip install --upgrade pip[0m
+sync-wiki	Install tools	2025-11-14T00:33:47.7140255Z [36;1mpip install jupyter nbconvert pyyaml[0m
+sync-wiki	Install tools	2025-11-14T00:33:47.7185797Z shell: /usr/bin/bash -e {0}
+sync-wiki	Install tools	2025-11-14T00:33:47.7186085Z env:
+sync-wiki	Install tools	2025-11-14T00:33:47.7186357Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Install tools	2025-11-14T00:33:47.7186799Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.19/x64/lib/pkgconfig
+sync-wiki	Install tools	2025-11-14T00:33:47.7187225Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Install tools	2025-11-14T00:33:47.7187601Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Install tools	2025-11-14T00:33:47.7187970Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Install tools	2025-11-14T00:33:47.7188338Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.19/x64/lib
+sync-wiki	Install tools	2025-11-14T00:33:47.7188639Z ##[endgroup]
+sync-wiki	Install tools	2025-11-14T00:33:48.5101407Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.10.19/x64/lib/python3.10/site-packages (25.3)
+sync-wiki	Install tools	2025-11-14T00:33:49.2912096Z Collecting jupyter
+sync-wiki	Install tools	2025-11-14T00:33:49.3831084Z   Downloading jupyter-1.1.1-py2.py3-none-any.whl.metadata (2.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:49.4401048Z Collecting nbconvert
+sync-wiki	Install tools	2025-11-14T00:33:49.4585456Z   Downloading nbconvert-7.16.6-py3-none-any.whl.metadata (8.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:49.5440356Z Collecting pyyaml
+sync-wiki	Install tools	2025-11-14T00:33:49.5613976Z   Downloading pyyaml-6.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:49.6198046Z Collecting notebook (from jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:49.6358771Z   Downloading notebook-7.4.7-py3-none-any.whl.metadata (10 kB)
+sync-wiki	Install tools	2025-11-14T00:33:49.6715780Z Collecting jupyter-console (from jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:49.6877340Z   Downloading jupyter_console-6.6.3-py3-none-any.whl.metadata (5.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:49.7443719Z Collecting ipykernel (from jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:49.7611788Z   Downloading ipykernel-7.1.0-py3-none-any.whl.metadata (4.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:49.8145990Z Collecting ipywidgets (from jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:49.8310299Z   Downloading ipywidgets-8.1.8-py3-none-any.whl.metadata (2.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:49.9684883Z Collecting jupyterlab (from jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:49.9850838Z   Downloading jupyterlab-4.4.10-py3-none-any.whl.metadata (16 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.0305473Z Collecting beautifulsoup4 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.0467529Z   Downloading beautifulsoup4-4.14.2-py3-none-any.whl.metadata (3.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.0803745Z Collecting bleach!=5.0.0 (from bleach[css]!=5.0.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.0965040Z   Downloading bleach-6.3.0-py3-none-any.whl.metadata (31 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.1365769Z Collecting defusedxml (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.1533703Z   Downloading defusedxml-0.7.1-py2.py3-none-any.whl.metadata (32 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.1893648Z Collecting jinja2>=3.0 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.2057925Z   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.2502114Z Collecting jupyter-core>=4.7 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.2694584Z   Downloading jupyter_core-5.9.1-py3-none-any.whl.metadata (1.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.3023388Z Collecting jupyterlab-pygments (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.3193402Z   Downloading jupyterlab_pygments-0.3.0-py3-none-any.whl.metadata (4.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.3973651Z Collecting markupsafe>=2.0 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.4140629Z   Downloading markupsafe-3.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.4480721Z Collecting mistune<4,>=2.0.3 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.4652831Z   Downloading mistune-3.1.4-py3-none-any.whl.metadata (1.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.4983905Z Collecting nbclient>=0.5.0 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.5146312Z   Downloading nbclient-0.10.2-py3-none-any.whl.metadata (8.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.5511895Z Collecting nbformat>=5.7 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.5674830Z   Downloading nbformat-5.10.4-py3-none-any.whl.metadata (3.6 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.6005655Z Collecting packaging (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.6197568Z   Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.6445674Z Collecting pandocfilters>=1.4.1 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.6606013Z   Downloading pandocfilters-1.5.1-py2.py3-none-any.whl.metadata (9.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.6964141Z Collecting pygments>=2.4.1 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.7125790Z   Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.7458596Z Collecting traitlets>=5.1 (from nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.7644775Z   Downloading traitlets-5.14.3-py3-none-any.whl.metadata (10 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.8003755Z Collecting typing-extensions (from mistune<4,>=2.0.3->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.8164748Z   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.8394272Z Collecting webencodings (from bleach!=5.0.0->bleach[css]!=5.0.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.8556682Z   Downloading webencodings-0.5.1-py2.py3-none-any.whl.metadata (2.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.8852900Z Collecting tinycss2<1.5,>=1.1.0 (from bleach[css]!=5.0.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.9086574Z   Downloading tinycss2-1.4.0-py3-none-any.whl.metadata (3.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:50.9473281Z Collecting platformdirs>=2.5 (from jupyter-core>=4.7->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:50.9637436Z   Downloading platformdirs-4.5.0-py3-none-any.whl.metadata (12 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.0150273Z Collecting jupyter-client>=6.1.12 (from nbclient>=0.5.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.0317076Z   Downloading jupyter_client-8.6.3-py3-none-any.whl.metadata (8.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.0860324Z Collecting python-dateutil>=2.8.2 (from jupyter-client>=6.1.12->nbclient>=0.5.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.1033640Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.4412296Z Collecting pyzmq>=23.0 (from jupyter-client>=6.1.12->nbclient>=0.5.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.4599102Z   Downloading pyzmq-27.1.0-cp310-cp310-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (6.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.5137749Z Collecting tornado>=6.2 (from jupyter-client>=6.1.12->nbclient>=0.5.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.5303474Z   Downloading tornado-6.5.2-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.5601918Z Collecting fastjsonschema>=2.15 (from nbformat>=5.7->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.5762612Z   Downloading fastjsonschema-2.21.2-py3-none-any.whl.metadata (2.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.6209446Z Collecting jsonschema>=2.6 (from nbformat>=5.7->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.6402566Z   Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.6742902Z Collecting attrs>=22.2.0 (from jsonschema>=2.6->nbformat>=5.7->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.6910360Z   Downloading attrs-25.4.0-py3-none-any.whl.metadata (10 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.7185714Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=2.6->nbformat>=5.7->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.7348986Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:51.7762713Z Collecting referencing>=0.28.4 (from jsonschema>=2.6->nbformat>=5.7->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:51.7923084Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.1645288Z Collecting rpds-py>=0.7.1 (from jsonschema>=2.6->nbformat>=5.7->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:52.1822994Z   Downloading rpds_py-0.28.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.2295389Z Collecting six>=1.5 (from python-dateutil>=2.8.2->jupyter-client>=6.1.12->nbclient>=0.5.0->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:52.2457049Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.3024214Z Collecting soupsieve>1.2 (from beautifulsoup4->nbconvert)
+sync-wiki	Install tools	2025-11-14T00:33:52.3189020Z   Downloading soupsieve-2.8-py3-none-any.whl.metadata (4.6 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.3536555Z Collecting comm>=0.1.1 (from ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.3695977Z   Downloading comm-0.2.3-py3-none-any.whl.metadata (3.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.4919424Z Collecting debugpy>=1.6.5 (from ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.5115284Z   Downloading debugpy-1.8.17-cp310-cp310-manylinux_2_34_x86_64.whl.metadata (1.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.5796090Z Collecting ipython>=7.23.1 (from ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.5977126Z   Downloading ipython-8.37.0-py3-none-any.whl.metadata (5.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.6456221Z Collecting matplotlib-inline>=0.1 (from ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.6619036Z   Downloading matplotlib_inline-0.2.1-py3-none-any.whl.metadata (2.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.6939469Z Collecting nest-asyncio>=1.4 (from ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.7098710Z   Downloading nest_asyncio-1.6.0-py3-none-any.whl.metadata (2.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.8113477Z Collecting psutil>=5.7 (from ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.8280648Z   Downloading psutil-7.1.3-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl.metadata (23 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.8805247Z Collecting decorator (from ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.8965702Z   Downloading decorator-5.2.1-py3-none-any.whl.metadata (3.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.9232457Z Collecting exceptiongroup (from ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.9393076Z   Downloading exceptiongroup-1.3.0-py3-none-any.whl.metadata (6.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:52.9689874Z Collecting jedi>=0.16 (from ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:52.9846484Z   Downloading jedi-0.19.2-py2.py3-none-any.whl.metadata (22 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.0165150Z Collecting pexpect>4.3 (from ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.0327708Z   Downloading pexpect-4.9.0-py2.py3-none-any.whl.metadata (2.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.0813935Z Collecting prompt_toolkit<3.1.0,>=3.0.41 (from ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.0975482Z   Downloading prompt_toolkit-3.0.52-py3-none-any.whl.metadata (6.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.1312139Z Collecting stack_data (from ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.1481849Z   Downloading stack_data-0.6.3-py3-none-any.whl.metadata (18 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.2313577Z Collecting wcwidth (from prompt_toolkit<3.1.0,>=3.0.41->ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.2473884Z   Downloading wcwidth-0.2.14-py2.py3-none-any.whl.metadata (15 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.2850961Z Collecting parso<0.9.0,>=0.8.4 (from jedi>=0.16->ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.3011850Z   Downloading parso-0.8.5-py2.py3-none-any.whl.metadata (8.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.3360912Z Collecting ptyprocess>=0.5 (from pexpect>4.3->ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.3520015Z   Downloading ptyprocess-0.7.0-py2.py3-none-any.whl.metadata (1.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.4287072Z Collecting widgetsnbextension~=4.0.14 (from ipywidgets->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.4462392Z   Downloading widgetsnbextension-4.0.15-py3-none-any.whl.metadata (1.6 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.4821066Z Collecting jupyterlab_widgets~=3.0.15 (from ipywidgets->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.4988309Z   Downloading jupyterlab_widgets-3.0.16-py3-none-any.whl.metadata (20 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.5740356Z Collecting async-lru>=1.0.0 (from jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.5901151Z   Downloading async_lru-2.0.5-py3-none-any.whl.metadata (4.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.6265092Z Collecting httpx<1,>=0.25.0 (from jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.6428426Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.6938230Z Collecting jupyter-lsp>=2.0.0 (from jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.7109938Z   Downloading jupyter_lsp-2.3.0-py3-none-any.whl.metadata (1.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.7649390Z Collecting jupyter-server<3,>=2.4.0 (from jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.7813315Z   Downloading jupyter_server-2.17.0-py3-none-any.whl.metadata (8.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.8316685Z Collecting jupyterlab-server<3,>=2.27.1 (from jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.8478491Z   Downloading jupyterlab_server-2.28.0-py3-none-any.whl.metadata (5.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.8806019Z Collecting notebook-shim>=0.2 (from jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.8965386Z   Downloading notebook_shim-0.2.4-py3-none-any.whl.metadata (4.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.9012342Z Requirement already satisfied: setuptools>=41.1.0 in /opt/hostedtoolcache/Python/3.10.19/x64/lib/python3.10/site-packages (from jupyterlab->jupyter) (79.0.1)
+sync-wiki	Install tools	2025-11-14T00:33:53.9308438Z Collecting tomli>=1.2.2 (from jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:53.9470780Z   Downloading tomli-2.3.0-py3-none-any.whl.metadata (10 kB)
+sync-wiki	Install tools	2025-11-14T00:33:53.9844064Z Collecting anyio (from httpx<1,>=0.25.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.0002377Z   Downloading anyio-4.11.0-py3-none-any.whl.metadata (4.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.0363107Z Collecting certifi (from httpx<1,>=0.25.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.0526426Z   Downloading certifi-2025.11.12-py3-none-any.whl.metadata (2.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.0867360Z Collecting httpcore==1.* (from httpx<1,>=0.25.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.1075847Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.1367516Z Collecting idna (from httpx<1,>=0.25.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.1529380Z   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.1809747Z Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.25.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.1971696Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.2434820Z Collecting argon2-cffi>=21.1 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.2599325Z   Downloading argon2_cffi-25.1.0-py3-none-any.whl.metadata (4.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.2968895Z Collecting jupyter-events>=0.11.0 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.3128058Z   Downloading jupyter_events-0.12.0-py3-none-any.whl.metadata (5.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.3503211Z Collecting jupyter-server-terminals>=0.4.4 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.3664849Z   Downloading jupyter_server_terminals-0.5.3-py3-none-any.whl.metadata (5.6 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.4117480Z Collecting overrides>=5.0 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.4278321Z   Downloading overrides-7.7.0-py3-none-any.whl.metadata (5.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.4577648Z Collecting prometheus-client>=0.9 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.4745505Z   Downloading prometheus_client-0.23.1-py3-none-any.whl.metadata (1.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.5141099Z Collecting send2trash>=1.8.2 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.5303243Z   Downloading Send2Trash-1.8.3-py3-none-any.whl.metadata (4.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.5615558Z Collecting terminado>=0.8.3 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.5775787Z   Downloading terminado-0.18.1-py3-none-any.whl.metadata (5.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.6169610Z Collecting websocket-client>=1.7 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.6339338Z   Downloading websocket_client-1.9.0-py3-none-any.whl.metadata (8.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.6668851Z Collecting babel>=2.10 (from jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.6830170Z   Downloading babel-2.17.0-py3-none-any.whl.metadata (2.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.7177199Z Collecting json5>=0.9.0 (from jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.7338715Z   Downloading json5-0.12.1-py3-none-any.whl.metadata (36 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.8075230Z Collecting requests>=2.31 (from jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.8234599Z   Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.8562639Z Collecting sniffio>=1.1 (from anyio->httpx<1,>=0.25.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.8719792Z   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.9098501Z Collecting argon2-cffi-bindings (from argon2-cffi>=21.1->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.9269943Z   Downloading argon2_cffi_bindings-25.1.0-cp39-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (7.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:54.9710151Z Collecting python-json-logger>=2.0.4 (from jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:54.9876868Z   Downloading python_json_logger-4.0.0-py3-none-any.whl.metadata (4.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.0187253Z Collecting rfc3339-validator (from jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.0348103Z   Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl.metadata (1.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.0586587Z Collecting rfc3986-validator>=0.1.1 (from jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.0758987Z   Downloading rfc3986_validator-0.1.1-py2.py3-none-any.whl.metadata (1.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.1027527Z Collecting fqdn (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.1188228Z   Downloading fqdn-1.5.1-py3-none-any.whl.metadata (1.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.1421282Z Collecting isoduration (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.1579765Z   Downloading isoduration-20.11.0-py3-none-any.whl.metadata (5.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.1856501Z Collecting jsonpointer>1.13 (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.2017995Z   Downloading jsonpointer-3.0.0-py2.py3-none-any.whl.metadata (2.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.2279794Z Collecting rfc3987-syntax>=1.1.0 (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.2437556Z   Downloading rfc3987_syntax-1.1.0-py3-none-any.whl.metadata (7.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.2698855Z Collecting uri-template (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.2857662Z   Downloading uri_template-1.3.0-py3-none-any.whl.metadata (8.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.3155297Z Collecting webcolors>=24.6.0 (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.3316641Z   Downloading webcolors-25.10.0-py3-none-any.whl.metadata (2.2 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.5045448Z Collecting charset_normalizer<4,>=2 (from requests>=2.31->jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.5212356Z   Downloading charset_normalizer-3.4.4-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (37 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.5725272Z Collecting urllib3<3,>=1.21.1 (from requests>=2.31->jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.5886525Z   Downloading urllib3-2.5.0-py3-none-any.whl.metadata (6.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.6388911Z Collecting lark>=1.2.2 (from rfc3987-syntax>=1.1.0->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.6553549Z   Downloading lark-1.3.1-py3-none-any.whl.metadata (1.8 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.8850199Z Collecting cffi>=1.0.1 (from argon2-cffi-bindings->argon2-cffi>=21.1->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.9013944Z   Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+sync-wiki	Install tools	2025-11-14T00:33:55.9328379Z Collecting pycparser (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi>=21.1->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:55.9489838Z   Downloading pycparser-2.23-py3-none-any.whl.metadata (993 bytes)
+sync-wiki	Install tools	2025-11-14T00:33:55.9879569Z Collecting arrow>=0.15.0 (from isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:56.0041017Z   Downloading arrow-1.4.0-py3-none-any.whl.metadata (7.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.0418627Z Collecting tzdata (from arrow>=0.15.0->isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:56.0577865Z   Downloading tzdata-2025.2-py2.py3-none-any.whl.metadata (1.4 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.1343679Z Collecting executing>=1.2.0 (from stack_data->ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:56.1502245Z   Downloading executing-2.2.1-py2.py3-none-any.whl.metadata (8.9 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.1808094Z Collecting asttokens>=2.1.0 (from stack_data->ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:56.1967556Z   Downloading asttokens-3.0.0-py3-none-any.whl.metadata (4.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.2204069Z Collecting pure-eval (from stack_data->ipython>=7.23.1->ipykernel->jupyter)
+sync-wiki	Install tools	2025-11-14T00:33:56.2364672Z   Downloading pure_eval-0.2.3-py3-none-any.whl.metadata (6.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.2771824Z Downloading jupyter-1.1.1-py2.py3-none-any.whl (2.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.2953863Z Downloading nbconvert-7.16.6-py3-none-any.whl (258 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.3348920Z Downloading mistune-3.1.4-py3-none-any.whl (53 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.3538415Z Downloading pyyaml-6.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (770 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.3778943Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 770.3/770.3 kB 28.6 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:56.3942985Z Downloading bleach-6.3.0-py3-none-any.whl (164 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.4132605Z Downloading tinycss2-1.4.0-py3-none-any.whl (26 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.4321834Z Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.4512271Z Downloading jupyter_core-5.9.1-py3-none-any.whl (29 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.4699907Z Downloading markupsafe-3.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.4884973Z Downloading nbclient-0.10.2-py3-none-any.whl (25 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.5073876Z Downloading jupyter_client-8.6.3-py3-none-any.whl (106 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.5265064Z Downloading nbformat-5.10.4-py3-none-any.whl (78 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.5457947Z Downloading fastjsonschema-2.21.2-py3-none-any.whl (24 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.5646310Z Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.5843945Z Downloading attrs-25.4.0-py3-none-any.whl (67 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.6031063Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.6216327Z Downloading pandocfilters-1.5.1-py2.py3-none-any.whl (8.7 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.6398569Z Downloading platformdirs-4.5.0-py3-none-any.whl (18 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.6577874Z Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+sync-wiki	Install tools	2025-11-14T00:33:56.6770215Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 1.2/1.2 MB 59.2 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:56.6932430Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.7169002Z Downloading pyzmq-27.1.0-cp310-cp310-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (854 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.7248644Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 854.1/854.1 kB 111.6 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:56.7408736Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.7594162Z Downloading rpds_py-0.28.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (382 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.7789983Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.7967926Z Downloading tornado-6.5.2-cp39-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (443 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.8163214Z Downloading traitlets-5.14.3-py3-none-any.whl (85 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.8389563Z Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.8572987Z Downloading webencodings-0.5.1-py2.py3-none-any.whl (11 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.8755854Z Downloading beautifulsoup4-4.14.2-py3-none-any.whl (106 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.8969441Z Downloading soupsieve-2.8-py3-none-any.whl (36 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.9155507Z Downloading defusedxml-0.7.1-py2.py3-none-any.whl (25 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.9336516Z Downloading ipykernel-7.1.0-py3-none-any.whl (117 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.9518839Z Downloading comm-0.2.3-py3-none-any.whl (7.3 kB)
+sync-wiki	Install tools	2025-11-14T00:33:56.9701132Z Downloading debugpy-1.8.17-cp310-cp310-manylinux_2_34_x86_64.whl (3.1 MB)
+sync-wiki	Install tools	2025-11-14T00:33:56.9992050Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 3.1/3.1 MB 113.9 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:57.0151199Z Downloading ipython-8.37.0-py3-none-any.whl (831 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.0233601Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 831.9/831.9 kB 111.3 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:57.0392632Z Downloading prompt_toolkit-3.0.52-py3-none-any.whl (391 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.0610556Z Downloading jedi-0.19.2-py2.py3-none-any.whl (1.6 MB)
+sync-wiki	Install tools	2025-11-14T00:33:57.0715752Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 1.6/1.6 MB 165.7 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:57.0882055Z Downloading parso-0.8.5-py2.py3-none-any.whl (106 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.1078170Z Downloading matplotlib_inline-0.2.1-py3-none-any.whl (9.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.1258722Z Downloading nest_asyncio-1.6.0-py3-none-any.whl (5.2 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.1441205Z Downloading packaging-25.0-py3-none-any.whl (66 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.1629990Z Downloading pexpect-4.9.0-py2.py3-none-any.whl (63 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.1823023Z Downloading psutil-7.1.3-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl (263 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.2016177Z Downloading ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.2202477Z Downloading decorator-5.2.1-py3-none-any.whl (9.2 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.2384936Z Downloading exceptiongroup-1.3.0-py3-none-any.whl (16 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.2566860Z Downloading ipywidgets-8.1.8-py3-none-any.whl (139 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.2783950Z Downloading jupyterlab_widgets-3.0.16-py3-none-any.whl (914 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.2863695Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 914.9/914.9 kB 123.2 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:57.3027531Z Downloading widgetsnbextension-4.0.15-py3-none-any.whl (2.2 MB)
+sync-wiki	Install tools	2025-11-14T00:33:57.3207905Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 2.2/2.2 MB 129.0 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:57.3367514Z Downloading jupyter_console-6.6.3-py3-none-any.whl (24 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.3548209Z Downloading jupyterlab-4.4.10-py3-none-any.whl (12.3 MB)
+sync-wiki	Install tools	2025-11-14T00:33:57.4185428Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 12.3/12.3 MB 197.3 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:57.4351499Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.4539547Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.4723356Z Downloading jupyter_server-2.17.0-py3-none-any.whl (388 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.4923341Z Downloading jupyterlab_server-2.28.0-py3-none-any.whl (59 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.5120871Z Downloading anyio-4.11.0-py3-none-any.whl (109 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.5308955Z Downloading argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.5489989Z Downloading async_lru-2.0.5-py3-none-any.whl (6.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.5670336Z Downloading babel-2.17.0-py3-none-any.whl (10.2 MB)
+sync-wiki	Install tools	2025-11-14T00:33:57.6193846Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 10.2/10.2 MB 200.3 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:57.6361715Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.6542262Z Downloading idna-3.11-py3-none-any.whl (71 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.6726411Z Downloading json5-0.12.1-py3-none-any.whl (36 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.6910862Z Downloading jupyter_events-0.12.0-py3-none-any.whl (19 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.7091868Z Downloading jsonpointer-3.0.0-py2.py3-none-any.whl (7.6 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.7276855Z Downloading jupyter_lsp-2.3.0-py3-none-any.whl (76 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.7472761Z Downloading jupyter_server_terminals-0.5.3-py3-none-any.whl (13 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.7657128Z Downloading notebook_shim-0.2.4-py3-none-any.whl (13 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.7841681Z Downloading overrides-7.7.0-py3-none-any.whl (17 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.8023572Z Downloading prometheus_client-0.23.1-py3-none-any.whl (61 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.8205193Z Downloading python_json_logger-4.0.0-py3-none-any.whl (15 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.8386801Z Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.8571723Z Downloading charset_normalizer-3.4.4-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (153 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.8756530Z Downloading urllib3-2.5.0-py3-none-any.whl (129 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.8941454Z Downloading certifi-2025.11.12-py3-none-any.whl (159 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.9145856Z Downloading rfc3986_validator-0.1.1-py2.py3-none-any.whl (4.2 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.9347787Z Downloading rfc3987_syntax-1.1.0-py3-none-any.whl (8.0 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.9534692Z Downloading lark-1.3.1-py3-none-any.whl (113 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.9751089Z Downloading Send2Trash-1.8.3-py3-none-any.whl (18 kB)
+sync-wiki	Install tools	2025-11-14T00:33:57.9934853Z Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.0112468Z Downloading terminado-0.18.1-py3-none-any.whl (14 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.0295595Z Downloading tomli-2.3.0-py3-none-any.whl (14 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.0480160Z Downloading webcolors-25.10.0-py3-none-any.whl (14 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.0660522Z Downloading websocket_client-1.9.0-py3-none-any.whl (82 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.0847177Z Downloading argon2_cffi_bindings-25.1.0-cp39-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (87 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.1033466Z Downloading cffi-2.0.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (216 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.1231399Z Downloading fqdn-1.5.1-py3-none-any.whl (9.1 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.1416959Z Downloading isoduration-20.11.0-py3-none-any.whl (11 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.1597699Z Downloading arrow-1.4.0-py3-none-any.whl (68 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.1780151Z Downloading jupyterlab_pygments-0.3.0-py3-none-any.whl (15 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.1965070Z Downloading notebook-7.4.7-py3-none-any.whl (14.3 MB)
+sync-wiki	Install tools	2025-11-14T00:33:58.2695954Z    GöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöüGöü 14.3/14.3 MB 201.5 MB/s  0:00:00
+sync-wiki	Install tools	2025-11-14T00:33:58.2858052Z Downloading pycparser-2.23-py3-none-any.whl (118 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.3049396Z Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl (3.5 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.3234877Z Downloading stack_data-0.6.3-py3-none-any.whl (24 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.3414546Z Downloading asttokens-3.0.0-py3-none-any.whl (26 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.3597605Z Downloading executing-2.2.1-py2.py3-none-any.whl (28 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.3779920Z Downloading pure_eval-0.2.3-py3-none-any.whl (11 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.3979085Z Downloading tzdata-2025.2-py2.py3-none-any.whl (347 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.4176110Z Downloading uri_template-1.3.0-py3-none-any.whl (11 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.4363926Z Downloading wcwidth-0.2.14-py2.py3-none-any.whl (37 kB)
+sync-wiki	Install tools	2025-11-14T00:33:58.7996011Z Installing collected packages: webencodings, pure-eval, ptyprocess, fastjsonschema, widgetsnbextension, websocket-client, webcolors, wcwidth, urllib3, uri-template, tzdata, typing-extensions, traitlets, tornado, tomli, tinycss2, soupsieve, sniffio, six, send2trash, rpds-py, rfc3986-validator, pyzmq, pyyaml, python-json-logger, pygments, pycparser, psutil, prometheus-client, platformdirs, pexpect, parso, pandocfilters, packaging, overrides, nest-asyncio, markupsafe, lark, jupyterlab_widgets, jupyterlab-pygments, jsonpointer, json5, idna, h11, fqdn, executing, defusedxml, decorator, debugpy, comm, charset_normalizer, certifi, bleach, babel, attrs, asttokens, terminado, stack_data, rfc3987-syntax, rfc3339-validator, requests, referencing, python-dateutil, prompt_toolkit, mistune, matplotlib-inline, jupyter-core, jinja2, jedi, httpcore, exceptiongroup, cffi, beautifulsoup4, async-lru, jupyter-server-terminals, jupyter-client, jsonschema-specifications, ipython, arrow, argon2-cffi-bindings, anyio, jsonschema, isoduration, ipywidgets, ipykernel, httpx, argon2-cffi, nbformat, jupyter-console, nbclient, jupyter-events, nbconvert, jupyter-server, notebook-shim, jupyterlab-server, jupyter-lsp, jupyterlab, notebook, jupyter
+sync-wiki	Install tools	2025-11-14T00:34:05.7284213Z 
+sync-wiki	Install tools	2025-11-14T00:34:05.7437375Z Successfully installed anyio-4.11.0 argon2-cffi-25.1.0 argon2-cffi-bindings-25.1.0 arrow-1.4.0 asttokens-3.0.0 async-lru-2.0.5 attrs-25.4.0 babel-2.17.0 beautifulsoup4-4.14.2 bleach-6.3.0 certifi-2025.11.12 cffi-2.0.0 charset_normalizer-3.4.4 comm-0.2.3 debugpy-1.8.17 decorator-5.2.1 defusedxml-0.7.1 exceptiongroup-1.3.0 executing-2.2.1 fastjsonschema-2.21.2 fqdn-1.5.1 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.11 ipykernel-7.1.0 ipython-8.37.0 ipywidgets-8.1.8 isoduration-20.11.0 jedi-0.19.2 jinja2-3.1.6 json5-0.12.1 jsonpointer-3.0.0 jsonschema-4.25.1 jsonschema-specifications-2025.9.1 jupyter-1.1.1 jupyter-client-8.6.3 jupyter-console-6.6.3 jupyter-core-5.9.1 jupyter-events-0.12.0 jupyter-lsp-2.3.0 jupyter-server-2.17.0 jupyter-server-terminals-0.5.3 jupyterlab-4.4.10 jupyterlab-pygments-0.3.0 jupyterlab-server-2.28.0 jupyterlab_widgets-3.0.16 lark-1.3.1 markupsafe-3.0.3 matplotlib-inline-0.2.1 mistune-3.1.4 nbclient-0.10.2 nbconvert-7.16.6 nbformat-5.10.4 nest-asyncio-1.6.0 notebook-7.4.7 notebook-shim-0.2.4 overrides-7.7.0 packaging-25.0 pandocfilters-1.5.1 parso-0.8.5 pexpect-4.9.0 platformdirs-4.5.0 prometheus-client-0.23.1 prompt_toolkit-3.0.52 psutil-7.1.3 ptyprocess-0.7.0 pure-eval-0.2.3 pycparser-2.23 pygments-2.19.2 python-dateutil-2.9.0.post0 python-json-logger-4.0.0 pyyaml-6.0.3 pyzmq-27.1.0 referencing-0.37.0 requests-2.32.5 rfc3339-validator-0.1.4 rfc3986-validator-0.1.1 rfc3987-syntax-1.1.0 rpds-py-0.28.0 send2trash-1.8.3 six-1.17.0 sniffio-1.3.1 soupsieve-2.8 stack_data-0.6.3 terminado-0.18.1 tinycss2-1.4.0 tomli-2.3.0 tornado-6.5.2 traitlets-5.14.3 typing-extensions-4.15.0 tzdata-2025.2 uri-template-1.3.0 urllib3-2.5.0 wcwidth-0.2.14 webcolors-25.10.0 webencodings-0.5.1 websocket-client-1.9.0 widgetsnbextension-4.0.15
+sync-wiki	Generate and embed notebook markdown	n++2025-11-14T00:34:05.9742006Z ##[group]Run python scripts/embed_notebooks_in_wiki.py
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9742435Z [36;1mpython scripts/embed_notebooks_in_wiki.py[0m
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9775399Z shell: /usr/bin/bash -e {0}
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9775643Z env:
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9775888Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9776307Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.19/x64/lib/pkgconfig
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9776697Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9777049Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9777412Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9777782Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.19/x64/lib
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:34:05.9778079Z ##[endgroup]
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6740427Z [embed] Converting notebooks/Examples_Tour.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/examples_tour/Examples_Tour.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6741395Z [embed] Updated page: compitum.wiki/Examples.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6742511Z [embed] Converting notebooks/Getting_Started.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/getting_started/Getting_Started.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6743613Z [embed] Updated page: compitum.wiki/Getting-Started.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6745058Z [embed] Converting notebooks/wiki_snippets/Glossary/auto_glossary_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_glossary_1/auto_glossary_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6745842Z [embed] Updated page: compitum.wiki/Glossary.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6746500Z [embed] Converting notebooks/wiki_snippets/Home/auto_home_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_home_1/auto_home_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6747169Z [embed] Updated page: compitum.wiki/Home.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6748196Z [embed] Converting notebooks/wiki_snippets/Math-Boundary-Gap-and-Entropy/auto_math_boundary_gap_and_entropy_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_boundary_gap_and_entropy_1/auto_math_boundary_gap_and_entropy_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6749355Z [embed] Updated page: compitum.wiki/Math-Boundary-Gap-and-Entropy.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6750592Z [embed] Converting notebooks/wiki_snippets/Math-Constraints-Duality-and-Shadow-Prices/auto_math_constraints_duality_and_shadow_prices_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_constraints_duality_and_shadow_prices_1/auto_math_constraints_duality_and_shadow_prices_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6751882Z [embed] Updated page: compitum.wiki/Math-Constraints-Duality-and-Shadow-Prices.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6753165Z [embed] Converting notebooks/wiki_snippets/Math-Constraints-Duality-and-Shadow-Prices/auto_math_constraints_duality_and_shadow_prices_2.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_constraints_duality_and_shadow_prices_2/auto_math_constraints_duality_and_shadow_prices_2.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6754623Z [embed] Updated page: compitum.wiki/Math-Constraints-Duality-and-Shadow-Prices.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6755940Z [embed] Converting notebooks/wiki_snippets/Math-Constraints-Duality-and-Shadow-Prices/auto_math_constraints_duality_and_shadow_prices_3.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_constraints_duality_and_shadow_prices_3/auto_math_constraints_duality_and_shadow_prices_3.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6757201Z [embed] Updated page: compitum.wiki/Math-Constraints-Duality-and-Shadow-Prices.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6758470Z [embed] Converting notebooks/wiki_snippets/Math-Constraints-Duality-and-Shadow-Prices/auto_math_constraints_duality_and_shadow_prices_4.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_constraints_duality_and_shadow_prices_4/auto_math_constraints_duality_and_shadow_prices_4.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6760000Z [embed] Updated page: compitum.wiki/Math-Constraints-Duality-and-Shadow-Prices.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6761265Z [embed] Converting notebooks/wiki_snippets/Math-Constraints-Duality-and-Shadow-Prices/auto_math_constraints_duality_and_shadow_prices_5.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_constraints_duality_and_shadow_prices_5/auto_math_constraints_duality_and_shadow_prices_5.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6762707Z [embed] Updated page: compitum.wiki/Math-Constraints-Duality-and-Shadow-Prices.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6763784Z [embed] Converting notebooks/wiki_snippets/Math-EMA-and-Integral-Control/auto_math_ema_and_integral_control_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_ema_and_integral_control_1/auto_math_ema_and_integral_control_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6765021Z [embed] Updated page: compitum.wiki/Math-EMA-and-Integral-Control.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6766128Z [embed] Converting notebooks/wiki_snippets/Math-Kernel-Density-and-Coherence/auto_math_kernel_density_and_coherence_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_kernel_density_and_coherence_1/auto_math_kernel_density_and_coherence_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6767237Z [embed] Updated page: compitum.wiki/Math-Kernel-Density-and-Coherence.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6768345Z [embed] Converting notebooks/wiki_snippets/Math-Kernel-Density-and-Coherence/auto_math_kernel_density_and_coherence_2.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_kernel_density_and_coherence_2/auto_math_kernel_density_and_coherence_2.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6769447Z [embed] Updated page: compitum.wiki/Math-Kernel-Density-and-Coherence.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6770551Z [embed] Converting notebooks/wiki_snippets/Math-Kernel-Density-and-Coherence/auto_math_kernel_density_and_coherence_3.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_kernel_density_and_coherence_3/auto_math_kernel_density_and_coherence_3.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6771653Z [embed] Updated page: compitum.wiki/Math-Kernel-Density-and-Coherence.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6772632Z [embed] Converting notebooks/wiki_snippets/Math-Lyapunov-Stability/auto_math_lyapunov_stability_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_lyapunov_stability_1/auto_math_lyapunov_stability_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6773593Z [embed] Updated page: compitum.wiki/Math-Lyapunov-Stability.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6774786Z [embed] Converting notebooks/wiki_snippets/Math-Lyapunov-Stability/auto_math_lyapunov_stability_2.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_lyapunov_stability_2/auto_math_lyapunov_stability_2.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6775756Z [embed] Updated page: compitum.wiki/Math-Lyapunov-Stability.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6776713Z [embed] Converting notebooks/wiki_snippets/Math-Lyapunov-Stability/auto_math_lyapunov_stability_3.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_lyapunov_stability_3/auto_math_lyapunov_stability_3.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6777657Z [embed] Updated page: compitum.wiki/Math-Lyapunov-Stability.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6778605Z [embed] Converting notebooks/wiki_snippets/Math-Lyapunov-Stability/auto_math_lyapunov_stability_4.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_lyapunov_stability_4/auto_math_lyapunov_stability_4.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6779546Z [embed] Updated page: compitum.wiki/Math-Lyapunov-Stability.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6780485Z [embed] Converting notebooks/wiki_snippets/Math-Lyapunov-Stability/auto_math_lyapunov_stability_5.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_lyapunov_stability_5/auto_math_lyapunov_stability_5.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6781422Z [embed] Updated page: compitum.wiki/Math-Lyapunov-Stability.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6782526Z [embed] Converting notebooks/wiki_snippets/Math-Lyapunov-Stability/auto_math_lyapunov_stability_6.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_lyapunov_stability_6/auto_math_lyapunov_stability_6.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6783463Z [embed] Updated page: compitum.wiki/Math-Lyapunov-Stability.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6785105Z [embed] Converting notebooks/wiki_snippets/Math-SPD-Metrics-and-Riemannian-Geometry/auto_math_spd_metrics_and_riemannian_geometry_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_spd_metrics_and_riemannian_geometry_1/auto_math_spd_metrics_and_riemannian_geometry_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6786359Z [embed] Updated page: compitum.wiki/Math-SPD-Metrics-and-Riemannian-Geometry.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6787592Z [embed] Converting notebooks/wiki_snippets/Math-SPD-Metrics-and-Riemannian-Geometry/auto_math_spd_metrics_and_riemannian_geometry_2.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_spd_metrics_and_riemannian_geometry_2/auto_math_spd_metrics_and_riemannian_geometry_2.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6788828Z [embed] Updated page: compitum.wiki/Math-SPD-Metrics-and-Riemannian-Geometry.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6790052Z [embed] Converting notebooks/wiki_snippets/Math-SPD-Metrics-and-Riemannian-Geometry/auto_math_spd_metrics_and_riemannian_geometry_3.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_spd_metrics_and_riemannian_geometry_3/auto_math_spd_metrics_and_riemannian_geometry_3.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6791271Z [embed] Updated page: compitum.wiki/Math-SPD-Metrics-and-Riemannian-Geometry.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6792491Z [embed] Converting notebooks/wiki_snippets/Math-SPD-Metrics-and-Riemannian-Geometry/auto_math_spd_metrics_and_riemannian_geometry_4.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_spd_metrics_and_riemannian_geometry_4/auto_math_spd_metrics_and_riemannian_geometry_4.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6793713Z [embed] Updated page: compitum.wiki/Math-SPD-Metrics-and-Riemannian-Geometry.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6795224Z [embed] Converting notebooks/wiki_snippets/Math-SPD-Metrics-and-Riemannian-Geometry/auto_math_spd_metrics_and_riemannian_geometry_5.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_spd_metrics_and_riemannian_geometry_5/auto_math_spd_metrics_and_riemannian_geometry_5.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:10.6796477Z [embed] Updated page: compitum.wiki/Math-SPD-Metrics-and-Riemannian-Geometry.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3610775Z [embed] Converting notebooks/wiki_snippets/Math-Trust-Regions-and-Optimization/auto_math_trust_regions_and_optimization_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_trust_regions_and_optimization_1/auto_math_trust_regions_and_optimization_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3612881Z [embed] Updated page: compitum.wiki/Math-Trust-Regions-and-Optimization.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3614917Z [embed] Converting notebooks/wiki_snippets/Math-Trust-Regions-and-Optimization/auto_math_trust_regions_and_optimization_2.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_trust_regions_and_optimization_2/auto_math_trust_regions_and_optimization_2.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3616803Z [embed] Updated page: compitum.wiki/Math-Trust-Regions-and-Optimization.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3618667Z [embed] Converting notebooks/wiki_snippets/Math-Trust-Regions-and-Optimization/auto_math_trust_regions_and_optimization_3.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_trust_regions_and_optimization_3/auto_math_trust_regions_and_optimization_3.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3620527Z [embed] Updated page: compitum.wiki/Math-Trust-Regions-and-Optimization.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3622543Z [embed] Converting notebooks/wiki_snippets/Math-Trust-Regions-and-Optimization/auto_math_trust_regions_and_optimization_4.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_trust_regions_and_optimization_4/auto_math_trust_regions_and_optimization_4.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3625126Z [embed] Updated page: compitum.wiki/Math-Trust-Regions-and-Optimization.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3627211Z [embed] Converting notebooks/wiki_snippets/Math-Trust-Regions-and-Optimization/auto_math_trust_regions_and_optimization_5.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_trust_regions_and_optimization_5/auto_math_trust_regions_and_optimization_5.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3629312Z [embed] Updated page: compitum.wiki/Math-Trust-Regions-and-Optimization.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3631286Z [embed] Converting notebooks/wiki_snippets/Math-Uncertainty-and-Calibration/auto_math_uncertainty_and_calibration_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_math_uncertainty_and_calibration_1/auto_math_uncertainty_and_calibration_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3633494Z [embed] Updated page: compitum.wiki/Math-Uncertainty-and-Calibration.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3635243Z [embed] Converting notebooks/wiki_snippets/Output-Format/auto_output_format_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_output_format_1/auto_output_format_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3636707Z [embed] Updated page: compitum.wiki/Output-Format.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3638063Z [embed] Converting notebooks/wiki_snippets/Philosophy/auto_philosophy_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_philosophy_1/auto_philosophy_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3639462Z [embed] Updated page: compitum.wiki/Philosophy.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3640838Z [embed] Converting notebooks/wiki_snippets/Trace-Glossary/auto_trace_glossary_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_trace_glossary_1/auto_trace_glossary_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3642088Z [embed] Updated page: compitum.wiki/Trace-Glossary.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3643513Z [embed] Converting notebooks/wiki_snippets/Verification/auto_verification_1.ipynb -> /home/runner/work/compitum/compitum/compitum.wiki/_generated/auto_verification_1/auto_verification_1.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3645085Z [embed] Updated page: compitum.wiki/Verification.md
+sync-wiki	Generate and embed notebook markdown	2025-11-14T00:35:36.3645514Z Done.
+sync-wiki	Commit and push wiki changes	n++2025-11-14T00:35:36.3712000Z ##[group]Run if [ -n "$(git status --porcelain)" ]; then
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3712406Z [36;1mif [ -n "$(git status --porcelain)" ]; then[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3712729Z [36;1m  git config user.name "github-actions[bot]"[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3713129Z [36;1m  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3713502Z [36;1m  git add -A[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3713752Z [36;1m  git commit -m "Update wiki from notebooks [skip ci]"[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3714043Z [36;1m  git push[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3714226Z [36;1melse[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3714613Z [36;1m  echo "No changes to commit."[0m
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3746751Z shell: /usr/bin/bash -e {0}
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3746973Z env:
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3747208Z   pythonLocation: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3747624Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.10.19/x64/lib/pkgconfig
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3748006Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3748390Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3748783Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.10.19/x64
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3749163Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.10.19/x64/lib
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3749473Z ##[endgroup]
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3800355Z /home/runner/work/_temp/c820ae60-4228-429f-8c5a-08aecc523a4c.sh: line 9: syntax error: unexpected end of file
+sync-wiki	Commit and push wiki changes	2025-11-14T00:35:36.3810509Z ##[error]Process completed with exit code 2.
+sync-wiki	Post Checkout wiki repo	n++2025-11-14T00:35:36.3897059Z Post job cleanup.
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.4825739Z [command]/usr/bin/git version
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.4860613Z git version 2.51.2
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.4903204Z Temporarily overriding HOME='/home/runner/work/_temp/a24f9c7e-424b-4a64-aa10-38074f704d0d' before making global git config changes
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.4905054Z Adding repository directory to the temporary git global config as a safe directory
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.4909886Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/compitum/compitum/compitum.wiki
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.4949726Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.4981660Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.5207546Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.5227790Z http.https://github.com/.extraheader
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.5240133Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+sync-wiki	Post Checkout wiki repo	2025-11-14T00:35:36.5272435Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+sync-wiki	Post Checkout repo	n++2025-11-14T00:35:36.5598958Z Post job cleanup.
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6525768Z [command]/usr/bin/git version
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6560660Z git version 2.51.2
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6602749Z Temporarily overriding HOME='/home/runner/work/_temp/3f237b21-0d29-471a-8f46-696eb94d8875' before making global git config changes
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6604059Z Adding repository directory to the temporary git global config as a safe directory
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6609133Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/compitum/compitum
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6644007Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6677704Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6899779Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6920600Z http.https://github.com/.extraheader
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6933106Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+sync-wiki	Post Checkout repo	2025-11-14T00:35:36.6964122Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+sync-wiki	Complete job	n++2025-11-14T00:35:36.7299129Z Cleaning up orphan processes
+

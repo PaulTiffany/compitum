@@ -24,3 +24,4 @@ def test_two_way_street_units_scale_invariance(dim: int, scale: float, state_val
     # Invariance under consistent unit scaling
     assert math.isclose(outA["confinement_distance"], outB["confinement_distance"], rel_tol=1e-9, abs_tol=1e-9)
     assert math.isclose(outA["curvature_signal"], outB["curvature_signal"], rel_tol=1e-9, abs_tol=1e-9)
+
