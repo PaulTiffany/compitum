@@ -9,3 +9,4 @@ generic core and domain-facing shims.
 from .fusion import PlasmaMonitor  # noqa: F401
 
 __all__ = ["PlasmaMonitor"]
+

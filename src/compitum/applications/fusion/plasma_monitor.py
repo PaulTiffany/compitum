@@ -57,7 +57,9 @@ class PlasmaMonitor:
         self.curvature_alarm = cfg.curvature_alarm
         self.beta_d = cfg.beta_d
         self.eta = cfg.eta
-        self.scales = (cfg.scales if cfg.scales is not None else np.ones(cfg.state_dim, dtype=float))
+        self.scales = (
+            cfg.scales if cfg.scales is not None else np.ones(cfg.state_dim, dtype=float)
+        )
         self._initialized = False
 
     def _normalize(self, x: np.ndarray) -> np.ndarray:

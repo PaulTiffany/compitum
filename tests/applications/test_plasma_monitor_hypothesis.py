@@ -47,3 +47,4 @@ def test_reset_equilibrium_drives_distance_to_zero(dim: int, s0: List[float]):
     pm.reset_equilibrium(s1v)
     out2 = pm.ingest_profile(s1v, t=2.0)
     assert out2["confinement_distance"] == 0.0
+

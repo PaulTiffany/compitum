@@ -42,3 +42,4 @@ def test_plasma_monitor_reset_equilibrium():
     pm.reset_equilibrium(s2)
     out3 = pm.ingest_profile(s2, t=2.0)
     assert out3["confinement_distance"] == 0.0
+
