@@ -43,3 +43,12 @@ def test_plasma_monitor_reset_equilibrium():
     out3 = pm.ingest_profile(s2, t=2.0)
     assert out3["confinement_distance"] == 0.0
 
+
+def test_alarm_no_trigger_at_equilibrium():
+    # At initialization, equilibrium == state; curvature == 0 -> alarm must be False
+    pm = PlasmaMonitor(state_dim=6, rank=3, curvature_alarm=0.0)
+    s = np.zeros(6, dtype=float)
+    out = pm.ingest_profile(s, t=0.0)
+    assert out["confinement_distance"] == 0.0
+    assert out["curvature_signal"] == 0.0
+    assert out["alarm_status"] is False
