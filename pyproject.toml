@@ -89,7 +89,7 @@ exclude = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["numpy.*", "scipy.*", "sklearn.*", "yaml.*", "lightgbm.*"]
+module = ["numpy.*", "scipy.*", "sklearn.*", "yaml.*", "lightgbm.*", "pandas.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
@@ -141,4 +141,5 @@ paths_to_mutate = ["src/compitum"]
 tests_dir = ["tests"]
 use_coverage = true
 backup = false
+
 
