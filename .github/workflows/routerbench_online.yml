@@ -79,12 +79,11 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src:${{ github.workspace }}/src/routerbench
         run: |
           python - << 'PY'
-import importlib, sys
-sys.path.extend(['.', './src', './src/routerbench'])
-rb = importlib.import_module('routerbench.evaluate_routers')
-print('routerbench import ok:', rb.__name__)
-PY
-
+          import importlib, sys
+          sys.path.extend(['.', './src', './src/routerbench'])
+          rb = importlib.import_module('routerbench.evaluate_routers')
+          print('routerbench import ok:', rb.__name__)
+          PY
       - name: Run RouterBench (orchestrator)
         shell: bash
         env:
