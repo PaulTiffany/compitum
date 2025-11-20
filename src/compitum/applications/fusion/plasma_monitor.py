@@ -20,6 +20,8 @@ class PlasmaMonitorConfig:
     eta: float = 0.01
     # Optional per-dimension scale factors (units normalization)
     scales: Optional[np.ndarray] = None  # None => ones
+    # Optional norm exponent for distance (Lp), default 2 (Euclidean)
+    norm_p: float = 2.0
 
 
 class PlasmaMonitor:
@@ -36,7 +38,8 @@ class PlasmaMonitor:
                  rank: int | None = None,
                  q_threshold: float | None = None,
                  curvature_alarm: float | None = None,
-                 scales: Optional[np.ndarray] = None) -> None:
+                 scales: Optional[np.ndarray] = None,
+                 norm_p: float | None = None) -> None:
         # Accept either a config dataclass or individual overrides for quick use
         cfg = config or PlasmaMonitorConfig()
         if state_dim is not None:
@@ -49,6 +52,8 @@ class PlasmaMonitor:
             cfg.curvature_alarm = curvature_alarm
         if scales is not None:
             cfg.scales = np.asarray(scales, dtype=float)
+        if norm_p is not None:
+            cfg.norm_p = float(norm_p)
 
         self.metric = SymbolicManifoldMetric(D=cfg.state_dim, rank=cfg.rank, delta=cfg.delta)
         self.controller = LyapunovController(kappa=0.1, r0=1.0, integral_gain=0.01)
@@ -57,6 +62,7 @@ class PlasmaMonitor:
         self.curvature_alarm = cfg.curvature_alarm
         self.beta_d = cfg.beta_d
         self.eta = cfg.eta
+        self.norm_p = float(cfg.norm_p)
         self.scales = (
             cfg.scales if cfg.scales is not None else np.ones(cfg.state_dim, dtype=float)
         )
@@ -87,7 +93,19 @@ class PlasmaMonitor:
         x = self._normalize(state)
         mu = self._normalize(self.equilibrium)
 
-        d, d_std = self.metric.distance(x, mu)
+        # Compute whitened residual then Lp norm if p != 2
+        # Ensure metric W is ready by calling distance once (for sigma estimate)
+        d2, d_std = self.metric.distance(x, mu)
+        if abs(self.norm_p - 2.0) < 1e-12:
+            d = d2
+        else:
+            # Compute whitened residual with current W and take Lp norm
+            W = self.metric.W
+            if W is None:
+                W = self.metric._update_cholesky()  # use metric to compute W
+            wz = W @ (x - mu)
+            p = max(1e-6, float(self.norm_p))
+            d = float(np.linalg.norm(wz, ord=p))
 
         grad_norm = self.metric.update_spd(
             x=x,
@@ -115,3 +133,4 @@ class PlasmaMonitor:
         """Re-center stability basin after a mode change or controlled crash."""
         self.equilibrium = new_eq.copy()
         self.controller.drift_integral = 0.0
+
