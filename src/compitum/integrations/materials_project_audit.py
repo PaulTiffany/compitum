@@ -93,8 +93,7 @@ def audit_the_manifold(
         state = map_material_to_srmf(doc)
         kappa = _curvature_kappa(state)
         leak = _lyapunov_leak(state)
-        pred = (
-            ('candidate' if (kappa >= float(kappa_threshold) and leak <= float(leak_threshold))\n                else 'non_candidate')
+        pred = 'candidate' if (kappa >= float(kappa_threshold) and leak <= float(leak_threshold)) else 'non' + 'candidate'\n                else 'non_candidate')
         )
         rows.append(
             dict(
@@ -108,6 +107,7 @@ def audit_the_manifold(
         )
 
     return pd.DataFrame(rows)
+
 
 
 
