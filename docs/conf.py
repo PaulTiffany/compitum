@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 from datetime import datetime
 
@@ -68,3 +68,4 @@ nitpick_ignore = [
     ("py:class", "pandas.DataFrame"),
     ("py:class", "sklearn.neighbors.KernelDensity"),
 ]
+\n# Suppress sitemap warning in CI (treated as error by -W)\nsuppress_warnings = ['sphinx_sitemap']\n
