@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Optional
@@ -73,7 +73,7 @@ def audit_the_manifold(
         from mp_api.client import MPRester  # type: ignore
     except Exception as e:  # pragma: no cover
         raise RuntimeError(
-            "mp_api is required. Install via 'pip install mp_api' or extras 'pip install -e .[materials]'.[materials]`."
+            "mp_api is required. Install mp_api or use extras materials."
         ) from e
 
     _fields = fields or [
@@ -108,6 +108,7 @@ def audit_the_manifold(
         )
 
     return pd.DataFrame(rows)
+
 
 
 
