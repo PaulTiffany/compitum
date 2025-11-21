@@ -144,5 +144,4 @@ backup = false
 
 
 
-[project.optional-dependencies]
 materials = ["mp_api>=0.44"]
