@@ -1,4 +1,4 @@
-from types import SimpleNamespace
+﻿from types import SimpleNamespace
 import sys
 
 import pandas as pd
@@ -37,7 +37,9 @@ def test_audit_monkeypatched(monkeypatch):
             return False
 
     # Provide fake mp_api module
-    fake_client = SimpleNamespace(MPRester=FakeMPR)\n    monkeypatch.setitem(sys.modules, 'mp_api', SimpleNamespace(client=fake_client))\n    monkeypatch.setitem(sys.modules, 'mp_api.client', fake_client)
+    fake_client = SimpleNamespace(MPRester=FakeMPR)
+    monkeypatch.setitem(sys.modules, 'mp_api', SimpleNamespace(client=fake_client))
+    monkeypatch.setitem(sys.modules, 'mp_api.client', fake_client)
 
     from compitum.integrations.materials_project_audit import audit_the_manifold
     df = audit_the_manifold('dummy', {'elements':['La','Ni','O'], 'nelements':3})
