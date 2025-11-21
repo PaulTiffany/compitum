@@ -73,7 +73,7 @@ def audit_the_manifold(
         from mp_api.client import MPRester  # type: ignore
     except Exception as e:  # pragma: no cover
         raise RuntimeError(
-            "mp_api is required. Install with `pip install mp_api` or extras: `pip install -e .[materials]`."
+            "mp_api is required. Install via 'pip install mp_api' or extras 'pip install -e .[materials]'.[materials]`."
         ) from e
 
     _fields = fields or [
@@ -94,7 +94,7 @@ def audit_the_manifold(
         kappa = _curvature_kappa(state)
         leak = _lyapunov_leak(state)
         pred = (
-            "candidate" if (kappa >= float(kappa_threshold) and leak <= float(leak_threshold)) else "non_candidate"
+            'candidate' if (kappa >= float(kappa_threshold) and leak <= float(leak_threshold)) else 'non_candidate'
         )
         rows.append(
             dict(
@@ -108,5 +108,6 @@ def audit_the_manifold(
         )
 
     return pd.DataFrame(rows)
+
 
 
