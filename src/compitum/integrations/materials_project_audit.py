@@ -86,15 +86,18 @@ def audit_the_manifold(
     ]
 
     with MPRester(api_key) as mpr:  # pragma: no cover (exercised in notebook)
-        docs: Iterable[Any] = mpr.materials.summary.search(**search_criteria, fields=_fields)
+        docs: Iterable[Any] = mpr.materials.summary.search(
+            **search_criteria,
+            fields=_fields,
+        )
 
     rows: list[dict[str, Any]] = []
     for doc in docs:
         state = map_material_to_srmf(doc)
         kappa = _curvature_kappa(state)
         leak = _lyapunov_leak(state)
-        pred = 'candidate' if (kappa >= float(kappa_threshold) and leak <= float(leak_threshold)) else 'non' + 'candidate'\n                else 'non_candidate')
-        )
+        is_cand = (kappa >= float(kappa_threshold)) and (leak <= float(leak_threshold))
+        pred = "candidate" if is_cand else "non_candidate"
         rows.append(
             dict(
                 material_id=getattr(doc, "material_id", ""),
@@ -107,11 +110,3 @@ def audit_the_manifold(
         )
 
     return pd.DataFrame(rows)
-
-
-
-
-
-
-
-
