@@ -37,8 +37,7 @@ def test_audit_monkeypatched(monkeypatch):
             return False
 
     # Provide fake mp_api module
-    fake_module = SimpleNamespace(client=SimpleNamespace(MPRester=FakeMPR))
-    monkeypatch.setitem(sys.modules, 'mp_api', fake_module)
+    fake_client = SimpleNamespace(MPRester=FakeMPR)\n    monkeypatch.setitem(sys.modules, 'mp_api', SimpleNamespace(client=fake_client))\n    monkeypatch.setitem(sys.modules, 'mp_api.client', fake_client)
 
     from compitum.integrations.materials_project_audit import audit_the_manifold
     df = audit_the_manifold('dummy', {'elements':['La','Ni','O'], 'nelements':3})
