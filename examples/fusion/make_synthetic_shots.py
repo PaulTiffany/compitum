@@ -14,7 +14,7 @@ def write_shot(path: Path, steps: int, crash_at: int | None) -> None:
     if crash_at is None:
         q = 1.5 - 0.001 * t  # stays > 1.0
     else:
-        q = 1.5 - 0.01 * t   # drops < 1.0 around t˜50 when steps=60
+        q = 1.5 - 0.01 * t   # drops < 1.0 around tï¿½50 when steps=60
     df = pd.DataFrame({"time_ms": t, "Te_core": Te_core, "ne": ne, "q_min": q})
     df.to_csv(path, index=False)
 

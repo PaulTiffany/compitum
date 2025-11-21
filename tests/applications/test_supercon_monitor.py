@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 
 from compitum.applications.supercon import SuperconMonitor, SuperconMonitorConfig
 
@@ -24,3 +24,4 @@ def test_supercon_reset_center():
     sc.reset_center(x1)
     out2 = sc.ingest_features(x1)
     assert out2["distance"] == 0.0
+

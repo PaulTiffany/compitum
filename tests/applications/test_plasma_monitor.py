@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 
 from compitum.applications import PlasmaMonitor
 
@@ -52,3 +52,4 @@ def test_alarm_no_trigger_at_equilibrium():
     assert out["confinement_distance"] == 0.0
     assert out["curvature_signal"] == 0.0
     assert out["alarm_status"] is False
+

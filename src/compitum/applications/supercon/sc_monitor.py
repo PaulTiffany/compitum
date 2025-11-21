@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Dict, Optional
@@ -95,3 +95,4 @@ class SuperconMonitor:
     def reset_center(self, new_center: np.ndarray) -> None:
         self.center = new_center.copy()
         self.controller.drift_integral = 0.0
+

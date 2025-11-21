@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Optional
@@ -108,3 +108,5 @@ def audit_the_manifold(
         )
 
     return pd.DataFrame(rows)
+
+
