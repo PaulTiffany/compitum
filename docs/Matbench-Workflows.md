@@ -1,4 +1,4 @@
-% How We Evaluate Matbench (Offline)
+# How We Evaluate Matbench (Offline)
 
 This page outlines our offline-first, reproducible evaluation path for Matbench-style tasks, and
 the manual GitHub workflows that package artifacts for review.
@@ -33,17 +33,17 @@ Artifacts and review
 
 
 
-## Baselines and Plots
+# Baselines and Plots
 - Baseline regret: tools/eval_baseline_regret.py --model ridge --folds 5 --topk-grid 1,5,10 --plot
 - If matplotlib present, PNGs are written to reports/.
 
-## Emergent Layers
+# Emergent Layers
 - Explore SRMF layers via quantiles or k-means: tools/explore_matbench_layers.py
 - Outputs CSV and JSON with per-layer AURC; use to guide ? tuning per-layer.
 
 
 
-## Exporting a Task CSV
+# Exporting a Task CSV
 - Export via Materials Project (requires MP_API_KEY): 	ools/export_matbench_task_csv.py --from-mp --elements La Ni O --nelements 3 --objective band_gap --limit 500 --out data/mp_matbench_task.csv 
 - Or generate a synthetic task: 	ools/export_matbench_task_csv.py --offline-mock --out data/matbench_task.csv 
 - Then run the offline workflow or local pipeline on the exported CSV.

@@ -71,3 +71,6 @@ nitpick_ignore = [
 
 # Suppress sitemap warning in CI (treated as error by -W)
 suppress_warnings = ["sphinx_sitemap"]
+
+# Linkcheck: also ignore sitemap warning to avoid failing on empty sitemap
+suppress_warnings.append("linkcheck.sitemap")

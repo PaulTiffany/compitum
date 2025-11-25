@@ -1,4 +1,4 @@
-% Matbench Regret (Offline)
+# Matbench Regret (Offline)
 
 This document defines the regret metrics we use for Matbench-style evaluations and how to
 reproduce results offline with CSVs. The approach is conservative: it reports uncertainty,
