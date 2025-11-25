@@ -294,6 +294,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
           pip install matplotlib
+          pip install matplotlib
       - name: Applications import smoke
         run: |
           python - << 'PY'

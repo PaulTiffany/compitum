@@ -8,7 +8,15 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    import subprocess
+    import sys
+
+    # Best-effort install for environments (e.g., CI smoke) where matplotlib is not preinstalled
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
+    import matplotlib.pyplot as plt
 import pandas as pd
 
 
