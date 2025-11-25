@@ -228,27 +228,24 @@ jobs:
           merge-multiple: true
       - name: Aggregate summary
         run: |
-          python - << 'PY'
-            import json, glob, os
-            cr_jsons = glob.glob('**/cr_quick_summary_*.json', recursive=True)
-            mutmut_txts = glob.glob('**/mutmut_results_*.txt', recursive=True)
-            survivors = []
-            for p in mutmut_txts:
-                try:
-                    txt = open(p, 'r', encoding='utf-8', errors='ignore').read().lower()
-                    if 'survived' in txt:
-                        survivors.append(os.path.basename(p))
-                except Exception:
-                    pass
-            scores = {}
-            for p in cr_jsons:
-                try:
-                    d = json.load(open(p, 'r', encoding='utf-8'))
-                    scores[os.path.basename(p)] = d.get('mutation_score', 0)
-                except Exception:
-                    pass
-            open('MUTATION_SUMMARY.json','w',encoding='utf-8').write(json.dumps({'survivors': survivors, 'scores': scores}, indent=2))
-PY
+          python -c "import glob, json, os; \
+cr_jsons = glob.glob('**/cr_quick_summary_*.json', recursive=True); \
+mutmut_txts = glob.glob('**/mutmut_results_*.txt', recursive=True); \
+survivors = []; \
+for p in mutmut_txts: \
+    try: \
+        txt = open(p, 'r', encoding='utf-8', errors='ignore').read().lower(); \
+        if 'survived' in txt: survivors.append(os.path.basename(p)); \
+    except Exception: \
+        pass; \
+scores = {}; \
+for p in cr_jsons: \
+    try: \
+        d = json.load(open(p, 'r', encoding='utf-8')); \
+        scores[os.path.basename(p)] = d.get('mutation_score', 0); \
+    except Exception: \
+        pass; \
+json.dump({'survivors': survivors, 'scores': scores}, open('MUTATION_SUMMARY.json','w',encoding='utf-8'), indent=2)"
       - name: Job summary
         run: |
           printf "## Mutation Dispatcher Summary\n" >> "$GITHUB_STEP_SUMMARY"
