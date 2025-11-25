@@ -40,7 +40,7 @@ def _offline_mock(n: int) -> List[Dict[str, Any]]:
     return rows
 
 
-def _from_mp(elements: List[str], nelements: int, objective: str, *, api_key: str, limit: Optional[int]) -> List[Dict[str, Any]]:
+def _from_mp(elements: List[str], nelements: Optional[int], objective: str, *, api_key: str, limit: Optional[int]) -> List[Dict[str, Any]]:
     try:
         from mp_api.client import MPRester  # type: ignore
     except Exception as e:
@@ -53,7 +53,9 @@ def _from_mp(elements: List[str], nelements: int, objective: str, *, api_key: st
         "nsites",
         "formation_energy_per_atom",
     ]
-    crit: Dict[str, Any] = {"elements": elements, "nelements": int(nelements)}
+    crit: Dict[str, Any] = {"elements": elements}
+    if nelements and nelements > 0:
+        crit["nelements"] = int(nelements)
     rows: List[Dict[str, Any]] = []
     with MPRester(api_key) as mpr:  # pragma: no cover
         docs: Iterable[Any] = mpr.materials.summary.search(**crit, fields=fields)
@@ -123,4 +125,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
