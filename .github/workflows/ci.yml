@@ -1,4 +1,4 @@
-﻿name: CI
+name: CI
 
 on:
   workflow_dispatch:
@@ -108,9 +108,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install bandit
-      - name: Bandit (src + examples + scripts)
+      - name: Bandit (src + tools + examples + scripts)
         run: |
-          bandit -r src/compitum examples scripts -lll -iii
+          bandit -r src/compitum tools examples scripts -lll -iii
 
   types-strict:
     runs-on: ubuntu-latest
@@ -301,3 +301,34 @@ jobs:
           out = pm.ingest_profile(np.zeros(4), 0.0)
           print('applications import ok:', isinstance(out, dict), out['confinement_distance'] >= 0.0)
           PY
+
+  cli-smoke-tools:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: pyproject.toml
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: CLI --help smoke
+        run: |
+          python tools/eval_matbench_srmf.py --help > /dev/null
+          python tools/eval_matbench_regret.py --help > /dev/null
+          python tools/calibrate_matbench_srmf.py --help > /dev/null
+          
+          python tools/eval_baseline_regret.py --help > /dev/null
+          python tools/explore_matbench_layers.py --help > /dev/null
+          python examples/generate_matbench_demo.py --help > /dev/null
+      - name: CLI offline audit smoke
+        run: |
+          python tools/audit_materials_manifold.py --offline-mock --out audit_mock.csv
+          test -s audit_mock.csv
+

@@ -1,0 +1,55 @@
+name: materials_audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      elements:
+        description: "Comma-separated element symbols (e.g., La,Ni,O)"
+        required: true
+        default: "La,Ni,O"
+      nelements:
+        description: "Number of elements"
+        required: true
+        default: "3"
+      kappa_threshold:
+        description: "Curvature threshold"
+        required: false
+        default: "0.5"
+      leak_threshold:
+        description: "Stability leak threshold"
+        required: false
+        default: "0.1"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          pip install -e .
+          pip install mp_api>=0.44
+      - name: Run materials audit
+        env:
+          MP_API_KEY: ${{ secrets.MP_API_KEY }}
+        run: |
+          IFS=',' read -r -a arr <<< "${{ inputs.elements }}"
+          python tools/audit_materials_manifold.py \
+            --elements "${arr[@]}" \
+            --nelements ${{ inputs.nelements }} \
+            --kappa-threshold ${{ inputs.kappa_threshold }} \
+            --leak-threshold ${{ inputs.leak_threshold }} \
+            --out audit_${{ inputs.nelements }}.csv
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: materials_audit
+          path: audit_${{ inputs.nelements }}.csv
+

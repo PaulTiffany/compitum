@@ -1,0 +1,49 @@
+from __future__ import annotations
+
+from pathlib import Path
+from typing import List
+
+import pandas as pd
+
+from compitum.integrations.matbench_adapter import CSVMatbenchAdapter
+
+
+def _write_csv(path: Path, with_labels: bool = False) -> None:
+    rows: List[dict] = [
+        {
+            "band_gap": 0.1,
+            "density": 7.2,
+            "nsites": 5,
+            "formation_energy_per_atom": -1.2,
+            "mid": "mp-1",
+            "formula": "LaNiO3",
+            "label_candidate": 1 if with_labels else 0,
+        },
+        {
+            "band_gap": 2.5,
+            "density": 6.5,
+            "nsites": 10,
+            "formation_energy_per_atom": -0.8,
+            "mid": "mp-2",
+            "formula": "La2NiO4",
+            "label_candidate": 0 if with_labels else 0,
+        },
+    ]
+    pd.DataFrame(rows).to_csv(path, index=False)
+
+
+def test_csv_adapter_iter_docs(tmp_path: Path) -> None:
+    csv = tmp_path / "data.csv"
+    _write_csv(csv, with_labels=True)
+    ad = CSVMatbenchAdapter(
+        path=str(csv), id_column="mid", formula_column="formula", label_column="label_candidate"
+    )
+    docs = list(ad.iter_docs())
+    assert len(docs) == 2
+    d0 = docs[0]
+    assert hasattr(d0, "band_gap") and hasattr(d0, "density")
+    assert hasattr(d0, "nsites") and hasattr(d0, "formation_energy_per_atom")
+    assert d0.material_id == "mp-1"
+    assert d0.formula_pretty == "LaNiO3"
+    assert hasattr(d0, "label_candidate")
+

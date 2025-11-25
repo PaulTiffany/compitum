@@ -19,3 +19,9 @@ Common subfolders (ignored)
 Security note
 Pickle files (`.pkl`) can execute code when loaded. Only fetch from trusted sources and verify checksums when possible.
 
+
+
+
+Data policy
+- See docs/Data-Policy.md for CI/CD boundaries, security, and provenance guidance.
+

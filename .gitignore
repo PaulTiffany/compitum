@@ -251,4 +251,6 @@ assets/tess.mp4
 session*.sqlite
 *.sqlite
 /.pytest_cache/
+/.pytest_tmp*/
+/.tmp_tmp/
 

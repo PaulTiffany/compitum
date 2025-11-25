@@ -1,0 +1,142 @@
+• Here’s a concise “next.txt” handoff for the next GPT Codex. It captures what we built, what’s live, how CI is wired, and the highest‑value next moves.
+
+  — next.txt —
+
+  Scope and State (Nov 2025)
+
+  - Fusion (simulated)
+      - Wrapper with Lp support: src/compitum/applications/fusion/plasma_monitor.py
+      - Offline eval CLI: tools/eval_fusion_offline.py
+      - Lp sweep CLI: tools/eval_lp_sweep.py
+      - Examples + samples:
+          - examples/fusion/README.md
+          - examples/fusion/make_synthetic_shots.py
+          - data/samples/fusion_shots/shot_demo.csv
+          - data/samples/fusion_shots/shot_stable.csv
+      - Notebook(s):
+          - notebooks/examples/Fusion_Quickstart.ipynb (Binder badge in README)
+      - Tests:
+          - tests/applications/test_plasma_monitor.py
+          - tests/applications/test_plasma_monitor_hypothesis.py
+          - tests/applications/test_plasma_monitor_invariants.py
+          - tests/applications/test_plasma_monitor_normalize_broadcast.py
+          - tests/applications/test_fusion_offline_eval.py
+  - Superconductivity (simulated)
+      - Wrapper: src/compitum/applications/supercon/sc_monitor.py
+      - Offline eval CLI: tools/eval_supercon_offline.py
+      - Examples:
+          - examples/supercon/README.md
+          - examples/supercon/make_synthetic_dataset.py
+      - Notebook:
+          - notebooks/examples/Supercon_Quickstart.ipynb (linked in README as a plain URL)
+      - Tests:
+          - tests/applications/test_supercon_monitor.py
+          - tests/tools/test_eval_supercon_offline.py
+  - Materials Project “Manifold Audit”
+      - Integration: src/compitum/integrations/materials_project_audit.py
+          - map_material_to_srmf, curvature/leak proxies, audit_the_manifold (lazy mp_api import)
+      - Optional dependency: pyproject.toml → [project.optional-dependencies] materials = ["mp_api>=0.44"]
+      - Tests (offline): tests/test_materials_project_audit.py (monkeypatches mp_api.client)
+      - Notebook (percent format): notebooks/examples/Crystal_Router.py
+          - Instructions to set MP_API_KEY; no run if key absent
+  - Matbench (offline SRMF + regret)
+      - Adapter + docs: src/compitum/integrations/matbench_adapter.py; docs/Matbench*.md; docs/Data-Policy.md updated.
+      - CLIs: tools/eval_matbench_srmf.py, tools/calibrate_matbench_srmf.py, tools/eval_matbench_regret.py (groups/budget/lambda-per-group), tools/eval_baseline_regret.py (ridge/lgbm CV + optional plots), tools/explore_matbench_layers.py (quantiles/kmeans), tools/export_matbench_task_csv.py (offline mock or MP_API_KEY), tools/generate_matbench_attestation.py.
+      - Demo CSV generator: examples/generate_matbench_demo.py; Make targets matbench-demo / matbench-calibrate / matbench-eval / matbench-attest / matbench-pipeline.
+      - Workflows: .github/workflows/matbench_offline.yml (dispatch on repo CSV; uploads calibration/scores/regret/baseline/layers/attestation), .github/workflows/materials_audit.yml (dispatch; uses secrets.MP_API_KEY).
+      - CI: CI job cli-smoke-tools runs matbench CLI --help + offline audit mock; Bandit covers tools/examples/scripts.
+
+  CI/CD
+
+  - CI (GitHub Actions) is green on the major jobs after fixes:
+      - lint-test: Ruff (100 chars), pytest (locked profile), coverage
+      - types-strict (mypy) green; pandas stubs ignored intentionally
+      - invariants green
+      - applications-smoke import check green
+      - docs (Sphinx) green after suppressing sitemap warning:
+          - docs/conf.py → suppress_warnings = ['sphinx_sitemap']
+  - Mutation testing
+      - Local Windows full run: 0 survivors (6213/6213), including new applications
+      - Workflows:
+          - .github/workflows/mutation.yml (sharded; now includes fusion and supercon)
+          - .github/workflows/mutation_manual.yml (manual)
+          - .github/workflows/mutation_on_label.yml (label-driven)
+      - scripts/cr_pytest.sh cleaned and deterministic; Windows runner script exists
+  - RouterBench online remains guarded; not the focus here
+      - .github/workflows/routerbench_online.yml is present and linted
+      - Dataset download remains advisory/guarded
+
+  Binder
+
+  - Binder runtime in binder/: works for simulated notebooks
+  - README adds Binder badge for Fusion_Quickstart notebook:
+      - notebooks/examples/Fusion_Quickstart.ipynb
+  - Materials notebook (Crystal_Router.py) loads in JupyterLab; will skip live query without MP_API_KEY
+
+  Lint/Docs fixes
+
+  - Fixed UTF‑8 issues and trailing newlines across new files
+  - Refactored long lines in materials audit module for Ruff E501
+  - docs/conf.py: nitpicky=True retained; sphinx_sitemap warning suppressed
+
+  Local Repo Hygiene
+
+  - Untracked (local artifacts):
+      - reports/cr_summary_windows.txt, reports/cr_dump_windows.jsonl
+  - Removed legacy: examples/fusion/Fusion_Quickstart.ipynb (invalid JSON; replaced with notebooks version)
+  - pyproject.toml duplicate [project.optional-dependencies] resolved; materials extra is in the primary block
+
+  How to run (simulated)
+
+  - Fusion
+      - Generate samples:
+          - python examples/fusion/make_synthetic_shots.py --out data/samples/fusion_shots
+      - Offline eval:
+          - python tools/eval_fusion_offline.py data/samples/fusion_shots --state-dim 8 --rank 4 --curvature-alarm 0.5 --out reports/fusion_offline_metrics.csv
+      - Lp sweep:
+          - python tools/eval_lp_sweep.py data/samples/fusion_shots --state-dim 8 --rank 4 --curvature-alarm 0.5 --p-grid "1.0,1.25,1.5,1.75,2.0" --lambda 1.0 --out reports/fusion_lp_sweep.csv
+  - Supercon
+      - Generate dataset: python examples/supercon/make_synthetic_dataset.py --out data/samples/supercon
+      - Evaluate: python tools/eval_supercon_offline.py data/samples/supercon --state-dim 8 --rank 4 --alarm 0.5 --out reports/supercon_offline_metrics.csv
+  - Materials Project (with MP_API_KEY)
+      - pip install -e .[materials]
+      - Python:
+          - from compitum.integrations.materials_project_audit import audit_the_manifold
+          - df = audit_the_manifold(os.environ["MP_API_KEY"], {"elements":["La","Ni","O"], "nelements":3})
+      - Notebook: notebooks/examples/Crystal_Router.py
+
+  Open Issues / Next Candidates
+
+  - Materials Project
+      - Optional: add Hypothesis tests for monotonicity in map_material_to_srmf (e.g., band_gap↑ → drift↓).
+      - Optional: add a README or Docs page entry; optional Binder badge for Crystal_Router.py (percent format works; a small link line already added in README at bottom).
+      - Optional: add a CLI wrapper for audit_the_manifold and CSV export (tools/), plus unit test.
+  - Supercon
+      - Optional: add small Hypothesis test for lp invariants in SC wrapper (similar to fusion).
+  - Fusion
+      - Optional: add --scales/--scales-file flags to CLIs for unit normalization reproducibility.
+  - Mutation
+      - We did not add the materials integration file to mutmut shards; do so only if desired (currently covered via unit tests; CR quick focuses on core).
+  - Docs
+      - The sitemap warning is suppressed; if desired, configure Sphinx sitemap to generate pages (requires correct site map target) and remove suppression.
+  - Router (materials HTS) future
+      - If moving beyond the audit into routed HTS:
+          - Add a “tools pool” for ML surrogate, DFT-lite proxies
+          - Calibration script on simulated HTS dataset
+          - Validation notebook with regret vs. cost curves (RouterBench-analogue for HTS)
+
+  Secrets/Compliance
+
+  - MP_API_KEY is read from env; never in repo.
+  - Real DIII‑D shot data is gated; our examples remain simulated and do not touch real data.
+  - Add .gitignore for any future local sensitive paths (e.g., data/shots_real/**) if needed.
+
+  Quick health checks
+
+  - Lint: ruff check .
+  - Types: mypy -p compitum --ignore-missing-imports
+  - Tests: pytest (CI profile already configured)
+  - Docs: GitHub Actions “Docs” now green with warning suppression
+  - Mutation local (optional): tools/run_cosmic_ray_windows.ps1; or manual cosmic-ray init/exec with cosmic-ray.windows.toml
+
+  End of next.txt

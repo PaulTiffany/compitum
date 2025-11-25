@@ -77,6 +77,16 @@ See `configs/` and `examples/` for constraints and a synthetic benchmark.
 - Setup: notebooks/README.md
 - Wiki walkthroughs: https://github.com/PaulTiffany/compitum/wiki
 
+## Matbench (Offline)
+
+- Docs: docs/Matbench.md
+- CLI: `tools/eval_matbench_srmf.py` (offline CSV adapter). Conservative, reproducible outputs.
+
+### Matbench Regret (Offline)
+- Docs: docs/Matbench-Regret.md
+- Calibration CLI: `tools/calibrate_matbench_srmf.py`
+- Regret CLI: `tools/eval_matbench_regret.py`
+
 ## Core Science 0.1.1
 
 - Geometry: SPD bounds, triangle inequality, ray monotonicity, update descent.
@@ -216,3 +226,5 @@ This writes `artifacts/pedagogy_pack.zip` with the lab worksheet (`docs/Pedagogy
 
 
 Binder (Supercon Quickstart): https://mybinder.org/v2/gh/PaulTiffany/compitum/HEAD?labpath=notebooks%2Fexamples%2FSupercon_Quickstart.ipynb
+
+

@@ -1,0 +1,120 @@
+name: matbench_offline
+
+on:
+  workflow_dispatch:
+    inputs:
+      csv_path:
+        description: "Path to CSV in repo (e.g., data/matbench_demo.csv)"
+        required: true
+        default: "data/matbench_demo.csv"
+      objective_col:
+        description: "Objective column (y_true)"
+        required: true
+        default: "y_true"
+      mode:
+        description: "Objective direction"
+        required: true
+        default: "max"
+      topk_grid:
+        description: "k grid (e.g., 1,5,10)"
+        required: true
+        default: "1,5,10"
+      lambda_grid:
+        description: "Lambda grid (e.g., 0.0,0.5,1.0)"
+        required: true
+        default: "0.0,0.5,1.0"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          pip install -e .
+      - name: Calibrate lambda
+        run: |
+          python tools/calibrate_matbench_srmf.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --mode "${{ inputs.mode }}" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --lambda-grid "${{ inputs.lambda_grid }}" \
+            --bootstrap 200 \
+            --seed 0 \
+            --out-json matbench_calibration.json \
+            --scores-out matbench_scores.csv
+      - name: Evaluate regret with tuned lambda
+        run: |
+          BEST=$(jq -r .best_lambda matbench_calibration.json)
+          python tools/eval_matbench_regret.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --mode "${{ inputs.mode }}" \
+            --use-srmf \
+            --lambda-weight "$BEST" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --out-csv matbench_regret.csv \
+            --out-json matbench_regret.json \
+            --bootstrap 200 \
+            --seed 0
+      - name: Baseline regret (ridge)
+        run: |
+          python tools/eval_baseline_regret.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --model ridge \
+            --folds 5 \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --bootstrap 200 \
+            --seed 0 \
+            --out-csv matbench_baseline_regret.csv \
+            --out-json matbench_baseline_regret.json
+      - name: Group regret and layers
+        run: |
+          python tools/eval_matbench_regret.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --mode "${{ inputs.mode }}" \
+            --use-srmf \
+            --lambda-weight $(jq -r .best_lambda matbench_calibration.json) \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --group-col group \
+            --out-group-csv matbench_regret_groups.csv || true
+          python tools/explore_matbench_layers.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --quantile-layer-on band_gap \
+            --quantiles 0.0,0.5,1.0 \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --out-csv matbench_layers.csv \
+            --out-json matbench_layers.json || true
+      - name: Generate attestation
+        run: |
+          python tools/generate_matbench_attestation.py \
+            --input-csv "${{ inputs.csv_path }}" \
+            --calibration-json matbench_calibration.json \
+            --regret-json matbench_regret.json \
+            --out matbench_attestation.json
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: matbench_offline
+          path: |
+            matbench_calibration.json
+            matbench_scores.csv
+            matbench_regret.csv
+            matbench_regret.json
+            matbench_attestation.json
+            matbench_baseline_regret.csv
+            matbench_baseline_regret.json
+            matbench_regret_groups.csv
+            matbench_layers.csv
+            matbench_layers.json

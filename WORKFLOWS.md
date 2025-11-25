@@ -78,6 +78,23 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
   - Installs minimal runtime + nbmake
   - Executes notebooks; skips gracefully if none present
 
+## Matbench (offline)
+- Name: `matbench_offline`
+- Triggers: workflow_dispatch (inputs for CSV path, objective column, mode, topk/lambda grids)
+- What it does:
+  - Calibrates SRMF lambda on provided CSV; evaluates regret@k + AURC with bootstrap
+  - Baseline CV regret (ridge); optional group regret and layer exploration if columns exist
+  - Generates attestation JSON; uploads artifacts (calibration, scores, regret, baseline, layers, attestation)
+- Notes: Offline-only; assumes the CSV is present in the repo; no Releases.
+
+## Materials audit (MP API)
+- Name: `materials_audit`
+- Triggers: workflow_dispatch (elements, nelements, thresholds)
+- What it does:
+  - Installs mp_api and runs `tools/audit_materials_manifold.py` with `secrets.MP_API_KEY`
+  - Exports SRMF curvature/leak and candidate flag to a CSV artifact
+- Notes: Network-bound only in this manual workflow; local offline mock is available via `--offline-mock`.
+
 ## RouterBench separation of concerns
 - Default CI/rigor runs do not install or execute RouterBench unless explicitly enabled.
 - Enable options:

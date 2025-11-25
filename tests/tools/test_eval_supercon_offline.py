@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
 import subprocess
+import sys
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -21,10 +22,24 @@ def test_eval_supercon_offline_cli(tmp_path: Path):
     _write_sc_csv(data / "a.csv")
     _write_sc_csv(data / "b.csv")
     out = tmp_path / "metrics.csv"
-    proc = subprocess.run([
-        "python", "tools/eval_supercon_offline.py", str(data), "--state-dim", "6", "--rank", "3", "--alarm", "0.5", "--out", str(out)
-    ], capture_output=True, text=True)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "tools/eval_supercon_offline.py",
+            str(data),
+            "--state-dim",
+            "6",
+            "--rank",
+            "3",
+            "--alarm",
+            "0.5",
+            "--out",
+            str(out),
+        ],
+        capture_output=True,
+        text=True,
+    )
     assert proc.returncode == 0
     assert out.exists()
     df = pd.read_csv(out)
-    assert set(["file","tp","fp","tn","fn","precision","recall","accuracy"]).issubset(df.columns)
+    assert set(["file", "tp", "fp", "tn", "fn", "precision", "recall", "accuracy"]).issubset(df.columns)

@@ -63,7 +63,6 @@ extend-exclude = [
   "docs",
   "data",
   "notebooks",
-  "tools",
   "benchmarks",
   ".venv*",
 ]
@@ -73,7 +72,7 @@ select = ["E", "F", "W", "I"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["I001", "E501", "E702", "F401", "F841", "E402", "E741", "W291"]
-"tools/**" = ["E501"]
+"tools/**" = ["E501", "I001"]
 "scripts/**" = ["E501", "I001", "E702", "F401", "F841"]
 "examples/**" = ["E501", "I001", "E702", "F541"]
 

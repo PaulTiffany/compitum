@@ -45,6 +45,9 @@ Panel-Summary
 Results-By-Task
 RouterBench-Summary
 RouterBench-Fairness
+Matbench
+Matbench-Regret
+Matbench-Workflows
 Media
 Public-API
 Artifact-README
