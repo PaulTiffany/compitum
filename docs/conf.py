@@ -68,4 +68,6 @@ nitpick_ignore = [
     ("py:class", "pandas.DataFrame"),
     ("py:class", "sklearn.neighbors.KernelDensity"),
 ]
-\n# Suppress sitemap warning in CI (treated as error by -W)\nsuppress_warnings = ['sphinx_sitemap']\n
+
+# Suppress sitemap warning in CI (treated as error by -W)
+suppress_warnings = ["sphinx_sitemap"]
