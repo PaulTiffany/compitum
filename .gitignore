@@ -253,4 +253,8 @@ session*.sqlite
 /.pytest_cache/
 /.pytest_tmp*/
 /.tmp_tmp/
+/reports/matbench_*.csv
+/reports/matbench_*.json
+/reports/cr_*windows*.txt
+/reports/cr_*windows*.jsonl
 
