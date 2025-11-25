@@ -46,14 +46,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
 
-      - name: Require connection string (guard)
+      - name: Ensure connection string (local fallback)
         shell: bash
         run: |
           if [ -z "${CONNECTION_STRING:-}" ]; then
-            echo "::warning::ROUTERBENCH_CONNECTION_STRING not set; skipping online run."
-            echo "## RouterBench Online (skipped)" >> "$GITHUB_STEP_SUMMARY"
-            echo "- Missing secret ROUTERBENCH_CONNECTION_STRING" >> "$GITHUB_STEP_SUMMARY"
-            exit 0
+            echo "::warning::ROUTERBENCH_CONNECTION_STRING not set; using local cache only."
+            echo "CONNECTION_STRING=mongodb://localhost:27017" >> "$GITHUB_ENV"
+            echo "## RouterBench Online (using local cache)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Missing secret ROUTERBENCH_CONNECTION_STRING; fell back to local cache with dummy Mongo URI" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Prepare venv for RouterBench
