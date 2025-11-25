@@ -18,6 +18,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  guard:
+    # If GitHub ever instantiates this workflow on unsupported events (e.g., push),
+    # finish immediately so the run is marked successful instead of failed/skipped.
+    if: ${{ github.event_name != 'workflow_dispatch' && github.event_name != 'schedule' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "mutation_dispatch is manual/scheduled only; current event=${{ github.event_name }} (noop)."
+
   mutmut-shard:
     # Run on schedule only if explicitly enabled; always allow manual dispatch
     if: >
