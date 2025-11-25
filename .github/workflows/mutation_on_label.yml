@@ -68,28 +68,24 @@ jobs:
       - name: Summarize mutation results
         id: summarize
         run: |
-          python - << 'PY'
-            import glob, json, os
-            cr_jsons = glob.glob('**/cr_quick_summary_*.json', recursive=True)
-            mutmut_txts = glob.glob('**/mutmut_results_*.txt', recursive=True)
-            survivors = []
-            for p in mutmut_txts:
-                try:
-                    txt = open(p, 'r', encoding='utf-8', errors='ignore').read().lower()
-                    if 'survived' in txt:
-                        survivors.append(os.path.basename(p))
-                except Exception:
-                    pass
-            scores = {}
-            for p in cr_jsons:
-                try:
-                    d = json.load(open(p, 'r', encoding='utf-8'))
-                    scores[os.path.basename(p)] = d.get('mutation_score', 0)
-                except Exception:
-                    pass
-            with open('mutation_summary_payload.json','w',encoding='utf-8') as f:
-                json.dump({'survivors': survivors, 'scores': scores}, f)
-PY
+          python -c "import glob, json, os; \
+            cr_jsons = glob.glob('**/cr_quick_summary_*.json', recursive=True); \
+            mutmut_txts = glob.glob('**/mutmut_results_*.txt', recursive=True); \
+            survivors = []; \
+            for p in mutmut_txts: \
+                try: \
+                    txt = open(p, 'r', encoding='utf-8', errors='ignore').read().lower(); \
+                    if 'survived' in txt: survivors.append(os.path.basename(p)); \
+                except Exception: \
+                    pass; \
+            scores = {}; \
+            for p in cr_jsons: \
+                try: \
+                    d = json.load(open(p, 'r', encoding='utf-8')); \
+                    scores[os.path.basename(p)] = d.get('mutation_score', 0); \
+                except Exception: \
+                    pass; \
+            json.dump({'survivors': survivors, 'scores': scores}, open('mutation_summary_payload.json','w',encoding='utf-8'))"
 
       - name: Comment on PR
         uses: actions/github-script@v7

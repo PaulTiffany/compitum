@@ -161,36 +161,36 @@ jobs:
           set -e
           GROUP="${{ matrix.group }}"
           CFG="$RUNNER_TEMP/cr_${GROUP}.toml"
-          cat > "$CFG" <<'EOF'
-            [cosmic-ray]
-            module = "compitum"
-            module-path = "src"
-            test-command = "bash scripts/cr_pytest.sh"
-            timeout = 240.0
-            coverage-file = ".coverage"
-
-            excluded-modules = [
-                "tests/*",
-                "**/__init__.py",
-                "routerbench.*",
-                "compitum.cli",
-                "compitum.utils",
-                "compitum.symbolic",
-                "compitum.security",
-                "compitum.pgd",
-                "compitum.models",
-                "compitum.embedding_pgd",
-                "compitum.effort_qp",
-                "compitum.coherence",
-                "compitum.capabilities",
-                "compitum.boundary",
-                "compitum.control",
-                "compitum.energy",
-            ]
-
-            [cosmic-ray.distributor]
-            name = "local"
-            EOF
+          printf '%s\n' \
+            "[cosmic-ray]" \
+            "module = \"compitum\"" \
+            "module-path = \"src\"" \
+            "test-command = \"bash scripts/cr_pytest.sh\"" \
+            "timeout = 240.0" \
+            "coverage-file = \".coverage\"" \
+            "" \
+            "excluded-modules = [" \
+            "    \"tests/*\"," \
+            "    \"**/__init__.py\"," \
+            "    \"routerbench.*\"," \
+            "    \"compitum.cli\"," \
+            "    \"compitum.utils\"," \
+            "    \"compitum.symbolic\"," \
+            "    \"compitum.security\"," \
+            "    \"compitum.pgd\"," \
+            "    \"compitum.models\"," \
+            "    \"compitum.embedding_pgd\"," \
+            "    \"compitum.effort_qp\"," \
+            "    \"compitum.coherence\"," \
+            "    \"compitum.capabilities\"," \
+            "    \"compitum.boundary\"," \
+            "    \"compitum.control\"," \
+            "    \"compitum.energy\"," \
+            "]" \
+            "" \
+            "[cosmic-ray.distributor]" \
+            "name = \"local\"" \
+            > "$CFG"
           # Narrow to target group
           sed -i "s/\"compitum.${GROUP}\",//" "$CFG" || true
           echo "Using CR config:"; cat "$CFG"
@@ -202,19 +202,9 @@ jobs:
           cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
           python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
-          GROUP="$GROUP" python - << 'PY'
-            import json, os, sys
-            g = os.environ.get("GROUP", "")
-            path = f"reports/cr_quick_summary_{g}.json"
-            try:
-                with open(path, "r", encoding="utf-8") as f:
-                    s = json.load(f)
-                score = float(s.get("mutation_score", 0))
-                print("CR quick (advisory)", g, "score:", score)
-            except Exception as e:
-                print("CR quick (advisory)", g, "error:", e, file=sys.stderr)
-            sys.exit(0)
-PY
+          GROUP="$GROUP" python -c "import json, os, sys; g=os.environ.get('GROUP',''); path=f'reports/cr_quick_summary_{g}.json';\
+            try: s=json.load(open(path,'r',encoding='utf-8')); score=float(s.get('mutation_score',0)); print('CR quick (advisory)', g, 'score:', score); \
+            except Exception as e: print('CR quick (advisory)', g, 'error:', e, file=sys.stderr); sys.exit(0)"
 
       - name: Upload artifacts (CR shard)
         if: always()
