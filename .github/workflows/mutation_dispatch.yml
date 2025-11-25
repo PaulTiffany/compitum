@@ -202,9 +202,21 @@ jobs:
           cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
           python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
-          GROUP="$GROUP" python -c "import json, os, sys; g=os.environ.get('GROUP',''); path=f'reports/cr_quick_summary_{g}.json';\
-            try: s=json.load(open(path,'r',encoding='utf-8')); score=float(s.get('mutation_score',0)); print('CR quick (advisory)', g, 'score:', score); \
-            except Exception as e: print('CR quick (advisory)', g, 'error:', e, file=sys.stderr); sys.exit(0)"
+          GROUP="$GROUP" python - << 'PY'
+          import json
+          import os
+          import sys
+
+          group = os.environ.get("GROUP", "")
+          path = f"reports/cr_quick_summary_{group}.json"
+          try:
+              data = json.load(open(path, "r", encoding="utf-8"))
+              score = float(data.get("mutation_score", 0))
+              print("CR quick (advisory)", group, "score:", score)
+          except Exception as exc:  # advisory only
+              print("CR quick (advisory)", group, "error:", exc, file=sys.stderr)
+              sys.exit(0)
+          PY
 
       - name: Upload artifacts (CR shard)
         if: always()
