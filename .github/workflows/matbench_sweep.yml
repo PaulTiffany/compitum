@@ -1,0 +1,202 @@
+name: Matbench Sweep (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      preset:
+        description: "Preset chemistry (kagome|nickelate|fese|custom)"
+        required: true
+        default: "nickelate"
+      custom_elements:
+        description: "Custom elements (space separated) when preset=custom"
+        required: false
+        default: ""
+      custom_objective:
+        description: "Custom objective when preset=custom (band_gap|-formation_energy)"
+        required: false
+        default: "band_gap"
+      custom_limit:
+        description: "Row limit when preset=custom"
+        required: false
+        default: "800"
+      topk_grid:
+        description: "k grid (e.g., 1,5,10)"
+        required: false
+        default: "1,5,10"
+      lambda_grid:
+        description: "Lambda grid (e.g., 0.0,0.5,1.0)"
+        required: false
+        default: "0.0,0.5,1.0"
+      bootstrap:
+        description: "Bootstrap iterations"
+        required: false
+        default: "200"
+      folds:
+        description: "Baseline CV folds"
+        required: false
+        default: "5"
+      mode:
+        description: "Objective direction (max|min)"
+        required: false
+        default: "max"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: matbench-sweep-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      MPLBACKEND: Agg
+      OMP_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+      OPENBLAS_NUM_THREADS: 1
+      NUMEXPR_NUM_THREADS: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install matplotlib mp_api
+
+      - name: Resolve preset
+        id: preset
+        run: |
+          set -euo pipefail
+          PRESET="${{ inputs.preset }}"
+          case "$PRESET" in
+            kagome)
+              ELS="Cs V Sb"
+              OBJ="band_gap"
+              LIM=600
+              ;;
+            nickelate)
+              ELS="La Ni O"
+              OBJ="-formation_energy"
+              LIM=800
+              ;;
+            fese)
+              ELS="Fe Se O"
+              OBJ="-formation_energy"
+              LIM=800
+              ;;
+            custom)
+              ELS="${{ inputs.custom_elements }}"
+              OBJ="${{ inputs.custom_objective }}"
+              LIM="${{ inputs.custom_limit }}"
+              ;;
+            *)
+              ELS="La Ni O"
+              OBJ="band_gap"
+              LIM=500
+              ;;
+          esac
+          echo "elements=$ELS" >> "$GITHUB_OUTPUT"
+          echo "objective=$OBJ" >> "$GITHUB_OUTPUT"
+          echo "limit=$LIM" >> "$GITHUB_OUTPUT"
+
+      - name: Export dataset (MP)
+        env:
+          MP_API_KEY: ${{ secrets.MP_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${MP_API_KEY:-}" ]; then
+            echo "::error::MP_API_KEY not set; cannot export from MP."
+            exit 1
+          fi
+          python tools/export_matbench_task_csv.py \
+            --from-mp \
+            --elements "${{ steps.preset.outputs.elements }}" \
+            --nelements $(echo "${{ steps.preset.outputs.elements }}" | wc -w) \
+            --objective "${{ steps.preset.outputs.objective }}" \
+            --limit "${{ steps.preset.outputs.limit }}" \
+            --out data/matbench_sweep.csv
+
+      - name: Calibrate lambda
+        run: |
+          python tools/calibrate_matbench_srmf.py \
+            --path data/matbench_sweep.csv \
+            --objective-col y_true \
+            --mode "${{ inputs.mode }}" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --lambda-grid "${{ inputs.lambda_grid }}" \
+            --bootstrap "${{ inputs.bootstrap }}" \
+            --seed 0 \
+            --out-json reports/matbench_calibration_sweep.json \
+            --scores-out reports/matbench_scores_sweep.csv
+
+      - name: Evaluate regret (tuned lambda)
+        run: |
+          BEST=$(jq -r .best_lambda reports/matbench_calibration_sweep.json 2>/dev/null || echo "0.0")
+          python tools/eval_matbench_regret.py \
+            --path data/matbench_sweep.csv \
+            --objective-col y_true \
+            --mode "${{ inputs.mode }}" \
+            --use-srmf \
+            --lambda-weight "$BEST" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --out-csv reports/matbench_regret_sweep.csv \
+            --out-json reports/matbench_regret_sweep.json \
+            --bootstrap "${{ inputs.bootstrap }}" \
+            --seed 0
+
+      - name: Baseline regret (ridge)
+        run: |
+          python tools/eval_baseline_regret.py \
+            --path data/matbench_sweep.csv \
+            --objective-col y_true \
+            --model ridge \
+            --folds "${{ inputs.folds }}" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --bootstrap "${{ inputs.bootstrap }}" \
+            --seed 0 \
+            --out-csv reports/matbench_baseline_regret_sweep.csv \
+            --out-json reports/matbench_baseline_regret_sweep.json
+
+      - name: Attestation
+        run: |
+          BEST=$(jq -r .best_lambda reports/matbench_calibration_sweep.json 2>/dev/null || echo "0.0")
+          python tools/generate_matbench_attestation.py \
+            --input-csv data/matbench_sweep.csv \
+            --calibration-json reports/matbench_calibration_sweep.json \
+            --regret-json reports/matbench_regret_sweep.json \
+            --out reports/matbench_attestation_sweep.json
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: matbench-sweep-${{ inputs.preset }}
+          path: reports/matbench_*_sweep.*
+          retention-days: 14
+
+      - name: Job summary
+        if: always()
+        run: |
+          echo "## Matbench Sweep (manual)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- preset: ${{ inputs.preset }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- elements: ${{ steps.preset.outputs.elements }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- objective: ${{ steps.preset.outputs.objective }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- limit: ${{ steps.preset.outputs.limit }}" >> "$GITHUB_STEP_SUMMARY"
+          BEST=$(jq -r .best_lambda reports/matbench_calibration_sweep.json 2>/dev/null || echo "n/a")
+          REGRET=$(jq -r '.regret_mean // .AURC // "n/a"' reports/matbench_regret_sweep.json 2>/dev/null || echo "n/a")
+          BASE=$(jq -r '.regret_mean // .AURC // "n/a"' reports/matbench_baseline_regret_sweep.json 2>/dev/null || echo "n/a")
+          echo "- best_lambda: $BEST" >> "$GITHUB_STEP_SUMMARY"
+          echo "- regret_mean: $REGRET" >> "$GITHUB_STEP_SUMMARY"
+          echo "- baseline_regret_mean: $BASE" >> "$GITHUB_STEP_SUMMARY"
+          echo "- artifacts: matbench-sweep-${{ inputs.preset }}" >> "$GITHUB_STEP_SUMMARY"
