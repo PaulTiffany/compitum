@@ -157,6 +157,8 @@ jobs:
             --out-csv reports/matbench_regret_sweep.csv \
             --out-json reports/matbench_regret_sweep.json \
             --bootstrap "${{ inputs.bootstrap }}" \
+            --selection-mode \
+            --selection-noise-sigma 0.01 \
             --seed 0
 
       - name: Baseline regret (ridge)

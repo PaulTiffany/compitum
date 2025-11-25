@@ -133,6 +133,8 @@ def main() -> int:
     ap.add_argument("--budget-grid", type=str, default=None, help="Comma-separated budgets (same units as cost)")
     ap.add_argument("--cost-scale", type=float, default=1.0, help="Scale costs then round to int for knapsack")
     ap.add_argument("--out-budget-csv", type=Path, default=Path("reports/matbench_budget_regret.csv"))
+    ap.add_argument("--selection-mode", action="store_true", help="If set, evaluate top-k regret under bootstrap resamples with optional feature noise")
+    ap.add_argument("--selection-noise-sigma", type=float, default=0.0, help="Stdev of Gaussian noise to add to features in selection mode")
     args = ap.parse_args()
 
     df = pd.read_csv(args.path)
@@ -162,14 +164,38 @@ def main() -> int:
     else:
         raise SystemExit("Provide either --score-col or --use-srmf")
 
+    # Optional feature noise for selection stress
+    if args.selection_mode and args.selection_noise_sigma > 0:
+        rng = np.random.default_rng(args.seed)
+        noise = rng.normal(loc=0.0, scale=args.selection_noise_sigma, size=scores.shape)
+        scores = scores + noise
+
     ks = _parse_grid(args.topk_grid)
-    rows = _topk_regret(y, scores, ks, args.mode)
+    # Selection mode: bootstrap AURC CI via resampling
+    if args.selection_mode and args.bootstrap > 0:
+        rng = np.random.default_rng(args.seed)
+        n = len(y)
+        boots: List[Dict[str, float]] = []
+        for b in range(args.bootstrap):
+            idx = rng.integers(0, n, size=n)
+            rows_b = _topk_regret(y[idx], scores[idx], ks, args.mode)
+            boots.append({"AURC": _aurc(rows_b)})
+        arr = np.array([b["AURC"] for b in boots], dtype=float)
+        rows = _topk_regret(y, scores, ks, args.mode)
+        summary: Dict[str, Any] = {
+            "AURC": _aurc(rows),
+            "AURC_CI": {"lo": float(np.quantile(arr, 0.025)), "hi": float(np.quantile(arr, 0.975))},
+            "selection_mode": True,
+        }
+    else:
+        rows = _topk_regret(y, scores, ks, args.mode)
+        summary: Dict[str, Any] = {"AURC": _aurc(rows)}
+
     out_df = pd.DataFrame(rows)
     args.out_csv.parent.mkdir(parents=True, exist_ok=True)
     out_df.to_csv(args.out_csv, index=False)
     print(f"Wrote regret curves: {args.out_csv}")
 
-    summary: Dict[str, Any] = {"AURC": _aurc(rows)}
     # Per-group analysis (optional)
     if args.group_col is not None:
         if args.group_col not in df.columns:
