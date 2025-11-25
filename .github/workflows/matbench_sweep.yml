@@ -119,12 +119,16 @@ jobs:
             echo "::error::MP_API_KEY not set; cannot export from MP."
             exit 1
           fi
+          ELS="${{ steps.preset.outputs.elements }}"
+          OBJ="${{ steps.preset.outputs.objective }}"
+          LIM="${{ steps.preset.outputs.limit }}"
+          NE=$(printf "%s\n" "$ELS" | wc -w)
           python tools/export_matbench_task_csv.py \
             --from-mp \
-            --elements "${{ steps.preset.outputs.elements }}" \
-            --nelements $(echo "${{ steps.preset.outputs.elements }}" | wc -w) \
-            --objective "${{ steps.preset.outputs.objective }}" \
-            --limit "${{ steps.preset.outputs.limit }}" \
+            --elements $ELS \
+            --nelements "$NE" \
+            --objective="$OBJ" \
+            --limit "$LIM" \
             --out data/matbench_sweep.csv
 
       - name: Calibrate lambda
