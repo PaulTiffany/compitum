@@ -24,6 +24,8 @@ jobs:
       (github.event_name == 'schedule' && vars.ENABLE_ROUTERBENCH_ONLINE == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      CONNECTION_STRING: ${{ secrets.ROUTERBENCH_CONNECTION_STRING }}
     steps:
       - name: Checkout (with submodules)
         uses: actions/checkout@v4
@@ -44,6 +46,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
 
+      - name: Require connection string (guard)
+        shell: bash
+        run: |
+          if [ -z "${CONNECTION_STRING:-}" ]; then
+            echo "::warning::ROUTERBENCH_CONNECTION_STRING not set; skipping online run."
+            echo "## RouterBench Online (skipped)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- Missing secret ROUTERBENCH_CONNECTION_STRING" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
       - name: Prepare venv for RouterBench
         shell: bash
         run: |
@@ -61,6 +73,7 @@ jobs:
       - name: Fetch dataset (required)
         shell: bash
         env:
+          CONNECTION_STRING: ${{ secrets.ROUTERBENCH_CONNECTION_STRING }}
           OMP_NUM_THREADS: 1
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
@@ -76,6 +89,7 @@ jobs:
 
       - name: Import smoke
         env:
+          CONNECTION_STRING: ${{ secrets.ROUTERBENCH_CONNECTION_STRING }}
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src:${{ github.workspace }}/src/routerbench
         run: |
           . .venv-routerbench/bin/activate
@@ -88,6 +102,7 @@ jobs:
       - name: Run RouterBench (orchestrator)
         shell: bash
         env:
+          CONNECTION_STRING: ${{ secrets.ROUTERBENCH_CONNECTION_STRING }}
           HYPOTHESIS_PROFILE: ci
           OMP_NUM_THREADS: 1
           MKL_NUM_THREADS: 1
