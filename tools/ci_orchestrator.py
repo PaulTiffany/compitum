@@ -3,11 +3,16 @@ from __future__ import annotations
 import argparse
 import os
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from tools.reporting.report_builder import (
+# Ensure project root is on sys.path so `tools.*` imports work when executed as a script
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from tools.reporting.report_builder import (  # noqa: E402
     MetricsSummary,
     build_html_report,
     build_metrics_summary,
