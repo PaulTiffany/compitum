@@ -78,6 +78,7 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src:${{ github.workspace }}/src/routerbench
         run: |
+          . .venv-routerbench/bin/activate
           python - << 'PY'
           import importlib, sys
           sys.path.extend(['.', './src', './src/routerbench'])
@@ -94,6 +95,7 @@ jobs:
           NUMEXPR_NUM_THREADS: 1
         run: |
           set -euo pipefail
+          . .venv-routerbench/bin/activate
           # Use the orchestrator; it will detect the venv at .venv-routerbench
           python tools/ci_orchestrator.py --bench-routerbench --config data/rb_clean/evaluate_routers.yaml --tokenizer-backend tiktoken --max-evals 200
 
