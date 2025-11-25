@@ -4,10 +4,14 @@ on:
   pull_request:
     paths:
       - '.github/workflows/**'
+      - '!.github/workflows/mutation_dispatch.yml'
+      - '!.github/workflows/mutation_on_label.yml'
   push:
     branches: [ main ]
     paths:
       - '.github/workflows/**'
+      - '!.github/workflows/mutation_dispatch.yml'
+      - '!.github/workflows/mutation_on_label.yml'
 
 permissions:
   contents: read
