@@ -5,7 +5,6 @@ import argparse
 from pathlib import Path
 from typing import Dict, List
 
-import numpy as np
 import pandas as pd
 
 from compitum.applications.supercon.sc_monitor import SuperconMonitor, SuperconMonitorConfig

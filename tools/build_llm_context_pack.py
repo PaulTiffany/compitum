@@ -12,8 +12,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -86,7 +84,6 @@ def prioritize(paths: Iterable[str]) -> Dict[str, int]:
 
 
 def trim_to_budget(kind: str, data: Any, target_bytes: int) -> Any:
-    tmp_path = Path("")  # not used; we measure via dumps len
     # Order records by priority and then path length
     if kind == "jsonl":
         paths = [record_path(r) for r in data]

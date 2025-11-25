@@ -4,8 +4,6 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-import pandas as pd
-
 from compitum.applications.fusion.eval_offline import evaluate_dir_csv
 from compitum.applications.fusion.plasma_monitor import PlasmaMonitorConfig
 

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """
 Generate a machine-readable attestation of this release run.
 
@@ -10,9 +8,10 @@ This script is pure-stdlib and safe to run locally. It does not fetch network
 resources. Outputs a single JSON file suitable for archival and verification.
 """
 
+from __future__ import annotations
+
 import argparse
 import json
-import os
 import platform
 import sys
 from dataclasses import asdict, dataclass

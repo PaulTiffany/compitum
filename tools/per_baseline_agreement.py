@@ -34,7 +34,8 @@ def main() -> int:
             continue
         wins: list[tuple[float, float]] = []
         for w in shared_wtps:
-            bc = bmap[w]; cc = cmap[w]
+            bc = bmap[w]
+            cc = cmap[w]
             agree = float((df[bc] == df[cc]).mean())
             wins.append((float(w), agree))
         res[base_prefix.rstrip('|')] = wins

@@ -23,7 +23,6 @@ def test_examples_run_dry_quick() -> None:
     assert "[OK]" in cp.stdout
 
 
-import sys
 import pytest
 
 @pytest.mark.skipif(sys.platform == "win32", reason="Known OSError on Windows with subprocess.run and asyncio")

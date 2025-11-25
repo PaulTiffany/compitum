@@ -64,6 +64,13 @@ extend-exclude = [
   "data",
   "notebooks",
   "benchmarks",
+  "tools/analysis",
+  "tools/legacy",
+  "tools/reporting",
+  "tools/ablation_zero_delay_vs_delayed.py",
+  "tools/evaluate_compitum.py",
+  "tools/generate_release_attestation.py",
+  "tools/generate_routerbench_report.py",
   ".venv*",
 ]
 
