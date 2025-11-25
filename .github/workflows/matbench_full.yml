@@ -11,6 +11,22 @@ on:
         description: "Optional URL to download CSV to csv_path"
         required: false
         default: ""
+      use_mp_export:
+        description: "Use MP API (MP_API_KEY) to export a CSV via tools/export_matbench_task_csv.py"
+        required: false
+        default: "false"
+      mp_elements:
+        description: "Elements filter for MP export (space-separated)"
+        required: false
+        default: "La Ni O"
+      mp_objective:
+        description: "Objective for MP export (band_gap|-formation_energy)"
+        required: false
+        default: "band_gap"
+      mp_limit:
+        description: "Row limit for MP export"
+        required: false
+        default: "500"
       objective_col:
         description: "Objective column (y_true)"
         required: true
@@ -69,6 +85,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
           pip install matplotlib
+          if [ "${{ inputs.use_mp_export }}" = "true" ]; then
+            pip install mp_api
+          fi
+
+      - name: Export dataset from MP (optional)
+        if: inputs.use_mp_export == 'true'
+        env:
+          MP_API_KEY: ${{ secrets.MP_API_KEY }}
+        run: |
+          python tools/export_matbench_task_csv.py \
+            --from-mp \
+            --elements ${{ inputs.mp_elements }} \
+            --nelements $(echo "${{ inputs.mp_elements }}" | wc -w) \
+            --objective "${{ inputs.mp_objective }}" \
+            --limit "${{ inputs.mp_limit }}" \
+            --out "${{ inputs.csv_path }}"
 
       - name: Ensure dataset
         shell: bash
