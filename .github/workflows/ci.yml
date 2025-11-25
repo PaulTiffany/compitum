@@ -339,6 +339,22 @@ jobs:
             --matbench-lambda-grid "0.0,0.5,1.0" \
             --matbench-bootstrap 30 \
             --timeout-matbench 420
+      - name: Summarize matbench smoke
+        if: always()
+        run: |
+          echo "## Matbench Smoke (CI)" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f reports/matbench_calibration_smoke.json ]; then
+            BEST=$(jq -r '.best_lambda // "n/a"' reports/matbench_calibration_smoke.json 2>/dev/null || echo "n/a")
+            echo "- best_lambda: $BEST" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f reports/matbench_regret_smoke.json ]; then
+            REGRET=$(jq -r '.regret_mean // .regret // "n/a"' reports/matbench_regret_smoke.json 2>/dev/null || echo "n/a")
+            echo "- regret_mean: $REGRET" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f reports/matbench_baseline_regret_smoke.json ]; then
+            BASE=$(jq -r '.regret_mean // .regret // "n/a"' reports/matbench_baseline_regret_smoke.json 2>/dev/null || echo "n/a")
+            echo "- baseline_regret_mean: $BASE" >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Upload matbench artifacts
         if: always()
         uses: actions/upload-artifact@v4

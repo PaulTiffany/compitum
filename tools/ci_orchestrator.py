@@ -85,6 +85,7 @@ def main() -> None:
     ap.add_argument("--matbench-topk-grid", type=str, default="1,5", help="Comma-separated k grid for Matbench")
     ap.add_argument("--matbench-lambda-grid", type=str, default="0.0,0.5,1.0", help="Comma-separated lambda grid for Matbench SRMF")
     ap.add_argument("--matbench-bootstrap", type=int, default=50, help="Bootstrap iterations for Matbench smoke")
+    ap.add_argument("--matbench-out-prefix", type=str, default="reports/matbench", help="Output prefix for Matbench artifacts")
     ap.add_argument("--all", action="store_true", help="Run tests + both benchmarks + report")
     args = ap.parse_args()
 
@@ -175,12 +176,13 @@ def main() -> None:
 
         reports = project_root / "reports"
         reports.mkdir(exist_ok=True)
-        calib_json = reports / "matbench_calibration_smoke.json"
-        scores_csv = reports / "matbench_scores_smoke.csv"
-        regret_json = reports / "matbench_regret_smoke.json"
-        regret_csv = reports / "matbench_regret_smoke.csv"
-        baseline_json = reports / "matbench_baseline_regret_smoke.json"
-        baseline_csv = reports / "matbench_baseline_regret_smoke.csv"
+        prefix = Path(args.matbench_out_prefix)
+        calib_json = reports / f"{prefix.stem}_calibration_smoke.json"
+        scores_csv = reports / f"{prefix.stem}_scores_smoke.csv"
+        regret_json = reports / f"{prefix.stem}_regret_smoke.json"
+        regret_csv = reports / f"{prefix.stem}_regret_smoke.csv"
+        baseline_json = reports / f"{prefix.stem}_baseline_regret_smoke.json"
+        baseline_csv = reports / f"{prefix.stem}_baseline_regret_smoke.csv"
 
         # Calibrate lambda
         cmd_calib = [
