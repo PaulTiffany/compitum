@@ -68,6 +68,7 @@ def main() -> None:
     ap.add_argument("--tests", action="store_true", help="Run pytest unit tests")
     ap.add_argument("--bench-routerbench", action="store_true", help="Run RouterBench baseline")
     ap.add_argument("--bench-compitum", action="store_true", help="Run Compitum evaluation")
+    ap.add_argument("--bench-matbench", action="store_true", help="Run Matbench regret pipeline (smoke)")
     ap.add_argument("--config", type=str, default="data/rb_clean/evaluate_routers.yaml", help="Eval config path")
     ap.add_argument("--tokenizer-backend", type=str, default="tiktoken", choices=["tiktoken","tokencost","hf"], help="Tokenizer backend for RB runs")
     ap.add_argument("--wtp", type=float, default=1.0, help="Willingness to pay for Compitum summary")
@@ -77,6 +78,13 @@ def main() -> None:
     ap.add_argument("--timeout-tests", type=int, default=900, help="Timeout (s) for unit tests")
     ap.add_argument("--timeout-rb", type=int, default=1200, help="Timeout (s) for RouterBench run")
     ap.add_argument("--timeout-compitum", type=int, default=900, help="Timeout (s) for Compitum run")
+    ap.add_argument("--timeout-matbench", type=int, default=900, help="Timeout (s) for Matbench run")
+    ap.add_argument("--matbench-csv", type=str, default="data/matbench_demo.csv", help="Matbench CSV path")
+    ap.add_argument("--matbench-objective-col", type=str, default="y_true", help="Matbench objective column")
+    ap.add_argument("--matbench-mode", type=str, default="max", choices=["max", "min"], help="Matbench objective direction")
+    ap.add_argument("--matbench-topk-grid", type=str, default="1,5", help="Comma-separated k grid for Matbench")
+    ap.add_argument("--matbench-lambda-grid", type=str, default="0.0,0.5,1.0", help="Comma-separated lambda grid for Matbench SRMF")
+    ap.add_argument("--matbench-bootstrap", type=int, default=50, help="Bootstrap iterations for Matbench smoke")
     ap.add_argument("--all", action="store_true", help="Run tests + both benchmarks + report")
     args = ap.parse_args()
 
@@ -84,10 +92,11 @@ def main() -> None:
     env = os.environ.copy()
 
     test_summary = {"stdout": "(skipped)", "returncode": "N/A"}
-    run_meta = {"tests": None, "routerbench": None, "compitum": None}
+    run_meta = {"tests": None, "routerbench": None, "compitum": None, "matbench": None}
     rb_files: List[Path] = []
     compitum_file: Optional[Path] = None
     metrics: Optional[MetricsSummary] = None
+    matbench_files: dict[str, str | int | float] = {}
 
     # Helper: detect presence of RouterBench dataset (either location)
     def _has_rb_data() -> bool:
@@ -149,6 +158,131 @@ def main() -> None:
 
     elif (args.bench_compitum or args.all) and not rb_available:
         run_meta["compitum"] = {"skipped": True, "reason": "routerbench_5shot.pkl not found"}
+
+    if args.bench_matbench or args.all:
+        py_mb = sys.executable  # use current interpreter
+        mb_env = env.copy()
+        mb_env.setdefault("OMP_NUM_THREADS", "1")
+        mb_env.setdefault("MKL_NUM_THREADS", "1")
+        mb_env.setdefault("OPENBLAS_NUM_THREADS", "1")
+        mb_env.setdefault("NUMEXPR_NUM_THREADS", "1")
+
+        csv_path = args.matbench_csv
+        objective = args.matbench_objective_col
+        mode = args.matbench_mode
+        topk = args.matbench_topk_grid
+        lambdas = args.matbench_lambda_grid
+        bootstrap = str(args.matbench_bootstrap)
+
+        reports = project_root / "reports"
+        reports.mkdir(exist_ok=True)
+        calib_json = reports / "matbench_calibration_smoke.json"
+        scores_csv = reports / "matbench_scores_smoke.csv"
+        regret_json = reports / "matbench_regret_smoke.json"
+        regret_csv = reports / "matbench_regret_smoke.csv"
+        baseline_json = reports / "matbench_baseline_regret_smoke.json"
+        baseline_csv = reports / "matbench_baseline_regret_smoke.csv"
+
+        # Calibrate lambda
+        cmd_calib = [
+            py_mb,
+            str(project_root / "tools" / "calibrate_matbench_srmf.py"),
+            "--path",
+            csv_path,
+            "--objective-col",
+            objective,
+            "--mode",
+            mode,
+            "--topk-grid",
+            topk,
+            "--lambda-grid",
+            lambdas,
+            "--bootstrap",
+            bootstrap,
+            "--seed",
+            "0",
+            "--out-json",
+            str(calib_json),
+            "--scores-out",
+            str(scores_csv),
+        ]
+        calib_res = run_cmd(cmd_calib, cwd=project_root, env=mb_env, timeout=args.timeout_matbench)
+
+        # Extract best lambda
+        best_lambda = "0.0"
+        try:
+            import json as _json
+
+            best_lambda = str(_json.loads(calib_json.read_text())["best_lambda"])
+        except Exception:
+            best_lambda = "0.0"
+
+        # Evaluate regret with tuned lambda
+        cmd_regret = [
+            py_mb,
+            str(project_root / "tools" / "eval_matbench_regret.py"),
+            "--path",
+            csv_path,
+            "--objective-col",
+            objective,
+            "--mode",
+            mode,
+            "--use-srmf",
+            "--lambda-weight",
+            best_lambda,
+            "--topk-grid",
+            topk,
+            "--bootstrap",
+            bootstrap,
+            "--seed",
+            "0",
+            "--out-csv",
+            str(regret_csv),
+            "--out-json",
+            str(regret_json),
+        ]
+        regret_res = run_cmd(cmd_regret, cwd=project_root, env=mb_env, timeout=args.timeout_matbench)
+
+        # Baseline ridge regret (small folds)
+        cmd_base = [
+            py_mb,
+            str(project_root / "tools" / "eval_baseline_regret.py"),
+            "--path",
+            csv_path,
+            "--objective-col",
+            objective,
+            "--model",
+            "ridge",
+            "--folds",
+            "3",
+            "--topk-grid",
+            topk,
+            "--bootstrap",
+            bootstrap,
+            "--seed",
+            "0",
+            "--out-csv",
+            str(baseline_csv),
+            "--out-json",
+            str(baseline_json),
+        ]
+        baseline_res = run_cmd(cmd_base, cwd=project_root, env=mb_env, timeout=args.timeout_matbench)
+
+        matbench_files = {
+            "calibration": str(calib_json),
+            "scores": str(scores_csv),
+            "regret": str(regret_json),
+            "regret_csv": str(regret_csv),
+            "baseline": str(baseline_json),
+            "baseline_csv": str(baseline_csv),
+            "best_lambda": best_lambda,
+        }
+        run_meta["matbench"] = {
+            "calibration": calib_res,
+            "regret": regret_res,
+            "baseline": baseline_res,
+            "best_lambda": best_lambda,
+        }
 
     # Report
     ts = datetime.utcnow().strftime("%Y%m%d-%H%M")
