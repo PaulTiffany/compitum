@@ -1,4 +1,4 @@
-% Data Policy & Security
+# Data Policy & Security
 
 Scope
 - Strong separation of concerns: core library and CI run offline by default; data acquisition is manual and opt-in.
