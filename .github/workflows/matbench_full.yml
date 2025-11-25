@@ -69,22 +69,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .
           pip install matplotlib
-          if [ "${{ inputs.use_mp_export }}" = "true" ]; then
-            pip install mp_api
-          fi
-
-      - name: Export dataset from MP (optional)
-        if: inputs.use_mp_export == 'true'
-        env:
-          MP_API_KEY: ${{ secrets.MP_API_KEY }}
-        run: |
-          python tools/export_matbench_task_csv.py \
-            --from-mp \
-            --elements ${{ inputs.mp_elements }} \
-            --nelements $(echo "${{ inputs.mp_elements }}" | wc -w) \
-            --objective "${{ inputs.mp_objective }}" \
-            --limit "${{ inputs.mp_limit }}" \
-            --out "${{ inputs.csv_path }}"
 
       - name: Ensure dataset
         shell: bash
