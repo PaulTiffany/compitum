@@ -11,22 +11,6 @@ on:
         description: "Optional URL to download CSV to csv_path"
         required: false
         default: ""
-      use_mp_export:
-        description: "Use MP API (MP_API_KEY) to export a CSV via tools/export_matbench_task_csv.py"
-        required: false
-        default: "false"
-      mp_elements:
-        description: "Elements filter for MP export (space-separated)"
-        required: false
-        default: "La Ni O"
-      mp_objective:
-        description: "Objective for MP export (band_gap|-formation_energy)"
-        required: false
-        default: "band_gap"
-      mp_limit:
-        description: "Row limit for MP export"
-        required: false
-        default: "500"
       objective_col:
         description: "Objective column (y_true)"
         required: true
