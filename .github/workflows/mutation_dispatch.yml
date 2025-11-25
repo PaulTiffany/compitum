@@ -203,8 +203,19 @@ jobs:
           cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
           python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
-          GROUP="$GROUP" python -c "import json, sys, os; g=os.environ.get('GROUP',''); path=f'reports/cr_quick_summary_{g}.json';\
-s=json.load(open(path,'r',encoding='utf-8')); score=float(s.get('mutation_score',0)); print('CR quick (advisory)', g, 'score:', score); sys.exit(0)"
+          GROUP="$GROUP" python - << 'PY'
+import json, os, sys
+g = os.environ.get("GROUP", "")
+path = f"reports/cr_quick_summary_{g}.json"
+try:
+    with open(path, "r", encoding="utf-8") as f:
+        s = json.load(f)
+    score = float(s.get("mutation_score", 0))
+    print("CR quick (advisory)", g, "score:", score)
+except Exception as e:
+    print("CR quick (advisory)", g, "error:", e, file=sys.stderr)
+sys.exit(0)
+PY
 
       - name: Upload artifacts (CR shard)
         if: always()
@@ -251,9 +262,9 @@ open('MUTATION_SUMMARY.json','w',encoding='utf-8').write(json.dumps({'survivors'
 PY
       - name: Job summary
         run: |
-          echo "## Mutation Dispatcher Summary" >> "$GITHUB_STEP_SUMMARY"
+          printf "## Mutation Dispatcher Summary\n" >> "$GITHUB_STEP_SUMMARY"
           if [ -f MUTATION_SUMMARY.json ]; then
-            echo "\n<details><summary>Summary JSON</summary>\n" >> "$GITHUB_STEP_SUMMARY"
+            printf "\n<details><summary>Summary JSON</summary>\n\n" >> "$GITHUB_STEP_SUMMARY"
             sed 's/^/    /' MUTATION_SUMMARY.json >> "$GITHUB_STEP_SUMMARY" || true
-            echo "\n</details>" >> "$GITHUB_STEP_SUMMARY"
+            printf "\n</details>\n" >> "$GITHUB_STEP_SUMMARY"
           fi
