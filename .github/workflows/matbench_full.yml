@@ -1,0 +1,158 @@
+name: Matbench Full (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      csv_path:
+        description: "Path to CSV in repo/workspace (e.g., data/matbench_task.csv)"
+        required: true
+        default: "data/matbench_task.csv"
+      download_url:
+        description: "Optional URL to download CSV to csv_path"
+        required: false
+        default: ""
+      objective_col:
+        description: "Objective column (y_true)"
+        required: true
+        default: "y_true"
+      mode:
+        description: "Objective direction (max|min)"
+        required: true
+        default: "max"
+      topk_grid:
+        description: "k grid (e.g., 1,5,10)"
+        required: true
+        default: "1,5,10"
+      lambda_grid:
+        description: "Lambda grid (e.g., 0.0,0.5,1.0)"
+        required: true
+        default: "0.0,0.5,1.0"
+      bootstrap:
+        description: "Bootstrap iterations"
+        required: true
+        default: "200"
+      folds:
+        description: "Baseline CV folds"
+        required: true
+        default: "5"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: matbench-full-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  matbench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      MPLBACKEND: Agg
+      OMP_NUM_THREADS: 1
+      MKL_NUM_THREADS: 1
+      OPENBLAS_NUM_THREADS: 1
+      NUMEXPR_NUM_THREADS: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install matplotlib
+
+      - name: Ensure dataset
+        shell: bash
+        run: |
+          set -euo pipefail
+          CSV_PATH="${{ github.workspace }}/${{ inputs.csv_path }}"
+          mkdir -p "$(dirname "$CSV_PATH")"
+          if [ -n "${{ inputs.download_url }}" ]; then
+            echo "Downloading dataset from ${{ inputs.download_url }} to $CSV_PATH"
+            curl -L "${{ inputs.download_url }}" -o "$CSV_PATH"
+          fi
+          if [ ! -f "$CSV_PATH" ]; then
+            echo "::error::CSV not found at $CSV_PATH"; exit 1;
+          fi
+          echo "Dataset ready at $CSV_PATH"
+
+      - name: Calibrate lambda
+        run: |
+          python tools/calibrate_matbench_srmf.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --mode "${{ inputs.mode }}" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --lambda-grid "${{ inputs.lambda_grid }}" \
+            --bootstrap "${{ inputs.bootstrap }}" \
+            --seed 0 \
+            --out-json reports/matbench_calibration_full.json \
+            --scores-out reports/matbench_scores_full.csv
+
+      - name: Evaluate regret (tuned lambda)
+        run: |
+          BEST=$(jq -r .best_lambda reports/matbench_calibration_full.json 2>/dev/null || echo "0.0")
+          python tools/eval_matbench_regret.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --mode "${{ inputs.mode }}" \
+            --use-srmf \
+            --lambda-weight "$BEST" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --out-csv reports/matbench_regret_full.csv \
+            --out-json reports/matbench_regret_full.json \
+            --bootstrap "${{ inputs.bootstrap }}" \
+            --seed 0
+
+      - name: Baseline regret (ridge)
+        run: |
+          python tools/eval_baseline_regret.py \
+            --path "${{ inputs.csv_path }}" \
+            --objective-col "${{ inputs.objective_col }}" \
+            --model ridge \
+            --folds "${{ inputs.folds }}" \
+            --topk-grid "${{ inputs.topk_grid }}" \
+            --bootstrap "${{ inputs.bootstrap }}" \
+            --seed 0 \
+            --out-csv reports/matbench_baseline_regret_full.csv \
+            --out-json reports/matbench_baseline_regret_full.json
+
+      - name: Attestation
+        run: |
+          BEST=$(jq -r .best_lambda reports/matbench_calibration_full.json 2>/dev/null || echo "0.0")
+          python tools/generate_matbench_attestation.py \
+            --input-csv "${{ inputs.csv_path }}" \
+            --calibration-json reports/matbench_calibration_full.json \
+            --regret-json reports/matbench_regret_full.json \
+            --out reports/matbench_attestation_full.json
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: matbench-full
+          path: |
+            reports/matbench_*_full.*
+          retention-days: 14
+
+      - name: Job summary
+        if: always()
+        run: |
+          echo "## Matbench Full (manual)" >> "$GITHUB_STEP_SUMMARY"
+          BEST=$(jq -r .best_lambda reports/matbench_calibration_full.json 2>/dev/null || echo "n/a")
+          REGRET=$(jq -r '.regret_mean // .regret // "n/a"' reports/matbench_regret_full.json 2>/dev/null || echo "n/a")
+          BASE=$(jq -r '.regret_mean // .regret // "n/a"' reports/matbench_baseline_regret_full.json 2>/dev/null || echo "n/a")
+          echo "- csv_path: ${{ inputs.csv_path }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- best_lambda: $BEST" >> "$GITHUB_STEP_SUMMARY"
+          echo "- regret_mean: $REGRET" >> "$GITHUB_STEP_SUMMARY"
+          echo "- baseline_regret_mean: $BASE" >> "$GITHUB_STEP_SUMMARY"
+          echo "- artifacts: matbench-full" >> "$GITHUB_STEP_SUMMARY"
