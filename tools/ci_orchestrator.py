@@ -268,15 +268,6 @@ def main() -> None:
         ]
         baseline_res = run_cmd(cmd_base, cwd=project_root, env=mb_env, timeout=args.timeout_matbench)
 
-        matbench_files = {
-            "calibration": str(calib_json),
-            "scores": str(scores_csv),
-            "regret": str(regret_json),
-            "regret_csv": str(regret_csv),
-            "baseline": str(baseline_json),
-            "baseline_csv": str(baseline_csv),
-            "best_lambda": best_lambda,
-        }
         run_meta["matbench"] = {
             "calibration": calib_res,
             "regret": regret_res,
