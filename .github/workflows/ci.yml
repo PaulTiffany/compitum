@@ -213,6 +213,7 @@ jobs:
 
       - name: Import smoke (RouterBench)
         env:
+          CONNECTION_STRING: mongodb://localhost:27017
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src:${{ github.workspace }}/src/routerbench
         run: |
           python - << 'PY'
@@ -292,6 +293,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .
+          pip install matplotlib
           pip install matplotlib
       - name: Applications import smoke
         run: |

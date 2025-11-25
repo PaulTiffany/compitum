@@ -96,7 +96,6 @@ def main() -> None:
     rb_files: List[Path] = []
     compitum_file: Optional[Path] = None
     metrics: Optional[MetricsSummary] = None
-    matbench_files: dict[str, str | int | float] = {}
 
     # Helper: detect presence of RouterBench dataset (either location)
     def _has_rb_data() -> bool:
