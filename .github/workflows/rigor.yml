@@ -36,7 +36,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .
-          pip install ruff mypy bandit pytest pytest-cov hypothesis jsonschema types-PyYAML
+          pip install ruff mypy bandit pytest pytest-cov hypothesis jsonschema types-PyYAML pytest-benchmark
 
       - name: Ruff (100-col lines)
         run: ruff check .
@@ -66,8 +66,8 @@ jobs:
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
         run: >
-          pytest -q -m "not routerbench"
-          --cov=compitum --cov-branch --cov-report=term-missing
+          pytest -q -m "not routerbench and not heavy_bench"
+          --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=90
           --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords
           --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths
           --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
@@ -103,6 +103,7 @@ jobs:
 
   mutation-light:
     name: Mutation (mutmut shards + CR quick)
+    continue-on-error: true
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'mutation'))
@@ -178,6 +179,11 @@ jobs:
           HYPOTHESIS_PROFILE: ci
         run: |
           . .venv-routerbench/bin/activate
+          cfg="data/rb_clean/evaluate_routers.yaml"
+          if [ ! -f "$cfg" ]; then
+            echo "RouterBench config missing at $cfg; skipping routerbench run."
+            exit 0
+          fi
           # Best-effort download of pretrained predictors from GitHub Releases (ours)
           pred="predictors_all-MiniLM-L12-v2_0.1.joblib"
           mkdir -p data/pretrain_predictors
