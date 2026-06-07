@@ -16,6 +16,9 @@ from compitum.integrations.materials_project_audit import (
     _lyapunov_leak,
 )
 
+# np.trapz was removed in NumPy 2.0 (renamed to np.trapezoid); support both.
+_trapz = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
+
 
 def _compute_srmf(df: pd.DataFrame) -> pd.DataFrame:
     tmp = Path(".tmp_layers.csv")
@@ -54,8 +57,8 @@ def _aurc(y: np.ndarray, scores: np.ndarray, ks: List[int]) -> float:
     xs = np.asarray([int(k) for k in ks], dtype=float)
     ys = np.asarray(vals, dtype=float)
     if xs[-1] <= 0:
-        return float(np.trapz(ys, xs))
-    return float(np.trapz(ys, xs)/xs[-1])
+        return float(_trapz(ys, xs))
+    return float(_trapz(ys, xs)/xs[-1])
 
 
 def main() -> int:
