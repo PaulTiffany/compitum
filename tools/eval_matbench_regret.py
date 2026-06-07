@@ -16,6 +16,9 @@ from compitum.integrations.materials_project_audit import (
     _lyapunov_leak,
 )
 
+# np.trapz was removed in NumPy 2.0 (renamed to np.trapezoid); support both.
+_trapz = np.trapezoid if hasattr(np, "trapezoid") else np.trapz
+
 
 def _compute_srmf_components(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
     """Return (kappa, leak) arrays computed row-wise from df."""
@@ -87,8 +90,8 @@ def _aurc(regret_rows: List[Dict[str, float]], key: str = "regret_norm") -> floa
     xs = np.asarray([r["k"] for r in rows], dtype=float)
     ys = np.asarray([r[key] for r in rows], dtype=float)
     if xs[-1] <= 0:
-        return float(np.trapz(ys, xs))
-    return float(np.trapz(ys, xs) / xs[-1])
+        return float(_trapz(ys, xs))
+    return float(_trapz(ys, xs) / xs[-1])
 
 
 def _bootstrap_aurc(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str, *, n_boot: int, seed: int) -> Dict[str, float]:

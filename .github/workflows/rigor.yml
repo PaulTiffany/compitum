@@ -103,7 +103,6 @@ jobs:
 
   mutation-light:
     name: Mutation (mutmut shards + CR quick)
-    continue-on-error: true
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'mutation'))
