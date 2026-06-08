@@ -4,6 +4,8 @@ This note presents Compitum in standard ML terms: a constrained contextual routi
 
 > Related: [cs.CL](Language-Perspective.md) · [cs.SY](Control-Perspective.md) · [stat.ML](Statistical-Notes.md) · [SRMF ⇄ Lyapunov](SRMF-as-Lyapunov.md) · [Peer Review Protocol](PEER_REVIEW.md) · [Certificate Schema](Certificate-Schema.md)
 
+![Editorial figure: a learned distance geometry, a descending loss, and a calibration curve, with labels for scalarized utility, feasibility-first selection, learned SPD geometry, and calibrated uncertainty.](../media/reviewed/learning_perspective_hybrid_v1.svg)
+
 ## Problem Setup
 
 - Context x in R^D and pragmatic features x_B in R^4.

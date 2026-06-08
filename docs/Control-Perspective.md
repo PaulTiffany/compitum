@@ -9,6 +9,8 @@ Related: [cs.LG](Learning-Perspective.md), [cs.CL](Language-Perspective.md), [st
 
 This note frames Compitum as a closed-loop decision system with instantaneous, judge-free feedback and a trust-region controller that stabilizes online adaptation. It is intended for cs.SY reviewers.
 
+![Editorial figure: a closed feedback loop and a contracting trust region, with labels for measurement, trust-region control, bounded metric update, and Lyapunov-inspired stability indicators.](../media/reviewed/control_perspective_hybrid_v1.svg)
+
 ## Closed-Loop Decomposition
 
 Signals (per decision step t):
