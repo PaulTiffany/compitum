@@ -26,13 +26,12 @@ REVIEWED = Path(__file__).resolve().parent.parent / "media" / "reviewed"
 MAX_EDGE = 1800
 JPEG_QUALITY = 82
 
-SVGS = [
-    "teacher_intuition_hybrid_v1.svg",
-    "srmf_lyapunov_hybrid_v1.svg",
-    "philosophy_flow_hybrid_v1.svg",
-]
-
 HREF_RE = re.compile(r'href="([^"]+_scene_v1\.png)"')
+
+
+def discover() -> list[str]:
+    """Every *_hybrid_v1.svg in media/reviewed (idempotent: embedded ones skip)."""
+    return sorted(p.name for p in REVIEWED.glob("*_hybrid_v1.svg"))
 
 
 def encode_scene(png_path: Path) -> str:
@@ -48,7 +47,7 @@ def encode_scene(png_path: Path) -> str:
 
 
 def main() -> int:
-    for name in SVGS:
+    for name in discover():
         svg_path = REVIEWED / name
         text = svg_path.read_text(encoding="utf-8")
         if "data:image/jpeg;base64," in text:

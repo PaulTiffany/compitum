@@ -4,6 +4,8 @@ This page frames Compitum for cs.CL reviewers: an NLP router for LLM tasks that 
 
 > Related: [cs.LG](Learning-Perspective.md) · [cs.SY](Control-Perspective.md) · [stat.ML](Statistical-Notes.md) · [SRMF ⇄ Lyapunov](SRMF-as-Lyapunov.md) · [Peer Review Protocol](PEER_REVIEW.md) · [Certificate Schema](Certificate-Schema.md)
 
+![Editorial figure: prompts routed across a small panel of models into a certificate, with labels for prompt features, the feasible panel, ambiguity-driven deferral, and the auditable certificate.](../media/reviewed/language_perspective_hybrid_v1.svg)
+
 ## Problem in NLP Terms
 
 - Inputs: prompts and light-weight prompt-derived features (PGD), plus optional embeddings.
