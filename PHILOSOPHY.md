@@ -2,6 +2,8 @@
 
 Compitum turns model routing into a principled, auditable control problem. We replace vibes with geometry, constraints, and verifiable artifacts, so choices are explainable today and improvable tomorrow.
 
+![Vertical hybrid figure showing Compitum philosophy flowing from geometry through constraints, determinism, feedback, stability, and traceable evidence.](media/reviewed/philosophy_flow_hybrid_v1.svg)
+
 ## Purpose
 
 - Make routing predictable, safe, and accountable under real constraints.
