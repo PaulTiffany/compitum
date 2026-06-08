@@ -75,6 +75,11 @@ jobs:
           # Overwrite root index with hero landing page and include assets
           cp index.html site_out/index.html
           if [ -d assets ]; then cp -R assets site_out/; fi
+          # Publish only the reviewed, self-contained figures (NOT heavy/unaudited media)
+          if [ -d media/reviewed ]; then
+            mkdir -p site_out/media/reviewed
+            cp media/reviewed/*.svg site_out/media/reviewed/ 2>/dev/null || true
+          fi
           # Tess video is hosted externally (Sora); no local binary needed
           # Provide root-level Examples redirect if present
           if [ -f Examples.html ]; then cp Examples.html site_out/Examples.html; fi

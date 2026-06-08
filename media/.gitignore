@@ -1,0 +1,16 @@
+# Heavy / generated / unaudited media — keep out of git and the published site.
+# Only reviewed, self-contained figures (media/reviewed/*.svg) and the small
+# review/provenance markdown are tracked.
+_edge_profile/
+_review_thumbnails/
+*.preview.png
+openrouter_runs/
+compiled/
+
+# Heavy binaries (videos, audio, slide decks, large bitmaps). The reviewed
+# SVGs inline their own compressed scene, so the source PNGs aren't needed.
+*.mp4
+*.m4a
+*.pdf
+*.pptx
+*.png
