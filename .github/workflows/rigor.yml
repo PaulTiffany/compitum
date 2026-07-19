@@ -67,7 +67,7 @@ jobs:
           NUMEXPR_NUM_THREADS: 1
         run: >
           pytest -q -m "not routerbench and not heavy_bench"
-          --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=90
+          --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=100
 
       - name: Invariants suite
         env:

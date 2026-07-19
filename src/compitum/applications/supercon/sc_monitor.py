@@ -72,7 +72,7 @@ class SuperconMonitor:
             d = d2
         else:
             W = self.metric.W
-            if W is None:
+            if W is None:  # pragma: no cover - distance() above always initializes W first
                 W = self.metric._update_cholesky()
             wz = W @ (xn - cn)
             d = float(np.linalg.norm(wz, ord=max(1e-6, float(self.norm_p))))

@@ -101,7 +101,7 @@ class PlasmaMonitor:
         else:
             # Compute whitened residual with current W and take Lp norm
             W = self.metric.W
-            if W is None:
+            if W is None:  # pragma: no cover - distance() above always initializes W first
                 W = self.metric._update_cholesky()  # use metric to compute W
             wz = W @ (x - mu)
             p = max(1e-6, float(self.norm_p))

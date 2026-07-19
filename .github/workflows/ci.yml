@@ -87,7 +87,8 @@ jobs:
         run: |
           set -e
           echo "Running pytest with verbose summary for CI..."
-          pytest -m "not routerbench and not heavy_bench" -ra -vv --maxfail=1
+          pytest -m "not routerbench and not heavy_bench" -ra -vv --maxfail=1 \
+            --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=100
 
   security:
     runs-on: ubuntu-latest

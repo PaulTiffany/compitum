@@ -1,6 +1,7 @@
 ﻿import numpy as np
 
 from compitum.applications import PlasmaMonitor
+from compitum.applications.fusion.plasma_monitor import PlasmaMonitorConfig
 
 
 def test_plasma_monitor_basic_flow():
@@ -52,4 +53,22 @@ def test_alarm_no_trigger_at_equilibrium():
     assert out["confinement_distance"] == 0.0
     assert out["curvature_signal"] == 0.0
     assert out["alarm_status"] is False
+
+
+def test_config_object_with_kwarg_overrides():
+    # Passing an explicit config plus q_threshold/norm_p kwarg overrides exercises the
+    # override branches that a bare config-only or kwarg-only construction never reaches.
+    cfg = PlasmaMonitorConfig(state_dim=6, rank=3, q_threshold=2.0, norm_p=2.0)
+    pm = PlasmaMonitor(cfg, q_threshold=0.5, norm_p=1.5)
+    assert pm.q_threshold == 0.5
+    assert pm.norm_p == 1.5
+
+
+def test_non_euclidean_norm_p():
+    pm = PlasmaMonitor(state_dim=4, rank=2, norm_p=1.0)
+    s0 = np.zeros(4, dtype=float)
+    _ = pm.ingest_profile(s0, t=0.0)
+    s1 = np.array([1.0, 1.0, 0.0, 0.0], dtype=float)
+    out = pm.ingest_profile(s1, t=1.0)
+    assert out["confinement_distance"] > 0
 

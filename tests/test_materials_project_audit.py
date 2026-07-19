@@ -3,7 +3,20 @@ import sys
 
 import pandas as pd
 
-from compitum.integrations.materials_project_audit import map_material_to_srmf
+from compitum.integrations.materials_project_audit import SRMFState, map_material_to_srmf
+
+
+def test_current_phase_bias_dominant():
+    # bias > drift and bias > constraint -> falls through both "if" checks to "bias"
+    s = SRMFState(drift=0.1, constraint=0.1, bias=5.0)
+    assert s.current_phase() == "bias"
+
+
+def test_current_phase_tie_falls_to_bias():
+    # drift == constraint (neither strictly greater) -> also falls through to "bias"
+    s = SRMFState(drift=2.0, constraint=2.0, bias=0.0)
+    assert s.current_phase() == "bias"
+
 
 def test_map_material_to_srmf_handles_none():
     doc = SimpleNamespace(band_gap=None, density=None, nsites=None, formation_energy_per_atom=None)

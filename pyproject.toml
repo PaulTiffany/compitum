@@ -104,25 +104,39 @@ module = ["routerbench.*"]
 ignore_errors = true
 
 
-# --------------------------- 
+# ---------------------------
 # PyTest
-# --------------------------- 
+# ---------------------------
+# This is the single source of truth for pytest config. A stray root-level
+# pytest.ini used to silently shadow this whole table (pytest prefers pytest.ini
+# over pyproject.toml when both exist) -- confirmed via pytest's own startup
+# warning and by reproducing CI's exact invocation with no coverage collected
+# at all despite fail_under=100 below. Deleted pytest.ini and folded its
+# (more complete) marker list in here instead of the other way around, since
+# --cov is deliberately NOT in addopts: several CI jobs run narrow test-path
+# subsets (e.g. `pytest -q tests/invariants`) that were never meant to satisfy
+# whole-package coverage, and baking --cov into global addopts would silently
+# break those. Jobs that want the 100% gate pass --cov explicitly (see ci.yml,
+# rigor.yml).
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
-addopts = [
-  "-ra",
-  "--cov=compitum",
-  "--cov-branch",
-  "--cov-report=term-missing",
-  "-q",
-  "-m",
-  "not routerbench"
-]
+addopts = ["-ra", "-m", "not routerbench and not examples and not heavy_bench"]
 markers = [
-  "invariants: tests for core system invariants",
-  "routerbench: RouterBench integration tests (optional)"
+  "hypo_lifecycle: marks tests as part of the hypothesis lifecycle suite",
+  "invariants: property-based and structural invariants",
+  "lg: learning/geometry-focused invariants",
+  "cl: explainability/determinism invariants",
+  "sy: control/stability invariants",
+  "stat: estimation/uncertainty invariants",
+  "pedagogy: pedagogy/\"control of error\" behavior",
+  "deep: longer-running profile for nightly builds",
+  "examples: runnable examples (excluded by default)",
+  "routerbench: RouterBench integration tests (optional)",
+  "benchmark: performance micro/meso benchmarks (pytest-benchmark)",
+  "heavy_bench: long-running performance diagnostics (opt-in)",
 ]
+python_functions = ["test_*", "benchmark_*"]
 
 # --------------------------- 
 # Coverage
