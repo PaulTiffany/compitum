@@ -33,6 +33,19 @@ def test_reservoir_add_above_k_replace() -> None:
     assert reservoir.buf[0][0][0] == 99
 
 
+def test_reservoir_add_clamps_nonpositive_weight() -> None:
+    """No existing test passes a weight <= 0 -- the max(w, 1e-6) clamp that
+    keeps zero/negative weights from stalling reservoir sampling was never
+    exercised."""
+    reservoir = WeightedReservoir(k=5)
+    reservoir.add(np.array([1]), 0.0)
+    assert reservoir.tot_w == 1e-6
+
+    reservoir2 = WeightedReservoir(k=5)
+    reservoir2.add(np.array([1]), -5.0)
+    assert reservoir2.tot_w == 1e-6
+
+
 def test_coherence_not_enough_data() -> None:
     coherence = CoherenceFunctional()
     # Add only 5 data points, less than the threshold of 10
