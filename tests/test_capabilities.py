@@ -27,3 +27,11 @@ def test_supports_with_empty_context():
 def test_supports_with_irrelevant_context():
     cap = Capabilities(regions={"us"}, tools_allowed={"none"})
     assert cap.supports(None, context={"other_key": "value"}) is True
+
+
+def test_deterministic_defaults_to_false():
+    # No existing test checked the *default* (omitted) value -- only the
+    # explicitly-True case in test_capabilities_init -- so a mutant flipping
+    # the default itself would survive.
+    cap = Capabilities(regions={"us"}, tools_allowed={"none"})
+    assert cap.deterministic is False
