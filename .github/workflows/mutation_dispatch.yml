@@ -8,7 +8,11 @@ on:
         required: false
         default: 'false'
   schedule:
-    - cron: '0 7 * * *'
+    # Weekly, not daily: the full mutmut+Cosmic Ray sweep is real compute even
+    # though this repo's public-repo Actions minutes are free. PRs labeled
+    # "mutation" (mutation_on_label.yml) already give a fast, diff-scoped
+    # check in between full sweeps.
+    - cron: '0 7 * * 0'
 
 permissions:
   contents: read
