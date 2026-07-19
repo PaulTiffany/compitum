@@ -58,20 +58,21 @@ jobs:
             --out-json reports/matbench_calibration_online.json \
             --scores-out reports/matbench_scores_online.csv
 
-      - name: Evaluate regret (tuned lambda)
+      - name: Evaluate regret (held-out test split)
         env:
           OMP_NUM_THREADS: 1
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
         run: |
-          BEST=$(jq -r .best_lambda reports/matbench_calibration_online.json || echo "0.0")
+          # Evaluate on the calibration step's --scores-out (held-out test rows,
+          # already scored) instead of re-scoring the full CSV -- that would
+          # re-include the rows used to select best_lambda.
           python tools/eval_matbench_regret.py \
-            --path data/matbench_demo.csv \
+            --path reports/matbench_scores_online.csv \
             --objective-col y_true \
             --mode max \
-            --use-srmf \
-            --lambda-weight "$BEST" \
+            --score-col score \
             --topk-grid "1,3" \
             --out-csv reports/matbench_regret_online.csv \
             --out-json reports/matbench_regret_online.json \
@@ -88,6 +89,7 @@ jobs:
           python tools/eval_baseline_regret.py \
             --path data/matbench_demo.csv \
             --objective-col y_true \
+            --mode max \
             --model ridge \
             --folds 3 \
             --topk-grid "1,3" \
@@ -98,7 +100,6 @@ jobs:
 
       - name: Attestation
         run: |
-          BEST=$(jq -r .best_lambda reports/matbench_calibration_online.json || echo "0.0")
           python tools/generate_matbench_attestation.py \
             --input-csv data/matbench_demo.csv \
             --calibration-json reports/matbench_calibration_online.json \

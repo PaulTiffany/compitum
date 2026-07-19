@@ -49,20 +49,25 @@ jobs:
             --lambda-grid "${{ inputs.lambda_grid }}" \
             --bootstrap 200 \
             --seed 0 \
+            --group-col group \
             --out-json matbench_calibration.json \
             --scores-out matbench_scores.csv
-      - name: Evaluate regret with tuned lambda
+      - name: Evaluate regret (held-out test split)
         run: |
-          BEST=$(jq -r .best_lambda matbench_calibration.json)
+          # Evaluate on the calibration step's --scores-out (held-out test rows,
+          # already scored) instead of re-scoring the full CSV -- that would
+          # re-include the rows used to select best_lambda. This also covers the
+          # per-group breakdown that used to be a separate, equally leaky call.
           python tools/eval_matbench_regret.py \
-            --path "${{ inputs.csv_path }}" \
-            --objective-col "${{ inputs.objective_col }}" \
+            --path matbench_scores.csv \
+            --objective-col y_true \
             --mode "${{ inputs.mode }}" \
-            --use-srmf \
-            --lambda-weight "$BEST" \
+            --score-col score \
             --topk-grid "${{ inputs.topk_grid }}" \
+            --group-col group \
             --out-csv matbench_regret.csv \
             --out-json matbench_regret.json \
+            --out-group-csv matbench_regret_groups.csv \
             --bootstrap 200 \
             --seed 0
       - name: Baseline regret (ridge)
@@ -70,6 +75,7 @@ jobs:
           python tools/eval_baseline_regret.py \
             --path "${{ inputs.csv_path }}" \
             --objective-col "${{ inputs.objective_col }}" \
+            --mode "${{ inputs.mode }}" \
             --model ridge \
             --folds 5 \
             --topk-grid "${{ inputs.topk_grid }}" \
@@ -77,17 +83,8 @@ jobs:
             --seed 0 \
             --out-csv matbench_baseline_regret.csv \
             --out-json matbench_baseline_regret.json
-      - name: Group regret and layers
+      - name: Layer exploration
         run: |
-          python tools/eval_matbench_regret.py \
-            --path "${{ inputs.csv_path }}" \
-            --objective-col "${{ inputs.objective_col }}" \
-            --mode "${{ inputs.mode }}" \
-            --use-srmf \
-            --lambda-weight $(jq -r .best_lambda matbench_calibration.json) \
-            --topk-grid "${{ inputs.topk_grid }}" \
-            --group-col group \
-            --out-group-csv matbench_regret_groups.csv || true
           python tools/explore_matbench_layers.py \
             --path "${{ inputs.csv_path }}" \
             --objective-col "${{ inputs.objective_col }}" \

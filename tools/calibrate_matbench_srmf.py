@@ -195,16 +195,20 @@ def main() -> int:
     print(f"Wrote calibration: {args.out_json}")
 
     if args.scores_out is not None:
-        # Write test split scores and y for downstream analysis
-        df_out = pd.DataFrame(
-            {
-                "index": i_test,
-                "y_true": y[i_test],
-                "kappa": kappas[i_test],
-                "leak": leaks[i_test],
-                "score": scores_test,
-            }
-        )
+        # Write test split scores and y for downstream analysis. This is the only
+        # honest input for a "final" regret number: it holds exactly the rows
+        # never used to select best_lambda. Re-evaluating on the original CSV
+        # instead would re-include the train/val rows that chose best_lambda.
+        out_cols: Dict[str, Any] = {
+            "index": i_test,
+            "y_true": y[i_test],
+            "kappa": kappas[i_test],
+            "leak": leaks[i_test],
+            "score": scores_test,
+        }
+        if args.group_col is not None:
+            out_cols["group"] = df[args.group_col].astype(str).to_numpy()[i_test]
+        df_out = pd.DataFrame(out_cols)
         args.scores_out.parent.mkdir(parents=True, exist_ok=True)
         df_out.to_csv(args.scores_out, index=False)
         print(f"Wrote test scores: {args.scores_out}")

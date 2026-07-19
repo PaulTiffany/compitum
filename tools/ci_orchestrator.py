@@ -252,6 +252,8 @@ def main() -> None:
             csv_path,
             "--objective-col",
             objective,
+            "--mode",
+            mode,
             "--model",
             "ridge",
             "--folds",

@@ -71,8 +71,8 @@ jobs:
       - name: Install deps
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
-          pip install matplotlib mp_api
+          pip install -e ".[materials]"
+          pip install matplotlib
 
       - name: Resolve preset
         id: preset
@@ -144,15 +144,16 @@ jobs:
             --out-json reports/matbench_calibration_sweep.json \
             --scores-out reports/matbench_scores_sweep.csv
 
-      - name: Evaluate regret (tuned lambda)
+      - name: Evaluate regret (held-out test split)
         run: |
-          BEST=$(jq -r .best_lambda reports/matbench_calibration_sweep.json 2>/dev/null || echo "0.0")
+          # Evaluate on the calibration step's --scores-out (held-out test rows,
+          # already scored) instead of re-scoring the full CSV -- that would
+          # re-include the rows used to select best_lambda.
           python tools/eval_matbench_regret.py \
-            --path data/matbench_sweep.csv \
+            --path reports/matbench_scores_sweep.csv \
             --objective-col y_true \
             --mode "${{ inputs.mode }}" \
-            --use-srmf \
-            --lambda-weight "$BEST" \
+            --score-col score \
             --topk-grid "${{ inputs.topk_grid }}" \
             --out-csv reports/matbench_regret_sweep.csv \
             --out-json reports/matbench_regret_sweep.json \
@@ -166,6 +167,7 @@ jobs:
           python tools/eval_baseline_regret.py \
             --path data/matbench_sweep.csv \
             --objective-col y_true \
+            --mode "${{ inputs.mode }}" \
             --model ridge \
             --folds "${{ inputs.folds }}" \
             --topk-grid "${{ inputs.topk_grid }}" \
@@ -176,7 +178,6 @@ jobs:
 
       - name: Attestation
         run: |
-          BEST=$(jq -r .best_lambda reports/matbench_calibration_sweep.json 2>/dev/null || echo "0.0")
           python tools/generate_matbench_attestation.py \
             --input-csv data/matbench_sweep.csv \
             --calibration-json reports/matbench_calibration_sweep.json \

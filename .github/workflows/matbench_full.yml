@@ -98,15 +98,17 @@ jobs:
             --out-json reports/matbench_calibration_full.json \
             --scores-out reports/matbench_scores_full.csv
 
-      - name: Evaluate regret (tuned lambda)
+      - name: Evaluate regret (held-out test split)
         run: |
-          BEST=$(jq -r .best_lambda reports/matbench_calibration_full.json 2>/dev/null || echo "0.0")
+          # Evaluate on the calibration step's --scores-out (already-scored,
+          # held-out test rows only) instead of re-scoring the full CSV --
+          # scoring the full CSV would re-include the train/val rows that
+          # chose best_lambda, leaking calibration signal into the reported regret.
           python tools/eval_matbench_regret.py \
-            --path "${{ inputs.csv_path }}" \
-            --objective-col "${{ inputs.objective_col }}" \
+            --path reports/matbench_scores_full.csv \
+            --objective-col y_true \
             --mode "${{ inputs.mode }}" \
-            --use-srmf \
-            --lambda-weight "$BEST" \
+            --score-col score \
             --topk-grid "${{ inputs.topk_grid }}" \
             --out-csv reports/matbench_regret_full.csv \
             --out-json reports/matbench_regret_full.json \
@@ -118,6 +120,7 @@ jobs:
           python tools/eval_baseline_regret.py \
             --path "${{ inputs.csv_path }}" \
             --objective-col "${{ inputs.objective_col }}" \
+            --mode "${{ inputs.mode }}" \
             --model ridge \
             --folds "${{ inputs.folds }}" \
             --topk-grid "${{ inputs.topk_grid }}" \
@@ -128,7 +131,6 @@ jobs:
 
       - name: Attestation
         run: |
-          BEST=$(jq -r .best_lambda reports/matbench_calibration_full.json 2>/dev/null || echo "0.0")
           python tools/generate_matbench_attestation.py \
             --input-csv "${{ inputs.csv_path }}" \
             --calibration-json reports/matbench_calibration_full.json \

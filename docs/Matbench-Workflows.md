@@ -13,8 +13,10 @@ CLI pipeline (local)
   - `python examples/generate_matbench_demo.py --out data/matbench_demo.csv`
 - Calibrate λ (kappa − λ·leak) on validation; report test AURC with CIs:
   - `python tools/calibrate_matbench_srmf.py --path data/matbench_demo.csv --objective-col y_true --mode max --topk-grid 1,5,10 --lambda-grid 0.0,0.5,1.0 --bootstrap 1000 --seed 0 --out-json reports/matbench_calibration.json --scores-out reports/matbench_scores_test.csv`
-- Evaluate regret with tuned λ (including per-group curves if `group` exists):
-  - `python tools/eval_matbench_regret.py --path data/matbench_demo.csv --objective-col y_true --mode max --use-srmf --lambda-weight $(jq -r .best_lambda reports/matbench_calibration.json) --topk-grid 1,5,10 --group-col group --out-csv reports/matbench_regret.csv --out-json reports/matbench_regret.json --out-group-csv reports/matbench_regret_groups.csv --bootstrap 1000 --seed 0`
+- Evaluate regret on the held-out test split (including per-group curves if `group` was
+  passed to the calibration step's `--group-col`) -- evaluate against `--scores-out`'s file, not
+  the original CSV with `--use-srmf --lambda-weight`, which would leak the rows used to select λ:
+  - `python tools/eval_matbench_regret.py --path reports/matbench_scores_test.csv --objective-col y_true --mode max --score-col score --topk-grid 1,5,10 --group-col group --out-csv reports/matbench_regret.csv --out-json reports/matbench_regret.json --out-group-csv reports/matbench_regret_groups.csv --bootstrap 1000 --seed 0`
 - Attestation:
   - `python tools/generate_matbench_attestation.py --input-csv data/matbench_demo.csv --calibration-json reports/matbench_calibration.json --regret-json reports/matbench_regret.json --out reports/matbench_attestation.json`
 
@@ -39,12 +41,12 @@ Artifacts and review
 
 # Emergent Layers
 - Explore SRMF layers via quantiles or k-means: tools/explore_matbench_layers.py
-- Outputs CSV and JSON with per-layer AURC; use to guide ? tuning per-layer.
+- Outputs CSV and JSON with per-layer AURC; use to guide λ tuning per-layer.
 
 
 
 # Exporting a Task CSV
-- Export via Materials Project (requires MP_API_KEY): 	ools/export_matbench_task_csv.py --from-mp --elements La Ni O --nelements 3 --objective band_gap --limit 500 --out data/mp_matbench_task.csv 
-- Or generate a synthetic task: 	ools/export_matbench_task_csv.py --offline-mock --out data/matbench_task.csv 
+- Export via Materials Project (requires MP_API_KEY): `tools/export_matbench_task_csv.py --from-mp --elements La Ni O --nelements 3 --objective band_gap --limit 500 --out data/mp_matbench_task.csv`
+- Or generate a synthetic task: `tools/export_matbench_task_csv.py --offline-mock --out data/matbench_task.csv`
 - Then run the offline workflow or local pipeline on the exported CSV.
 

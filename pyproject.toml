@@ -30,6 +30,7 @@ dev = [
  "pytest-benchmark",
  "build"
 ]
+materials = ["mp_api>=0.44"]
 
 [project.urls]
 Homepage = "https://github.com/PaulTiffany/compitum"
@@ -147,7 +148,3 @@ paths_to_mutate = ["src/compitum"]
 tests_dir = ["tests"]
 use_coverage = true
 backup = false
-
-
-
-materials = ["mp_api>=0.44"]
