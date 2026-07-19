@@ -38,7 +38,7 @@ Versioning Policy
 Compatibility Expectations
 
 - Constructors and method names for the listed classes are stable within a MAJOR version.
-- The certificate JSON retains key fields (`model`, `utility`, `utility_components`, `constraints`, `boundary_analysis`, `drift_status`). New utility components may be added; consumers should treat unknown component keys as additive numeric terms.
+- The certificate JSON retains key fields (`model`, `utility`, `utility_components`, `constraints`, `boundary`, `drift`, `pgd_signature`, `timestamp`, `router_version`). Note the JSON keys are `boundary`/`drift` -- the `SwitchCertificate` dataclass's own Python attributes are named `boundary_analysis`/`drift_status`, but `.to_json()` renames them. New utility components may be added; consumers should treat unknown component keys as additive numeric terms.
 
 Support and Feedback
 

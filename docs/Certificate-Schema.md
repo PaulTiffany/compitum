@@ -10,22 +10,28 @@ The routing certificate is a structured JSON object emitted by the CLI (`--trace
 Fields
 
 - model: string — name of selected model
-- utility: number — total utility U = quality - (lambda × cost) plus any additional terms included by energy
-- utility_components: object — additive components, typically {quality, latency, cost}
-- constraints: object — {feasible: boolean, shadow_prices: object[string→number]}
-- boundary: object — {gap: number, entropy: number, sigma: number}
-- drift: object — {trust_radius: number, ema: number, integral: number}
+- utility: number — U = alpha·quality - beta_t·latency - beta_c·(cost + model.cost) - beta_d·distance + beta_s·evidence
+- utility_components: object — {quality, latency, cost, distance, evidence, uncertainty}
+- constraints: object — {status: string, violations: array[string], feasible: boolean, shadow_prices: object[string→number]}
+- boundary: object — {winner: string, runner_up: string, utility_gap: number, entropy: number, uncertainty: number, is_boundary: boolean}
+- drift: object — {trust_radius: number, drift_ema: number, drift_integral: number, lyapunov_function: number}
+- pgd_signature: string — first 16 hex chars of a sha256 digest of the prompt (tamper-evident, not reversible)
+- timestamp: number — raw Unix epoch seconds (`time.time()`), not an ISO-8601 string
+- router_version: string — the installed `compitum` package version
 
-Example
+Example (verified live run, `compitum route --prompt "..." --trace`)
 
 ```json
 {
-  "model": "fast",
-  "utility": 0.423,
-  "utility_components": {"quality": 0.61, "latency": -0.07, "cost": -0.12},
-  "constraints": {"feasible": true, "shadow_prices": {"lambda_0": 0.0, "lambda_1": 0.13, "lambda_2": 0.0}},
-  "boundary": {"gap": 0.03, "entropy": 0.58, "sigma": 0.11},
-  "drift": {"trust_radius": 0.8, "ema": 0.76, "integral": 0.12}
+  "model": "auto",
+  "utility": -0.617274,
+  "utility_components": {"quality": 0.598477, "latency": -0.841229, "cost": -2.290030, "distance": -2.299428, "evidence": 0.0, "uncertainty": 0.117909},
+  "constraints": {"status": "optimal", "violations": [], "feasible": true, "shadow_prices": {"lambda_0": 0.0, "lambda_1": 0.0, "lambda_2": 0.0, "lambda_3": 0.0}},
+  "boundary": {"winner": "auto", "runner_up": "fast", "utility_gap": 0.020410, "entropy": 1.098564, "uncertainty": 0.117909, "is_boundary": false},
+  "drift": {"trust_radius": 1.088503, "drift_ema": 0.229943, "drift_integral": 2.184457, "lyapunov_function": 4.771852},
+  "pgd_signature": "eff8b649c985f166",
+  "timestamp": 1784341869.07,
+  "router_version": "0.1.1"
 }
 ```
 
@@ -45,7 +51,10 @@ Minimal JSON Schema (informative) — download: `assets/certificate.schema.json`
       "properties": {
         "quality": {"type": "number"},
         "latency": {"type": "number"},
-        "cost": {"type": "number"}
+        "cost": {"type": "number"},
+        "distance": {"type": "number"},
+        "evidence": {"type": "number"},
+        "uncertainty": {"type": "number"}
       },
       "additionalProperties": {"type": "number"}
     },
@@ -53,6 +62,8 @@ Minimal JSON Schema (informative) — download: `assets/certificate.schema.json`
       "type": "object",
       "required": ["feasible", "shadow_prices"],
       "properties": {
+        "status": {"type": "string"},
+        "violations": {"type": "array", "items": {"type": "string"}},
         "feasible": {"type": "boolean"},
         "shadow_prices": {
           "type": "object",
@@ -63,9 +74,12 @@ Minimal JSON Schema (informative) — download: `assets/certificate.schema.json`
     "boundary": {
       "type": "object",
       "properties": {
-        "gap": {"type": "number"},
+        "winner": {"type": "string"},
+        "runner_up": {"type": "string"},
+        "utility_gap": {"type": "number"},
         "entropy": {"type": "number"},
-        "sigma": {"type": "number"}
+        "uncertainty": {"type": "number"},
+        "is_boundary": {"type": "boolean"}
       },
       "additionalProperties": false
     },
@@ -73,15 +87,21 @@ Minimal JSON Schema (informative) — download: `assets/certificate.schema.json`
       "type": "object",
       "properties": {
         "trust_radius": {"type": "number"},
-        "ema": {"type": "number"},
-        "integral": {"type": "number"}
+        "drift_ema": {"type": "number"},
+        "drift_integral": {"type": "number"},
+        "lyapunov_function": {"type": "number"}
       },
       "additionalProperties": false
-    }
+    },
+    "pgd_signature": {"type": "string"},
+    "timestamp": {"type": "number"},
+    "router_version": {"type": "string"}
   },
   "additionalProperties": false
 }
 ```
+
+This embedded copy now matches the downloadable `docs/_extra/assets/certificate.schema.json` file exactly (that file was already correct -- this markdown page's prose/example had drifted out of sync with it).
 
 Notes
 

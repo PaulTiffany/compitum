@@ -25,12 +25,22 @@ html_static_path = ["_static"]
 html_extra_path = ["_extra"]
 
 # SEO / sitemap
-html_baseurl = "https://paultiffany.github.io/compitum/"
+# docs.yml deploys the Sphinx build under /docs/ on the custom domain, not at the
+# site root (the root serves a separate hero index.html) -- html_baseurl must
+# match the actual deployed path or sitemap.xml links 404.
+html_baseurl = "https://compitum.space/docs/"
+
+# sphinx_sitemap's sitemap_url_scheme defaults to "{lang}{version}{link}", which
+# prefixes every URL with a language segment (e.g. "/en/") -- meant for
+# versioned/localized doc sets. This site is single-language and non-versioned,
+# so that prefix doesn't match the actual flat build output and every sitemap
+# entry 404s. "{link}" disables the lang/version prefixing.
+sitemap_url_scheme = "{link}"
 
 # Open Graph
 ogp_site_url = html_baseurl
 ogp_site_name = project
-ogp_image = html_baseurl + "assets/compitum-social-card.svg"
+ogp_image = "https://compitum.space/assets/compitum-social-card.svg"  # site root, not /docs/
 
 # Branding
 html_logo = "_static/compitum-mark.svg"
@@ -68,9 +78,3 @@ nitpick_ignore = [
     ("py:class", "pandas.DataFrame"),
     ("py:class", "sklearn.neighbors.KernelDensity"),
 ]
-
-# Suppress sitemap warning in CI (treated as error by -W)
-suppress_warnings = ["sphinx_sitemap"]
-
-# Linkcheck: also ignore sitemap warning to avoid failing on empty sitemap
-suppress_warnings.append("linkcheck.sitemap")

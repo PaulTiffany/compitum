@@ -276,14 +276,15 @@ Each routing decision emits a certificate used for mechanistic auditing and abla
 
 ```json
 {
-  "model": "fast",
-  "utility": 0.423,
-  "utility_components": {"quality": 0.61, "latency": -0.07, "cost": -0.12},
-  "constraints": {"feasible": true, "shadow_prices": [0.0, 0.13, 0.0]},
-  "boundary_analysis": {"gap": 0.03, "entropy": 0.58, "sigma": 0.11},
-  "drift_status": {"trust_radius": 0.8, "ema": 0.76, "integral": 0.12}
+  "model": "auto",
+  "utility": -0.617274,
+  "utility_components": {"quality": 0.598477, "latency": -0.841229, "cost": -2.290030, "distance": -2.299428, "evidence": 0.0, "uncertainty": 0.117909},
+  "constraints": {"status": "optimal", "violations": [], "feasible": true, "shadow_prices": {"lambda_0": 0.0, "lambda_1": 0.0, "lambda_2": 0.0, "lambda_3": 0.0}},
+  "boundary": {"winner": "auto", "runner_up": "fast", "utility_gap": 0.020410, "entropy": 1.098564, "uncertainty": 0.117909, "is_boundary": false},
+  "drift": {"trust_radius": 1.088503, "drift_ema": 0.229943, "drift_integral": 2.184457, "lyapunov_function": 4.771852}
 }
 ```
+See [Certificate Schema](Certificate-Schema.md) for the full field reference -- `shadow_prices` is a dict keyed by constraint row (`lambda_0`, `lambda_1`, ...), not a list, and the top-level JSON keys are `boundary`/`drift` (not the dataclass's internal `boundary_analysis`/`drift_status` attribute names).
 
 Reproduce locally:
 

@@ -20,6 +20,7 @@ import yaml
 import numpy as np
 
 from compitum.boundary import BoundaryAnalyzer
+from compitum.capabilities import Capabilities
 from compitum.coherence import CoherenceFunctional
 from compitum.constraints import ReflectiveConstraintSolver
 from compitum.control import SRMFController
@@ -39,9 +40,10 @@ def _toy_models(D: int) -> list[Model]:
         "auto": rng.normal(0.1, 0.7, size=D),
     }
     costs = {"fast": 0.1, "thinking": 0.5, "auto": 0.2}
-    caps = {"regions": {"US", "CA", "EU"}, "tools_allowed": {"none"}}
-    # minimal Model constructor wrapper
-    return [Model(name=k, center=v, capabilities=None, cost=costs[k]) for k, v in centers.items()]
+    # capabilities must be a real Capabilities instance -- ReflectiveConstraintSolver
+    # calls model.capabilities.supports(xB), which crashes with AttributeError on None.
+    caps = Capabilities(regions={"US", "CA", "EU"}, tools_allowed={"none"})
+    return [Model(name=k, center=v, capabilities=caps, cost=costs[k]) for k, v in centers.items()]
 
 
 def build_router(defaults: Path, constraints: Path, *, seed: int = 12345) -> CompitumRouter:
