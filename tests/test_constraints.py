@@ -139,3 +139,23 @@ def test_solver_shadow_price_positive_when_capability_becomes_true() -> None:
     # Shadow price must now be positive because the "better" competitor
     # becomes viable under the (simulated) relaxation.
     assert info["shadow_prices"]["lambda_0"] > 0.0
+    # Existing test above only checks the sign -- assert the exact value too,
+    # so a mutated relaxation epsilon (1e-5) or a broken division doesn't
+    # survive just because the sign happens to still be positive.
+    assert np.isclose(info["shadow_prices"]["lambda_0"], (0.9 - 0.5) / 1e-5)
+
+
+def test_solver_infeasible_fallback_zeros_all_constraint_shadow_prices() -> None:
+    """No existing infeasible test uses more than one constraint row, so the
+    `for i in range(len(self.b))` loop populating every lambda_i with 0.0 in
+    the fallback branch was only ever exercised for a single index."""
+    A = np.eye(2)
+    b = np.array([1.0, 1.0])
+    solver = ReflectiveConstraintSolver(A, b)
+    pgd_infeasible = np.array([2.0, 2.0])
+    caps = Capabilities(set(), set())
+    models = [Model(name="a", center=np.array([]), capabilities=caps, cost=0.0)]
+
+    _, info = solver.select(pgd_infeasible, models, {"a": 0.5})
+    assert info["feasible"] is False
+    assert info["shadow_prices"] == {"lambda_0": 0.0, "lambda_1": 0.0}
