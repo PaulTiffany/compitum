@@ -7,7 +7,7 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 - Triggers: push, pull_request (code-only by default; docs/assets/markdown ignored)
 - What it does:
   - Lint (ruff), types (mypy), import smoke
-  - Tests with CI profile; excludes routerbench and a few CI‑unfriendly strict cases
+  - Tests with CI profile; excludes routerbench and heavy_bench
 - Matrix: ubuntu-latest, windows-latest
 - Deps: minimal (no `[dev]` extras); installs only ruff/mypy/pytest bits
 - Stability: concurrency enabled; job timeouts applied
@@ -35,32 +35,32 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 - Notes: Strict CR gating set to 1.0; heavy benches scheduled only
 
 ## Mutation: Reusable Shards
-- Name: `Mutation: Reusable Shards` (reusable via `workflow_call`)
+- Name: `Mutation Reusable Shards` (reusable via `workflow_call`)
 - Inputs:
-  - `mutmut` (bool, default true)
-  - `cr_quick` (bool, default false)
-  - `mutmut_gate` (bool, default false)
+  - `mutmut` (bool, default true) — gates whether the mutmut-shard job runs at all
+  - `cr_quick` (bool, default false) — gates whether the cr-quick-shard job runs at all
+  - `cr_gate` (bool, default false) — fail the CR shard when its score is below `cr_score_threshold`; when false the score is advisory only
   - `cr_score_threshold` (string, default '1.0')
   - `cr_timeout` (string, default '240')
   - `target_files` (string JSON array of filenames under `src/compitum/` to shard mutmut over)
 - What it does:
   - Mutmut per-file shards (coverage-guided)
-  - Cosmic Ray quick shards (gated by threshold)
+  - Cosmic Ray quick shards, one per module group, each isolated by removing that module from `excluded-modules`
   - Uploads shard artifacts (7‑day retention)
 
 ## Mutation: Dispatcher
-- Name: `Mutation: Dispatcher`
-- Triggers: workflow_dispatch (schedule available but consider opt-in)
+- Name: `Mutation Dispatcher`
+- Triggers: workflow_dispatch (`strict` input maps to `cr_gate`), schedule (opt-in via the `ENABLE_MUTATION_SCHEDULE` repo variable)
 - What it does:
-  - Calls `Mutation: Reusable Shards` with mutmut + CR quick
+  - Calls `Mutation Reusable Shards` with mutmut + CR quick
   - Use for nightly or manual mutation validation across the codebase
 
 ## Mutation: PR Label
-- Name: `Mutation: PR Label`
+- Name: `Mutation PR Label`
 - Triggers: pull_request (on open/reopen/label/sync)
 - What it does:
   - If PR has label `mutation`, computes changed `src/compitum/*.py` files and passes them as shard targets
-  - Runs mutmut over changed files and CR quick shards (threshold 0.99 for PRs)
+  - Runs mutmut over changed files and CR quick shards (advisory; `cr_gate` is not set, so scores are reported, not enforced)
   - Posts a summary comment with CR scores and mutmut survivors (if any)
 
 ## Release
@@ -109,7 +109,6 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
   - Nightly: scheduler can be enabled, but remains opt-in by default.
 
 ## Notes on CI‑only test selection
-- A small number of strict tests are deselected in CI to keep runs stable on shared runners; local runs remain strict.
 - Mutation workflows (mutmut + CR) provide strong guarantees; nightly runs remain strict (`cr_score_threshold` = 1.0).
 
 ## How to run mutation

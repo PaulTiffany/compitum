@@ -39,7 +39,7 @@ Quick run:
 pytest
 ```
 
-CI‑parity run (mirrors CI deselections and markers):
+CI‑parity run (mirrors CI markers):
 
 ```bash
 make test-ci
@@ -129,14 +129,10 @@ Security note: `.pkl` files can execute code when loaded; download only from tru
 The project maintains a rigorous, deterministic testing program.
 
 *   **CI Profile (default):** `pytest` runs with `HYPOTHESIS_PROFILE=ci`. This uses a fixed random seed and a moderate number of examples (`max_examples=100`) for fast, repeatable builds.
-*   **Mutation Profile:** For mutation testing with `cosmic-ray`, a dedicated `HYPOTHESIS_PROFILE=mutation` is used via a wrapper script. This allows for a different number of examples to balance thoroughness and speed.
+*   **Mutation Profile:** For mutation testing with `mutmut`/`cosmic-ray`, a dedicated `HYPOTHESIS_PROFILE=mutation_ci` is used via `scripts/cr_pytest.sh`. This allows for a different number of examples to balance thoroughness and speed.
 *   **Invariants Suite:** A dedicated property-based test suite in `tests/invariants/` validates the core mathematical and operational invariants of the system. These tests are marked with `@pytest.mark.invariants`.
 
-To run the full verification suite, including mutation testing:
-```bat
-set HYPOTHESIS_PROFILE=ci && ruff check . && pytest --cov=compitum --cov-branch && CALL .\.venv-routerbench\Scripts\activate.bat && python -m pytest --cov=compitum --cov-branch --cov-append src/routerbench && coverage report -m && del /q session.sqlite 2>nul && cosmic-ray init --force cosmic-ray.toml session.sqlite && cosmic-ray exec cosmic-ray.toml session.sqlite && cr-report session.sqlite
-```
-**Note:** The `mypy` check has been temporarily removed from this command due to a path resolution issue. See `plan3.txt` for details.
+Locally, `make check` runs lint + mypy + bandit + tests, and `make test-ci` mirrors CI's test selection. Mutation testing itself is advisory and dispatch/label-gated, not part of local `make check` — see `WORKFLOWS.md` for how to trigger the `Mutation Dispatcher`/`Mutation PR Label` workflows, or run `bash scripts/cr_pytest.sh` directly against a local `cosmic-ray` session.
 
 ## Export Control
 
