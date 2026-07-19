@@ -30,3 +30,17 @@ def test_solve_effort_1d_zero_grad_boundary() -> None:
     assert e_star == 0.0
     assert lambdas["lambda_low"] == 0.0
     assert lambdas["lambda_high"] == 0.0
+
+
+def test_solve_effort_1d_nontrivial_multipliers():
+    """Every other test uses q1=t1=c1=1, where * and / (and +/-1 tweaks) on
+    those terms are indistinguishable from the original since multiplying or
+    dividing by 1 is a no-op. Use non-unity values and assert exact lambda
+    values so a mutated arithmetic operator on any of the three terms is
+    actually observable."""
+    beta = (3.0, 1.0, 1.0)  # alpha, bt, bc
+    e_star, lambdas = solve_effort_1d(q0=0, q1=4, t0=0, t1=2, c0=0, c1=2, beta=beta)
+    # grad = alpha*q1 - bt*t1 - bc*c1 = 3*4 - 1*2 - 1*2 = 8.0
+    assert e_star == 1.0
+    assert lambdas["lambda_low"] == 0.0
+    assert lambdas["lambda_high"] == 8.0
