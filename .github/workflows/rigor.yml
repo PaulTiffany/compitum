@@ -68,9 +68,6 @@ jobs:
         run: >
           pytest -q -m "not routerbench and not heavy_bench"
           --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=90
-          --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords
-          --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths
-          --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
 
       - name: Invariants suite
         env:
@@ -110,7 +107,6 @@ jobs:
     with:
       mutmut: true
       cr_quick: true
-      mutmut_gate: false
       cr_score_threshold: '1.0'
       cr_timeout: '240'
 

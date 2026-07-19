@@ -7,15 +7,7 @@ on:
         required: false
         type: boolean
         default: true
-      mutmut_gate:
-        required: false
-        type: boolean
-        default: false
       cr_quick:
-        required: false
-        type: boolean
-        default: false
-      cr_full:
         required: false
         type: boolean
         default: false
@@ -49,6 +41,7 @@ concurrency:
 
 jobs:
   mutmut-shard:
+    if: ${{ inputs.mutmut }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -95,12 +88,25 @@ jobs:
           TEST_PATHS="tests/router tests/metric tests/predictors tests/pgd tests/applications"
           # Baseline with coverage to guide mutmut; do not enforce global threshold
           pytest -q --cov="src/compitum/${TARGET_FILE}" --cov-branch --cov-fail-under=0 $TEST_PATHS
-          # Run mutmut restricted to this shard for speed and determinism
+          # Run mutmut restricted to this shard for speed and determinism.
+          # mutmut exits nonzero when survivors/timeouts/suspicious mutants exist, which is
+          # the expected advisory outcome, not a failure -- but a genuine crash (bad args,
+          # missing cache) looks the same via exit code alone, so verify the cache landed.
+          set +e
           mutmut run \
             --paths-to-mutate "src/compitum/${TARGET_FILE}" \
             --tests-dir tests \
-            --use-coverage || true
-          BASE="${TARGET_FILE%.py}"
+            --use-coverage
+          MUTMUT_EXIT=$?
+          set -e
+          if [ ! -e .mutmut-cache ]; then
+            echo "::error::mutmut run produced no cache (exit=${MUTMUT_EXIT}); treating as an infrastructure failure, not survivors"
+            exit 1
+          fi
+          echo "mutmut run exit=${MUTMUT_EXIT} (nonzero commonly means survivors/timeouts; see reports for detail)"
+          # Sanitize nested paths (e.g. integrations/matbench_adapter.py) into a flat basename
+          # so report filenames never imply a reports/<subdir>/ that was never created.
+          BASE="${TARGET_FILE%.py}"; BASE="${BASE//\//_}"
           mutmut results | tee "reports/mutmut_results_${BASE}.txt"
           mutmut results --all | tee "reports/mutmut_results_${BASE}_full.txt" || true
 
@@ -108,28 +114,11 @@ jobs:
         if: always()
         run: |
           set -e
-          TARGET_FILE="${{ matrix.file }}"; BASE="${TARGET_FILE%.py}"
-          OUT="reports/mutmut_survivors_${BASE}.txt"
-          echo "# Mutmut survivors for ${BASE}" > "$OUT" || true
-          python - << 'PY'
-          import os, re, subprocess
-          base = os.environ.get('BASE','')
-          path = f'reports/mutmut_results_{base}.txt'
-          out = f'reports/mutmut_survivors_{base}.txt'
-          try:
-              txt = open(path,'r',encoding='utf-8',errors='ignore').read()
-          except Exception:
-              txt = None
-          ids = re.findall(r'\((\d+)\)', txt or '')
-          with open(out,'a',encoding='utf-8') as f:
-              for mid in ids:
-                  try:
-                      details = subprocess.check_output(['mutmut','show',mid], text=True, errors='ignore')
-                  except Exception as e:
-                      details = f'<error showing {mid}: {e}>'
-                  f.write('\n## survivor '+mid+'\n\n'+details+'\n')
-          PY
-          echo "Wrote survivor details (if any) to $OUT"
+          TARGET_FILE="${{ matrix.file }}"
+          BASE="${TARGET_FILE%.py}"; BASE="${BASE//\//_}"
+          echo "# Mutmut survivors for ${BASE}" > "reports/mutmut_survivors_${BASE}.txt"
+          python tools/mutmut_survivor_details.py --base "$BASE"
+          echo "Wrote survivor details (if any) to reports/mutmut_survivors_${BASE}.txt"
 
       # Gating is handled in the caller (e.g., Full Validation); this shard always uploads reports
 
@@ -142,6 +131,7 @@ jobs:
           retention-days: 7
 
   cr-quick-shard:
+    if: ${{ inputs.cr_quick }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -190,9 +180,7 @@ jobs:
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
           PYTEST_COVERAGE: 1
-          CR_SCORE_THRESHOLD: ${{ inputs.cr_score_threshold }}
           CR_TIMEOUT: ${{ inputs.cr_timeout }}
-          CR_GATE: ${{ inputs.cr_gate }}
         run: |
           set -e
           GROUP="${{ matrix.group }}"
@@ -210,6 +198,10 @@ jobs:
             "    \"**/__init__.py\"," \
             "    \"routerbench.*\"," \
             "    \"compitum.cli\"," \
+            "    \"compitum.metric\"," \
+            "    \"compitum.constraints\"," \
+            "    \"compitum.router\"," \
+            "    \"compitum.predictors\"," \
             "    \"compitum.utils\"," \
             "    \"compitum.symbolic\"," \
             "    \"compitum.security\"," \
@@ -228,8 +220,7 @@ jobs:
             "name = \"local\"" \
             > "$CFG"
           sed -i "s/^timeout = .*/timeout = ${CR_TIMEOUT}.0/" "$CFG" || true
-          # Remove the target group from excluded-modules
-          # (simple sed replace to allow mutating only that module)
+          # Remove the target group from excluded-modules so this shard mutates only that module
           sed -i "s/\"compitum.${GROUP}\",//" "$CFG" || true
           echo "Using CR config:"; cat "$CFG"
 
@@ -240,17 +231,16 @@ jobs:
           cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
           python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
-          python - << 'EOF'
-          import json, sys, os
-          g=os.environ.get('GROUP','')
-          path=f'reports/cr_quick_summary_{g}.json'
-          threshold=float(os.environ.get('CR_SCORE_THRESHOLD','1.0'))
-          gate=os.environ.get('CR_GATE','false').lower()=='true'
-          s=json.load(open(path,'r',encoding='utf-8'))
-          score=float(s.get('mutation_score',0))
-          print('Cosmic Ray (quick shard)', g, 'score:', score, 'threshold:', threshold, 'gate:', gate)
-          sys.exit(0 if not gate or score>=threshold else 1)
-          EOF
+
+      - name: Gate on CR score (${{ matrix.group }})
+        run: |
+          set -e
+          GATE_FLAG=""
+          if [ "${{ inputs.cr_gate }}" = "true" ]; then GATE_FLAG="--gate"; fi
+          python tools/cr_gate_check.py "reports/cr_quick_summary_${{ matrix.group }}.json" \
+            --group "${{ matrix.group }}" \
+            --threshold "${{ inputs.cr_score_threshold }}" \
+            $GATE_FLAG
 
       - name: Upload artifacts (CR shard)
         if: always()
@@ -261,8 +251,3 @@ jobs:
             reports/cr_quick_summary_${{ matrix.group }}.*
             reports/cr_quick_dump_${{ matrix.group }}.jsonl
           retention-days: 7
-
-
-
-
-

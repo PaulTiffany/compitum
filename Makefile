@@ -9,11 +9,8 @@ test:
 	PYTHONWARNINGS="ignore::RuntimeWarning" .venv\Scripts\python -m pytest
 
 test-ci:
-	# Mirror CI selection locally: exclude routerbench and known strict cases
-	.venv\Scripts\python -m pytest -q -m "not routerbench" \
-	  --deselect tests/pgd/test_regex_prompt_extractor.py::test_math_signals_and_keywords \
-	  --deselect tests/pgd/test_regex_prompt_extractor.py::test_semantic_proxies_unique_and_lengths \
-	  --deselect tests/energy/test_symbolic_free_energy.py::test_energy_monotonic_wrt_distance_and_evidence
+	# Mirror CI selection locally: exclude routerbench
+	.venv\Scripts\python -m pytest -q -m "not routerbench"
 
 lint:
 	.venv\Scripts\ruff check .
@@ -66,33 +63,13 @@ matbench-demo:
 	.venv\Scripts\python examples\generate_matbench_demo.py --out data\matbench_demo.csv
 
 matbench-calibrate:
-	.venv\Scripts\python tools\calibrate_matbench_srmf.py --path data\matbench_demo.csv --objective-col y_true --mode max --topk-grid 1,5,10 --lambda-grid 0.0,0.5,1.0 --bootstrap 200 --seed 0 --out-json reports\matbench_calibration.json --scores-out reports\matbench_scores_test.csv
+	.venv\Scripts\python tools\calibrate_matbench_srmf.py --path data\matbench_demo.csv --objective-col y_true --mode max --topk-grid 1,5,10 --lambda-grid 0.0,0.5,1.0 --bootstrap 200 --seed 0 --group-col group --out-json reports\matbench_calibration.json --scores-out reports\matbench_scores_test.csv
 
 matbench-eval:
-	.venv\Scripts\python - << "PY"
-	import json, subprocess
-	import sys
-
-	best = json.load(open('reports/matbench_calibration.json','r',encoding='utf-8'))['best_lambda']
-	cmd = [
-	    sys.executable,
-	    'tools/eval_matbench_regret.py',
-	    '--path','data/matbench_demo.csv',
-	    '--objective-col','y_true',
-	    '--mode','max',
-	    '--use-srmf',
-	    '--lambda-weight',str(best),
-	    '--topk-grid','1,5,10',
-	    '--group-col','group',
-	    '--out-csv','reports/matbench_regret.csv',
-	    '--out-json','reports/matbench_regret.json',
-	    '--out-group-csv','reports/matbench_regret_groups.csv',
-	    '--bootstrap','200',
-	    '--seed','0',
-	]
-	print('Running:', ' '.join(cmd))
-	subprocess.check_call(cmd)
-	PY
+	# Evaluate on the calibration step's --scores-out (held-out test rows, already
+	# scored) instead of re-scoring the full CSV -- that would re-include the
+	# rows used to select best_lambda, leaking calibration signal into regret.
+	.venv\Scripts\python tools\eval_matbench_regret.py --path reports\matbench_scores_test.csv --objective-col y_true --mode max --score-col score --topk-grid 1,5,10 --group-col group --out-csv reports\matbench_regret.csv --out-json reports\matbench_regret.json --out-group-csv reports\matbench_regret_groups.csv --bootstrap 200 --seed 0
 
 matbench-attest:
 	.venv\Scripts\python tools\generate_matbench_attestation.py --input-csv data\matbench_demo.csv --calibration-json reports\matbench_calibration.json --regret-json reports\matbench_regret.json --out reports\matbench_attestation.json

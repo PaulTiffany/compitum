@@ -2,16 +2,8 @@ name: Workflow Lint
 
 on:
   pull_request:
-    paths-ignore:
-      - '.github/workflows/mutation_dispatch.yml'
-      - '.github/workflows/mutation_on_label.yml'
-      - '.github/workflows/mutation*.yml'
   push:
     branches: [ main ]
-    paths-ignore:
-      - '.github/workflows/mutation_dispatch.yml'
-      - '.github/workflows/mutation_on_label.yml'
-      - '.github/workflows/mutation*.yml'
 
 permissions:
   contents: read
@@ -34,8 +26,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-check
           fail_level: any
-          # Skip linting automated or templated workflows that don't pass strict YAML/shellcheck parsing
-          actionlint_flags: "-shellcheck= -ignore '.github/workflows/mutation_dispatch.yml' -ignore '.github/workflows/mutation_on_label.yml'"
+          actionlint_flags: "-shellcheck="
 
       - name: Report unpinned actions (advisory)
         shell: bash
