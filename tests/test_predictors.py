@@ -27,3 +27,27 @@ def test_calibrated_predictor() -> None:
 
     # Check that the lower bound is less than or equal to the upper bound.
     assert np.all(lo <= hi)
+
+
+def test_isotonic_calibration_clips_out_of_domain_raw_values() -> None:
+    """out_of_bounds="clip" is never exercised by shape/envelope-style tests,
+    since typical test inputs stay within the base model's observed raw-value
+    range. Directly verify that raw predictions outside the fitted domain clip
+    to the boundary's fitted y, rather than extrapolating."""
+    rng = np.random.default_rng(0)
+    X_train = rng.standard_normal((100, 3))
+    w = np.array([1.0, 0.5, -0.5])
+    y_train = X_train @ w
+
+    predictor = CalibratedPredictor()
+    predictor.fit(X_train, y_train)
+
+    raw_train = predictor.base.predict(X_train)
+    y_at_min = predictor.iso.transform(np.array([raw_train.min()]))
+    y_at_max = predictor.iso.transform(np.array([raw_train.max()]))
+
+    far_below = predictor.iso.transform(np.array([raw_train.min() - 100.0]))
+    far_above = predictor.iso.transform(np.array([raw_train.max() + 100.0]))
+
+    assert np.isclose(far_below, y_at_min)
+    assert np.isclose(far_above, y_at_max)
