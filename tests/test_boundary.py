@@ -47,3 +47,15 @@ def test_boundary_insufficient_models() -> None:
     info = b.analyze(utilities, u_sigma)
     assert info["is_boundary"] is False
     assert info["reason"] == "insufficient_models"
+
+
+def test_boundary_sigma_defaults_to_zero_when_winner_missing_from_u_sigma() -> None:
+    """No other test omits the winner's key from u_sigma, so the `.get(m1, 0.0)`
+    default is never exercised -- a mutant changing that default would survive.
+    Gap is small enough to satisfy the other half of the boundary condition, so
+    whether is_boundary ends up True or False hinges purely on the default."""
+    b = BoundaryAnalyzer()
+    utilities = {"m1": 0.52, "m2": 0.50}  # gap = 0.02 < gap_threshold (0.05)
+    info = b.analyze(utilities, u_sigma={})  # "m1" absent -> sigma defaults to 0.0
+    assert info["uncertainty"] == 0.0
+    assert info["is_boundary"] is False  # 0.0 is not > sigma_threshold (0.12)
