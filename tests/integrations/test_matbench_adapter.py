@@ -42,11 +42,15 @@ def test_csv_adapter_iter_docs(tmp_path: Path) -> None:
     docs = list(ad.iter_docs())
     assert len(docs) == 2
     d0 = docs[0]
-    assert hasattr(d0, "band_gap") and hasattr(d0, "density")
-    assert hasattr(d0, "nsites") and hasattr(d0, "formation_energy_per_atom")
+    # hasattr alone only proves the key exists, not that the right CSV column
+    # ended up on the right attribute -- assert exact values too.
+    assert d0.band_gap == 0.1
+    assert d0.density == 7.2
+    assert d0.nsites == 5
+    assert d0.formation_energy_per_atom == -1.2
     assert d0.material_id == "mp-1"
     assert d0.formula_pretty == "LaNiO3"
-    assert hasattr(d0, "label_candidate")
+    assert d0.label_candidate == 1
 
 
 def test_fields_with_all_optional_columns(tmp_path: Path) -> None:
