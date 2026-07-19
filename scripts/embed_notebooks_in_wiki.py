@@ -155,10 +155,13 @@ def upsert_marker_block(page_text: str, marker: str, block_text: str, heading: s
     end = f"<!-- NOTEBOOK:{marker}:END -->"
     block = f"{begin}\n{block_text}\n{end}\n"
     if begin in page_text and end in page_text:
-        # Replace existing block
+        # Replace existing block. The trailing `\n*` also consumes any blank
+        # lines already sitting after the old END marker -- without it, the
+        # replacement's own trailing "\n" stacks on top of that leftover
+        # whitespace and the file grows by one blank line on every run.
         return re.sub(
-            re.compile(re.escape(begin) + r"[\s\S]*?" + re.escape(end), re.MULTILINE),
-            block,
+            re.compile(re.escape(begin) + r"[\s\S]*?" + re.escape(end) + r"\n*", re.MULTILINE),
+            lambda _m: block,
             page_text,
         )
     else:

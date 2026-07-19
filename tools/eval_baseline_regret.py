@@ -69,7 +69,12 @@ def _topk_regret(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str = "
     u = -y if mode == "min" else y
     order_oracle = np.argsort(u)[::-1]
     cumsum_oracle = np.cumsum(u[order_oracle])
-    order_model = np.argsort(scores)[::-1]
+    # scores is the model's raw prediction of y itself (see _kfold_oof_scores), not a
+    # separately-oriented utility -- it must be flipped the same way as u, or a min-task
+    # model that predicts y well gets ranked by "highest predicted cost first" instead of
+    # lowest, making a genuinely informative model look worse than random scores.
+    model_u = -scores if mode == "min" else scores
+    order_model = np.argsort(model_u)[::-1]
     out: List[Dict[str, float]] = []
     n = len(y)
     for k in ks:
