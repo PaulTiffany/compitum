@@ -134,9 +134,64 @@ def test_energy_compute_timing_print_on_step_multiple():
         # Two DEBUG lines (env-gated) precede the timing line here since
         # COMPITUM_DEBUG_ENERGY is set; match the timing line's full
         # structure via regex (elapsed time is non-deterministic).
-        assert re.search(
-            r"^SymbolicFreeEnergy\.compute took \d+\.\d{4} seconds\n\Z",
-            out.splitlines(keepends=True)[-1],
-        )
+        last_line = out.splitlines(keepends=True)[-1]
+        assert re.search(r"^SymbolicFreeEnergy\.compute took \d+\.\d{4} seconds\n\Z", last_line)
+        # The regex alone would still match `time.time() + start_time` (a
+        # huge epoch-scale number still has 4 decimals) -- bound it.
+        elapsed = float(re.search(r"took (\d+\.\d{4}) seconds", last_line).group(1))  # type: ignore[union-attr]
+        assert elapsed < 5.0
     finally:
         os.environ.pop("COMPITUM_DEBUG_ENERGY", None)
+
+
+def test_energy_compute_debug_gate_checked_before_increment_at_step_100():
+    """The debug-print gate (`self._step % 100 == 0 and env == "1"`) is
+    checked *before* `self._step` is incremented -- the existing tests only
+    exercise it at `_step == 0` (a default fresh instance) or `_step == 99`
+    (where it's False either way), never at a nonzero multiple of 100 before
+    increment. At `_step == 0`, `% 100` and `/ 100` and `% 101` all agree
+    (all equal 0), masking mutations to the modulus/operator; at `_step ==
+    100` they diverge (`100/100 == 1.0 != 0`; `100 % 101 == 100 != 0`)."""
+    os.environ["COMPITUM_DEBUG_ENERGY"] = "1"
+    try:
+        energy = SymbolicFreeEnergy(alpha=1.0, beta_t=0.1, beta_c=0.1, beta_d=0.05, beta_s=0.01)
+        metric = SymbolicManifoldMetric(D=1, rank=1, delta=1e-3)
+        coherence = CoherenceFunctional(k=10)
+        model = Model(
+            name="fast",
+            center=np.array([0.0]),
+            capabilities=Capabilities({"US"}, {"none"}),
+            cost=0.01,
+        )
+        predictors = _toy_predictors()
+
+        energy._step = 100  # type: ignore[attr-defined]
+        x = np.array([0.2])
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            energy.compute(x, model, predictors, coherence, metric)
+        out = buf.getvalue()
+        assert "DEBUG: Model:" in out
+    finally:
+        os.environ.pop("COMPITUM_DEBUG_ENERGY", None)
+
+
+def test_energy_compute_debug_gate_requires_env_var_even_at_step_zero():
+    """The gate is `step % 100 == 0 AND env == "1"` -- with env unset, a
+    fresh instance (`_step == 0`, satisfying the step half) must print
+    nothing. An `and` -> `or` mutation would print regardless of the env
+    var whenever the step condition alone is true."""
+    os.environ.pop("COMPITUM_DEBUG_ENERGY", None)
+    energy = SymbolicFreeEnergy(alpha=1.0, beta_t=0.1, beta_c=0.1, beta_d=0.05, beta_s=0.01)
+    metric = SymbolicManifoldMetric(D=1, rank=1, delta=1e-3)
+    coherence = CoherenceFunctional(k=10)
+    model = Model(
+        name="fast", center=np.array([0.0]), capabilities=Capabilities({"US"}, {"none"}), cost=0.01
+    )
+    predictors = _toy_predictors()
+
+    x = np.array([0.2])
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        energy.compute(x, model, predictors, coherence, metric)
+    assert buf.getvalue() == ""

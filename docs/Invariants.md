@@ -111,8 +111,12 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   bounded) content, not just a leading substring; evidence uses `xR - model.center`, not `+`, in
   both `compute()` and `batch_compute()`; `cost` uses `c + model.cost`, not `-`, in both — every
   prior test used a zero center/zero cost, where the two are indistinguishable; `batch_compute()`'s
-  `comps_list` dict is checked key-by-key (not just `"quality"`) — `tests/test_energy.py`,
-  `tests/test_energy_debug_paths.py`, `tests/energy/test_symbolic_free_energy.py`
+  `comps_list` dict is checked key-by-key (not just `"quality"`); `compute()`'s debug-print gate
+  (`step % 100 == 0 and env == "1"`, checked before `_step` increments) is exercised at a nonzero
+  multiple of 100 (not just `0`, where `%`/`/` and `%100`/`%101` happen to agree) and with the env
+  var unset at `_step == 0` (where an `and`->`or` mutation would print regardless) —
+  `tests/test_energy.py`, `tests/test_energy_debug_paths.py`,
+  `tests/energy/test_symbolic_free_energy.py`
 - `router.py`: `update_stride` floors to `1` for `stride <= 0` and defaults to `8` when omitted;
   `router.srmf is router.controller` (legacy alias); disabled-controller `drift_status` matches the
   controller's exact current state, not just key presence, in both `route()` and `batch_route()`;

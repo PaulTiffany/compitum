@@ -123,7 +123,7 @@ when it was generated.** Any other file's "phantom ID" classifications in this d
 | `symbolic.py` | 36 | 30 | 6 | 0 | **Fully classified this pass.** 9 (`*`'s custom `latex_op`) was already killed by the existing `e2743f0` exact-latex assertion (undercounted as covering 3 -- it only covered `*`; `+`/`@` had no latex_op mutants to begin with). Real gaps fixed: 2/36 (`TypeError`/`ValueError` messages, `pytest.raises` without `match=` doesn't check text at all), 5 (`@abstractmethod` removal -- no test ever attempted to instantiate `SymbolicValue` directly), 11/13 (`__matmul__`'s empty `latex_op` and `SymbolicMatrix.T`'s `f"{name}^T"` label, neither ever checked via `to_latex()`/`.name`, only `.evaluate()`). Zero unclassified. |
 | `security.py` | 49 | 35 | 14 | 0 | **Fully classified this pass** -- see worked table above. All genuine defects fixed (batched, 4 new tests); 2 confirmed equivalent. Zero unclassified. |
 | `constraints.py` | 72 | 47 | 23 | 2 | 2 fixes (`6eab4cb`) target 2 of 23; largest raw survivor count before energy.py |
-| `energy.py` | 178 | 104 | 73 | 1 | **Fully classified this pass** -- see worked table below. All genuine defects fixed (batched); 2 confirmed equivalent; 6 IDs are phantom/non-existent cache entries; 1 Suspicious ID undiagnosable from the archived cache. Zero unclassified. |
+| `energy.py` | 178 | 172 | 6 | 0 | **Fully classified, corrected after a real CI run.** A real `mutation_dispatch.yml` run (2026-07-20) confirmed the fixes and settled every open item: exactly 6 survivors remain, all confirmed equivalent (37, 40 -- `flush=True`/`False`, as already documented). **24, 25, 31, 108 were originally misclassified as phantom/non-existent cache IDs** -- they're real, previously-uncaught gaps in the debug-print gate (`step % 100 == 0 and env == "1"`, checked *before* `self._step` increments): the existing tests only exercised this gate at `_step == 0`/`99`, never at a nonzero multiple of 100 where a `%`-vs-`/` or `%100`-vs-`%101` or `and`-vs-`or` mutation actually diverges. 3 new tests fixed all 4. Zero unclassified. |
 | `router.py` | 137 | 105 | 32 | 0 | **Fully classified this pass.** 5 IDs (75, 131-134) are phantom/non-existent cache entries. 3 (`7c3200f`, prior pass) already fixed. 3 already covered by existing exact-text `re.fullmatch` debug-print assertions (81, 136, 137). 4 confirmed equivalent (`abs(-comps[...]["distance"])` appears 3 times -- 62, 66, 109 -- not 2 as previously noted; plus a newly-found 4th, 118, see below). 20 real gaps fixed this pass (see worked table below). Zero unclassified. |
 
 ### `router.py` -- full classification (32 survivors, worked example)
@@ -177,24 +177,25 @@ committed together rather than one-commit-per-ID.
 | 176 | **Defect (fixed this pass)** | `batch_compute()`'s un-gated periodic timing print: `time.time() - start_time` flipped to `+`. The pre-existing regex (`\d+\.\d{4}`) matches a huge epoch-scale number just as well as a small elapsed one, so it didn't actually constrain the sign. Fixed by bounding the parsed elapsed value (`< 5.0`) in `test_energy_debug_paths.py` |
 | 177, 178 | **Already covered (no fix needed, pre-existing)** | Same print's static text mutated (`"XX...XX"` wrapping) -- the pre-existing `re.fullmatch` on the full line already requires exact surrounding text, so these were already killed before this session touched the file |
 | 37, 40 | **Equivalent** | `flush=True` -> `flush=False` on `compute()`'s two DEBUG prints -- every test captures output via `redirect_stdout` to an in-memory `io.StringIO`, where `flush` has no observable effect on the captured text under any circumstance; there is no test that could ever distinguish this without asserting on real OS-level buffering behavior, which would be testing Python's print implementation, not this code |
-| 24, 25, 31, 107, 108, 109 | **N/A -- phantom IDs** | `mutmut show <id>` raises `ValueError: Obtained null mutant for pk: <id>` for all six against the archived cache -- these numbers don't correspond to any real mutant of `energy.py` (an artifact of mutmut's cache/numbering, not a real survivor). Confirmed by direct re-check, not assumed |
-| 62 (Suspicious, not counted in the 73 Survived) | **Undiagnosable this pass** | `mutmut show 62` returns exit 0 with empty output against the archived cache -- no diff content is recoverable to classify it. Logged as an open item rather than guessed at |
+| 107, 109 | **N/A -- phantom IDs** | `mutmut show <id>` raises `ValueError: Obtained null mutant for pk: <id>` against both the archived cache and a real fresh CI run -- confirmed genuinely non-existent, not a stale-cache artifact |
+| 62 (Suspicious, not counted in the 73 Survived) | **Resolved by the real CI run** | The archived cache's `mutmut show 62` returned empty output, undiagnosable locally. A real CI run no longer reports ID 62 as Suspicious at all (6 survivors total: 37, 40 only) -- the mutant this ID pointed to is gone/renumbered in the current source, or was a transient timing flake in the original run. No longer an open item |
+| 24, 25, 31, 108 | **Real defects, originally misclassified as phantom -- fixed after a real CI run** | `mutmut show <id>` raised `ValueError: Obtained null mutant for pk: <id>` against this session's *archived* cache, leading to an incorrect "phantom" classification. A real `mutation_dispatch.yml` run showed all four are genuine, currently-surviving mutants on `compute()`'s debug-print gate (`self._step % 100 == 0 and env == "1"`, checked *before* increment): 24 (`%`->`/`), 25 (`%100`->`%101`), 31 (`and`->`or`), 108 (the timing print's `time.time() - start_time` -> `+`, same unbounded-regex gap fixed elsewhere in this file). The existing tests only exercised this gate at `_step == 0` or `99`, where these mutations don't diverge from correct behavior. 3 new tests in `test_energy_debug_paths.py` fix all four |
 
-Net: 27 defect-classes fixed in this pass across 2 commits' worth of prior work plus 1 new batched
-commit (49 individual survivor IDs total between prior-session and this-pass fixes), 2 already
-covered by pre-existing assertions, 2 confirmed equivalent, 6 phantom, 1 undiagnosable Suspicious.
-**Zero unclassified survivors.**
+Net: 31 defect-classes fixed across 2 commits' worth of prior work plus 2 batched commits (53
+individual survivor IDs total), 2 already covered by pre-existing assertions, 2 confirmed
+equivalent, 2 phantom (genuinely confirmed, not assumed). **Zero unclassified survivors**, verified
+against a real CI run (2026-07-20): 178 total, 172 killed, 6 survived (37, 40 -- exactly the 2
+confirmed-equivalent flush mutants, nothing else).
 
-Automated re-verification via fresh `mutmut run` was attempted for a representative sample (IDs 92,
-122, 130, 135, 161, 176) but hit real environment friction this session: a full fresh sweep for
-`energy.py` ran at ~90s/mutant (~4.5h projected for 178 mutants, abandoned as impractical), and
-per-ID re-checks against a freshly-generated (not archived) cache produced inconsistent results --
-some IDs came back as phantom/null against the fresh cache's renumbering, others were silently
-`SKIPPED` due to a stale mutmut baseline-timing cache. Given this, the classifications above rest on
-rigorous line-by-line arithmetic verification against the actual source and actual archived diffs
-(the same standard used for `constraints.py`), not a fresh automated re-run. This is an explicit,
-named limitation, not a hidden gap -- a clean CI runner (no stale local caches, no Windows path
-quirks) is expected to re-verify these cleanly.
+**Real-CI correction (2026-07-20):** the first version of this table classified 6 IDs as phantom
+based on `mutmut show <id>` failing against the *archived* local cache. A real CI run showed 4 of
+those 6 (24, 25, 31, 108) are genuine survivors with real diffs -- the archived cache was
+incomplete, likely because it predates this session's coverage-guidance bug fix (`0cd02a3`). The
+earlier attempt at automated local re-verification (per-ID checks against a freshly-generated
+cache, described in the original version of this note) also gave inconsistent results for the same
+underlying reason: local cache state in this environment was not trustworthy for confirming
+"phantom" claims. Triggering the real workflow was what actually settled it -- see `boundary.py`'s
+matching correction above for the same root cause playing out on a different file.
 
 ### `security.py` -- full classification (14 survivors, worked example)
 
@@ -248,22 +249,29 @@ this session -- a real CI pass is what actually caught it.
 
 ## Next steps, in priority order
 
-**All 17 shard-matrix files with runnable mutmut data are now fully classified, zero unclassified
-survivors** (see each file's worked table above). None have been re-verified with a fresh automated
-mutmut run locally -- only a handful of individual mutants (`energy.py`'s 21, `router.py`'s
-`update_stride` fixes) were spot-confirmed via targeted single-ID re-checks before this
-environment's `mutmut run` became unreliable (see the note at the end of `energy.py`'s table for
-specifics). Every new test added this session was, however, run and confirmed passing against real,
-unmutated code, and the full suite (100% coverage) was re-run after every batch. In priority order
-for a future session:
+**Update (2026-07-20, real CI run):** triggered `mutation_dispatch.yml` for real. It confirmed every
+fix in `router.py` (133/137 killed, exactly the 4 documented equivalents survive), `constraints.py`
+(exactly the 12 documented logged-gaps+equivalents survive), `security.py` (exactly the 5 documented
+equivalents survive), and `boundary.py`/`energy.py` (after correcting 3 real classification errors
+the real run exposed -- see each file's "real-CI correction" note above). It also fixed two real
+`mutation.yml` infrastructure bugs (an artifact-naming bug, a too-short 30-min timeout -- see commit
+`ecbcb1c`) and surfaced two substantial **new, previously-unaddressed fronts**:
 
-1. A real GitHub Actions run of the mutation workflow is now the single most valuable next step --
-   it's the cleanest way to get automated confirmation of every fix committed this session, on a
-   clean runner with no stale local mutmut caches and no Windows path/venv quirks (both of which
-   caused real friction re-verifying locally, documented throughout this file).
-2. Decide whether to pursue `pgd.py` further (the Windows-only crash) -- likely not worth it locally
-   given CI runs on `ubuntu-latest`; a real CI run of the fixed workflow would settle this for free.
-3. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
+- **`metric.py`** (`SymbolicManifoldMetric`) -- never appeared in this session's per-file table at
+  all. Real run: 140 total, 93 killed, **47 survived**. Needs the same read-the-diffs-and-classify
+  treatment as every other file above, from scratch.
+- **`pgd.py`** (`RegexPromptExtractor`) -- previously assumed to be just "a Windows-only mutmut
+  crash, not worth pursuing locally since CI runs on ubuntu-latest." On real `ubuntu-latest` CI it
+  does run (no crash), but has **63 of 137 survived** -- a large, completely unaddressed surface,
+  not a crash-only file. The "not worth pursuing" framing was wrong; this needs real attention.
+
+Both are comparable in scope to `router.py`'s pass (dozens of survivors each) and were out of scope
+to fix in the same session as discovering them. Priority for a future session:
+
+1. `metric.py` and `pgd.py`: full classification passes, same methodology as every file above
+   (read real diffs -- from a fresh CI artifact this time, not a possibly-stale local cache --
+   classify each, batch-fix genuine defects, document equivalents with real reasoning).
+2. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
    that's still SURVIVED, or an "equivalent" that's actually KILLED for a reason not yet understood),
    treat that as a real finding to investigate, not noise -- every classification here was made
    without a working fresh sweep to check against.
@@ -283,3 +291,12 @@ for a future session:
 - `ENABLE_MUTATION_SCHEDULE` repo variable: still unset (intentionally) -- set it only once the
   weekly-cadence commit is actually on `main`, or the old daily cadence would fire for real once
   before the fix takes effect.
+- Fixed `actions/upload-artifact` rejecting nested-path target names (e.g.
+  `integrations/matbench_adapter.py`'s `/`) by using the already-sanitized `BASE` variable, exported
+  via `$GITHUB_ENV`, for the artifact name too (commit `ecbcb1c`).
+- Bumped `mutmut-shard`'s `timeout-minutes` from 30 to 90 -- a real run measured the largest files
+  (`router.py`, `energy.py`, `metric.py`, `pgd.py`) all hitting the old 30-min limit mid-sweep
+  (commit `ecbcb1c`).
+- Removed a `mutmut results --all` line that silently failed every run (invalid flag for the pinned
+  mutmut version, swallowed via `|| true`), producing a misleadingly-named empty `_full.txt` report
+  artifact (commit `ecbcb1c`).
