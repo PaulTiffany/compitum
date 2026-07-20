@@ -72,6 +72,20 @@ jobs:
           # --tests-dir, --use-coverage); mutmut 3.x rewrote the interface.
           pip install "mutmut<3"
 
+      # mutmut caches each mutant's outcome in .mutmut-cache and skips
+      # re-testing ones already known-killed for unchanged source, but that
+      # cache starts empty on every fresh runner -- so every scheduled sweep
+      # re-tests the entire shard from scratch even when nothing changed.
+      # Restore it here, keyed on this shard's source file content plus the
+      # full tests/ tree (any test change could flip a mutant's outcome, not
+      # just tests for this specific file), so unrelated runs reuse prior
+      # results instead of repeating hours of work.
+      - name: Restore mutmut cache for this shard
+        uses: actions/cache@v4
+        with:
+          path: .mutmut-cache
+          key: mutmut-${{ matrix.file }}-${{ hashFiles(format('src/compitum/{0}', matrix.file)) }}-${{ hashFiles('tests/**') }}
+
       - name: Mutmut shard (${{ matrix.file }})
         env:
           PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
