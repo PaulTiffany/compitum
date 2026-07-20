@@ -1,4 +1,16 @@
-# Mutation Hardening Status (working notes, not committed)
+# Mutation Hardening Status
+
+**Update, day 2**: `router.py` (the last file) finished -- 137/137, 105 killed, 32 survived. All
+16 runnable shards are now complete (`pgd.py` remains the one Windows-only mutmut crash). 3 real
+gaps found and fixed in `router.py` (`7c3200f`): the `update_stride <= 0` clamp, the `srmf`/
+`controller` legacy-alias identity, and the disabled-controller `drift_status` exact values. Also
+confirmed one genuine, unfixable equivalent mutant: `abs(-comps[...]["distance"])` -- `abs(-x) ==
+abs(x)` always, so no test can ever kill a mutation removing that unary minus (appears twice, in
+`route()` and `batch_route()`, likely accounting for 2 of the 32 survivors by construction).
+
+These findings are now also catalogued in `docs/Invariants.md`'s new "Mutation-Hardening Coverage"
+section, following the doc's existing terse per-invariant convention, so they're visible as
+verified CI invariants rather than only living in this working-notes file.
 
 Real, local mutmut runs across the full 17-file shard matrix (`.github/workflows/mutation.yml`'s
 `mutmut-shard` matrix), using the fixed coverage-guidance logic (commit `0cd02a3`) and the
@@ -35,7 +47,7 @@ a re-run of the whole file.
 | `security.py` | 49 | 35 | 14 | 0 | 2 fixes (`8d575f5`) target 2+ of 14 (hash-value assertions cover 2 functions) |
 | `constraints.py` | 72 | 47 | 23 | 2 | 2 fixes (`6eab4cb`) target 2 of 23; largest raw survivor count before energy.py |
 | `energy.py` | 178 | 104 | 73 | 1 | 1 high-leverage fix (`3459682`, `da791ef`) targeting the dominant survivor category (debug-print internals -- only a leading substring was ever checked, now full exact/regex-matched content); likely accounts for a large share of the 73, not yet confirmed |
-| `router.py` | 137 | — | — | — | **Running** -- restarted from 0 after an unrelated mistake wiped its 65/137 in-progress cache (see below); this is a full-from-scratch run, not a resume |
+| `router.py` | 137 | 105 | 32 | 0 | 3 fixes (`7c3200f`) target 3 of 32; 2 more are a confirmed true equivalent mutant (`abs(-x)`), not a gap |
 
 `energy.py` update: real, targeted `mutmut show 21` (against the archived cache) revealed the
 survivor isn't debug-print noise at all -- it's `xw = W @ (xR - model.center)`, and *every* energy.py
@@ -71,17 +83,21 @@ inspecting a diff rather than guessing from source alone.
 
 ## Next steps, in priority order
 
+All 16 runnable files have real mutmut data and at least one committed fix; none have been
+re-verified with a fresh full sweep yet (only `energy.py` mutant 21 and `router.py`'s were spot-
+confirmed via targeted single-ID re-checks). In priority order for a future session:
+
 1. `energy.py`: run a single fresh full sweep (not per-ID loops -- 73 survivors is past the point
    where per-ID overhead pays off) to get a real post-fix count for both the debug-print fix
-   (`da791ef`) and the center-sign fix (`21e0622`, already confirmed via targeted check to kill
-   mutant 21 specifically).
-2. Once `router.py` finishes its from-scratch run, triage its survivors the same way: read the
-   actual diffs (`mutmut show <id>` against its archived cache once complete), don't guess from
-   source alone -- the energy.py detour proved guessing gets the *category* of survivor wrong.
-3. For the 9 other files with 1-2 fixes already committed but not yet re-verified (`capabilities.py`
-   through `constraints.py` in the table above), a single batched fresh sweep per file is the
-   efficient move now, not one-by-one targeted checks -- most have single-digit-to-low-teens
-   survivor counts, small enough that a fresh sweep's one-time baseline cost is cheap.
+   (`da791ef`) and the center-sign fix (`21e0622`).
+2. `constraints.py` (23 survivors) and `security.py` (14): next-largest counts, each with 2 fixes
+   committed.
+3. The remaining 7 files (`capabilities.py`, `effort_qp.py`, `boundary.py`, `predictors.py`,
+   `control.py`, `matbench_adapter.py`, `coherence.py`, `symbolic.py`, `router.py`) each have
+   single-digit-to-low-teens survivor counts -- a batched fresh sweep per file is cheap once a
+   few more fixes accumulate per file, rather than re-sweeping after every single commit.
+4. Decide whether to pursue `pgd.py` further (the Windows-only crash) -- likely not worth it locally
+   given CI runs on `ubuntu-latest`; a real CI run of the fixed workflow would settle this for free.
 
 ## CI-side changes made this session (informed by this data)
 
