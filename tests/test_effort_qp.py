@@ -44,3 +44,16 @@ def test_solve_effort_1d_nontrivial_multipliers():
     assert e_star == 1.0
     assert lambdas["lambda_low"] == 0.0
     assert lambdas["lambda_high"] == 8.0
+
+
+def test_solve_effort_1d_lambda_high_below_one():
+    """The test above has grad=8.0 > 1.0, where `max(1.0, grad)` and the
+    correct `max(0.0, grad)` happen to agree (grad itself wins either max).
+    Use 0 < grad < 1 so a `0.0` -> `1.0` mutation on that max's floor is
+    actually observable."""
+    beta = (0.5, 0.0, 0.0)  # alpha, bt, bc
+    e_star, lambdas = solve_effort_1d(q0=0, q1=1, t0=0, t1=1, c0=0, c1=1, beta=beta)
+    # grad = alpha*q1 - bt*t1 - bc*c1 = 0.5*1 - 0 - 0 = 0.5
+    assert e_star == 1.0
+    assert lambdas["lambda_low"] == 0.0
+    assert lambdas["lambda_high"] == 0.5

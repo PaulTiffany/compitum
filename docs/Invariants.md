@@ -55,11 +55,16 @@ boundary needed to actually kill a behavioral mutation -- confirmed against real
 fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
 
 - `effort_qp.py`: `e_star` resolves to `0.0` (not `1.0`) exactly at the `grad == 0` boundary; q1/t1/c1
-  multiplier terms are exercised with non-unity values — `tests/test_effort_qp.py`
+  multiplier terms are exercised with non-unity values; `lambda_high`'s `max(0.0, grad)` floor is
+  exercised with `0 < grad < 1`, not just `grad > 1` where a `1.0` floor mutation happens to be
+  masked — `tests/test_effort_qp.py`
 - `capabilities.py`: `Capabilities.deterministic` defaults to `False` when omitted —
   `tests/test_capabilities.py`
 - `boundary.py`: `uncertainty` defaults to `0.0` (and correctly resolves `is_boundary=False`) when
-  the winning model is missing from `u_sigma` — `tests/test_boundary.py`
+  the winning model is missing from `u_sigma`; the real `gap_threshold` default (`0.05`) is
+  exercised where a much-larger mutated default would flip the result (every other case either has
+  a small gap or a failing sigma condition that masks it); `entropy`'s exact value is pinned (not
+  just which side of `entropy_threshold` it lands on) — `tests/test_boundary.py`
 - `predictors.py`: isotonic calibration clips out-of-domain raw values to the boundary's fitted `y`
   rather than extrapolating — `tests/test_predictors.py`
 - `control.py`: the EMA trust-region branch is neutral (no change) exactly at the 1.5x/0.7x
@@ -99,3 +104,8 @@ Known true equivalent mutants (not gaps):
 - `security.py`'s `git_commit_short()`: `head.split(":", 1)` vs `split(":", 2)` — git forbids `:` in
   ref names, so a real `HEAD` (`ref: refs/heads/<branch>`) always contains exactly one `:`, making
   `maxsplit=1` and `maxsplit=2` produce identical results against any real repository state.
+- `boundary.py`'s `probs = np.exp(arr - u1)` vs `np.exp(arr + u1)` — the immediately-following
+  `probs /= probs.sum()` normalization is invariant to any constant additive shift applied uniformly
+  to `arr` before the exponential (softmax shift-invariance), and `u1` is a single scalar shared
+  across every element of `arr`. Only distinguishable via float overflow at utility magnitudes far
+  outside this system's realistic bounded range.

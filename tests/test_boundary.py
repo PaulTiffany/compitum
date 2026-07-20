@@ -49,6 +49,39 @@ def test_boundary_insufficient_models() -> None:
     assert info["reason"] == "insufficient_models"
 
 
+def test_boundary_gap_threshold_default_is_not_masked_by_sigma_or_smallness() -> None:
+    """Every parametrized case above either has `gap < 0.05` (so a mutated,
+    much-larger default threshold like 1.05 would still classify the same
+    way) or has `sigma <= sigma_threshold` (masking the gap term entirely
+    via the outer `and`). Use a gap that's clearly >= 0.05 but well under
+    1.05, combined with sigma > sigma_threshold, so the real default
+    (0.05) and a mutated default (1.05) disagree on `is_boundary`."""
+    b = BoundaryAnalyzer()
+    # gap = 0.7: >= 0.05 (correct threshold) but < 1.05 (the mutant's), and
+    # large enough that entropy (~0.635) also stays under entropy_threshold
+    # (0.65) so that condition doesn't independently force is_boundary True.
+    utilities = {"m1": 0.7, "m2": 0.0}
+    info = b.analyze(utilities, u_sigma={"m1": 0.20})  # > sigma_threshold (0.12)
+    assert info["is_boundary"] is False
+
+
+def test_boundary_entropy_exact_value() -> None:
+    """No existing test asserts `info["entropy"]`'s actual numeric value --
+    only whether it crosses `entropy_threshold`, which several of the
+    formula's own possible arithmetic mutations (`*`->`/`, epsilon +/-1e-12)
+    don't happen to flip for the parametrized cases above. Recompute the
+    exact expected value via the same formula and require bit-exact
+    equality (the differences from an epsilon-sized mutation are ~1e-9,
+    well inside np.isclose's default tolerance -- too loose to catch it)."""
+    b = BoundaryAnalyzer()
+    info = b.analyze({"m1": 1.0, "m2": 0.0}, u_sigma={"m1": 0.0})
+    arr = np.array([1.0, 0.0])
+    probs = np.exp(arr - 1.0)
+    probs /= probs.sum()
+    expected_entropy = -float(np.sum(probs * np.log(probs + 1e-12)))
+    assert info["entropy"] == expected_entropy
+
+
 def test_boundary_sigma_defaults_to_zero_when_winner_missing_from_u_sigma() -> None:
     """No other test omits the winner's key from u_sigma, so the `.get(m1, 0.0)`
     default is never exercised -- a mutant changing that default would survive.
