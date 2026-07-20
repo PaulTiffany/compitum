@@ -79,31 +79,46 @@ def test_fields_and_iter_docs_without_optional_columns(tmp_path: Path) -> None:
     assert not hasattr(d0, "material_id")
     assert not hasattr(d0, "formula_pretty")
     assert not hasattr(d0, "label_candidate")
+    # Every other check here only exercises the truthy `if self.id_column:`
+    # effect, where `None` and `""` are indistinguishable -- assert the raw
+    # dataclass field values directly to catch a `None` -> `""` default.
+    assert ad.id_column is None
+    assert ad.formula_column is None
+    assert ad.label_column is None
 
 
 def test_missing_required_column_raises(tmp_path: Path) -> None:
+    # `pytest.raises(match=...)` does a substring `re.search`, so wrapping the
+    # whole message in extra characters (e.g. "XX...XX") wouldn't fail it --
+    # assert the exact full message to actually pin the format down.
     csv = tmp_path / "data.csv"
     pd.DataFrame([{"band_gap": 0.1, "density": 7.2, "nsites": 5}]).to_csv(csv, index=False)
-    with pytest.raises(ValueError, match="Missing required columns"):
+    with pytest.raises(ValueError) as exc_info:
         CSVMatbenchAdapter(path=str(csv))
+    assert str(exc_info.value) == (
+        "Missing required columns: ['formation_energy_per_atom']"
+    )
 
 
 def test_missing_id_column_raises(tmp_path: Path) -> None:
     csv = tmp_path / "data.csv"
     _write_csv(csv)
-    with pytest.raises(ValueError, match="id_column 'nope' not found"):
+    with pytest.raises(ValueError) as exc_info:
         CSVMatbenchAdapter(path=str(csv), id_column="nope")
+    assert str(exc_info.value) == "id_column 'nope' not found in CSV"
 
 
 def test_missing_formula_column_raises(tmp_path: Path) -> None:
     csv = tmp_path / "data.csv"
     _write_csv(csv)
-    with pytest.raises(ValueError, match="formula_column 'nope' not found"):
+    with pytest.raises(ValueError) as exc_info:
         CSVMatbenchAdapter(path=str(csv), formula_column="nope")
+    assert str(exc_info.value) == "formula_column 'nope' not found in CSV"
 
 
 def test_missing_label_column_raises(tmp_path: Path) -> None:
     csv = tmp_path / "data.csv"
     _write_csv(csv)
-    with pytest.raises(ValueError, match="label_column 'nope' not found"):
+    with pytest.raises(ValueError) as exc_info:
         CSVMatbenchAdapter(path=str(csv), label_column="nope")
+    assert str(exc_info.value) == "label_column 'nope' not found in CSV"

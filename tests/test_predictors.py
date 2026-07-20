@@ -5,7 +5,9 @@ from compitum.predictors import CalibratedPredictor
 
 def test_calibrated_predictor() -> None:
     predictor = CalibratedPredictor()
-    assert not predictor.fitted
+    # `not predictor.fitted` passes for both `False` and `None` -- use strict
+    # identity so a mutated `fitted = None` default doesn't survive.
+    assert predictor.fitted is False
 
     # Create synthetic data
     rng = np.random.default_rng(42)
@@ -27,6 +29,23 @@ def test_calibrated_predictor() -> None:
 
     # Check that the lower bound is less than or equal to the upper bound.
     assert np.all(lo <= hi)
+
+
+def test_calibrated_predictor_hyperparameters_are_exact() -> None:
+    """None of the shape/envelope-style tests above distinguish between
+    `n_estimators=5` and `=6`, or between the three regressors' distinct
+    `random_state` seeds -- with limited synthetic data, one extra boosting
+    round or a different seed rarely changes predictions enough to trip a
+    loose behavioral assertion, and pinning that behaviorally would be
+    fragile/expensive. These are directly observable via sklearn's public
+    constructor attributes without needing to fit anything."""
+    predictor = CalibratedPredictor()
+    assert predictor.base.n_estimators == 5
+    assert predictor.base.random_state == 42
+    assert predictor.q05.n_estimators == 5
+    assert predictor.q05.random_state == 41
+    assert predictor.q95.n_estimators == 5
+    assert predictor.q95.random_state == 43
 
 
 def test_isotonic_calibration_clips_out_of_domain_raw_values() -> None:

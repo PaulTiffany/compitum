@@ -66,9 +66,14 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   a small gap or a failing sigma condition that masks it); `entropy`'s exact value is pinned (not
   just which side of `entropy_threshold` it lands on) — `tests/test_boundary.py`
 - `predictors.py`: isotonic calibration clips out-of-domain raw values to the boundary's fitted `y`
-  rather than extrapolating — `tests/test_predictors.py`
+  rather than extrapolating; each of the 3 internal `GradientBoostingRegressor`s' exact
+  `n_estimators`/`random_state` hyperparameters; `fitted` defaults to `False`, not `None` (`not x`
+  passes for both) — `tests/test_predictors.py`
 - `control.py`: the EMA trust-region branch is neutral (no change) exactly at the 1.5x/0.7x
-  thresholds, not just clearly above/below them — `tests/test_control.py`
+  thresholds, not just clearly above/below them; `kappa`/`r0` constructor defaults (`0.1`/`1.0`,
+  never exercised since every other test passes them explicitly); `eta_cap`'s `+1e-6` epsilon is
+  checked at `grad_norm=0.0`, where it's the entire denominator, not `2.0`, where it's too small a
+  relative perturbation for the default tolerance to catch — `tests/test_control.py`
 - `symbolic.py`: `+`, `*`, `@` operators evaluate correctly, not just `-`/`/` — `tests/test_symbolic.py`
 - `security.py`: SHA-256 outputs match the exact expected digest (not just length 64);
   `is_offline()`/`redaction_enabled()` default to `False` when unset; `AuditRecord.commit` defaults
@@ -79,7 +84,11 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
 - `constraints.py`: shadow price matches the exact `(Δutility)/1e-5` value, not just its sign;
   multi-constraint infeasible fallback zeros every `lambda_i` — `tests/test_constraints.py`
 - `integrations/matbench_adapter.py`: CSV columns map to the correct attribute *values*, not just
-  present attributes — `tests/integrations/test_matbench_adapter.py`
+  present attributes; `id_column`/`formula_column`/`label_column` default to `None`, not `""`
+  (both falsy everywhere they're checked); all 4 "column not found"/"missing columns" error
+  messages match their exact full text, not just an unanchored substring (`pytest.raises(match=)`
+  is a substring search, so text wrapped around the expected substring still "matches") —
+  `tests/integrations/test_matbench_adapter.py`
 - `coherence.py`: `WeightedReservoir` clamps nonpositive weights to `1e-6` — `tests/test_coherence.py`
 - `energy.py`: `comps["uncertainty"]`/`U_var` match the exact variance formula (both `compute()` and
   `batch_compute()`); debug/timing prints match their full exact (or regex-matched, elapsed-time

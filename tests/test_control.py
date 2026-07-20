@@ -102,6 +102,25 @@ def test_lyapunov_controller_integral_adjustment_and_clipping() -> None:
     assert np.isclose(controller.drift_integral, 9.5)
 
 
+def test_constructor_defaults_kappa_and_r0() -> None:
+    """Every other test passes `kappa=`/`r0=` explicitly -- the constructor's
+    actual default values (0.1, 1.0) were never exercised."""
+    controller = LyapunovController()
+    assert controller.kappa == 0.1
+    assert controller.trust_radius == 1.0
+
+
+def test_eta_cap_epsilon_is_exact() -> None:
+    """The existing eta_cap check uses grad_norm=2.0, where the +1e-6 epsilon
+    is a ~5e-7 relative perturbation on the denominator -- well inside
+    np.isclose's default tolerance, so a 1e-6 -> 2e-6 mutation wouldn't
+    actually be caught. Use grad_norm=0.0 so the epsilon *is* the entire
+    denominator, making a 2x change in it impossible to miss."""
+    controller = LyapunovController(kappa=0.1, r0=1.0)
+    eta_cap, _ = controller.update(d_star=0.0, grad_norm=0.0)
+    assert np.isclose(eta_cap, 0.1 / 1e-6)
+
+
 def test_ema_branch_exact_thresholds_are_neutral() -> None:
     """Existing tests exercise drift_ema clearly above/below the 1.5x/0.7x
     thresholds, never exactly at them -- a > vs >= (or < vs <=) mutation at
