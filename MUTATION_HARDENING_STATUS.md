@@ -1,5 +1,26 @@
 # Mutation Hardening Status
 
+**Update, day 3: classification front complete.** All 17 shard-matrix files with runnable mutmut
+data (`.github/workflows/mutation.yml`'s `mutmut-shard` matrix, minus `pgd.py`'s Windows-only
+mutmut crash) are now fully classified with **zero unclassified survivors** --
+`capabilities.py`, `effort_qp.py`, `boundary.py`, `predictors.py`, `control.py`,
+`matbench_adapter.py`, `coherence.py`, `symbolic.py`, `security.py`, `constraints.py`, `energy.py`,
+and `router.py` all have worked classification tables below. Several files' earlier "N fixes target
+M of K survivors" notes turned out to be undercounts on closer inspection this pass -- e.g.
+`capabilities.py`'s single `is False` assertion actually killed both of its 2 survivors, not 1; the
+`abs(-x)` equivalent mutant in `router.py` appears 3 times, not 2. This pattern (re-examining an
+earlier "partial fix" note and finding it already covers more than credited) recurred often enough
+that it's now a standing lesson: don't trust an old undercount without re-deriving it against the
+actual test code.
+
+None of this pass's fixes have been re-verified against a fresh automated mutmut run -- real
+environment friction this session (documented in `energy.py`'s section below: a full fresh sweep
+projected ~4.5h, and per-ID re-checks against a freshly-generated cache gave inconsistent
+renumbering/stale-baseline-skip results) meant every classification instead rests on rigorous
+line-by-line reasoning against the actual source and actual archived diffs, with every new test run
+and passing locally against real (not mutated) code. A clean CI runner is the natural next place to
+get real automated confirmation.
+
 **Update, day 2**: `router.py` (the last file) finished -- 137/137, 105 killed, 32 survived. All
 16 runnable shards are now complete (`pgd.py` remains the one Windows-only mutmut crash). 3 real
 gaps found and fixed in `router.py` (`7c3200f`): the `update_stride <= 0` clamp, the `srmf`/
@@ -203,22 +224,25 @@ via direct line-by-line reasoning against the real source, each new test run and
 
 ## Next steps, in priority order
 
-`constraints.py`, `energy.py`, and `security.py` are now **fully classified, zero unclassified
-survivors** (see their worked tables above). None have been re-verified with a fresh full sweep yet
-locally (only `energy.py` mutant 21 and `router.py`'s were spot-confirmed via targeted single-ID
-re-checks before this environment's `mutmut run` became unreliable -- see the note at the end of
-`energy.py`'s table). In priority order for a future session:
+**All 17 shard-matrix files with runnable mutmut data are now fully classified, zero unclassified
+survivors** (see each file's worked table above). None have been re-verified with a fresh automated
+mutmut run locally -- only a handful of individual mutants (`energy.py`'s 21, `router.py`'s
+`update_stride` fixes) were spot-confirmed via targeted single-ID re-checks before this
+environment's `mutmut run` became unreliable (see the note at the end of `energy.py`'s table for
+specifics). Every new test added this session was, however, run and confirmed passing against real,
+unmutated code, and the full suite (100% coverage) was re-run after every batch. In priority order
+for a future session:
 
-1. The remaining 7 files (`capabilities.py`, `effort_qp.py`, `boundary.py`, `predictors.py`,
-   `control.py`, `matbench_adapter.py`, `coherence.py`, `symbolic.py`, `router.py`) each have
-   single-digit-to-low-teens survivor counts -- a batched fresh sweep per file is cheap once a
-   few more fixes accumulate per file, rather than re-sweeping after every single commit.
+1. A real GitHub Actions run of the mutation workflow is now the single most valuable next step --
+   it's the cleanest way to get automated confirmation of every fix committed this session, on a
+   clean runner with no stale local mutmut caches and no Windows path/venv quirks (both of which
+   caused real friction re-verifying locally, documented throughout this file).
 2. Decide whether to pursue `pgd.py` further (the Windows-only crash) -- likely not worth it locally
    given CI runs on `ubuntu-latest`; a real CI run of the fixed workflow would settle this for free.
-3. A real GitHub Actions run of the mutation workflow is the cleanest way to re-verify every fix
-   committed locally this session (`energy.py`'s and `security.py`'s in particular) -- CI has no
-   stale local mutmut caches and no Windows path/venv quirks, both of which caused real friction
-   re-verifying locally.
+3. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
+   that's still SURVIVED, or an "equivalent" that's actually KILLED for a reason not yet understood),
+   treat that as a real finding to investigate, not noise -- every classification here was made
+   without a working fresh sweep to check against.
 
 ## CI-side changes made this session (informed by this data)
 
