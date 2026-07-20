@@ -1,8 +1,29 @@
 {
-  "jobs": 5848,
-  "mutations_seen": 5848,
-  "outcomes": {
-    "killed": 5848
+  "schema": "compitum.mutation-summary/v2",
+  "note": "Replaces a stale October 2025 summary (mutation_score: 1.0, from a historical local Cosmic Ray campaign predating this commit by ~9 months) that was silently being re-attested under fresh commit hashes. This file reflects the actual local mutmut sweep run against the current tree; see MUTATION_HARDENING_STATUS.md for full per-file detail, exact commits, and the classification of every survivor (equivalent / defect-fixed / defect-logged).",
+  "generated_from": "artifacts/mutation_cache/*.mutmut-cache and *_run.log, this session's local sweep",
+  "per_file": {
+    "embedding_pgd.py": {"total": 1, "killed": 1, "survived": 0, "status": "green"},
+    "utils.py": {"total": 9, "killed": 9, "survived": 0, "status": "green"},
+    "models.py": {"total": 1, "killed": 1, "survived": 0, "status": "green"},
+    "capabilities.py": {"total": 9, "killed": 7, "survived": 2, "status": "1 defect fixed, 1 unclassified"},
+    "effort_qp.py": {"total": 25, "killed": 19, "survived": 6, "status": "2 defects fixed, 4 unclassified"},
+    "boundary.py": {"total": 44, "killed": 35, "survived": 9, "status": "1 defect fixed, 8 unclassified (likely equivalent: log-epsilon)"},
+    "predictors.py": {"total": 22, "killed": 15, "survived": 7, "status": "1 defect fixed, 6 unclassified (likely equivalent: ML hyperparameters)"},
+    "control.py": {"total": 52, "killed": 47, "survived": 5, "status": "1 defect fixed, 4 unclassified"},
+    "pgd.py": {"total": null, "killed": null, "survived": null, "status": "run crashed: real Windows-only bug in mutmut's own cache.py cp1252 file-encoding, unrelated to compitum code; CI runs on ubuntu-latest"},
+    "integrations/matbench_adapter.py": {"total": 32, "killed": 24, "survived": 8, "status": "1 defect fixed, 7 unclassified"},
+    "coherence.py": {"total": 55, "killed": 43, "survived": 12, "status": "1 defect fixed, 11 unclassified"},
+    "symbolic.py": {"total": 36, "killed": 30, "survived": 6, "status": "1 defect fixed (covers 3 survivor IDs), 3 unclassified"},
+    "security.py": {"total": 49, "killed": 35, "survived": 14, "status": "2 defects fixed, 12 unclassified"},
+    "constraints.py": {"total": 72, "killed": 47, "survived": 23, "suspicious": 2, "status": "fully classified: 5 equivalent, 4 likely-fixed-pending-reverify, 9 defects fixed, 5 defects logged not yet fixed"},
+    "energy.py": {"total": 178, "killed": 104, "survived": 73, "suspicious": 1, "status": "3 defects fixed (1 confirmed killed via targeted re-check), majority unclassified"},
+    "router.py": {"total": 137, "killed": 105, "survived": 32, "status": "3 defects fixed, 1 confirmed equivalent (abs(-x)==abs(x), 2 IDs), 27 unclassified"}
   },
-  "mutation_score": 1.0
+  "aggregate": {
+    "total_mutants_with_real_data": 722,
+    "total_killed": 522,
+    "total_survived_or_suspicious": 200,
+    "note_on_aggregate": "This raw ratio (~72%) is not the release gate. The gate is: every survivor classified as equivalent/defect-fixed/defect-logged, with zero unclassified. constraints.py is the only file taken to that standard fully this session; the rest have at least one real defect found and fixed but are not exhaustively classified yet -- see MUTATION_HARDENING_STATUS.md."
+  }
 }
