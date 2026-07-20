@@ -102,6 +102,11 @@ def test_energy_batch_compute_prints_on_step_multiple():
     assert re.fullmatch(
         r"SymbolicFreeEnergy\.batch_compute took \d+\.\d{4} seconds for 1 samples\n", out
     )
+    # The regex alone would still match `time.time() + start_time` (a huge
+    # unix-epoch-scale number formatted with 4 decimals looks the same
+    # syntactically) -- bound the elapsed value to catch that sign flip.
+    elapsed = float(re.search(r"took (\d+\.\d{4}) seconds", out).group(1))  # type: ignore[union-attr]
+    assert elapsed < 5.0
     assert U_batch.shape == (1,) and U_sigma_batch.shape == (1,) and len(comps_list) == 1
 
 

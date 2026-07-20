@@ -91,6 +91,50 @@ def test_symbolic_free_energy_compute() -> None:
     assert np.isclose(comps["uncertainty"], expected_uncertainty)
 
 
+def test_symbolic_free_energy_compute_cost_sign_is_addition() -> None:
+    # The test above uses model.cost=0.0, where `c[0] + model.cost` and
+    # `c[0] - model.cost` are indistinguishable -- a sign-flip mutation on
+    # that term would survive undetected. Use a nonzero cost so the sign is
+    # actually observable in comps["cost"] and U.
+    mock_metric = MagicMock(spec=SymbolicManifoldMetric)
+    mock_metric.distance.return_value = (0.5, 0.1)
+    type(mock_metric).W = PropertyMock(return_value=np.eye(2))
+
+    mock_predictor = MagicMock(spec=CalibratedPredictor)
+    mock_predictor.predict.return_value = (
+        np.array([0.8]),
+        np.array([0.7]),
+        np.array([0.9]),
+    )
+    predictors = {
+        "quality": mock_predictor,
+        "latency": mock_predictor,
+        "cost": mock_predictor,
+    }
+
+    mock_coherence = MagicMock(spec=CoherenceFunctional)
+    mock_coherence.log_evidence.return_value = 0.2
+
+    mock_model = MagicMock(spec=Model)
+    mock_model.center = np.zeros(2)
+    mock_model.name = "test_model"
+    mock_model.cost = 0.15
+
+    xR = np.ones(2)
+    energy = SymbolicFreeEnergy(alpha=1.0, beta_t=0.2, beta_c=0.1, beta_d=0.5, beta_s=0.3)
+    U, _, comps = energy.compute(
+        xR,
+        mock_model,
+        cast(dict[str, CalibratedPredictor], predictors),
+        mock_coherence,
+        mock_metric,
+    )
+
+    assert comps["cost"] == -(0.8 + 0.15)
+    expected_U = 1.0 * 0.8 - 0.2 * 0.8 - 0.1 * (0.8 + 0.15) - 0.5 * 0.5 + 0.3 * 0.2
+    assert np.isclose(U, expected_U)
+
+
 def test_beta_d_property() -> None:
     energy = SymbolicFreeEnergy(1, 1, 1, 1, 1)
     assert energy.beta_d == 1
@@ -148,6 +192,71 @@ def test_symbolic_free_energy_batch_compute() -> None:
     # U = 1.0*0.8 - 0.2*0.8 - 0.1*0.8 - 0.5*0.5 + 0.3*0.2 = 0.37
     assert np.isclose(U_batch[0], 0.37)
     assert comps_list[0]["quality"] == 0.8
+
+
+def test_batch_compute_center_sign_cost_sign_and_comps_values() -> None:
+    # The test above uses model.center=zeros and model.cost=0.0, where both
+    # `xR_batch - center` vs `+ center` and `c + cost` vs `c - cost` are
+    # unobservable, and only comps_list[0]["quality"] is ever checked (leaving
+    # latency/cost/distance/evidence/uncertainty keys and signs, and the
+    # entire U_var_batch formula, unverified). Use nonzero center/cost and
+    # assert every comps_list key plus the exact uncertainty value.
+    mock_metric = MagicMock(spec=SymbolicManifoldMetric)
+    mock_metric.batch_distance.return_value = (np.array([0.5]), np.array([0.1]))
+    type(mock_metric).W = PropertyMock(return_value=np.eye(1))
+
+    mock_predictor = MagicMock(spec=CalibratedPredictor)
+    mock_predictor.predict.return_value = (
+        np.array([0.8]),
+        np.array([0.7]),
+        np.array([0.9]),
+    )
+    predictors = {
+        "quality": mock_predictor,
+        "latency": mock_predictor,
+        "cost": mock_predictor,
+    }
+
+    mock_coherence = MagicMock(spec=CoherenceFunctional)
+    mock_coherence.batch_log_evidence.return_value = np.array([0.2])
+
+    mock_model = MagicMock(spec=Model)
+    mock_model.center = np.array([3.0])
+    mock_model.name = "m"
+    mock_model.cost = 0.15
+
+    xR_batch = np.array([[5.0]])
+    energy = SymbolicFreeEnergy(alpha=1.0, beta_t=0.2, beta_c=0.1, beta_d=0.5, beta_s=0.3)
+    U_batch, U_var_batch, comps_list = energy.batch_compute(
+        xR_batch,
+        mock_model,
+        cast(dict[str, CalibratedPredictor], predictors),
+        mock_coherence,
+        mock_metric,
+    )
+
+    # xw_batch = W @ (xR_batch - center).T; with W=eye(1), xR=5, center=3,
+    # correct is 2.0 -- the `+ center` mutant would instead pass 8.0.
+    call_args = mock_coherence.batch_log_evidence.call_args[0]
+    np.testing.assert_allclose(call_args[1], np.array([[2.0]]))
+
+    assert comps_list[0]["quality"] == 0.8
+    assert comps_list[0]["latency"] == -0.8
+    assert comps_list[0]["cost"] == -(0.8 + 0.15)
+    assert comps_list[0]["distance"] == -0.5
+    assert comps_list[0]["evidence"] == 0.2
+
+    expected_U = 1.0 * 0.8 - 0.2 * 0.8 - 0.1 * (0.8 + 0.15) - 0.5 * 0.5 + 0.3 * 0.2
+    assert np.isclose(U_batch[0], expected_U)
+
+    expected_uncertainty = (
+        (1.0 * (0.9 - 0.7) / 3.92) ** 2
+        + (0.2 * (0.9 - 0.7) / 3.92) ** 2
+        + (0.1 * (0.9 - 0.7) / 3.92) ** 2
+        + (0.5 * 0.1) ** 2
+    ) ** 0.5
+    assert np.isclose(U_var_batch[0], expected_uncertainty)
+    assert np.isclose(comps_list[0]["uncertainty"], expected_uncertainty)
 
 
 def test_compute_and_batch_with_none_w() -> None:

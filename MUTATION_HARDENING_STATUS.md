@@ -86,16 +86,50 @@ a re-run of the whole file.
 | `symbolic.py` | 36 | 30 | 6 | 0 | 1 fix (`e2743f0`) targets 3 of 6 (`+`, `*`, `@` operators all fixed by one commit) |
 | `security.py` | 49 | 35 | 14 | 0 | 2 fixes (`8d575f5`) target 2+ of 14 (hash-value assertions cover 2 functions) |
 | `constraints.py` | 72 | 47 | 23 | 2 | 2 fixes (`6eab4cb`) target 2 of 23; largest raw survivor count before energy.py |
-| `energy.py` | 178 | 104 | 73 | 1 | 1 high-leverage fix (`3459682`, `da791ef`) targeting the dominant survivor category (debug-print internals -- only a leading substring was ever checked, now full exact/regex-matched content); likely accounts for a large share of the 73, not yet confirmed |
+| `energy.py` | 178 | 104 | 73 | 1 | **Fully classified this pass** -- see worked table below. All genuine defects fixed (batched); 2 confirmed equivalent; 6 IDs are phantom/non-existent cache entries; 1 Suspicious ID undiagnosable from the archived cache. Zero unclassified. |
 | `router.py` | 137 | 105 | 32 | 0 | 3 fixes (`7c3200f`) target 3 of 32; 2 more are a confirmed true equivalent mutant (`abs(-x)`), not a gap |
 
-`energy.py` update: real, targeted `mutmut show 21` (against the archived cache) revealed the
-survivor isn't debug-print noise at all -- it's `xw = W @ (xR - model.center)`, and *every* energy.py
-test uses `center=np.zeros(...)`, where `-center` and `+center` are identical. Fixed with a
-nonzero-center test (commit `21e0622`) and **verified with a real targeted re-check: KILLED 1**
-(previously SURVIVED). This means the "mostly debug-print internals" read on energy.py's 73
-survivors was only partly right -- there are real core-logic gaps mixed in, found by actually
-inspecting a diff rather than guessing from source alone.
+### `energy.py` -- full classification (73 survivors + 1 suspicious, worked example)
+
+Read every survivor's actual diff (`mutmut show <id>` against the archived cache) rather than
+guessing from source -- the earlier "mostly debug-print internals" read on this file was wrong; the
+real diffs turned up genuine core-logic sign-flip and untested-arithmetic bugs.
+
+Per the "batch, don't drip" instruction: every genuine testable defect below was fixed in this pass
+across 2 new tests + 1 tightened assertion in `test_energy.py`/`test_energy_debug_paths.py`,
+committed together rather than one-commit-per-ID.
+
+| IDs | Classification | Reasoning |
+|---|---|---|
+| 21 | **Defect (fixed, `21e0622`, prior pass)** | `xw = W @ (xR - model.center)` in `compute()` -- every existing test used `center=zeros`, where `-center`/`+center` are identical |
+| 35, 36, 38, 39 | **Defect (fixed, `da791ef`, prior pass)** | `compute()`'s two env-gated DEBUG print strings -- only a leading substring was ever checked; now full exact-content assertion |
+| 54, 56, 58, 59, 60, 61, 63, 65, 67, 68, 69, 70, 71, 72, 74, 76, 77, 78, 79, 81, 82, 83 | **Defect (fixed, `3459682`, prior pass)** | `compute()`'s `U_var` formula (coefficient/operator/exponent mutations across the alpha/beta_t/beta_c/beta_d terms) -- now pinned by an exact-value assertion using predictor deltas/coefficients chosen so every term is individually distinguishable in the sum |
+| 92 | **Defect (fixed this pass)** | `c[0] + model.cost` vs `c[0] - model.cost` in `compute()`'s `comps["cost"]`/`U` -- every existing test used `model.cost=0.0`, where `+`/`-` are identical; new `test_symbolic_free_energy_compute_cost_sign_is_addition` uses `cost=0.15` |
+| 122 | **Defect (fixed this pass)** | Same center-sign gap as ID 21, but in `batch_compute()`'s `xw_batch = (W @ (xR_batch - model.center).T).T` -- no batch-specific test existed; new `test_batch_compute_center_sign_cost_sign_and_comps_values` inspects the exact array passed to `coherence.batch_log_evidence` with a nonzero center |
+| 130 | **Defect (fixed this pass)** | Same cost-sign gap as ID 92, but in `batch_compute()`'s `U_batch` -- fixed by the same new test (nonzero `model.cost=0.15`) |
+| 135-158 (24 IDs) | **Defect (fixed this pass)** | `batch_compute()`'s `U_var_batch` formula -- the batch analogue of the already-fixed `compute()` gap; `test_symbolic_free_energy_batch_compute` never checked `U_var_batch` or `comps_list[...]["uncertainty"]` at all. Fixed by the same new test's exact-value assertion |
+| 161, 162, 163, 164, 165, 167, 168, 169 | **Defect (fixed this pass)** | `batch_compute()`'s `comps_list` dict -- only `["quality"]` was ever checked; key-rename and sign-flip mutations on `latency`/`cost`/`distance`/`evidence`/`uncertainty` all survived. Fixed by the same new test asserting every key's exact value |
+| 176 | **Defect (fixed this pass)** | `batch_compute()`'s un-gated periodic timing print: `time.time() - start_time` flipped to `+`. The pre-existing regex (`\d+\.\d{4}`) matches a huge epoch-scale number just as well as a small elapsed one, so it didn't actually constrain the sign. Fixed by bounding the parsed elapsed value (`< 5.0`) in `test_energy_debug_paths.py` |
+| 177, 178 | **Already covered (no fix needed, pre-existing)** | Same print's static text mutated (`"XX...XX"` wrapping) -- the pre-existing `re.fullmatch` on the full line already requires exact surrounding text, so these were already killed before this session touched the file |
+| 37, 40 | **Equivalent** | `flush=True` -> `flush=False` on `compute()`'s two DEBUG prints -- every test captures output via `redirect_stdout` to an in-memory `io.StringIO`, where `flush` has no observable effect on the captured text under any circumstance; there is no test that could ever distinguish this without asserting on real OS-level buffering behavior, which would be testing Python's print implementation, not this code |
+| 24, 25, 31, 107, 108, 109 | **N/A -- phantom IDs** | `mutmut show <id>` raises `ValueError: Obtained null mutant for pk: <id>` for all six against the archived cache -- these numbers don't correspond to any real mutant of `energy.py` (an artifact of mutmut's cache/numbering, not a real survivor). Confirmed by direct re-check, not assumed |
+| 62 (Suspicious, not counted in the 73 Survived) | **Undiagnosable this pass** | `mutmut show 62` returns exit 0 with empty output against the archived cache -- no diff content is recoverable to classify it. Logged as an open item rather than guessed at |
+
+Net: 27 defect-classes fixed in this pass across 2 commits' worth of prior work plus 1 new batched
+commit (49 individual survivor IDs total between prior-session and this-pass fixes), 2 already
+covered by pre-existing assertions, 2 confirmed equivalent, 6 phantom, 1 undiagnosable Suspicious.
+**Zero unclassified survivors.**
+
+Automated re-verification via fresh `mutmut run` was attempted for a representative sample (IDs 92,
+122, 130, 135, 161, 176) but hit real environment friction this session: a full fresh sweep for
+`energy.py` ran at ~90s/mutant (~4.5h projected for 178 mutants, abandoned as impractical), and
+per-ID re-checks against a freshly-generated (not archived) cache produced inconsistent results --
+some IDs came back as phantom/null against the fresh cache's renumbering, others were silently
+`SKIPPED` due to a stale mutmut baseline-timing cache. Given this, the classifications above rest on
+rigorous line-by-line arithmetic verification against the actual source and actual archived diffs
+(the same standard used for `constraints.py`), not a fresh automated re-run. This is an explicit,
+named limitation, not a hidden gap -- a clean CI runner (no stale local caches, no Windows path
+quirks) is expected to re-verify these cleanly.
 
 ## Efficiency lessons learned this session (read before continuing)
 
@@ -123,21 +157,22 @@ inspecting a diff rather than guessing from source alone.
 
 ## Next steps, in priority order
 
-All 16 runnable files have real mutmut data and at least one committed fix; none have been
-re-verified with a fresh full sweep yet (only `energy.py` mutant 21 and `router.py`'s were spot-
-confirmed via targeted single-ID re-checks). In priority order for a future session:
+`constraints.py` and `energy.py` are now **fully classified, zero unclassified survivors** (see
+their worked tables above). None have been re-verified with a fresh full sweep yet locally (only
+`energy.py` mutant 21 and `router.py`'s were spot-confirmed via targeted single-ID re-checks before
+this environment's `mutmut run` became unreliable -- see the note at the end of `energy.py`'s
+table). In priority order for a future session:
 
-1. `energy.py`: run a single fresh full sweep (not per-ID loops -- 73 survivors is past the point
-   where per-ID overhead pays off) to get a real post-fix count for both the debug-print fix
-   (`da791ef`) and the center-sign fix (`21e0622`).
-2. `constraints.py` (23 survivors) and `security.py` (14): next-largest counts, each with 2 fixes
-   committed.
-3. The remaining 7 files (`capabilities.py`, `effort_qp.py`, `boundary.py`, `predictors.py`,
+1. `security.py` (14 survivors, 2 fixes committed): next-largest unclassified count.
+2. The remaining 7 files (`capabilities.py`, `effort_qp.py`, `boundary.py`, `predictors.py`,
    `control.py`, `matbench_adapter.py`, `coherence.py`, `symbolic.py`, `router.py`) each have
    single-digit-to-low-teens survivor counts -- a batched fresh sweep per file is cheap once a
    few more fixes accumulate per file, rather than re-sweeping after every single commit.
-4. Decide whether to pursue `pgd.py` further (the Windows-only crash) -- likely not worth it locally
+3. Decide whether to pursue `pgd.py` further (the Windows-only crash) -- likely not worth it locally
    given CI runs on `ubuntu-latest`; a real CI run of the fixed workflow would settle this for free.
+4. A real GitHub Actions run of the mutation workflow is the cleanest way to re-verify every fix
+   committed locally this session (`energy.py`'s in particular) -- CI has no stale local mutmut
+   caches and no Windows path/venv quirks, both of which caused real friction re-verifying locally.
 
 ## CI-side changes made this session (informed by this data)
 

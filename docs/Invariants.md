@@ -72,15 +72,20 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
 - `integrations/matbench_adapter.py`: CSV columns map to the correct attribute *values*, not just
   present attributes — `tests/integrations/test_matbench_adapter.py`
 - `coherence.py`: `WeightedReservoir` clamps nonpositive weights to `1e-6` — `tests/test_coherence.py`
-- `energy.py`: `comps["uncertainty"]`/`U_var` match the exact variance formula; debug/timing prints
-  match their full exact (or regex-matched) content, not just a leading substring; evidence uses
-  `xR - model.center`, not `+` — every prior test used a zero center, where the two are
-  indistinguishable — `tests/test_energy.py`, `tests/test_energy_debug_paths.py`,
-  `tests/energy/test_symbolic_free_energy.py`
+- `energy.py`: `comps["uncertainty"]`/`U_var` match the exact variance formula (both `compute()` and
+  `batch_compute()`); debug/timing prints match their full exact (or regex-matched, elapsed-time
+  bounded) content, not just a leading substring; evidence uses `xR - model.center`, not `+`, in
+  both `compute()` and `batch_compute()`; `cost` uses `c + model.cost`, not `-`, in both — every
+  prior test used a zero center/zero cost, where the two are indistinguishable; `batch_compute()`'s
+  `comps_list` dict is checked key-by-key (not just `"quality"`) — `tests/test_energy.py`,
+  `tests/test_energy_debug_paths.py`, `tests/energy/test_symbolic_free_energy.py`
 - `router.py`: `update_stride` floors to `1` for `stride <= 0`; `router.srmf is router.controller`
   (legacy alias); disabled-controller `drift_status` matches the controller's exact current state,
   not just key presence — `tests/test_router_simple.py`
 
-Known true equivalent mutant (not a gap): `d_best = abs(-comps[...]["distance"])` in both
-`route()` and `batch_route()` — `abs(-x) == abs(x)` for all real `x`, so no test can ever
-distinguish the two.
+Known true equivalent mutants (not gaps):
+- `d_best = abs(-comps[...]["distance"])` in both `route()` and `batch_route()` — `abs(-x) == abs(x)`
+  for all real `x`, so no test can ever distinguish the two.
+- `flush=True` on `energy.py`'s `compute()` debug prints — every test captures stdout via
+  `redirect_stdout` to an in-memory buffer, where `flush` has no observable effect on the captured
+  text; distinguishing it would require asserting on real OS-level buffering, not this code's logic.
