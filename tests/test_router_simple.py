@@ -82,3 +82,53 @@ def test_router_batch_route_no_stride_update() -> None:
     embs = np.random.rand(2, 2)
     certs = router.batch_route(embeddings=embs, prompts=["a", "b"])
     assert len(certs) == 2
+
+
+def test_router_stride_clamps_to_one() -> None:
+    """No existing test passes update_stride <= 0 -- the
+    max(int(update_stride), 1) floor that keeps `self._step % self._stride`
+    from ever dividing by zero was never exercised."""
+    assert _make_router(update_stride=0)._stride == 1
+    assert _make_router(update_stride=-5)._stride == 1
+
+
+def test_router_srmf_is_legacy_alias_for_controller() -> None:
+    router = _make_router(update_stride=1)
+    assert router.srmf is router.controller
+
+
+def test_router_disabled_controller_reports_exact_current_state() -> None:
+    """The only existing disabled-controller test just checks "trust_radius"
+    is a key present in drift_status -- it never checks the actual values,
+    so a mutation swapping which controller attribute lands under which key
+    would survive. Assert the full exact dict."""
+    model = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
+    energy = MagicMock()
+    energy.compute.return_value = (0.9, 0.1, {"distance": -0.5})
+    solver = MagicMock()
+    solver.select.return_value = (model, {"feasible": True})
+    controller = MagicMock()
+    controller.trust_radius = 1.23
+    controller.drift_ema = 0.45
+    controller.drift_integral = 0.67
+    controller.lyapunov_function.return_value = 0.89
+    boundary = MagicMock()
+    boundary.analyze.return_value = {"is_boundary": False}
+    metric = MagicMock(spec=SymbolicManifoldMetric)
+
+    router = CompitumRouter(
+        models=[model],
+        predictors={"m1": {"quality": MagicMock(spec=CalibratedPredictor),
+                            "latency": MagicMock(spec=CalibratedPredictor),
+                            "cost": MagicMock(spec=CalibratedPredictor)}},
+        solver=solver, coherence=MagicMock(), boundary=boundary, srmf=controller,
+        pgd_extractor=MagicMock(), metric_map={"m1": metric}, energy=energy,
+        update_stride=1, enable_metric_update=False, enable_controller=False,
+    )
+    cert = router.route("hello")
+    assert cert.drift_status == {
+        "trust_radius": 1.23,
+        "drift_ema": 0.45,
+        "drift_integral": 0.67,
+        "lyapunov_function": 0.89,
+    }
