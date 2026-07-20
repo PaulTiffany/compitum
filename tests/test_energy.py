@@ -76,6 +76,20 @@ def test_symbolic_free_energy_compute() -> None:
     assert comps["distance"] == -0.5
     assert comps["evidence"] == 0.2
 
+    # Neither U_var (the second return value, already sqrt'd) nor
+    # comps["uncertainty"] were checked above -- the entire variance formula
+    # (including the /3.92 normal-quantile divisions) was unverified.
+    # U_var = (alpha*(q_hi-q_lo)/3.92)^2 + (beta_t*(t_hi-t_lo)/3.92)^2
+    #       + (beta_c*(c_hi-c_lo)/3.92)^2 + (beta_d*d_std)^2, then sqrt'd
+    expected_uncertainty = (
+        (1.0 * (0.9 - 0.7) / 3.92) ** 2
+        + (0.2 * (0.9 - 0.7) / 3.92) ** 2
+        + (0.1 * (0.9 - 0.7) / 3.92) ** 2
+        + (0.5 * 0.1) ** 2
+    ) ** 0.5
+    assert np.isclose(U_var, expected_uncertainty)
+    assert np.isclose(comps["uncertainty"], expected_uncertainty)
+
 
 def test_beta_d_property() -> None:
     energy = SymbolicFreeEnergy(1, 1, 1, 1, 1)
