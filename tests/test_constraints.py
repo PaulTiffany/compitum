@@ -23,6 +23,11 @@ def test_solver_basic_feasible() -> None:
     m_star, info = solver.select(pgd, models, utilities)
     assert m_star.name == "b"
     assert info["feasible"] is True
+    # "status" and "violations" were never checked on the feasible path --
+    # only "feasible" itself -- so mutations to those dict keys/values
+    # would survive.
+    assert info["status"] == "optimal"
+    assert info["violations"] == []
 
 
 def test_solver_no_viable_models() -> None:
@@ -41,6 +46,39 @@ def test_solver_no_viable_models() -> None:
     m_star, info = solver.select(pgd_infeasible, models, utilities)
     assert info["feasible"] is False
     assert m_star.name == "b"  # Should return model with max utility
+    # Same gap as above, on the infeasible-fallback path.
+    assert info["status"] == "infeasible_fallback"
+    assert info["violations"] == ["all_models_violate_constraints"]
+
+
+def test_solver_feasibility_at_exact_boundary() -> None:
+    """No existing test uses x exactly at A@x == b -- the <= vs < choice in
+    `np.all(self.A @ xB <= self.b + 1e-10)` was never exercised at the actual
+    boundary, only clearly inside/outside it."""
+    caps = Capabilities(set(), set())
+    A = np.eye(1)
+    b = np.array([1.0])
+    solver = ReflectiveConstraintSolver(A, b)
+    models = [Model(name="a", center=np.array([]), capabilities=caps, cost=0.0)]
+    _, info = solver.select(np.array([1.0]), models, {"a": 0.5})
+    assert info["feasible"] is True
+
+
+def test_solver_missing_utility_defaults_to_worst_not_best() -> None:
+    """No existing test omits a model from the utilities dict -- the
+    `-np.inf` default (vs a mutated `+np.inf`) that makes an unscored model
+    lose, not win, was never exercised."""
+    caps = Capabilities(set(), set())
+    A = np.eye(1)
+    b = np.array([1.0])
+    solver = ReflectiveConstraintSolver(A, b)
+    models = [
+        Model(name="a", center=np.array([]), capabilities=caps, cost=0.0),
+        Model(name="b", center=np.array([]), capabilities=caps, cost=0.0),
+    ]
+    # "b" is intentionally absent from utilities.
+    m_star, _ = solver.select(np.array([0.5]), models, {"a": 0.5})
+    assert m_star.name == "a"
 
 
 def test_solver_capability_support_filters_model() -> None:
