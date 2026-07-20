@@ -106,13 +106,28 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   prior test used a zero center/zero cost, where the two are indistinguishable; `batch_compute()`'s
   `comps_list` dict is checked key-by-key (not just `"quality"`) — `tests/test_energy.py`,
   `tests/test_energy_debug_paths.py`, `tests/energy/test_symbolic_free_energy.py`
-- `router.py`: `update_stride` floors to `1` for `stride <= 0`; `router.srmf is router.controller`
-  (legacy alias); disabled-controller `drift_status` matches the controller's exact current state,
-  not just key presence — `tests/test_router_simple.py`
+- `router.py`: `update_stride` floors to `1` for `stride <= 0` and defaults to `8` when omitted;
+  `router.srmf is router.controller` (legacy alias); disabled-controller `drift_status` matches the
+  controller's exact current state, not just key presence, in both `route()` and `batch_route()`;
+  `SwitchCertificate.to_json()` truncates `pgd_signature` to exactly 16 chars and indents with
+  exactly 2 spaces; `route()`/`batch_route()`'s `grad_norm` placeholder (`1.0`) and `eta` (`1e-2`)
+  values are exact; `batch_route()`'s per-sample `_step` accumulates by exactly 1 (not reset, not
+  doubled); its batch-level update gate fires at `_step == _stride` exactly (`>=`, not `>`); its
+  per-model update loop uses `continue` (not `break`) so an earlier never-selected model can't block
+  a later one's real update; `batch_route(prompts=None)` defaults to empty-string prompts, not a
+  placeholder; both route()'s and batch_route()'s debug-print elapsed times are bounded, not just
+  regex-shaped (a `time.time() + start_time` sign flip still matches `\d+\.\d{4}`) —
+  `tests/test_router_simple.py`, `tests/test_router_batch.py`
 
 Known true equivalent mutants (not gaps):
-- `d_best = abs(-comps[...]["distance"])` in both `route()` and `batch_route()` — `abs(-x) == abs(x)`
-  for all real `x`, so no test can ever distinguish the two.
+- `d_best = abs(-comps[...]["distance"])` — appears 3 times (`route()`'s metric-update branch,
+  `route()`'s controller branch, `batch_route()`'s per-sample loop) — `abs(-x) == abs(x)` for all
+  real `x`, so no test can ever distinguish the two.
+- `router.py`'s `batch_route()` batch-level gate `enable_metric_update and (_step >= _stride)`
+  mutated to `or` — `update_data` can only be non-empty if the per-sample gate already fired, which
+  (since `_step` only increases) guarantees `_step >= _stride` is already true by then; the gate's
+  only other possible effect (skipping an already-guaranteed-empty pass) is unobservable since the
+  per-model loop's own `if not data: continue` would skip it anyway.
 - `flush=True` on `energy.py`'s `compute()` debug prints — every test captures stdout via
   `redirect_stdout` to an in-memory buffer, where `flush` has no observable effect on the captured
   text; distinguishing it would require asserting on real OS-level buffering, not this code's logic.

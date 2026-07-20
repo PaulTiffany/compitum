@@ -5,8 +5,9 @@
 gaps found and fixed in `router.py` (`7c3200f`): the `update_stride <= 0` clamp, the `srmf`/
 `controller` legacy-alias identity, and the disabled-controller `drift_status` exact values. Also
 confirmed one genuine, unfixable equivalent mutant: `abs(-comps[...]["distance"])` -- `abs(-x) ==
-abs(x)` always, so no test can ever kill a mutation removing that unary minus (appears twice, in
-`route()` and `batch_route()`, likely accounting for 2 of the 32 survivors by construction).
+abs(x)` always, so no test can ever kill a mutation removing that unary minus (appears 3 times, not
+2 as first thought -- see `router.py`'s full classification below for the corrected count and the
+rest of its now fully-classified 32 survivors).
 
 These findings are now also catalogued in `docs/Invariants.md`'s new "Mutation-Hardening Coverage"
 section, following the doc's existing terse per-invariant convention, so they're visible as
@@ -87,7 +88,35 @@ a re-run of the whole file.
 | `security.py` | 49 | 35 | 14 | 0 | **Fully classified this pass** -- see worked table above. All genuine defects fixed (batched, 4 new tests); 2 confirmed equivalent. Zero unclassified. |
 | `constraints.py` | 72 | 47 | 23 | 2 | 2 fixes (`6eab4cb`) target 2 of 23; largest raw survivor count before energy.py |
 | `energy.py` | 178 | 104 | 73 | 1 | **Fully classified this pass** -- see worked table below. All genuine defects fixed (batched); 2 confirmed equivalent; 6 IDs are phantom/non-existent cache entries; 1 Suspicious ID undiagnosable from the archived cache. Zero unclassified. |
-| `router.py` | 137 | 105 | 32 | 0 | 3 fixes (`7c3200f`) target 3 of 32; 2 more are a confirmed true equivalent mutant (`abs(-x)`), not a gap |
+| `router.py` | 137 | 105 | 32 | 0 | **Fully classified this pass.** 5 IDs (75, 131-134) are phantom/non-existent cache entries. 3 (`7c3200f`, prior pass) already fixed. 3 already covered by existing exact-text `re.fullmatch` debug-print assertions (81, 136, 137). 4 confirmed equivalent (`abs(-comps[...]["distance"])` appears 3 times -- 62, 66, 109 -- not 2 as previously noted; plus a newly-found 4th, 118, see below). 20 real gaps fixed this pass (see worked table below). Zero unclassified. |
+
+### `router.py` -- full classification (32 survivors, worked example)
+
+| IDs | Classification | Reasoning |
+|---|---|---|
+| 75, 131, 132, 133, 134 | **N/A -- phantom IDs** | `mutmut show <id>` raises `ValueError: Obtained null mutant for pk: <id>` for all five against the archived cache |
+| 81, 136, 137 | **Already covered (no fix needed)** | The route()/batch_route() debug prints' static text mutations (`"XX...XX"` wrapping) -- the existing `re.fullmatch` assertions already require exact surrounding text |
+| 62, 66, 109 | **Equivalent** | `abs(-comps[...]["distance"])` -- `abs(-x) == abs(x)` always. Occurs 3 times (route()'s metric-update branch, route()'s controller branch, batch_route()'s per-sample loop), not 2 as previously noted |
+| 118 | **Equivalent (newly found)** | The batch-level gate `self.enable_metric_update and (self._step >= self._stride)` mutated to `or`. `update_data` can only be non-empty if the per-sample gate already fired at least once, which (since `_step` only increases) guarantees `_step >= _stride` is already true by that point -- so the outer gate can never actually block genuinely-populated data; its only other effect (skipping an already-guaranteed-empty loop) is unobservable since the inner `if not data: continue` would skip it anyway |
+| 11 | **Defect (fixed)** | `pgd_signature[:16]` -> `[:17]` -- every existing test's signature was exactly 16 chars, where the two slices agree. New test uses a 20-char signature |
+| 14 | **Defect (fixed)** | `to_json`'s `indent=2` -> `3` -- only parsed JSON content was ever checked, never raw formatting |
+| 15 | **Defect (fixed)** | `update_stride: int = 8` -> `9` constructor default -- every test passes it explicitly |
+| 55 | **Defect (fixed)** | route()'s `grad_norm = 1.0` placeholder -- never asserted when the metric-update branch doesn't fire (or does, and should be overwritten) |
+| 65 | **Defect (fixed)** | route()'s `met.update_spd(..., eta=1e-2, ...)` -- eta value never asserted |
+| 80 | **Defect (fixed)** | route()'s debug print `time.time() - start_time` -> `+` -- the existing regex only checks structure (`\d+\.\d{4}`), which a huge epoch-scale number still satisfies |
+| 86 | **Defect (fixed)** | `batch_route`'s default `prompts=None` -> `["" ...]` mutated to `["XXXX" ...]` -- no test ever called `batch_route` with `prompts=None` and checked the resulting `pgd_signature` |
+| 106, 108 | **Defect (fixed)** | `self._step += 1` mutated to `= 1` (resets, breaking accumulation) and `+= 2` (double-counts) -- no test distinguished real accumulation from either. New test uses stride=4/6 samples, where correct accumulation triggers exactly once, the reset triggers zero times, and += 2 triggers three times |
+| 115 | **Defect (fixed)** | Per-sample gate `enable_metric_update and (...)` -> `or` -- with `enable_metric_update=True` this makes every sample trigger regardless of stride (same test as 106/108 catches this via the exact trigger count) |
+| 116 | **Defect (fixed)** | batch_route()'s `grad_norm_drift_batch.append(1.0)` placeholder -- never asserted with `enable_metric_update=False`, where it's never overwritten |
+| 117 | **Defect (fixed)** | Batch-level gate `self._step >= self._stride` -> `>` -- exactly at `_step == _stride`, `>=` must still fire; `>` incorrectly discards an already-populated update batch |
+| 120 | **Defect (fixed)** | Per-model loop's `if not data: continue` -> `break` -- an earlier, never-selected model with empty data would silently prevent every later model's real update from running. New test uses 2 models where the first (by insertion order) is never selected |
+| 123 | **Defect (fixed)** | batch_route()'s `met.batch_update_spd(..., eta=1e-2, ...)` -- eta value never asserted (batch counterpart of 65) |
+| 124 | **Defect (fixed)** | `if certificates[i].model == model_name` -> `!=` when writing back the real computed grad_norm -- with a single always-matching model, correct code overwrites every placeholder, the mutant overwrites none |
+| 126, 127, 128, 129 | **Defect (fixed)** | batch_route()'s disabled-controller `drift_status` dict key renames -- only checked for *a* dict being present, never its exact keys/values (batch counterpart of the already-fixed route()-level version) |
+| 135 | **Defect (fixed)** | batch_route()'s debug print `time.time() - start_time` -> `+` -- same unbounded-regex gap as 80 |
+
+Net: 20 defect-classes fixed in one batched commit, 4 confirmed equivalent, 3 already covered by
+pre-existing assertions, 5 phantom. **Zero unclassified survivors.**
 
 ### `energy.py` -- full classification (73 survivors + 1 suspicious, worked example)
 

@@ -1,8 +1,9 @@
 import io
+import json
 import re
 from contextlib import redirect_stdout
 from typing import Dict, cast
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, PropertyMock
 
 import numpy as np
 
@@ -152,6 +153,137 @@ def test_router_disabled_controller_reports_exact_current_state() -> None:
         "drift_integral": 0.67,
         "lyapunov_function": 0.89,
     }
+
+
+def test_router_default_update_stride_is_eight() -> None:
+    """Every other test passes `update_stride=` explicitly -- the
+    constructor's actual default (8) was never exercised."""
+    model = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
+    router = CompitumRouter(
+        models=[model],
+        predictors={
+            "m1": {
+                "quality": MagicMock(spec=CalibratedPredictor),
+                "latency": MagicMock(spec=CalibratedPredictor),
+                "cost": MagicMock(spec=CalibratedPredictor),
+            }
+        },
+        solver=MagicMock(),
+        coherence=MagicMock(),
+        boundary=MagicMock(),
+        srmf=MagicMock(),
+        pgd_extractor=MagicMock(),
+        metric_map={"m1": MagicMock(spec=SymbolicManifoldMetric)},
+        energy=MagicMock(),
+    )
+    assert router._stride == 8
+
+
+def test_switch_certificate_to_json_truncates_signature_to_16_chars() -> None:
+    """The existing to_json tests use signatures exactly 16 chars long,
+    where `[:16]` and `[:17]` produce identical results -- use a longer
+    signature so the truncation itself is actually exercised."""
+    cert = SwitchCertificate(
+        model="m1",
+        utility=1.0,
+        utility_components={},
+        constraints={},
+        boundary_analysis={},
+        drift_status={},
+        pgd_signature="0123456789abcdefXXXX",
+        timestamp=0.0,
+    )
+    data = json.loads(cert.to_json())
+    assert data["pgd_signature"] == "0123456789abcdef"
+
+
+def test_switch_certificate_to_json_exact_indentation() -> None:
+    """No existing test checks the raw JSON text's formatting -- only its
+    parsed content, which is indent-agnostic."""
+    cert = SwitchCertificate(
+        model="m1",
+        utility=1.0,
+        utility_components={},
+        constraints={},
+        boundary_analysis={},
+        drift_status={},
+        pgd_signature="abcd1234",
+        timestamp=0.0,
+    )
+    lines = cert.to_json().splitlines()
+    assert lines[1].startswith('  "') and not lines[1].startswith('   "')
+
+
+def test_router_route_grad_norm_placeholder_and_eta_when_metric_update_fires() -> None:
+    """`grad_norm` starts at a `1.0` placeholder, and if the metric-update
+    branch fires it's passed to `met.update_spd` with `eta=1e-2` -- neither
+    the placeholder's replacement nor the eta value were ever asserted,
+    only that `update_spd` was called at all."""
+    model = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
+    energy = MagicMock()
+    energy.compute.return_value = (0.9, 0.1, {"distance": -0.5})
+    type(energy).beta_d = PropertyMock(return_value=0.5)
+    metric = MagicMock(spec=SymbolicManifoldMetric)
+    metric.update_spd.return_value = 3.0  # distinct from the 1.0 placeholder
+    solver = MagicMock()
+    solver.select.return_value = (model, {"feasible": True})
+    boundary = MagicMock()
+    boundary.analyze.return_value = {"is_boundary": False}
+    controller = MagicMock()
+    controller.update.return_value = (1.0, {"trust_radius": 1.0})
+    router = CompitumRouter(
+        models=[model],
+        predictors={
+            "m1": {
+                "quality": MagicMock(spec=CalibratedPredictor),
+                "latency": MagicMock(spec=CalibratedPredictor),
+                "cost": MagicMock(spec=CalibratedPredictor),
+            }
+        },
+        solver=solver,
+        coherence=MagicMock(),
+        boundary=boundary,
+        srmf=controller,
+        pgd_extractor=MagicMock(),
+        metric_map={"m1": metric},
+        energy=energy,
+        update_stride=1,
+    )
+    router.route("hello")
+    assert metric.update_spd.call_args.kwargs["eta"] == 1e-2
+    grad_norm_used = controller.update.call_args.kwargs["grad_norm"]
+    assert grad_norm_used == 3.0
+
+
+def test_router_route_grad_norm_placeholder_when_metric_update_does_not_fire() -> None:
+    """With stride never reached, grad_norm must stay at the literal `1.0`
+    placeholder passed into the controller, not some other constant."""
+    router = _make_router(update_stride=1000)
+    router.route("hello")
+    grad_norm_used = router.controller.update.call_args.kwargs["grad_norm"]  # type: ignore[union-attr]
+    assert grad_norm_used == 1.0
+
+
+def test_router_route_print_elapsed_time_is_bounded() -> None:
+    """The existing route() debug-print test only regex-matches the printed
+    line's structure, which a `time.time() + start_time` mutation would
+    still satisfy -- bound the parsed elapsed value to catch the sign flip."""
+    import os
+
+    router = _make_router(update_stride=1000)
+    prev = os.environ.get("COMPITUM_DEBUG_ROUTER")
+    os.environ["COMPITUM_DEBUG_ROUTER"] = "1"
+    router._step = 99
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        router.route("hello")
+    if prev is None:
+        del os.environ["COMPITUM_DEBUG_ROUTER"]
+    else:
+        os.environ["COMPITUM_DEBUG_ROUTER"] = prev
+    out = buf.getvalue()
+    elapsed = float(re.search(r"took (\d+\.\d{4}) seconds", out).group(1))  # type: ignore[union-attr]
+    assert elapsed < 5.0
 
 
 def test_router_batch_route_debug_print_exact_content() -> None:
