@@ -51,3 +51,34 @@ def test_energy_monotonic_wrt_distance_and_evidence():
     # Evidence term should be higher near cluster
     assert comps_near["evidence"] >= comps_far["evidence"]
 
+
+def test_energy_evidence_uses_xR_minus_center_not_plus():
+    """model.center == zeros in every other energy test, where xR - center and
+    xR + center are identical -- that makes the sign in `W @ (xR - model.center)`
+    completely unobservable. Use a nonzero center and a coherence cluster seeded
+    around the *relative* origin (xw ~ 0, i.e. near x == center) so the two
+    signs produce opposite evidence orderings."""
+    D = 1
+    center = np.array([2.0])
+    model = Model(name="m", center=center, capabilities=Capabilities(regions={"US"}, tools_allowed={"none"}), cost=0.1)
+    predictors = _constant_predictors(D)
+    metric = SymbolicManifoldMetric(D, rank=1, delta=1e-3)
+    coherence = CoherenceFunctional(k=50)
+
+    rng = np.random.default_rng(0)
+    for _ in range(20):
+        xw = rng.normal(0.0, 0.05, size=D)
+        coherence.update(model.name, xw, success=1.0)
+
+    energy = SymbolicFreeEnergy(alpha=1.0, beta_t=0.5, beta_c=0.2, beta_d=0.3, beta_s=0.4)
+
+    # x_at_center: correct xw = W@(x-center) = W@(0) -> near the seeded cluster
+    x_at_center = center.copy()
+    # x_mirrored: correct xw = W@(x-center) = W@(-4) -> far from the cluster
+    x_mirrored = np.array([-2.0])
+
+    _, _, comps_at_center = energy.compute(x_at_center, model, predictors, coherence, metric)
+    _, _, comps_mirrored = energy.compute(x_mirrored, model, predictors, coherence, metric)
+
+    assert comps_at_center["evidence"] > comps_mirrored["evidence"]
+
