@@ -43,7 +43,13 @@ jobs:
   mutmut-shard:
     if: ${{ inputs.mutmut }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 30 min was too short for the largest targets: a real run (2026-07-20)
+    # measured router.py/energy.py/metric.py/pgd.py all hitting this exact
+    # timeout mid-sweep (job log shows "Terminate orphan process (mutmut)"),
+    # while completed shards averaged ~3 mutants/min sustained -- router.py
+    # (137 mutants) and energy.py (178 mutants) need ~45-65 min just by that
+    # rate, before any per-run variance. 90 min gives real headroom.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       max-parallel: 6
@@ -146,7 +152,6 @@ jobs:
           # so report filenames never imply a reports/<subdir>/ that was never created.
           BASE="${TARGET_FILE%.py}"; BASE="${BASE//\//_}"
           mutmut results | tee "reports/mutmut_results_${BASE}.txt"
-          mutmut results --all | tee "reports/mutmut_results_${BASE}_full.txt" || true
 
       - name: Mutmut survivor details (${{ matrix.file }})
         if: always()
@@ -157,13 +162,19 @@ jobs:
           echo "# Mutmut survivors for ${BASE}" > "reports/mutmut_survivors_${BASE}.txt"
           python tools/mutmut_survivor_details.py --base "$BASE"
           echo "Wrote survivor details (if any) to reports/mutmut_survivors_${BASE}.txt"
+          # Sanitized basename, exported for the artifact-upload step below --
+          # actions/upload-artifact rejects "/" in artifact names, which
+          # matrix.file contains for nested-path targets (e.g.
+          # integrations/matbench_adapter.py), failing the whole job on an
+          # otherwise-successful mutation run.
+          echo "BASE=${BASE}" >> "$GITHUB_ENV"
 
       # Gating is handled in the caller (e.g., Full Validation); this shard always uploads reports
 
       - name: Upload artifacts (mutmut shard)
         uses: actions/upload-artifact@v4
         with:
-          name: mutation-validation-mutmut-${{ matrix.file }}
+          name: mutation-validation-mutmut-${{ env.BASE }}
           path: |
             reports/*.txt
           retention-days: 7
