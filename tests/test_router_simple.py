@@ -1,5 +1,10 @@
-import numpy as np
+import io
+import re
+from contextlib import redirect_stdout
+from typing import Dict, cast
 from unittest.mock import MagicMock
+
+import numpy as np
 
 from compitum.metric import SymbolicManifoldMetric
 from compitum.models import Model
@@ -132,3 +137,40 @@ def test_router_disabled_controller_reports_exact_current_state() -> None:
         "drift_integral": 0.67,
         "lyapunov_function": 0.89,
     }
+
+
+def test_router_batch_route_debug_print_exact_content() -> None:
+    """batch_route()'s debug print used to be `# pragma: no cover`-excluded
+    (removed per policy: no pragma shortcuts, only genuine equivalent
+    mutants). It also had no working test at all -- the only prior attempts
+    were commented-out dead code. Assert the full printed line's structure
+    via regex (elapsed time is non-deterministic)."""
+    model1 = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
+    energy = MagicMock()
+    energy.batch_compute.return_value = (
+        np.array([0.9] * 100), np.array([0.1] * 100), [{"distance": -0.5}] * 100,
+    )
+    solver = MagicMock()
+    solver.select.return_value = (model1, {"feasible": True})
+    srmf = MagicMock()
+    srmf.batch_update.return_value = ([1.0] * 100, [{"trust_radius": 1.0}] * 100)
+    router = CompitumRouter(
+        models=[model1],
+        predictors=cast(Dict[str, Dict[str, CalibratedPredictor]], {
+            "m1": {"quality": MagicMock(spec=CalibratedPredictor),
+                   "latency": MagicMock(spec=CalibratedPredictor),
+                   "cost": MagicMock(spec=CalibratedPredictor)},
+        }),
+        solver=solver, coherence=MagicMock(), boundary=MagicMock(), srmf=srmf,
+        pgd_extractor=MagicMock(),
+        metric_map=cast(Dict[str, SymbolicManifoldMetric], {"m1": MagicMock(spec=SymbolicManifoldMetric)}),
+        energy=energy, update_stride=1000,
+    )
+    router._step = 0
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        router.batch_route(np.random.rand(100, 2), [f"p{i}" for i in range(100)])
+    out = buf.getvalue()
+    assert re.fullmatch(
+        r"CompitumRouter\.batch_route took \d+\.\d{4} seconds for 100 samples\n", out
+    )

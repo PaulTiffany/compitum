@@ -169,7 +169,7 @@ class CompitumRouter:
         if (
             self._step % 100 == 0
             and os.environ.get("COMPITUM_DEBUG_ROUTER") == "1"
-        ):  # pragma: no cover - debug output only
+        ):
             print(f"CompitumRouter.route took {time.time() - start_time:.4f} seconds")
         return cert
 
@@ -293,7 +293,7 @@ class CompitumRouter:
         for i in range(num_samples):
             certificates[i].drift_status = drift_statuses[i]
 
-        if self._step % 100 == 0:  # pragma: no cover - debug output only
+        if self._step % 100 == 0:
             print(
                 f"CompitumRouter.batch_route took {time.time() - start_time:.4f} "
                 f"seconds for {num_samples} samples"

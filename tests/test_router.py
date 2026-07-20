@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import uuid
 from typing import Any, Dict, List, cast
 from unittest.mock import MagicMock, PropertyMock, patch
@@ -156,7 +157,12 @@ def test_router_route_no_stride_update(mock_print: MagicMock) -> None:
         del os.environ["COMPITUM_DEBUG_ROUTER"]
     else:
         os.environ["COMPITUM_DEBUG_ROUTER"] = prev
+    # Only checking the call count leaves the printed line's actual content
+    # (the "CompitumRouter.route took ... seconds" text) unverified -- match
+    # its full structure via regex since the elapsed time is non-deterministic.
     mock_print.assert_called_once()
+    printed = mock_print.call_args[0][0]
+    assert re.fullmatch(r"CompitumRouter\.route took \d+\.\d{4} seconds", printed)
 
 
 def test_router_route_with_embedding() -> None:
