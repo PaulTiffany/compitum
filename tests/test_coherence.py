@@ -5,6 +5,21 @@ import numpy as np
 from compitum.coherence import CoherenceFunctional, WeightedReservoir
 
 
+def test_reservoir_default_k() -> None:
+    """Every other test passes `k=` explicitly -- the constructor's actual
+    default (1000) was never exercised."""
+    reservoir = WeightedReservoir()
+    assert reservoir.k == 1000
+
+
+def test_coherence_functional_default_k() -> None:
+    """Same gap as the reservoir default above, one level up: every test
+    constructs `CoherenceFunctional()` with no args but never checks the `k`
+    it passes down to each lazily-created `WeightedReservoir`."""
+    coherence = CoherenceFunctional()
+    assert coherence.res["any_model"].k == 1000
+
+
 def test_reservoir_add_below_k() -> None:
     reservoir = WeightedReservoir(k=5)
     for i in range(4):
@@ -96,6 +111,62 @@ def test_reservoir_add_above_k_no_replace() -> None:
     # Assert that the buffer is unchanged
     for i in range(3):
         assert reservoir.buf[i][0][0] == original_buf_content[i]
+
+
+def test_reservoir_replace_index_exactly_at_k_does_not_replace() -> None:
+    """The existing mocked-RNG tests use j=0 (well inside k) and j=4 (clearly
+    outside k=3) -- neither exercises j == k exactly, where `j < self.k`
+    (correct, no replace) and `j <= self.k` (mutant, replaces) disagree."""
+    mock_rng = MagicMock()
+    mock_rng.integers.return_value = 3  # exactly k
+
+    reservoir = WeightedReservoir(k=3, rng=mock_rng)
+    for i in range(3):
+        reservoir.add(np.array([i]), 1.0)
+    original = [item[0][0] for item in reservoir.buf]
+
+    reservoir.add(np.array([99]), 1.0)
+    assert [item[0][0] for item in reservoir.buf] == original
+
+
+def test_fit_bandwidth_matches_scott_rule_exactly() -> None:
+    """No existing test checks the fitted KDE's actual bandwidth value --
+    only downstream behavior (evidence != 0), which doesn't distinguish a
+    changed sign or a +1 shift in Scott's rule's exponent denominator."""
+    coherence = CoherenceFunctional()
+    rng = np.random.default_rng(0)
+    for _ in range(15):
+        coherence.update("m", rng.random(2), 1.0)
+    kde = coherence._fit("m")
+    n, d = 15, 2
+    assert kde is not None
+    assert kde.bandwidth == n ** (-1.0 / (d + 4))
+
+
+def test_log_evidence_clips_to_exact_bounds() -> None:
+    """No existing test's KDE score naturally exceeds +-10 (Scott's-rule
+    bandwidth keeps realistic log-densities well inside that range), so the
+    clip's exact bounds were never exercised on either side. Mock the fitted
+    KDE directly to force scores outside the clip range."""
+    coherence = CoherenceFunctional()
+    mock_kde = MagicMock()
+    coherence.kde_cache["m"] = mock_kde
+
+    mock_kde.score_samples.return_value = np.array([50.0])
+    assert coherence.log_evidence("m", np.array([0.0])) == 10.0
+
+    mock_kde.score_samples.return_value = np.array([-50.0])
+    assert coherence.log_evidence("m", np.array([0.0])) == -10.0
+
+
+def test_batch_log_evidence_clips_to_exact_bounds() -> None:
+    coherence = CoherenceFunctional()
+    mock_kde = MagicMock()
+    coherence.kde_cache["m"] = mock_kde
+    mock_kde.score_samples.return_value = np.array([50.0, -50.0])
+
+    result = coherence.batch_log_evidence("m", np.array([[0.0], [0.0]]))
+    assert list(result) == [10.0, -10.0]
 
 
 def test_batch_log_evidence() -> None:

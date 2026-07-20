@@ -74,7 +74,11 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   never exercised since every other test passes them explicitly); `eta_cap`'s `+1e-6` epsilon is
   checked at `grad_norm=0.0`, where it's the entire denominator, not `2.0`, where it's too small a
   relative perturbation for the default tolerance to catch — `tests/test_control.py`
-- `symbolic.py`: `+`, `*`, `@` operators evaluate correctly, not just `-`/`/` — `tests/test_symbolic.py`
+- `symbolic.py`: `+`, `*`, `@` operators evaluate correctly, not just `-`/`/`; `SymbolicValue.to_latex`
+  is genuinely `@abstractmethod` (direct instantiation raises `TypeError`); `TypeError`/`ValueError`
+  messages match their exact text, not just that *some* exception of that type was raised;
+  `__matmul__`'s empty `latex_op` and `SymbolicMatrix.T`'s `f"{name}^T"` label are both checked via
+  `to_latex()`/`.name`, not just `.evaluate()` — `tests/test_symbolic.py`
 - `security.py`: SHA-256 outputs match the exact expected digest (not just length 64);
   `is_offline()`/`redaction_enabled()` default to `False` when unset; `AuditRecord.commit` defaults
   to `None`, not `""`; `write_audit_record` creates missing parent directories and its filename
@@ -89,7 +93,12 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   messages match their exact full text, not just an unanchored substring (`pytest.raises(match=)`
   is a substring search, so text wrapped around the expected substring still "matches") —
   `tests/integrations/test_matbench_adapter.py`
-- `coherence.py`: `WeightedReservoir` clamps nonpositive weights to `1e-6` — `tests/test_coherence.py`
+- `coherence.py`: `WeightedReservoir` clamps nonpositive weights to `1e-6`; `WeightedReservoir`'s and
+  `CoherenceFunctional`'s `k` constructor default is `1000`; reservoir replacement doesn't fire when
+  the sampled index equals `k` exactly (`j < k`, not `<=`); the fitted KDE's bandwidth matches
+  Scott's rule exactly (`n ** (-1/(d+4))`); `log_evidence`/`batch_log_evidence` clip to exactly
+  `[-10.0, 10.0]` (checked via a mocked KDE forcing extreme scores, since realistic fits never
+  naturally exceed that range) — `tests/test_coherence.py`
 - `energy.py`: `comps["uncertainty"]`/`U_var` match the exact variance formula (both `compute()` and
   `batch_compute()`); debug/timing prints match their full exact (or regex-matched, elapsed-time
   bounded) content, not just a leading substring; evidence uses `xR - model.center`, not `+`, in
@@ -118,3 +127,7 @@ Known true equivalent mutants (not gaps):
   to `arr` before the exponential (softmax shift-invariance), and `u1` is a single scalar shared
   across every element of `arr`. Only distinguishable via float overflow at utility magnitudes far
   outside this system's realistic bounded range.
+- `coherence.py`'s `sample_weight=w / w.sum()` vs `w * w.sum()` — sklearn's `KernelDensity.fit`
+  internally renormalizes `sample_weight` before use, so any positive scalar rescaling of the same
+  weight vector produces identical results up to ~1e-15 floating-point noise (verified empirically,
+  not assumed).
