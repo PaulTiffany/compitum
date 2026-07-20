@@ -1,4 +1,5 @@
 import os
+import re
 import io
 from contextlib import redirect_stdout
 
@@ -39,6 +40,28 @@ def test_energy_compute_debug_prints_when_env_set():
         assert "DEBUG: Model:" in out  # printed diagnostic present
         assert isinstance(U, float) and isinstance(U_sigma, float)
         assert set(comps.keys()) >= {"quality", "latency", "cost", "distance", "evidence", "uncertainty"}
+
+        # Only checking a substring above leaves every other static label and
+        # variable in both debug print statements unverified -- a mutation to
+        # any of them (wrong label text, swapped variable, dropped field)
+        # would survive. Reconstruct the two lines' exact expected content
+        # from the actual returned comps/energy state (not hardcoded values,
+        # since metric.distance()'s internal randomness makes d/log_e
+        # non-reproducible across runs) and assert full equality.
+        q0 = comps["quality"]
+        t0 = -comps["latency"]
+        c0 = -comps["cost"] - model.cost
+        d = -comps["distance"]
+        log_e = comps["evidence"]
+        expected_line1 = (
+            f"DEBUG: Model: {model.name}, q0: {q0}, t0: {t0}, c0: {c0}, "
+            f"cost: {model.cost}, d: {d}, log_e: {log_e}"
+        )
+        expected_line2 = (
+            f"DEBUG: alpha: {energy.alpha}, beta_t: {energy.beta_t}, beta_c: {energy.beta_c}, "
+            f"beta_d: {energy.beta_d}, beta_s: {energy.beta_s}"
+        )
+        assert out == expected_line1 + "\n" + expected_line2 + "\n"
     finally:
         os.environ.pop("COMPITUM_DEBUG_ENERGY", None)
 
@@ -56,8 +79,13 @@ def test_energy_batch_compute_prints_on_step_multiple():
     buf = io.StringIO()
     with redirect_stdout(buf):
         U_batch, U_sigma_batch, comps_list = energy.batch_compute(x_batch, model, predictors, coherence, metric)
-    # Expect a timing print due to step multiple of 100
-    assert "SymbolicFreeEnergy.batch_compute took" in buf.getvalue()
+    # Expect a timing print due to step multiple of 100. The elapsed-time
+    # value is inherently non-deterministic, so match the full line
+    # structure via regex rather than just a leading substring.
+    out = buf.getvalue()
+    assert re.fullmatch(
+        r"SymbolicFreeEnergy\.batch_compute took \d+\.\d{4} seconds for 1 samples\n", out
+    )
     assert U_batch.shape == (1,) and U_sigma_batch.shape == (1,) and len(comps_list) == 1
 
 
@@ -76,6 +104,12 @@ def test_energy_compute_timing_print_on_step_multiple():
         buf = io.StringIO()
         with redirect_stdout(buf):
             energy.compute(x, model, predictors, coherence, metric)
-        assert "SymbolicFreeEnergy.compute took" in buf.getvalue()
+        out = buf.getvalue()
+        # Two DEBUG lines (env-gated) precede the timing line here since
+        # COMPITUM_DEBUG_ENERGY is set; match the timing line's full
+        # structure via regex (elapsed time is non-deterministic).
+        assert re.search(
+            r"^SymbolicFreeEnergy\.compute took \d+\.\d{4} seconds\n\Z", out.splitlines(keepends=True)[-1]
+        )
     finally:
         os.environ.pop("COMPITUM_DEBUG_ENERGY", None)
