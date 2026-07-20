@@ -35,7 +35,11 @@ class _FixedPositivePredictor(CalibratedPredictor):
         return y, lo, hi
 
 
-def _setup_common(D: int = 8) -> tuple[np.ndarray, Model, dict[str, CalibratedPredictor], CoherenceFunctional, SymbolicManifoldMetric]:
+def _setup_common(
+    D: int = 8,
+) -> tuple[
+    np.ndarray, Model, dict[str, CalibratedPredictor], CoherenceFunctional, SymbolicManifoldMetric
+]:
     xR = np.zeros(D)
     center = np.ones(D) * 0.1
     caps = Capabilities(regions={"US", "EU"}, tools_allowed={"none"})

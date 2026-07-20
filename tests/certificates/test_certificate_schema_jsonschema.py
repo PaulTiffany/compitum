@@ -29,9 +29,12 @@ def _build_router() -> CompitumRouter:
         q = rng.random(128)
         t = rng.random(128)
         c = rng.random(128)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}
@@ -69,6 +72,7 @@ def _build_router() -> CompitumRouter:
 def test_certificate_validates_against_jsonschema():
     r = _build_router()
     import numpy as np
+
     emb = np.zeros(32, dtype=np.float32)
     data = json.loads(r.route("AM-GM", embedding=emb).to_json())
 

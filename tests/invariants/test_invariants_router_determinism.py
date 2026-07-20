@@ -24,14 +24,18 @@ def _router() -> CompitumRouter:
         q = rng.random(128)
         t = rng.random(128)
         c = rng.random(128)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=6, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=64)
     from pathlib import Path
+
     A, B = _load_constraints(Path("configs/constraints_us_default.yaml"))
     solver = ReflectiveConstraintSolver(A, B)
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)
@@ -60,6 +64,7 @@ def test_repeated_route_is_deterministic(text: str) -> None:
     r = _router()
     # Use an explicit embedding to avoid PGD feature-length drift
     import numpy as np
+
     D = 32
     emb = np.zeros(D, dtype=np.float32)
     c1 = r.route(text, embedding=emb)

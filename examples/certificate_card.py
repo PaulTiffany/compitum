@@ -29,20 +29,33 @@ def build_router(D: int, defaults_path: Path, constraints_path: Path, seed: int)
         q = rng.random(256)
         t = rng.random(256)
         c = rng.random(256)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
-    dcfg = json.loads(Path(defaults_path).read_text().replace("'", '"')) if defaults_path.suffix == ".json" else None
+    dcfg = (
+        json.loads(Path(defaults_path).read_text().replace("'", '"'))
+        if defaults_path.suffix == ".json"
+        else None
+    )
     # Fallback: YAML via CLI helper
     if dcfg is None:
         import yaml
+
         dcfg = yaml.safe_load(Path(defaults_path).read_text())
 
     A, B = _load_constraints(constraints_path)
     solver = ReflectiveConstraintSolver(A, B)
-    met = {m.name: SymbolicManifoldMetric(D, rank=int(dcfg["metric"]["rank"]), delta=float(dcfg["metric"]["delta"])) for m in models}
+    met = {
+        m.name: SymbolicManifoldMetric(
+            D, rank=int(dcfg["metric"]["rank"]), delta=float(dcfg["metric"]["delta"])
+        )
+        for m in models
+    }
     coherence = CoherenceFunctional(k=128)
     boundary = BoundaryAnalyzer(
         float(dcfg.get("boundary", {}).get("gap_threshold", 0.05)),
@@ -55,7 +68,16 @@ def build_router(D: int, defaults_path: Path, constraints_path: Path, seed: int)
     )
     pgd = RegexPromptExtractor()
     return CompitumRouter(
-        models, predictors, solver, coherence, boundary, ctrl, pgd, met, energy, update_stride=int(dcfg["update_stride"])
+        models,
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        ctrl,
+        pgd,
+        met,
+        energy,
+        update_stride=int(dcfg["update_stride"]),
     )
 
 
@@ -72,7 +94,9 @@ def render_markdown_card(data: Dict[str, Any]) -> str:
             lines.append(f"  - {k}: {v:+.4f}")
     b = data.get("boundary", {})
     if b:
-        gap = b.get("utility_gap"); ent = b.get("entropy"); amb = b.get("is_boundary")
+        gap = b.get("utility_gap")
+        ent = b.get("entropy")
+        amb = b.get("is_boundary")
         lines.append(f"- Boundary: gap={gap:.4f} entropy={ent:.4f} ambiguous={amb}")
     c = data.get("constraints", {})
     if c:
@@ -91,7 +115,9 @@ def render_markdown_card(data: Dict[str, Any]) -> str:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Route a prompt and print a Markdown certificate card.")
+    ap = argparse.ArgumentParser(
+        description="Route a prompt and print a Markdown certificate card."
+    )
     ap.add_argument("--prompt", required=True, help="Prompt to route")
     ap.add_argument("--defaults", type=Path, default=Path("configs/router_defaults.yaml"))
     ap.add_argument("--constraints", type=Path, default=Path("configs/constraints_us_default.yaml"))

@@ -13,7 +13,10 @@ def main() -> int:
     zpath = out_dir / "pedagogy_pack.zip"
     with zipfile.ZipFile(zpath, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         # Demo script
-        zf.write(root / "examples" / "pedagogy_control_of_error.py", arcname="examples/pedagogy_control_of_error.py")
+        zf.write(
+            root / "examples" / "pedagogy_control_of_error.py",
+            arcname="examples/pedagogy_control_of_error.py",
+        )
         # Lab worksheet
         zf.write(root / "docs" / "Pedagogy-Lab.md", arcname="docs/Pedagogy-Lab.md")
         # Sample certificate (if exists)
@@ -31,4 +34,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -69,8 +69,10 @@ def ensure_dirs(path: pathlib.Path) -> None:
 
 def load_mapping(path: pathlib.Path) -> List[Dict[str, Any]]:
     if yaml is None:
-        raise SystemExit("Missing dependency: pyyaml. Install with `pip install pyyaml`.\n"
-                        f"Mapping file required at: {path}")
+        raise SystemExit(
+            "Missing dependency: pyyaml. Install with `pip install pyyaml`.\n"
+            f"Mapping file required at: {path}"
+        )
     with path.open("r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
     if not isinstance(data, list):
@@ -90,9 +92,8 @@ def github_and_nbviewer_links(repo: str, branch: str, nb_rel: str) -> str:
         from urllib.parse import quote as urlquote  # type: ignore
     except Exception:
         urlquote = lambda x: x  # noqa: E731
-    binder_url = (
-        f"https://mybinder.org/v2/gh/{repo}/{branch}?labpath="
-        + urlquote(nb_rel.replace(os.sep, '/'))
+    binder_url = f"https://mybinder.org/v2/gh/{repo}/{branch}?labpath=" + urlquote(
+        nb_rel.replace(os.sep, "/")
     )
 
     parts = [
@@ -178,7 +179,9 @@ def main() -> None:
     ap.add_argument("--repo", default="PaulTiffany/compitum")
     ap.add_argument("--branch", default="main")
     ap.add_argument("--check", action="store_true", help="Do not write files; only check commands.")
-    ap.add_argument("--execute-all", action="store_true", help="Execute all mapped notebooks before conversion.")
+    ap.add_argument(
+        "--execute-all", action="store_true", help="Execute all mapped notebooks before conversion."
+    )
     ap.add_argument("--timeout", type=int, default=600, help="Execution timeout per notebook (s)")
     args = ap.parse_args()
 
@@ -210,7 +213,9 @@ def main() -> None:
             if gen_root.exists():
                 shutil.rmtree(gen_root)
             ensure_dirs(gen_root)
-            produced_md = nbconvert_to_markdown(nb_path, gen_root, out_name, execute=execute, timeout=args.timeout)
+            produced_md = nbconvert_to_markdown(
+                nb_path, gen_root, out_name, execute=execute, timeout=args.timeout
+            )
             md_text = produced_md.read_text(encoding="utf-8")
             md_text = rewrite_asset_paths(md_text, assets_dirname)
 

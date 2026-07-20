@@ -27,9 +27,12 @@ def _build_router(D: int = 32, enable_controller: bool = True) -> CompitumRouter
         q = rng.random(256)
         t = rng.random(256)
         c = rng.random(256)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}

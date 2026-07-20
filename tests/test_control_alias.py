@@ -17,4 +17,3 @@ def test_srmf_alias_behaves_like_lyapunov() -> None:
     g = np.array([1.0, 1.0, 1.0], float)
     etas, statuses = c.batch_update(d, g)
     assert len(etas) == 3 and len(statuses) == 3
-

@@ -112,4 +112,3 @@ def test_unique_tokens_non_decreasing(k: int) -> None:
     sem4_idx = 21 + 4  # token count
     assert v1[sem3_idx] >= v0[sem3_idx]
     assert v1[sem4_idx] >= v0[sem4_idx]
-

@@ -30,7 +30,9 @@ from compitum.router import CompitumRouter
     steps=st.integers(1, 10),
     grad=st.floats(1e-6, 1e3),
 )
-def test_lyapunov_decays_under_zero_error(r0: float, integral0: float, steps: int, grad: float) -> None:
+def test_lyapunov_decays_under_zero_error(
+    r0: float, integral0: float, steps: int, grad: float
+) -> None:
     """With d_star == 0 over multiple steps, the Lyapunov candidate (integral^2)
     should be non-increasing due to anti-windup decay.
     """
@@ -50,7 +52,9 @@ def test_lyapunov_decays_under_zero_error(r0: float, integral0: float, steps: in
     dstars=st.lists(st.floats(0.0, 5.0), min_size=1, max_size=10),
     gnorms=st.lists(st.floats(1e-6, 1e3), min_size=1, max_size=10),
 )
-def test_controller_batch_equivalence_to_sequential(n: int, dstars: List[float], gnorms: List[float]) -> None:
+def test_controller_batch_equivalence_to_sequential(
+    n: int, dstars: List[float], gnorms: List[float]
+) -> None:
     """Batch update should be equivalent to applying single-step update sequentially."""
     # Truncate to min length
     m = min(n, len(dstars), len(gnorms))
@@ -76,7 +80,9 @@ def test_controller_batch_equivalence_to_sequential(n: int, dstars: List[float],
             assert np.isclose(s1[k], s2[k])
 
 
-def _build_single_model_router(D: int = 8, stride: int = 3) -> Tuple[CompitumRouter, SymbolicManifoldMetric, np.ndarray]:
+def _build_single_model_router(
+    D: int = 8, stride: int = 3
+) -> Tuple[CompitumRouter, SymbolicManifoldMetric, np.ndarray]:
     rng = np.random.default_rng(0)
     center = rng.normal(0.0, 0.5, size=D)
     # Provide permissive capabilities so feasibility checks pass
@@ -86,7 +92,11 @@ def _build_single_model_router(D: int = 8, stride: int = 3) -> Tuple[CompitumRou
     model = Model(name="m", center=center, capabilities=caps, cost=0.1)
 
     predictors: dict[str, dict[str, CalibratedPredictor]] = {
-        model.name: {"quality": CalibratedPredictor(), "latency": CalibratedPredictor(), "cost": CalibratedPredictor()}
+        model.name: {
+            "quality": CalibratedPredictor(),
+            "latency": CalibratedPredictor(),
+            "cost": CalibratedPredictor(),
+        }
     }
     # Minimal fitting to allow predictions
     X = rng.standard_normal((256, D))
@@ -105,9 +115,18 @@ def _build_single_model_router(D: int = 8, stride: int = 3) -> Tuple[CompitumRou
     energy = SymbolicFreeEnergy(alpha=0.5, beta_t=0.5, beta_c=0.5, beta_d=0.5, beta_s=0.0)
     pgd = RegexPromptExtractor()
 
-    router = CompitumRouter([
-        model
-    ], predictors, solver, coherence, boundary, controller, pgd, metrics, energy, update_stride=stride)
+    router = CompitumRouter(
+        [model],
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        controller,
+        pgd,
+        metrics,
+        energy,
+        update_stride=stride,
+    )
 
     return router, metrics[model.name], center
 

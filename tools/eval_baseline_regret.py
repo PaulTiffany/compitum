@@ -42,7 +42,14 @@ def _kfold_oof_scores(
             vaX = X[~mask][valid]
             if len(trX) == 0 or len(vaX) == 0:
                 continue
-            model_lgb = lgb.LGBMRegressor(n_estimators=200, learning_rate=0.05, max_depth=-1, subsample=0.9, colsample_bytree=0.9, random_state=seed)
+            model_lgb = lgb.LGBMRegressor(
+                n_estimators=200,
+                learning_rate=0.05,
+                max_depth=-1,
+                subsample=0.9,
+                colsample_bytree=0.9,
+                random_state=seed,
+            )
             model_lgb.fit(trX, trY)
             preds = model_lgb.predict(vaX)
             oof[np.where(~mask)[0][valid]] = preds
@@ -64,7 +71,9 @@ def _kfold_oof_scores(
     return oof
 
 
-def _topk_regret(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str = "max") -> List[Dict[str, float]]:
+def _topk_regret(
+    y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str = "max"
+) -> List[Dict[str, float]]:
     # Define utility u to always maximize, matching eval_matbench_regret.py's convention.
     u = -y if mode == "min" else y
     order_oracle = np.argsort(u)[::-1]
@@ -82,11 +91,13 @@ def _topk_regret(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str = "
         oracle = float(cumsum_oracle[k - 1])
         model = float(u[order_model[:k]].sum())
         reg = max(0.0, oracle - model)
-        out.append({
-            "k": float(k),
-            "regret": reg,
-            "regret_norm": 0.0 if oracle == 0.0 else reg / abs(oracle),
-        })
+        out.append(
+            {
+                "k": float(k),
+                "regret": reg,
+                "regret_norm": 0.0 if oracle == 0.0 else reg / abs(oracle),
+            }
+        )
     return out
 
 
@@ -100,7 +111,9 @@ def _aurc(rows: List[Dict[str, float]]) -> float:
     return float(_trapz(ys, xs) / xs[-1])
 
 
-def _bootstrap_aurc(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str, *, n_boot: int, seed: int) -> Dict[str, float]:
+def _bootstrap_aurc(
+    y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str, *, n_boot: int, seed: int
+) -> Dict[str, float]:
     if n_boot <= 0:
         return {}
     rng = np.random.default_rng(seed)
@@ -118,8 +131,12 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Baseline regret via CV scores (ridge or lgbm)")
     ap.add_argument("--path", type=Path, required=True)
     ap.add_argument("--objective-col", type=str, required=True)
-    ap.add_argument("--mode", type=str, choices=["max", "min"], default="max", help="Objective direction")
-    ap.add_argument("--feature-cols", type=str, default="band_gap,density,nsites,formation_energy_per_atom")
+    ap.add_argument(
+        "--mode", type=str, choices=["max", "min"], default="max", help="Objective direction"
+    )
+    ap.add_argument(
+        "--feature-cols", type=str, default="band_gap,density,nsites,formation_energy_per_atom"
+    )
     ap.add_argument("--model", type=str, default="ridge", choices=["ridge", "lgbm"])
     ap.add_argument("--folds", type=int, default=5)
     ap.add_argument("--topk-grid", type=str, default="1,5,10")
@@ -127,7 +144,9 @@ def main() -> int:
     ap.add_argument("--bootstrap", type=int, default=0)
     ap.add_argument("--out-csv", type=Path, default=Path("reports/matbench_baseline_regret.csv"))
     ap.add_argument("--out-json", type=Path, default=Path("reports/matbench_baseline_regret.json"))
-    ap.add_argument("--plot", action="store_true", help="If matplotlib is available, emit plots to reports/")
+    ap.add_argument(
+        "--plot", action="store_true", help="If matplotlib is available, emit plots to reports/"
+    )
     args = ap.parse_args()
 
     df = pd.read_csv(args.path)
@@ -148,7 +167,9 @@ def main() -> int:
     out_df.to_csv(args.out_csv, index=False)
     summary: Dict[str, Any] = {"AURC": _aurc(rows)}
     if args.bootstrap > 0:
-        summary["AURC_CI"] = _bootstrap_aurc(y, scores, ks, args.mode, n_boot=args.bootstrap, seed=args.seed)
+        summary["AURC_CI"] = _bootstrap_aurc(
+            y, scores, ks, args.mode, n_boot=args.bootstrap, seed=args.seed
+        )
     args.out_json.parent.mkdir(parents=True, exist_ok=True)
     with args.out_json.open("w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)

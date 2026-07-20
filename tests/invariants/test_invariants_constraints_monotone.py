@@ -25,4 +25,3 @@ def test_feasibility_monotone_in_b():
     _, info_relax = s_relax.select(xB, [m], utils, context={"region": "US"})
     # If tight is feasible, relaxed must be feasible; if tight infeasible, relaxed could become feasible
     assert (not info_tight["feasible"]) or info_relax["feasible"]
-

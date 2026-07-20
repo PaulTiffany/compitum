@@ -70,4 +70,3 @@ def test_eval_matbench_regret_groups(tmp_path: Path) -> None:
     assert set(["group", "k", "regret_norm"]).issubset(gdf.columns)
     payload = json.loads(out_json.read_text())
     assert "groups" in payload and isinstance(payload["groups"], dict)
-

@@ -95,4 +95,3 @@ def test_lambda_per_group_equivalence(tmp_path: Path) -> None:
     assert cp2.returncode == 0, cp2.stderr
     jgg = json.loads(out_group.read_text())
     assert abs(jg.get("AURC", 0.0) - jgg.get("AURC", 0.0)) < 1e-12
-

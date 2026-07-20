@@ -26,7 +26,9 @@ def latest_baseline_csv() -> Optional[Path]:
     return Path(files[0]) if files else None
 
 
-def compute_per_baseline_winrate_from_two(df_base: pd.DataFrame, df_comp: pd.DataFrame, wtps: Iterable[float]) -> str:
+def compute_per_baseline_winrate_from_two(
+    df_base: pd.DataFrame, df_comp: pd.DataFrame, wtps: Iterable[float]
+) -> str:
     # Work on copies to avoid chained assignment warnings
     df_base = df_base.copy()
     df_comp = df_comp.copy()
@@ -39,11 +41,19 @@ def compute_per_baseline_winrate_from_two(df_base: pd.DataFrame, df_comp: pd.Dat
             df_comp[col] = pd.to_numeric(df_comp[col], errors="coerce")
     for w in wtps:
         B = df_base[(df_base["willingness_to_pay"] == w) & (df_base["model_name"] != "oracle")]
-        C = df_comp[(df_comp["willingness_to_pay"] == w) & (df_comp["model_name"].astype(str) == "compitum")]
+        C = df_comp[
+            (df_comp["willingness_to_pay"] == w) & (df_comp["model_name"].astype(str) == "compitum")
+        ]
         if B.empty or C.empty:
             continue
         # merge on eval_name
-        M = B.merge(C[["eval_name", "performance", "total_cost"]].rename(columns={"performance": "perf_comp", "total_cost": "cost_comp"}), on="eval_name", how="inner")
+        M = B.merge(
+            C[["eval_name", "performance", "total_cost"]].rename(
+                columns={"performance": "perf_comp", "total_cost": "cost_comp"}
+            ),
+            on="eval_name",
+            how="inner",
+        )
         if M.empty:
             continue
         M["U_comp"] = M["perf_comp"] - w * M["cost_comp"]
@@ -60,7 +70,7 @@ def compute_per_baseline_winrate_from_two(df_base: pd.DataFrame, df_comp: pd.Dat
         return "No comparable per-eval rows found.\n"
     out = ["| Baseline | WTP | Win Rate | N |", "|---|---:|---:|---:|"]
     for r in sorted(rows, key=lambda x: (x["baseline"], x["wtp"])):
-        out.append(f"| {r['baseline']} | {r['wtp']:.2f} | {r['win_rate']*100:.1f}% | {r['n']} |")
+        out.append(f"| {r['baseline']} | {r['wtp']:.2f} | {r['win_rate'] * 100:.1f}% | {r['n']} |")
     return "\n".join(out) + "\n"
 
 
@@ -77,12 +87,9 @@ def compute_per_baseline_winrate(df: pd.DataFrame, wtps: Iterable[float]) -> str
         if comp.empty:
             continue
         # All baselines: any model_name not compitum/oracle
-        baselines = (
-            sub[~sub["model_name"].isin(["compitum", "oracle"])][
-                ["eval_name", "model_name", "performance", "total_cost"]
-            ]
-            .copy()
-        )
+        baselines = sub[~sub["model_name"].isin(["compitum", "oracle"])][
+            ["eval_name", "model_name", "performance", "total_cost"]
+        ].copy()
         if baselines.empty:
             continue
         merged = baselines.merge(comp, on="eval_name", how="inner")
@@ -100,7 +107,12 @@ def compute_per_baseline_winrate(df: pd.DataFrame, wtps: Iterable[float]) -> str
 
     if not rows:
         # Fall back to panel-level comparison: mean(perf) - w*mean(cost)
-        out = ["No comparable per-eval rows found. Panel-level utility comparison:", "", "| Baseline | WTP | U_comp | U_base | Win? |", "|---|---:|---:|---:|:--:|"]
+        out = [
+            "No comparable per-eval rows found. Panel-level utility comparison:",
+            "",
+            "| Baseline | WTP | U_comp | U_base | Win? |",
+            "|---|---:|---:|---:|:--:|",
+        ]
         panel = df[~df["model_name"].isin(["oracle"])]
         for w in wtps:
             sub = panel[panel["willingness_to_pay"] == w]
@@ -122,13 +134,13 @@ def compute_per_baseline_winrate(df: pd.DataFrame, wtps: Iterable[float]) -> str
     # Build Markdown
     out = ["| Baseline | WTP | Win Rate | N |", "|---|---:|---:|---:|"]
     for r in sorted(rows, key=lambda x: (x["baseline"], x["wtp"])):
-        out.append(
-            f"| {r['baseline']} | {r['wtp']:.2f} | {r['win_rate']*100:.1f}% | {r['n']} |"
-        )
+        out.append(f"| {r['baseline']} | {r['wtp']:.2f} | {r['win_rate'] * 100:.1f}% | {r['n']} |")
     return "\n".join(out) + "\n"
 
 
-def compute_frontier_gap(df: pd.DataFrame, wtps: Iterable[float], *, bootstrap: int = 0, ci: float = 0.95) -> str:
+def compute_frontier_gap(
+    df: pd.DataFrame, wtps: Iterable[float], *, bootstrap: int = 0, ci: float = 0.95
+) -> str:
     lines: list[str] = []
     for w in wtps:
         sub = df[df["willingness_to_pay"] == w]
@@ -138,7 +150,9 @@ def compute_frontier_gap(df: pd.DataFrame, wtps: Iterable[float], *, bootstrap: 
         if sub.empty:
             continue
         sub["U"] = sub["performance"] - w * sub["total_cost"]
-        comp = sub[sub["model_name"] == "compitum"][["eval_name", "U"]].rename(columns={"U": "U_comp"})
+        comp = sub[sub["model_name"] == "compitum"][["eval_name", "U"]].rename(
+            columns={"U": "U_comp"}
+        )
         best = sub.groupby("eval_name")["U"].max().reset_index().rename(columns={"U": "U_best"})
         merged = comp.merge(best, on="eval_name", how="inner")
         if merged.empty:
@@ -157,13 +171,15 @@ def compute_frontier_gap(df: pd.DataFrame, wtps: Iterable[float], *, bootstrap: 
             s = pd.Series(samples)
             lo = float(s.quantile(lo_q))
             hi = float(s.quantile(hi_q))
-            lines.append(f"| {w:.2f} | {mean_gap:.6f} [{lo:.6f}, {hi:.6f}] | {at_frontier*100:.1f}% | {n} |")
+            lines.append(
+                f"| {w:.2f} | {mean_gap:.6f} [{lo:.6f}, {hi:.6f}] | {at_frontier * 100:.1f}% | {n} |"
+            )
         else:
-            lines.append(f"| {w:.2f} | {mean_gap:.6f} | {at_frontier*100:.1f}% | {n} |")
+            lines.append(f"| {w:.2f} | {mean_gap:.6f} | {at_frontier * 100:.1f}% | {n} |")
     if not lines:
         return "No frontier data available.\n"
-    header = (
-        "| WTP | Avg Gap to Frontier {} | At Frontier | N |\n|---:|---:|---:|---:|\n".format("[95% CI]" if bootstrap else "")
+    header = "| WTP | Avg Gap to Frontier {} | At Frontier | N |\n|---:|---:|---:|---:|\n".format(
+        "[95% CI]" if bootstrap else ""
     )
     return header + "\n".join(lines) + "\n"
 
@@ -205,7 +221,7 @@ def compute_results_by_task(df: pd.DataFrame, wtps: Iterable[float]) -> str:
         lines.append("|---|---:|---:|---:|")
         for t in sorted(tasks, key=lambda x: x["task"]):
             lines.append(
-                f"| {t['task']} | {t['regret']:.6f} | {t['win_rate']*100:.1f}% | {t['n']} |"
+                f"| {t['task']} | {t['regret']:.6f} | {t['win_rate'] * 100:.1f}% | {t['n']} |"
             )
         lines.append("")
     if len(lines) <= 2:
@@ -216,7 +232,14 @@ def compute_results_by_task(df: pd.DataFrame, wtps: Iterable[float]) -> str:
 def compute_panel_summary(df: pd.DataFrame, wtps: Iterable[float]) -> str:
     lines: list[str] = ["---", "title: Panel Summary", "---", "", "# Panel Summary", ""]
     try:
-        present_wtps = sorted({float(x) for x in pd.to_numeric(df.get("willingness_to_pay"), errors="coerce").dropna().unique()})
+        present_wtps = sorted(
+            {
+                float(x)
+                for x in pd.to_numeric(df.get("willingness_to_pay"), errors="coerce")
+                .dropna()
+                .unique()
+            }
+        )
     except Exception:
         present_wtps = []
     # tasks counted where compitum present
@@ -240,6 +263,7 @@ def compute_panel_summary(df: pd.DataFrame, wtps: Iterable[float]) -> str:
     lines.append("- Panel is bounded; see docs/RouterBench-Summary.md for composition details.")
     return "\n".join(lines) + "\n"
 
+
 def main() -> int:
     csvs = all_all_csvs()
     if not csvs:
@@ -257,7 +281,9 @@ def main() -> int:
         return 1
     df_comp_all = pd.concat(frames, ignore_index=True).drop_duplicates()
     # Normalize types
-    df_comp_all["willingness_to_pay"] = pd.to_numeric(df_comp_all.get("willingness_to_pay"), errors="coerce")
+    df_comp_all["willingness_to_pay"] = pd.to_numeric(
+        df_comp_all.get("willingness_to_pay"), errors="coerce"
+    )
     wtps = [0.1, 1.0]
 
     per_base_md = ["# Per-Baseline Win Rate (Standalone)", ""]
@@ -278,7 +304,9 @@ def main() -> int:
     if base_csv is not None:
         try:
             df_base2 = pd.read_csv(base_csv)
-            df_all = pd.concat([df_base2, df_comp_all], ignore_index=True, sort=False).drop_duplicates()
+            df_all = pd.concat(
+                [df_base2, df_comp_all], ignore_index=True, sort=False
+            ).drop_duplicates()
         except Exception:
             df_all = df_comp_all
     else:
@@ -299,7 +327,16 @@ def main() -> int:
     (docs / "Frontier-Gap.md").write_text("\n".join(frontier_md), encoding="utf-8")
     (docs / "Panel-Summary.md").write_text(panel_md, encoding="utf-8")
     (docs / "Results-By-Task.md").write_text(rbt_md, encoding="utf-8")
-    print(json.dumps({"csvs": [str(p) for p in csvs], "baseline_csv": str(base_csv) if base_csv else None, "wtps": wtps}, indent=2))
+    print(
+        json.dumps(
+            {
+                "csvs": [str(p) for p in csvs],
+                "baseline_csv": str(base_csv) if base_csv else None,
+                "wtps": wtps,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 

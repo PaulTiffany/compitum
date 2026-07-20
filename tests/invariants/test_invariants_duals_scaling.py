@@ -33,4 +33,3 @@ def test_shadow_price_scales_with_utility_units():
         return
     ratio = lam2 / (lam1 + 1e-12)
     assert ratio >= s * 0.5 and ratio <= s * 2.0
-

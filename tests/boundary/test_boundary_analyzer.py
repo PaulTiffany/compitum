@@ -15,4 +15,3 @@ def test_boundary_clears_when_gap_large_and_sigma_low():
     u_sigma = {"a": 0.1, "b": 0.1}
     out = b.analyze(utilities, u_sigma)
     assert out["is_boundary"] is False
-

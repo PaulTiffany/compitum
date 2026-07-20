@@ -49,9 +49,11 @@ def main() -> None:
         elif backend == "tokencost":
             pass  # use library defaults
         elif backend == "hf":
+
             def _hf_count_string_tokens(s: str, model_name: str) -> int:
                 try:
                     from transformers import AutoTokenizer
+
                     tok = AutoTokenizer.from_pretrained(model_name, use_fast=True)
                     return len(tok.encode(s if isinstance(s, str) else str(s)))
                 except Exception:

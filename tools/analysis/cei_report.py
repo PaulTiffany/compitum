@@ -65,11 +65,15 @@ def _extract_fields(df: pd.DataFrame) -> pd.DataFrame:
     elif "boundary" in df.columns:
         parsed = df["boundary"].map(_maybe_parse_json)
         if isinstance(parsed.iloc[0], dict):
-            boundary_flag = pd.Series([bool(x.get("is_boundary", False)) for x in parsed], index=df.index)
+            boundary_flag = pd.Series(
+                [bool(x.get("is_boundary", False)) for x in parsed], index=df.index
+            )
     elif "boundary_analysis" in df.columns:
         parsed = df["boundary_analysis"].map(_maybe_parse_json)
         if isinstance(parsed.iloc[0], dict):
-            boundary_flag = pd.Series([bool(x.get("is_boundary", False)) for x in parsed], index=df.index)
+            boundary_flag = pd.Series(
+                [bool(x.get("is_boundary", False)) for x in parsed], index=df.index
+            )
     if boundary_flag is not None:
         out["boundary_is_boundary"] = boundary_flag
 
@@ -91,7 +95,12 @@ def _extract_fields(df: pd.DataFrame) -> pd.DataFrame:
         parsed_c = df["constraints"].map(_maybe_parse_json)
         if isinstance(parsed_c.iloc[0], dict):
             feasible = pd.Series([bool(x.get("feasible", False)) for x in parsed_c], index=df.index)
-            out["violations"] = [len(x.get("violations", [])) if isinstance(x.get("violations", None), list) else np.nan for x in parsed_c]
+            out["violations"] = [
+                len(x.get("violations", []))
+                if isinstance(x.get("violations", None), list)
+                else np.nan
+                for x in parsed_c
+            ]
     if feasible is not None:
         out["feasible"] = feasible
 
@@ -136,7 +145,9 @@ def _join_frames(frames: List[pd.DataFrame]) -> pd.DataFrame:
     return base
 
 
-def compute_deferral_quality(df: pd.DataFrame, topq: Optional[float], tau: Optional[float]) -> Dict[str, Any]:
+def compute_deferral_quality(
+    df: pd.DataFrame, topq: Optional[float], tau: Optional[float]
+) -> Dict[str, Any]:
     out: Dict[str, Any] = {"available": False}
     if "regret" not in df.columns or "boundary_is_boundary" not in df.columns:
         return out
@@ -219,13 +230,25 @@ def compute_compliance(df: pd.DataFrame) -> Dict[str, Any]:
 
 def main() -> None:
     p = argparse.ArgumentParser(description="Compitum Control-of-Error Index (CEI) report")
-    p.add_argument("--input", "-i", action="append", required=True, help="Input CSV/JSONL with per-item results")
+    p.add_argument(
+        "--input",
+        "-i",
+        action="append",
+        required=True,
+        help="Input CSV/JSONL with per-item results",
+    )
     p.add_argument("--out-json", type=Path, default=Path("reports/cei_report.json"))
     p.add_argument("--out-md", type=Path, default=Path("reports/cei_report.md"))
     group = p.add_mutually_exclusive_group()
-    group.add_argument("--topq", type=float, default=0.1, help="Top quantile for high-regret labeling (e.g., 0.1)")
-    group.add_argument("--tau", type=float, default=None, help="Absolute regret threshold for high-regret label")
-    p.add_argument("--stability-window", type=int, default=1, help="Steps ahead to evaluate regret change")
+    group.add_argument(
+        "--topq", type=float, default=0.1, help="Top quantile for high-regret labeling (e.g., 0.1)"
+    )
+    group.add_argument(
+        "--tau", type=float, default=None, help="Absolute regret threshold for high-regret label"
+    )
+    p.add_argument(
+        "--stability-window", type=int, default=1, help="Steps ahead to evaluate regret change"
+    )
     args = p.parse_args()
 
     frames = []
@@ -246,7 +269,11 @@ def main() -> None:
     metrics["compliance"] = comp
 
     # Aggregate CEI over available component scores
-    scores = [m.get("score") for m in (dq, cal, stab, comp) if m.get("available") and m.get("score") is not None]
+    scores = [
+        m.get("score")
+        for m in (dq, cal, stab, comp)
+        if m.get("available") and m.get("score") is not None
+    ]
     cei = float(np.mean(scores)) if scores else None
     metrics["cei"] = cei
 
@@ -265,6 +292,7 @@ def main() -> None:
         "",
         "## Components",
     ]
+
     def _fmt(name: str, m: Dict[str, Any]) -> str:
         if not m.get("available"):
             return f"- {name}: n/a"
@@ -275,7 +303,9 @@ def main() -> None:
                 extras.append(f"{k}={m[k]:.3f}")
         extra = (" (" + ", ".join(extras) + ")") if extras else ""
         score = m.get("score")
-        score_s = f"{score:.3f}" if isinstance(score, (float, int)) and np.isfinite(score) else "n/a"
+        score_s = (
+            f"{score:.3f}" if isinstance(score, (float, int)) and np.isfinite(score) else "n/a"
+        )
         return f"- {name}: score={score_s}{extra}"
 
     lines.append(_fmt("Deferral quality", dq))
@@ -287,4 +317,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

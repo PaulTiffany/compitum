@@ -37,7 +37,6 @@ def test_routerbench_integration() -> None:
     print(process.stderr)
 
     assert process.returncode == 0, "RouterBench script failed to run."
-    assert (
-        "Saved to:" in process.stdout or "Report written to:" in process.stdout
-    ), "Expected results to be saved by RouterBench run."
-
+    assert "Saved to:" in process.stdout or "Report written to:" in process.stdout, (
+        "Expected results to be saved by RouterBench run."
+    )

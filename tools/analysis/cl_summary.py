@@ -75,6 +75,7 @@ def _extract(df: pd.DataFrame) -> pd.DataFrame:
 
 def _summary(df: pd.DataFrame) -> Dict[str, Any]:
     res: Dict[str, Any] = {}
+
     # Overall
     def _mean_ci(vals: pd.Series) -> Dict[str, Any]:
         v = pd.to_numeric(vals, errors="coerce")
@@ -112,7 +113,9 @@ def _summary(df: pd.DataFrame) -> Dict[str, Any]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="cs.CL summary: per-task win/boundary and selection distribution")
+    ap = argparse.ArgumentParser(
+        description="cs.CL summary: per-task win/boundary and selection distribution"
+    )
     ap.add_argument("--input", "-i", required=True, help="Input CSV/JSONL eval results")
     ap.add_argument("--out-json", type=Path, default=Path("reports/cl_summary.json"))
     ap.add_argument("--out-md", type=Path, default=Path("reports/cl_summary.md"))
@@ -129,8 +132,10 @@ def main() -> None:
     # Write Markdown
     lines: List[str] = ["# cs.CL Summary", ""]
     ov = rep.get("overall", {})
+
     def _fmt(x: Optional[float]) -> str:
         return "n/a" if x is None or (isinstance(x, float) and not np.isfinite(x)) else f"{x:.4f}"
+
     if ov:
         lines += [
             "## Overall",
@@ -161,4 +166,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

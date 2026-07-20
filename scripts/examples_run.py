@@ -31,13 +31,32 @@ def build_examples(repo_root: Path) -> List[Example]:
         ),
         Example(
             name="synth_bench",
-            cmd=[py, "examples/synth_bench.py", "--quiet", "--seed", "0", "--D", "16", "--rank", "4", "--n", "50"],
+            cmd=[
+                py,
+                "examples/synth_bench.py",
+                "--quiet",
+                "--seed",
+                "0",
+                "--D",
+                "16",
+                "--rank",
+                "4",
+                "--n",
+                "50",
+            ],
             description="SPD metric sanity: two clusters, average distances (JSON).",
             subset="quick",
         ),
         Example(
             name="certificate_card",
-            cmd=[py, "examples/certificate_card.py", "--prompt", "Sketch a proof of AM-GM.", "--seed", "2"],
+            cmd=[
+                py,
+                "examples/certificate_card.py",
+                "--prompt",
+                "Sketch a proof of AM-GM.",
+                "--seed",
+                "2",
+            ],
             description="Render a short Markdown card summarizing a routing certificate.",
             subset="quick",
         ),
@@ -72,12 +91,14 @@ def build_examples(repo_root: Path) -> List[Example]:
 def run(cmd: Sequence[str]) -> int:
     env = os.environ.copy()
     env.setdefault("HYPOTHESIS_PROFILE", "ci")
-    env.setdefault("PYTHONUNBUFFERED", "1") # Mitigate Windows subprocess issues
+    env.setdefault("PYTHONUNBUFFERED", "1")  # Mitigate Windows subprocess issues
     # Ensure local package is importable without install
     try:
         repo_root = Path(__file__).resolve().parents[1]
         src_path = str(repo_root / "src")
-        env["PYTHONPATH"] = src_path + (os.pathsep + env.get("PYTHONPATH", "") if env.get("PYTHONPATH") else "")
+        env["PYTHONPATH"] = src_path + (
+            os.pathsep + env.get("PYTHONPATH", "") if env.get("PYTHONPATH") else ""
+        )
     except Exception:
         pass
     try:
@@ -118,7 +139,12 @@ def main() -> int:
         return 0
 
     # action == run
-    targets = [e for e in exs if (args.name == e.name) or (args.name is None and (e.subset == args.subset or args.subset == "all"))]
+    targets = [
+        e
+        for e in exs
+        if (args.name == e.name)
+        or (args.name is None and (e.subset == args.subset or args.subset == "all"))
+    ]
     if not targets:
         print("No matching examples.")
         return 1

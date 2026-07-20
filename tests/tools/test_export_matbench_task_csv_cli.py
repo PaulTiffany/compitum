@@ -26,4 +26,3 @@ def test_export_matbench_offline_mock(tmp_path: Path) -> None:
         "y_true",
     ]
     assert set(required).issubset(df.columns)
-

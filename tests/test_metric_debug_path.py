@@ -21,4 +21,3 @@ def test_metric_distance_debug_prints_when_env_set():
         assert isinstance(d, float) and isinstance(sigma, float)
     finally:
         os.environ.pop("COMPITUM_DEBUG_METRIC", None)
-

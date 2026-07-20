@@ -11,4 +11,3 @@ def test_normalize_broadcast_scalar_scale():
     out = pm.ingest_profile(s0, t=0.0)
     assert isinstance(out["alarm_status"], bool)
     assert out["confinement_distance"] >= 0.0
-

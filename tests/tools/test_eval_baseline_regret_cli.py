@@ -62,4 +62,3 @@ def test_eval_baseline_regret_cli_ridge(tmp_path: Path) -> None:
     assert out_csv.exists() and out_json.exists()
     payload = json.loads(out_json.read_text())
     assert "AURC" in payload
-

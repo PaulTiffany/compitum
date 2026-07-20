@@ -21,7 +21,9 @@ def _sha256(path: Path) -> str:
 
 def _git_commit() -> Optional[str]:
     try:
-        out = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL)
+        out = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL
+        )
         return out.decode().strip()
     except Exception:
         return None
@@ -43,7 +45,9 @@ def main() -> int:
     ap.add_argument("--input-csv", type=Path, required=True)
     ap.add_argument("--calibration-json", type=Path, required=False)
     ap.add_argument("--regret-json", type=Path, required=False)
-    ap.add_argument("--extra", type=Path, nargs="*", default=None, help="Optional extra files to hash")
+    ap.add_argument(
+        "--extra", type=Path, nargs="*", default=None, help="Optional extra files to hash"
+    )
     ap.add_argument("--out", type=Path, default=Path("reports/matbench_attestation.json"))
     args = ap.parse_args()
 

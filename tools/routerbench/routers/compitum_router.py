@@ -127,7 +127,10 @@ class CompitumRouterAdapter:
             for m in models:
                 quality_data = df[m.name].astype(float).fillna(df[m.name].mean()).values
                 cost_data = (
-                    df[f"{m.name}|total_cost"].astype(float).fillna(df[f"{m.name}|total_cost"].mean()).values
+                    df[f"{m.name}|total_cost"]
+                    .astype(float)
+                    .fillna(df[f"{m.name}|total_cost"].mean())
+                    .values
                 )
                 latency_data = np.zeros(len(quality_data))
 

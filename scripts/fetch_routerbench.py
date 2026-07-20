@@ -16,6 +16,7 @@ Notes:
 - This file is third-party content. Verify license and checksum.
 - Loading .pkl files can execute code. Only load from trusted sources.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -33,8 +34,7 @@ except Exception as e:  # pragma: no cover
 
 
 DEFAULT_URL = (
-    "https://huggingface.co/datasets/withmartian/routerbench/resolve/main/"
-    "routerbench_5shot.pkl"
+    "https://huggingface.co/datasets/withmartian/routerbench/resolve/main/routerbench_5shot.pkl"
 )
 
 
@@ -64,7 +64,10 @@ def download(url: str, out_path: Path) -> None:
                 downloaded += len(chunk)
                 if total:
                     pct = downloaded * 100 // total
-                    print(f"Downloading {out_path.name}: {pct}% ({downloaded}/{total} bytes)", end="\r")
+                    print(
+                        f"Downloading {out_path.name}: {pct}% ({downloaded}/{total} bytes)",
+                        end="\r",
+                    )
         if total:
             print()  # newline after progress
         tmp.replace(out_path)
@@ -129,4 +132,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

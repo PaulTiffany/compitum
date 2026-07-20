@@ -12,6 +12,7 @@ Fix: downscale + JPEG-compress each scene and inline it as a base64 data URI, so
 each SVG carries its own pixels and renders identically everywhere. Idempotent:
 SVGs already holding a data URI are skipped.
 """
+
 from __future__ import annotations
 
 import base64

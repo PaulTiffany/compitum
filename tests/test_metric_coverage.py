@@ -22,7 +22,9 @@ def test_metric_residual_queue_pruning() -> None:
     x_batch = np.random.randn(120, 4)
     mu_batch = np.zeros((120, 4))
     d_batch = np.abs(np.random.randn(120)) + 1e-3
-    met.batch_update_spd(x_batch, mu_batch, beta_d=0.1, d_batch=d_batch, eta=1e-2, srmf_controller=ctrl)
+    met.batch_update_spd(
+        x_batch, mu_batch, beta_d=0.1, d_batch=d_batch, eta=1e-2, srmf_controller=ctrl
+    )
     # Residuals queue should be pruned to at most 100
     assert len(met.whitened_residuals) <= 100
 
@@ -33,5 +35,7 @@ def test_metric_empty_batch_short_circuit() -> None:
     x_batch = np.zeros((0, 4))
     mu_batch = np.zeros((0, 4))
     d_batch = np.zeros(0)
-    g = met.batch_update_spd(x_batch, mu_batch, beta_d=0.1, d_batch=d_batch, eta=1e-2, srmf_controller=ctrl)
+    g = met.batch_update_spd(
+        x_batch, mu_batch, beta_d=0.1, d_batch=d_batch, eta=1e-2, srmf_controller=ctrl
+    )
     assert g == 1.0

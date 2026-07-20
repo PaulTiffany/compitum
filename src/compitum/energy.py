@@ -52,10 +52,8 @@ class SymbolicFreeEnergy:
         # BRIDGEBLOCK_START def:symbolic_free_energy_computation
         # Debugging: Print individual components of utility calculation
         import os as _os
-        if (
-            self._step % 100 == 0
-            and _os.environ.get("COMPITUM_DEBUG_ENERGY") == "1"
-        ):
+
+        if self._step % 100 == 0 and _os.environ.get("COMPITUM_DEBUG_ENERGY") == "1":
             print(
                 (
                     f"DEBUG: Model: {model.name}, q0: {q[0]}, t0: {t[0]}, c0: {c[0]}, "
@@ -94,13 +92,8 @@ class SymbolicFreeEnergy:
             "uncertainty": float(np.sqrt(U_var)),
         }
         self._step += 1
-        if (
-            self._step % 100 == 0
-            and _os.environ.get("COMPITUM_DEBUG_ENERGY") == "1"
-        ):
-            print(
-                f"SymbolicFreeEnergy.compute took {time.time() - start_time:.4f} seconds"
-            )
+        if self._step % 100 == 0 and _os.environ.get("COMPITUM_DEBUG_ENERGY") == "1":
+            print(f"SymbolicFreeEnergy.compute took {time.time() - start_time:.4f} seconds")
         return float(U), float(np.sqrt(U_var)), comps
 
     def batch_compute(

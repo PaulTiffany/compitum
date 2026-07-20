@@ -47,9 +47,13 @@ def _make_router(update_stride: int = 1) -> CompitumRouter:
     metric.update_spd.return_value = 1.0
     router = CompitumRouter(
         models=[model],
-        predictors={"m1": {"quality": MagicMock(spec=CalibratedPredictor),
-                            "latency": MagicMock(spec=CalibratedPredictor),
-                            "cost": MagicMock(spec=CalibratedPredictor)}},
+        predictors={
+            "m1": {
+                "quality": MagicMock(spec=CalibratedPredictor),
+                "latency": MagicMock(spec=CalibratedPredictor),
+                "cost": MagicMock(spec=CalibratedPredictor),
+            }
+        },
         solver=solver,
         coherence=MagicMock(),
         boundary=boundary,
@@ -123,12 +127,23 @@ def test_router_disabled_controller_reports_exact_current_state() -> None:
 
     router = CompitumRouter(
         models=[model],
-        predictors={"m1": {"quality": MagicMock(spec=CalibratedPredictor),
-                            "latency": MagicMock(spec=CalibratedPredictor),
-                            "cost": MagicMock(spec=CalibratedPredictor)}},
-        solver=solver, coherence=MagicMock(), boundary=boundary, srmf=controller,
-        pgd_extractor=MagicMock(), metric_map={"m1": metric}, energy=energy,
-        update_stride=1, enable_metric_update=False, enable_controller=False,
+        predictors={
+            "m1": {
+                "quality": MagicMock(spec=CalibratedPredictor),
+                "latency": MagicMock(spec=CalibratedPredictor),
+                "cost": MagicMock(spec=CalibratedPredictor),
+            }
+        },
+        solver=solver,
+        coherence=MagicMock(),
+        boundary=boundary,
+        srmf=controller,
+        pgd_extractor=MagicMock(),
+        metric_map={"m1": metric},
+        energy=energy,
+        update_stride=1,
+        enable_metric_update=False,
+        enable_controller=False,
     )
     cert = router.route("hello")
     assert cert.drift_status == {
@@ -148,7 +163,9 @@ def test_router_batch_route_debug_print_exact_content() -> None:
     model1 = Model(name="m1", center=np.zeros(2), capabilities=MagicMock(), cost=0.0)
     energy = MagicMock()
     energy.batch_compute.return_value = (
-        np.array([0.9] * 100), np.array([0.1] * 100), [{"distance": -0.5}] * 100,
+        np.array([0.9] * 100),
+        np.array([0.1] * 100),
+        [{"distance": -0.5}] * 100,
     )
     solver = MagicMock()
     solver.select.return_value = (model1, {"feasible": True})
@@ -156,15 +173,26 @@ def test_router_batch_route_debug_print_exact_content() -> None:
     srmf.batch_update.return_value = ([1.0] * 100, [{"trust_radius": 1.0}] * 100)
     router = CompitumRouter(
         models=[model1],
-        predictors=cast(Dict[str, Dict[str, CalibratedPredictor]], {
-            "m1": {"quality": MagicMock(spec=CalibratedPredictor),
-                   "latency": MagicMock(spec=CalibratedPredictor),
-                   "cost": MagicMock(spec=CalibratedPredictor)},
-        }),
-        solver=solver, coherence=MagicMock(), boundary=MagicMock(), srmf=srmf,
+        predictors=cast(
+            Dict[str, Dict[str, CalibratedPredictor]],
+            {
+                "m1": {
+                    "quality": MagicMock(spec=CalibratedPredictor),
+                    "latency": MagicMock(spec=CalibratedPredictor),
+                    "cost": MagicMock(spec=CalibratedPredictor),
+                },
+            },
+        ),
+        solver=solver,
+        coherence=MagicMock(),
+        boundary=MagicMock(),
+        srmf=srmf,
         pgd_extractor=MagicMock(),
-        metric_map=cast(Dict[str, SymbolicManifoldMetric], {"m1": MagicMock(spec=SymbolicManifoldMetric)}),
-        energy=energy, update_stride=1000,
+        metric_map=cast(
+            Dict[str, SymbolicManifoldMetric], {"m1": MagicMock(spec=SymbolicManifoldMetric)}
+        ),
+        energy=energy,
+        update_stride=1000,
     )
     router._step = 0
     buf = io.StringIO()

@@ -12,4 +12,3 @@ def test_log_evidence_zero_until_min_samples():
         coh.update("fast", rng.normal(size=d), success=1.0)
     v = coh.log_evidence("fast", np.zeros(d))
     assert v == 0.0
-

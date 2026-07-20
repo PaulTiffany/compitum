@@ -9,7 +9,16 @@ from compitum.metric import SymbolicManifoldMetric
 
 @st.composite
 def vec(draw, dim: int):
-    return np.array(draw(st.lists(st.floats(min_value=-20, max_value=20, allow_nan=False, allow_infinity=False), min_size=dim, max_size=dim)), dtype=float)
+    return np.array(
+        draw(
+            st.lists(
+                st.floats(min_value=-20, max_value=20, allow_nan=False, allow_infinity=False),
+                min_size=dim,
+                max_size=dim,
+            )
+        ),
+        dtype=float,
+    )
 
 
 @given(dim=st.integers(min_value=3, max_value=10))
@@ -29,4 +38,3 @@ def test_metric_distance_basic_invariants(dim: int):
     # Re-centering invariance: depends only on x - mu
     d3, _ = met.distance(x + v, mu + v)
     assert math.isclose(d1, d3, rel_tol=1e-9, abs_tol=1e-9)
-

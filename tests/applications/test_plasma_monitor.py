@@ -1,4 +1,4 @@
-﻿import numpy as np
+import numpy as np
 
 from compitum.applications import PlasmaMonitor
 from compitum.applications.fusion.plasma_monitor import PlasmaMonitorConfig
@@ -10,7 +10,9 @@ def test_plasma_monitor_basic_flow():
     # Initialize near equilibrium
     s0 = np.zeros(8, dtype=float)
     out0 = pm.ingest_profile(s0, t=0.0)
-    assert set(["confinement_distance","curvature_signal","trust_radius","alarm_status","timestamp_ms"]).issubset(out0.keys())
+    assert set(
+        ["confinement_distance", "curvature_signal", "trust_radius", "alarm_status", "timestamp_ms"]
+    ).issubset(out0.keys())
     assert out0["confinement_distance"] >= 0.0
     assert out0["alarm_status"] in (True, False)
 
@@ -19,7 +21,7 @@ def test_plasma_monitor_basic_flow():
     alarm_seen = out0["alarm_status"]
     for i in range(1, 25):
         # Decrease synthetic q_min; push state farther each step
-        state = np.array([10.0 - 0.05*i, 1e20, 1.5 - 0.01*i, 0, 0, 0, 0, 0], dtype=float)
+        state = np.array([10.0 - 0.05 * i, 1e20, 1.5 - 0.01 * i, 0, 0, 0, 0, 0], dtype=float)
         out = pm.ingest_profile(state, t=float(i))
         curv_vals.append(out["curvature_signal"])
         alarm_seen = alarm_seen or out["alarm_status"]
@@ -71,4 +73,3 @@ def test_non_euclidean_norm_p():
     s1 = np.array([1.0, 1.0, 0.0, 0.0], dtype=float)
     out = pm.ingest_profile(s1, t=1.0)
     assert out["confinement_distance"] > 0
-

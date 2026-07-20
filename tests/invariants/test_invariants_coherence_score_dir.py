@@ -26,10 +26,9 @@ def test_score_points_inward_on_isotropic_cloud(d: int) -> None:
 
     # Sample a ray and evaluate at moderate radius to avoid flat clipping
     v = rng.normal(0.0, 1.0, size=d)
-    v /= (np.linalg.norm(v) + 1e-9)
+    v /= np.linalg.norm(v) + 1e-9
     x = 0.8 * v
     g = _finite_diff_grad(loge, x, eps=1e-3)
     # Directionality: gradient of log p points inward, so <g, -x> >= 0 within tolerance
     cos = float(np.dot(g, -x) / ((np.linalg.norm(g) + 1e-12) * (np.linalg.norm(x) + 1e-12)))
     assert cos >= -0.05
-

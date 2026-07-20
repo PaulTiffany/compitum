@@ -39,11 +39,13 @@ def _ensure_columns(df: pd.DataFrame) -> pd.DataFrame:
     # Utilities/regret
     if "regret" not in out.columns:
         if {"utility_best_baseline", "utility_compitum"}.issubset(out.columns):
-            out["regret"] = pd.to_numeric(out["utility_best_baseline"], errors="coerce") - pd.to_numeric(
-                out["utility_compitum"], errors="coerce"
-            )
+            out["regret"] = pd.to_numeric(
+                out["utility_best_baseline"], errors="coerce"
+            ) - pd.to_numeric(out["utility_compitum"], errors="coerce")
     # Win flag
-    if "win" not in out.columns and {"utility_best_baseline", "utility_compitum"}.issubset(out.columns):
+    if "win" not in out.columns and {"utility_best_baseline", "utility_compitum"}.issubset(
+        out.columns
+    ):
         out["win"] = (
             pd.to_numeric(out["utility_compitum"], errors="coerce")
             >= pd.to_numeric(out["utility_best_baseline"], errors="coerce")
@@ -58,7 +60,12 @@ def _ensure_columns(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def _percentile_ci(values: np.ndarray, alpha: float = 0.05, B: int = 1000, rng: Optional[np.random.Generator] = None) -> Tuple[float, float]:
+def _percentile_ci(
+    values: np.ndarray,
+    alpha: float = 0.05,
+    B: int = 1000,
+    rng: Optional[np.random.Generator] = None,
+) -> Tuple[float, float]:
     rng = rng or np.random.default_rng(12345)
     vals = np.asarray(values)
     vals = vals[np.isfinite(vals)]
@@ -79,7 +86,11 @@ def _summarize(df: pd.DataFrame, alpha: float, B: int) -> Dict[str, Any]:
     # Overall
     reg = pd.to_numeric(df.get("regret", pd.Series([], dtype=float)), errors="coerce")
     win = pd.to_numeric(df.get("win", pd.Series([], dtype=float)), errors="coerce")
-    feas = df.get("feasible", pd.Series([], dtype=bool)).astype(bool) if "feasible" in df.columns else None
+    feas = (
+        df.get("feasible", pd.Series([], dtype=bool)).astype(bool)
+        if "feasible" in df.columns
+        else None
+    )
 
     def _metric(vals: pd.Series) -> Dict[str, Any]:
         vals = pd.to_numeric(vals, errors="coerce")
@@ -93,7 +104,11 @@ def _summarize(df: pd.DataFrame, alpha: float, B: int) -> Dict[str, Any]:
         "mean_regret": _metric(reg),
         "win_rate": _metric(win),
         "feasible_rate": (
-            {"mean": float(feas.mean()), "ci": _percentile_ci(feas.astype(float).to_numpy(), alpha, B), "n": int(feas.size)}
+            {
+                "mean": float(feas.mean()),
+                "ci": _percentile_ci(feas.astype(float).to_numpy(), alpha, B),
+                "n": int(feas.size),
+            }
             if feas is not None and feas.size > 0
             else {"mean": None, "ci": (None, None), "n": 0}
         ),
@@ -110,12 +125,20 @@ def _summarize(df: pd.DataFrame, alpha: float, B: int) -> Dict[str, Any]:
         for t, sub in df.groupby(task_col):
             reg_t = pd.to_numeric(sub.get("regret", pd.Series([], dtype=float)), errors="coerce")
             win_t = pd.to_numeric(sub.get("win", pd.Series([], dtype=float)), errors="coerce")
-            feas_t = sub.get("feasible", pd.Series([], dtype=bool)).astype(bool) if "feasible" in sub.columns else None
+            feas_t = (
+                sub.get("feasible", pd.Series([], dtype=bool)).astype(bool)
+                if "feasible" in sub.columns
+                else None
+            )
             by_task[str(t)] = {
                 "mean_regret": _metric(reg_t),
                 "win_rate": _metric(win_t),
                 "feasible_rate": (
-                    {"mean": float(feas_t.mean()), "ci": _percentile_ci(feas_t.astype(float).to_numpy(), alpha, B), "n": int(feas_t.size)}
+                    {
+                        "mean": float(feas_t.mean()),
+                        "ci": _percentile_ci(feas_t.astype(float).to_numpy(), alpha, B),
+                        "n": int(feas_t.size),
+                    }
                     if feas_t is not None and feas_t.size > 0
                     else {"mean": None, "ci": (None, None), "n": 0}
                 ),
@@ -151,11 +174,19 @@ def _filter_lambda(df: pd.DataFrame, lambdas: Optional[List[float]]) -> Dict[str
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="cs.LG summary: paired bootstrap for regret/win/compliance")
-    ap.add_argument("--input", "-i", action="append", required=True, help="Input CSV/JSONL eval results")
-    ap.add_argument("--lambdas", type=float, nargs="*", default=None, help="Lambda slices (e.g., 0.1 1.0)")
+    ap = argparse.ArgumentParser(
+        description="cs.LG summary: paired bootstrap for regret/win/compliance"
+    )
+    ap.add_argument(
+        "--input", "-i", action="append", required=True, help="Input CSV/JSONL eval results"
+    )
+    ap.add_argument(
+        "--lambdas", type=float, nargs="*", default=None, help="Lambda slices (e.g., 0.1 1.0)"
+    )
     ap.add_argument("--alpha", type=float, default=0.05, help="1 - CI level (default 0.05)")
-    ap.add_argument("--bootstrap", type=int, default=1000, help="Bootstrap resamples (default 1000)")
+    ap.add_argument(
+        "--bootstrap", type=int, default=1000, help="Bootstrap resamples (default 1000)"
+    )
     ap.add_argument("--out-json", type=Path, default=Path("reports/lg_summary.json"))
     ap.add_argument("--out-md", type=Path, default=Path("reports/lg_summary.md"))
     args = ap.parse_args()
@@ -176,7 +207,9 @@ def main() -> None:
 
     # Write Markdown table (overall per-slice)
     lines: List[str] = ["# cs.LG Summary", ""]
-    lines.append("| slice | mean_regret | 95% CI | win_rate | 95% CI | feasible_rate | 95% CI | n |")
+    lines.append(
+        "| slice | mean_regret | 95% CI | win_rate | 95% CI | feasible_rate | 95% CI | n |"
+    )
     lines.append("| --- | ---: | --- | ---: | --- | ---: | --- | ---: |")
     for sname, data in report["slices"].items():
         ov = data["overall"]
@@ -184,8 +217,12 @@ def main() -> None:
         wr = ov["win_rate"]
         fr = ov.get("feasible_rate", {"mean": None, "ci": (None, None)})
         n = mr.get("n") or wr.get("n") or 0
+
         def _fmt(x: Optional[float]) -> str:
-            return "n/a" if x is None or (isinstance(x, float) and not np.isfinite(x)) else f"{x:.4f}"
+            return (
+                "n/a" if x is None or (isinstance(x, float) and not np.isfinite(x)) else f"{x:.4f}"
+            )
+
         lines.append(
             f"| {sname} | {_fmt(mr['mean'])} | [{_fmt(mr['ci'][0])}, {_fmt(mr['ci'][1])}] | "
             f"{_fmt(wr['mean'])} | [{_fmt(wr['ci'][0])}, {_fmt(wr['ci'][1])}] | "
@@ -196,4 +233,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

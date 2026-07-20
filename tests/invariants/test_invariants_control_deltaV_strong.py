@@ -23,14 +23,18 @@ def _router(D: int = 32) -> CompitumRouter:
         q = rng.random(128)
         t = rng.random(128)
         c = rng.random(128)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=128)
     from pathlib import Path
+
     A, B = _load_constraints(Path("configs/constraints_us_default.yaml"))
     solver = ReflectiveConstraintSolver(A, B)
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)
@@ -38,8 +42,18 @@ def _router(D: int = 32) -> CompitumRouter:
     energy = SymbolicFreeEnergy(0.6, 0.1, 0.2, 0.2, 0.0)
     pgd = RegexPromptExtractor()
     return CompitumRouter(
-        models, predictors, solver, coherence, boundary, ctrl, pgd, metrics, energy,
-        update_stride=2, enable_metric_update=True, enable_controller=True,
+        models,
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        ctrl,
+        pgd,
+        metrics,
+        energy,
+        update_stride=2,
+        enable_metric_update=True,
+        enable_controller=True,
     )
 
 
@@ -47,6 +61,7 @@ def _router(D: int = 32) -> CompitumRouter:
 def test_deltaV_proxy_nonincrease_over_sequence():
     r = _router(32)
     emb = np.zeros(32, dtype=np.float32)
+
     # Proxy combines Lyapunov with small distance weight
     def proxy():
         cert = r.route("any", embedding=emb)
@@ -60,5 +75,6 @@ def test_deltaV_proxy_nonincrease_over_sequence():
 
     # Boundedness: keep proxy finite and reasonably bounded
     import numpy as _np
+
     assert all(_np.isfinite(v) for v in vs)
     assert max(vs) <= 100.0

@@ -19,9 +19,15 @@ from tools.reporting.report_builder import (  # noqa: E402
 )
 
 
-def run_cmd(cmd: List[str], cwd: Optional[Path] = None, env: Optional[dict] = None, timeout: Optional[int] = None):
+def run_cmd(
+    cmd: List[str],
+    cwd: Optional[Path] = None,
+    env: Optional[dict] = None,
+    timeout: Optional[int] = None,
+):
     start = datetime.utcnow()
     import time as _t
+
     t0 = _t.perf_counter()
     meta = {"cmd": cmd, "cwd": str(cwd) if cwd else str(Path().resolve()), "timeout_sec": timeout}
     try:
@@ -68,24 +74,71 @@ def main() -> None:
     ap.add_argument("--tests", action="store_true", help="Run pytest unit tests")
     ap.add_argument("--bench-routerbench", action="store_true", help="Run RouterBench baseline")
     ap.add_argument("--bench-compitum", action="store_true", help="Run Compitum evaluation")
-    ap.add_argument("--bench-matbench", action="store_true", help="Run Matbench regret pipeline (smoke)")
-    ap.add_argument("--config", type=str, default="data/rb_clean/evaluate_routers.yaml", help="Eval config path")
-    ap.add_argument("--tokenizer-backend", type=str, default="tiktoken", choices=["tiktoken","tokencost","hf"], help="Tokenizer backend for RB runs")
-    ap.add_argument("--wtp", type=float, default=1.0, help="Willingness to pay for Compitum summary")
-    ap.add_argument("--wtp-list", type=str, default=None, help="Comma-separated WTP grid for Compitum (e.g. '0.0001,0.001,0.01,0.1,1.0')")
+    ap.add_argument(
+        "--bench-matbench", action="store_true", help="Run Matbench regret pipeline (smoke)"
+    )
+    ap.add_argument(
+        "--config", type=str, default="data/rb_clean/evaluate_routers.yaml", help="Eval config path"
+    )
+    ap.add_argument(
+        "--tokenizer-backend",
+        type=str,
+        default="tiktoken",
+        choices=["tiktoken", "tokencost", "hf"],
+        help="Tokenizer backend for RB runs",
+    )
+    ap.add_argument(
+        "--wtp", type=float, default=1.0, help="Willingness to pay for Compitum summary"
+    )
+    ap.add_argument(
+        "--wtp-list",
+        type=str,
+        default=None,
+        help="Comma-separated WTP grid for Compitum (e.g. '0.0001,0.001,0.01,0.1,1.0')",
+    )
     ap.add_argument("--report-out", type=str, default=None, help="HTML report output path")
-    ap.add_argument("--max-evals", type=int, default=0, help="Optional cap on number of eval rows (head)")
+    ap.add_argument(
+        "--max-evals", type=int, default=0, help="Optional cap on number of eval rows (head)"
+    )
     ap.add_argument("--timeout-tests", type=int, default=900, help="Timeout (s) for unit tests")
     ap.add_argument("--timeout-rb", type=int, default=1200, help="Timeout (s) for RouterBench run")
-    ap.add_argument("--timeout-compitum", type=int, default=900, help="Timeout (s) for Compitum run")
-    ap.add_argument("--timeout-matbench", type=int, default=900, help="Timeout (s) for Matbench run")
-    ap.add_argument("--matbench-csv", type=str, default="data/matbench_demo.csv", help="Matbench CSV path")
-    ap.add_argument("--matbench-objective-col", type=str, default="y_true", help="Matbench objective column")
-    ap.add_argument("--matbench-mode", type=str, default="max", choices=["max", "min"], help="Matbench objective direction")
-    ap.add_argument("--matbench-topk-grid", type=str, default="1,5", help="Comma-separated k grid for Matbench")
-    ap.add_argument("--matbench-lambda-grid", type=str, default="0.0,0.5,1.0", help="Comma-separated lambda grid for Matbench SRMF")
-    ap.add_argument("--matbench-bootstrap", type=int, default=50, help="Bootstrap iterations for Matbench smoke")
-    ap.add_argument("--matbench-out-prefix", type=str, default="reports/matbench", help="Output prefix for Matbench artifacts")
+    ap.add_argument(
+        "--timeout-compitum", type=int, default=900, help="Timeout (s) for Compitum run"
+    )
+    ap.add_argument(
+        "--timeout-matbench", type=int, default=900, help="Timeout (s) for Matbench run"
+    )
+    ap.add_argument(
+        "--matbench-csv", type=str, default="data/matbench_demo.csv", help="Matbench CSV path"
+    )
+    ap.add_argument(
+        "--matbench-objective-col", type=str, default="y_true", help="Matbench objective column"
+    )
+    ap.add_argument(
+        "--matbench-mode",
+        type=str,
+        default="max",
+        choices=["max", "min"],
+        help="Matbench objective direction",
+    )
+    ap.add_argument(
+        "--matbench-topk-grid", type=str, default="1,5", help="Comma-separated k grid for Matbench"
+    )
+    ap.add_argument(
+        "--matbench-lambda-grid",
+        type=str,
+        default="0.0,0.5,1.0",
+        help="Comma-separated lambda grid for Matbench SRMF",
+    )
+    ap.add_argument(
+        "--matbench-bootstrap", type=int, default=50, help="Bootstrap iterations for Matbench smoke"
+    )
+    ap.add_argument(
+        "--matbench-out-prefix",
+        type=str,
+        default="reports/matbench",
+        help="Output prefix for Matbench artifacts",
+    )
     ap.add_argument("--all", action="store_true", help="Run tests + both benchmarks + report")
     args = ap.parse_args()
 
@@ -115,8 +168,12 @@ def main() -> None:
 
     if args.tests or args.all:
         # Run unit tests quietly
-        res = run_cmd([str(py_exe), "-m", "pytest", "-q"], cwd=project_root, timeout=args.timeout_tests)
-        test_summary = {k: res.get(k) for k in ("stdout","returncode","stderr","timed_out","duration_sec")}
+        res = run_cmd(
+            [str(py_exe), "-m", "pytest", "-q"], cwd=project_root, timeout=args.timeout_tests
+        )
+        test_summary = {
+            k: res.get(k) for k in ("stdout", "returncode", "stderr", "timed_out", "duration_sec")
+        }
         run_meta["tests"] = res
 
     rb_available = _has_rb_data()
@@ -126,7 +183,13 @@ def main() -> None:
         if args.max_evals and args.max_evals > 0:
             env_rb["RB_MAX_EVALS"] = str(args.max_evals)
         py = str(py_exe)
-        cmd = [py, str(project_root / "tools" / "run_routerbench_clean.py"), f"--config={args.config}", "--local", f"--tokenizer-backend={args.tokenizer_backend}"]
+        cmd = [
+            py,
+            str(project_root / "tools" / "run_routerbench_clean.py"),
+            f"--config={args.config}",
+            "--local",
+            f"--tokenizer-backend={args.tokenizer_backend}",
+        ]
         res = run_cmd(cmd, cwd=project_root, env=env_rb, timeout=args.timeout_rb)
         # Collect artifacts
         latest_collection = find_latest("data/rb_clean/eval_results/eval_results__*__rb_clean.csv")
@@ -148,11 +211,13 @@ def main() -> None:
             cmd.append(f"--wtp-list={args.wtp_list}")
         res = run_cmd(cmd, cwd=project_root, env=env, timeout=args.timeout_compitum)
         # Find latest per-eval CSV produced by compitum eval
-        latest_compitum = find_latest("data/rb_clean/eval_results/eval_results-eval-*-val_split.csv")
+        latest_compitum = find_latest(
+            "data/rb_clean/eval_results/eval_results-eval-*-val_split.csv"
+        )
         if latest_compitum:
             compitum_file = latest_compitum
             # Build metrics summary
-            wlist = [float(x.strip()) for x in args.wtp_list.split(',')] if args.wtp_list else None
+            wlist = [float(x.strip()) for x in args.wtp_list.split(",")] if args.wtp_list else None
             metrics = build_metrics_summary(compitum_file, wtp=args.wtp, wtp_list=wlist)
         run_meta["compitum"] = res
 
@@ -242,7 +307,9 @@ def main() -> None:
             "--out-json",
             str(regret_json),
         ]
-        regret_res = run_cmd(cmd_regret, cwd=project_root, env=mb_env, timeout=args.timeout_matbench)
+        regret_res = run_cmd(
+            cmd_regret, cwd=project_root, env=mb_env, timeout=args.timeout_matbench
+        )
 
         # Baseline ridge regret (small folds)
         cmd_base = [
@@ -269,7 +336,9 @@ def main() -> None:
             "--out-json",
             str(baseline_json),
         ]
-        baseline_res = run_cmd(cmd_base, cwd=project_root, env=mb_env, timeout=args.timeout_matbench)
+        baseline_res = run_cmd(
+            cmd_base, cwd=project_root, env=mb_env, timeout=args.timeout_matbench
+        )
 
         run_meta["matbench"] = {
             "calibration": calib_res,
@@ -280,9 +349,14 @@ def main() -> None:
 
     # Report
     ts = datetime.utcnow().strftime("%Y%m%d-%H%M")
-    report_out = Path(args.report_out) if args.report_out else (project_root / "reports" / f"report_{ts}.html")
+    report_out = (
+        Path(args.report_out)
+        if args.report_out
+        else (project_root / "reports" / f"report_{ts}.html")
+    )
     # Persist machine-readable run log
     import json as _json
+
     log_path = report_out.with_suffix(".json")
     log_path.parent.mkdir(parents=True, exist_ok=True)
     log_path.write_text(_json.dumps({"run_meta": run_meta}, indent=2), encoding="utf-8")

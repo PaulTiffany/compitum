@@ -40,4 +40,3 @@ def test_shadow_prices_nonnegative_at_boundary():
     _, info = solver.select(xB, models, utilities, context={"region": "US"})
     assert info["feasible"] is True
     assert all(v >= 0.0 for v in info["shadow_prices"].values())
-

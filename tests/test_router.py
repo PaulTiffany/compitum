@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 
 import numpy as np
 import pytest
+
 try:
     from hypothesis import HealthCheck, assume, event, settings
     from hypothesis.stateful import (
@@ -128,7 +129,6 @@ def test_router_route_no_stride_update(mock_print: MagicMock) -> None:
     )
     router.route("a prompt")
     metric_map["m1"].update_spd.assert_not_called()
-
 
     lyapunov_controller = MagicMock()
     lyapunov_controller.update.return_value = (1.0, {"trust_radius": 1.0, "lyapunov_function": 0.0})
@@ -323,7 +323,10 @@ class RouterLifecycle(RuleBasedStateMachine):
         type(self.energy).beta_d = PropertyMock(return_value=0.5)
         self.solver.select.return_value = (self.model1, {"feasible": True})
         self.boundary.analyze.return_value = {"is_boundary": False}
-        self.lyapunov_controller.update.return_value = (1.0, {"trust_radius": 1.0, "lyapunov_function": 0.0})
+        self.lyapunov_controller.update.return_value = (
+            1.0,
+            {"trust_radius": 1.0, "lyapunov_function": 0.0},
+        )
         self.metric_map["m1"].get_spd.return_value.det.return_value = 1.0
         self._certificates.append(self.router.route("init prompt"))
         self.utilities.append(self._certificates[-1].utility)
@@ -339,7 +342,10 @@ class RouterLifecycle(RuleBasedStateMachine):
         current_trust_radius = self.lyapunov_controller.update.return_value[1]["trust_radius"]
         scaled_trust_radius = current_trust_radius * (0.95 + quality * 0.1)
         new_trust_radius = max(0.2, min(5.0, scaled_trust_radius))
-        self.lyapunov_controller.update.return_value = (1.0, {"trust_radius": new_trust_radius, "lyapunov_function": 0.0})
+        self.lyapunov_controller.update.return_value = (
+            1.0,
+            {"trust_radius": new_trust_radius, "lyapunov_function": 0.0},
+        )
 
         new_cert = self.router.route("feedback prompt")
         self.utilities.append(new_cert.utility)

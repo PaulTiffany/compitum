@@ -25,6 +25,7 @@ def _sanitize_html_text(s: str) -> str:
     Keeps content deterministic while ensuring ASCII-safe messaging.
     """
     import re
+
     # Direct string replacements for known artifacts seen in outputs
     replacements = {
         "Compitum�?Ts": "Compitum's",
@@ -36,7 +37,7 @@ def _sanitize_html_text(s: str) -> str:
         # Variants observed in generated HTML
         "A�E+�?T": "-",
         " A�E+�?T ": " - ",
-        "A��?\" cost": "* cost",
+        'A��?" cost': "* cost",
         "A��?�A�": "&gt;= ",
     }
     for k, v in replacements.items():
@@ -50,25 +51,46 @@ def _sanitize_html_text(s: str) -> str:
     # Win (Utility … Best) -> Win (Utility >= Best)
     s = re.sub(r"Win \(Utility [^\x00-\x7F]+ Best\)", "Win (Utility &gt;= Best)", s)
     # Fix win-rate phrasing lines only (avoid touching 'utility gap' text)
-    s = re.sub(r"(where Compitum's utility) [^\x00-\x7F]{1,20} best baseline", r"\1 &gt;= best baseline", s)
-    s = re.sub(r"(share of evaluations where Compitum's utility) [^\x00-\x7F]{1,20} best baseline", r"\1 &gt;= best baseline", s)
+    s = re.sub(
+        r"(where Compitum's utility) [^\x00-\x7F]{1,20} best baseline", r"\1 &gt;= best baseline", s
+    )
+    s = re.sub(
+        r"(share of evaluations where Compitum's utility) [^\x00-\x7F]{1,20} best baseline",
+        r"\1 &gt;= best baseline",
+        s,
+    )
     # Utility formula line: normalize to performance - WTP * cost
-    s = re.sub(r"Utility</b>:.*?performance[^<]+WTP[^<]+cost", "Utility</b>: performance - WTP * cost", s)
+    s = re.sub(
+        r"Utility</b>:.*?performance[^<]+WTP[^<]+cost", "Utility</b>: performance - WTP * cost", s
+    )
     # Glossary utility formula
     s = re.sub(r"utility = performance[^<]+WTP[^<]+cost", "utility = performance - WTP * cost", s)
     # Avg cost delta on wins parenthetical: normalize to ASCII hyphen
-    s = re.sub(r"\(Compitum[^)]*best baseline cost on wins\)", "(Compitum - best baseline cost on wins)", s)
+    s = re.sub(
+        r"\(Compitum[^)]*best baseline cost on wins\)", "(Compitum - best baseline cost on wins)", s
+    )
     # Reduce currency precision to 2 decimals for the Topline cost delta
-    s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)([0-9]+)\.([0-9]{2})[0-9]{4}(\sUSD)", r"\g<1>\g<2>.\g<3>\g<4>", s)
+    s = re.sub(
+        r"(Avg cost delta on wins[^:]*:\s*)([0-9]+)\.([0-9]{2})[0-9]{4}(\sUSD)",
+        r"\g<1>\g<2>.\g<3>\g<4>",
+        s,
+    )
     # If the cost delta prints as exactly 0, add parity note for clarity
-    s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)0\.00 USD\.", r"\g<1>0.00 USD (parity on wins).", s)
+    s = re.sub(
+        r"(Avg cost delta on wins[^:]*:\s*)0\.00 USD\.", r"\g<1>0.00 USD (parity on wins).", s
+    )
     # If cost delta is blank (no wins), mark as N/A
     s = re.sub(r"(Avg cost delta on wins[^:]*:\s*)\s*USD\.", r"\g<1>N/A (no wins at this WTP).", s)
     # Clean win-rate phrasing mojibake to ASCII with >=
-    s = re.sub(r"Compitum[^\x00-\x7F]+s utility [^<]+ best baseline", "Compitum's utility &gt;= best baseline", s)
+    s = re.sub(
+        r"Compitum[^\x00-\x7F]+s utility [^<]+ best baseline",
+        "Compitum's utility &gt;= best baseline",
+        s,
+    )
     # Add explicit scope to 'Lower is better.' statements
     s = s.replace("Lower is better.", "(on this evaluation suite). Lower is better.")
     return s
+
 
 @dataclass
 class MetricsSummary:
@@ -82,7 +104,9 @@ class MetricsSummary:
     p95_regret: Optional[float] = None
     win_rate: Optional[float] = None  # fraction of evals where compitum >= best LLM utility
     avg_cost_delta_on_wins: Optional[float] = None  # compitum minus best LLM cost on winning evals
-    regrets_by_model: Optional[Dict[str, float]] = None  # mean regret per model at selected/best WTP
+    regrets_by_model: Optional[Dict[str, float]] = (
+        None  # mean regret per model at selected/best WTP
+    )
     # Moneyshot extras (kept minimal for clarity)
 
 
@@ -130,8 +154,12 @@ def build_metrics_summary(
     metrics = MetricsSummary(
         compitum_perf=float(cdf["performance"].mean()) if not cdf.empty else float("nan"),
         compitum_cost=float(cdf["total_cost"].mean()) if not cdf.empty else float("nan"),
-        llm_perf=llms.groupby("model_name")["performance"].mean().to_dict() if not llms.empty else {},
-        llm_cost=llms.groupby("model_name")["total_cost"].mean().to_dict() if not llms.empty else {},
+        llm_perf=llms.groupby("model_name")["performance"].mean().to_dict()
+        if not llms.empty
+        else {},
+        llm_cost=llms.groupby("model_name")["total_cost"].mean().to_dict()
+        if not llms.empty
+        else {},
         notes=[],
     )
     if cdf.empty:
@@ -148,7 +176,9 @@ def build_metrics_summary(
             def regret_at_wtp(w: float):
                 # Select compitum rows at this WTP if present; otherwise all compitum
                 if "willingness_to_pay" in df.columns:
-                    c_subset = df[(df["model_name"] == "compitum") & (df["willingness_to_pay"] == w)]
+                    c_subset = df[
+                        (df["model_name"] == "compitum") & (df["willingness_to_pay"] == w)
+                    ]
                 else:
                     c_subset = df[df["model_name"] == "compitum"]
                 r_list = []
@@ -156,7 +186,11 @@ def build_metrics_summary(
                 cost_deltas = []
                 base_regrets: Dict[str, List[float]] = {}
                 evals_considered = 0
-                comp_evals_count = len(set(c_subset.get("eval_name", pd.Series([], dtype=str)).astype(str))) if not c_subset.empty else 0
+                comp_evals_count = (
+                    len(set(c_subset.get("eval_name", pd.Series([], dtype=str)).astype(str)))
+                    if not c_subset.empty
+                    else 0
+                )
                 for ev in evals:
                     cv = c_subset[c_subset["eval_name"] == ev]
                     if cv.empty:
@@ -177,10 +211,16 @@ def build_metrics_summary(
                         wins += 1
                         cost_deltas.append(c_cost - best_cost)
                     for name, util in lv.groupby("model_name")["utility"].mean().items():
-                        base_regrets.setdefault(str(name), []).append(max(0.0, best_util - float(util)))
+                        base_regrets.setdefault(str(name), []).append(
+                            max(0.0, best_util - float(util))
+                        )
                 if not r_list:
                     return None
-                regrets_by_model = {k: float(pd.Series(v).mean()) for k, v in base_regrets.items()} if base_regrets else {}
+                regrets_by_model = (
+                    {k: float(pd.Series(v).mean()) for k, v in base_regrets.items()}
+                    if base_regrets
+                    else {}
+                )
                 return {
                     "mean_regret": float(np.mean(r_list)),
                     "p95_regret": float(np.percentile(r_list, 95)),
@@ -209,7 +249,10 @@ def build_metrics_summary(
                     # Ensure compitum averages reflect the selected WTP for visuals
                     try:
                         if "willingness_to_pay" in df.columns:
-                            c_best = df[(df["model_name"] == "compitum") & (df["willingness_to_pay"] == w_best)]
+                            c_best = df[
+                                (df["model_name"] == "compitum")
+                                & (df["willingness_to_pay"] == w_best)
+                            ]
                         else:
                             c_best = df[df["model_name"] == "compitum"]
                         if not c_best.empty:
@@ -278,7 +321,7 @@ def build_html_report(
         ax.bar(labels, values, color=["#3b82f6"] + ["#9ca3af"] * len(metrics.llm_perf))
         ax.set_title("Average Performance")
         ax.set_ylabel("Accuracy (mean)")
-        ax.tick_params(axis='x', rotation=20)
+        ax.tick_params(axis="x", rotation=20)
         ax.set_ylim(0, max(1.0, max([v for v in values if v == v] + [1.0])))
         charts["perf"] = _fig_to_data_url(fig)
 
@@ -294,7 +337,7 @@ def build_html_report(
         ax.bar(labels_c, values_c, color=["#10b981"] + ["#9ca3af"] * len(metrics.llm_cost))
         ax.set_title("Average Total Cost (USD)")
         ax.set_ylabel("USD (mean)")
-        ax.tick_params(axis='x', rotation=20)
+        ax.tick_params(axis="x", rotation=20)
         charts["cost"] = _fig_to_data_url(fig)
 
         # Regret chart – compare compitum and baselines (baseline best has 0 mean regret by definition)
@@ -304,14 +347,26 @@ def build_html_report(
             comp_item = [(k, v) for k, v in items if k == "compitum"]
             base_items = [(k, v) for k, v in items if k != "compitum"]
             base_items.sort(key=lambda t: t[1])
-            labels_r = [comp_item[0][0]] + [k for k, _ in base_items] if comp_item else [k for k, _ in base_items]
-            values_r = [comp_item[0][1]] + [v for _, v in base_items] if comp_item else [v for _, v in base_items]
-            colors_r = ["#ef4444"] + ["#9ca3af"] * (len(values_r) - 1) if comp_item else ["#9ca3af"] * len(values_r)
+            labels_r = (
+                [comp_item[0][0]] + [k for k, _ in base_items]
+                if comp_item
+                else [k for k, _ in base_items]
+            )
+            values_r = (
+                [comp_item[0][1]] + [v for _, v in base_items]
+                if comp_item
+                else [v for _, v in base_items]
+            )
+            colors_r = (
+                ["#ef4444"] + ["#9ca3af"] * (len(values_r) - 1)
+                if comp_item
+                else ["#9ca3af"] * len(values_r)
+            )
             fig, ax = plt.subplots(figsize=(7, 3.2))
             ax.bar(labels_r, values_r, color=colors_r)
             ax.set_title("Mean Regret vs Baseline Best (selected/best WTP)")
             ax.set_ylabel("Utility gap (lower is better)")
-            ax.tick_params(axis='x', rotation=20)
+            ax.tick_params(axis="x", rotation=20)
             charts["regret"] = _fig_to_data_url(fig)
 
         # Frontier-like scatter (avg cost vs avg performance)
@@ -346,44 +401,45 @@ def build_html_report(
         <div class=\"card\">
           <h2>Topline Takeaways</h2>
           <ul>
-            <li><b>Win rate</b> (share of evaluations where Compitum's utility ≥ best baseline): {'' if metrics.win_rate is None else f'{metrics.win_rate*100:.1f}%'}.</li>
-            <li><b>Mean regret</b> (utility gap to best baseline at selected/best WTP): {'' if metrics.mean_regret is None else f'{metrics.mean_regret:.6f}'}. Lower is better.</li>
-            <li><b>Avg cost delta on wins</b> (Compitum − best baseline cost on wins): {'' if metrics.avg_cost_delta_on_wins is None else f'{metrics.avg_cost_delta_on_wins:.6f}'} USD.</li>
-            <li><b>Average performance</b>: Compitum {metrics.compitum_perf:.4f}{(' vs ' + best_perf_name + ' ' + f'{best_perf_val:.4f}' if best_perf_name else '')}.</li>
-            <li><b>Average cost</b>: Compitum {metrics.compitum_cost:.6f}{(' vs ' + best_cost_name + ' ' + f'{best_cost_val:.6f}' if best_cost_name else '')} USD.</li>
+            <li><b>Win rate</b> (share of evaluations where Compitum's utility ≥ best baseline): {"" if metrics.win_rate is None else f"{metrics.win_rate * 100:.1f}%"}.</li>
+            <li><b>Mean regret</b> (utility gap to best baseline at selected/best WTP): {"" if metrics.mean_regret is None else f"{metrics.mean_regret:.6f}"}. Lower is better.</li>
+            <li><b>Avg cost delta on wins</b> (Compitum − best baseline cost on wins): {"" if metrics.avg_cost_delta_on_wins is None else f"{metrics.avg_cost_delta_on_wins:.6f}"} USD.</li>
+            <li><b>Average performance</b>: Compitum {metrics.compitum_perf:.4f}{(" vs " + best_perf_name + " " + f"{best_perf_val:.4f}" if best_perf_name else "")}.</li>
+            <li><b>Average cost</b>: Compitum {metrics.compitum_cost:.6f}{(" vs " + best_cost_name + " " + f"{best_cost_val:.6f}" if best_cost_name else "")} USD.</li>
           </ul>
         </div>
         """
     # Fixed-WTP CI table if prior analysis exists
     try:
         root = out_path.resolve().parents[1]
-        fixed_json = root / 'reports' / 'fixed_wtp_summary.json'
+        fixed_json = root / "reports" / "fixed_wtp_summary.json"
         if fixed_json.exists():
-            data = json.loads(fixed_json.read_text(encoding='utf-8'))
+            data = json.loads(fixed_json.read_text(encoding="utf-8"))
             rows = []
             # keys may be strings; normalize to float for sorting
             parsed = {}
-            for k,v in data.items():
+            for k, v in data.items():
                 try:
                     parsed[float(k)] = v
                 except Exception:
                     pass
             for k in sorted(parsed.keys()):
                 ci = parsed[k]
-                mr = ci.get('mean_regret', [float('nan')]*3)
-                wr = ci.get('win_rate', [float('nan')]*3)
-                cd = ci.get('avg_cost_delta_on_wins', [float('nan')]*3)
+                mr = ci.get("mean_regret", [float("nan")] * 3)
+                wr = ci.get("win_rate", [float("nan")] * 3)
+                cd = ci.get("avg_cost_delta_on_wins", [float("nan")] * 3)
                 rows.append(
                     f"<tr><td>{k:.2f}</td>"
                     f"<td>{mr[0]:.6f} [{mr[1]:.6f}, {mr[2]:.6f}]</td>"
-                    f"<td>{wr[0]*100:.1f}% [{wr[1]*100:.1f}%, {wr[2]*100:.1f}%]</td>"
+                    f"<td>{wr[0] * 100:.1f}% [{wr[1] * 100:.1f}%, {wr[2] * 100:.1f}%]</td>"
                     f"<td>{cd[0]:.6f} [{cd[1]:.6f}, {cd[2]:.6f}]</td></tr>"
                 )
             if rows:
                 fixed_ci_html = (
-                    "<div class=\"card\"><h2>Fixed WTP Analysis (95% CI)</h2>"
+                    '<div class="card"><h2>Fixed WTP Analysis (95% CI)</h2>'
                     "<table><tr><th>WTP</th><th>Mean Regret</th><th>Win Rate</th><th>Avg Cost Δ (wins)</th></tr>"
-                    + "".join(rows) + "</table></div>"
+                    + "".join(rows)
+                    + "</table></div>"
                 )
     except Exception:
         pass
@@ -392,6 +448,7 @@ def build_html_report(
     try:
         if compitum_file:
             import pandas as _pd
+
             df_task = _pd.read_csv(compitum_file)
             bdf = df_task[df_task["model_name"] != "compitum"].copy()
             cdf = df_task[df_task["model_name"] == "compitum"].copy()
@@ -411,43 +468,49 @@ def build_html_report(
                 idx = int(b_util.idxmax())
                 best_util = float(b_util.loc[idx])
                 regret = max(0.0, best_util - c_util)
-                win = (c_util >= best_util - 1e-12)
+                win = c_util >= best_util - 1e-12
                 rows.append((ev, regret, 100.0 if win else 0.0))
             if rows:
                 top = sorted(rows, key=lambda t: t[1])[:10]
                 per_task_html = (
-                    "<div class=\"card\"><h2>Per-Task Summary (WTP = 1.0)</h2>"
+                    '<div class="card"><h2>Per-Task Summary (WTP = 1.0)</h2>'
                     "<table><tr><th>Eval Name</th><th>Mean Regret</th><th>Win (Utility ≥ Best)</th></tr>"
-                    + "".join(f"<tr><td>{ev}</td><td>{reg:.6f}</td><td>{wr:.0f}%</td></tr>" for ev, reg, wr in top)
-                    + "</table><p class=\"muted\">Top 10 tasks by lowest regret shown.</p></div>"
+                    + "".join(
+                        f"<tr><td>{ev}</td><td>{reg:.6f}</td><td>{wr:.0f}%</td></tr>"
+                        for ev, reg, wr in top
+                    )
+                    + '</table><p class="muted">Top 10 tasks by lowest regret shown.</p></div>'
                 )
     except Exception:
         pass
 
     # Ablation summary table (if available)
     try:
-        ab_path = out_path.resolve().parents[1] / 'reports' / 'ablation_summary.json'
+        ab_path = out_path.resolve().parents[1] / "reports" / "ablation_summary.json"
         if ab_path.exists():
-            data = json.loads(ab_path.read_text(encoding='utf-8'))
+            data = json.loads(ab_path.read_text(encoding="utf-8"))
             rows = []
+
             def _wtp_sort_key(k: str) -> float:
                 try:
-                    return float(str(k).split('=')[-1])
+                    return float(str(k).split("=")[-1])
                 except Exception:
                     return 0.0
+
             for wtp in sorted(data.keys(), key=_wtp_sort_key):
                 entries = data[wtp]
                 for model in ("compitum", "knn", "mlp", "cascading"):
                     stats = entries.get(model)
                     if not stats:
                         continue
-                    mr = stats.get('mean_regret', float('nan'))
+                    mr = stats.get("mean_regret", float("nan"))
                     rows.append(f"<tr><td>{wtp}</td><td>{model}</td><td>{mr:.6f}</td></tr>")
             if rows:
                 ablation_html = (
-                    "<div class=\"card\"><h2>Ablation Summary (Fixed WTP)</h2>"
+                    '<div class="card"><h2>Ablation Summary (Fixed WTP)</h2>'
                     "<table><tr><th>WTP</th><th>Model</th><th>Mean Regret</th></tr>"
-                    + "".join(rows) + "</table></div>"
+                    + "".join(rows)
+                    + "</table></div>"
                 )
     except Exception:
         pass
@@ -481,11 +544,14 @@ def build_html_report(
     """
 
     rb_list = "".join(f"<li><code>{p}</code></li>" for p in rb_files)
-    compitum_link = f"<li><code>{compitum_file}</code></li>" if compitum_file else "<li class='muted'>none</li>"
+    compitum_link = (
+        f"<li><code>{compitum_file}</code></li>" if compitum_file else "<li class='muted'>none</li>"
+    )
 
     # Step status card
     step_html = ""
     if run_meta:
+
         def _fmt(step):
             if not step:
                 return ("N/A", "", "", "")
@@ -495,6 +561,7 @@ def build_html_report(
                 step.get("duration_sec"),
                 step.get("timeout_sec"),
             )
+
         tests_rc, tests_to, tests_dt, tests_cap = _fmt(run_meta.get("tests"))
         rb_rc, rb_to, rb_dt, rb_cap = _fmt(run_meta.get("routerbench"))
         comp_rc, comp_to, comp_dt, comp_cap = _fmt(run_meta.get("compitum"))
@@ -515,44 +582,48 @@ def build_html_report(
     if metrics:
         metrics_html = f"""
         <div class="grid">
-          <div class="card"><img src="{charts.get('perf','')}" alt="Average Performance"></div>
-          <div class="card"><img src="{charts.get('cost','')}" alt="Average Cost"></div>
+          <div class="card"><img src="{charts.get("perf", "")}" alt="Average Performance"></div>
+          <div class="card"><img src="{charts.get("cost", "")}" alt="Average Cost"></div>
         </div>
-        {('<div class="card"><img src="' + charts.get('regret','') + '" alt="Mean Regret"></div>') if charts.get('regret') else ''}
-        {('<div class="card"><img src="' + charts.get('frontier','') + '" alt="Avg Cost vs Performance"></div>') if charts.get('frontier') else ''}
+        {('<div class="card"><img src="' + charts.get("regret", "") + '" alt="Mean Regret"></div>') if charts.get("regret") else ""}
+        {('<div class="card"><img src="' + charts.get("frontier", "") + '" alt="Avg Cost vs Performance"></div>') if charts.get("frontier") else ""}
         <div class="card">
           <h2>Numerical Summary</h2>
           <table>
             <tr><th>Model</th><th>Avg Performance</th><th>Avg Total Cost</th></tr>
             <tr><td>compitum</td><td>{metrics.compitum_perf:.4f}</td><td>{metrics.compitum_cost:.6f}</td></tr>
-            {''.join(f"<tr><td>{name}</td><td>{metrics.llm_perf.get(name,float('nan')):.4f}</td><td>{metrics.llm_cost.get(name,float('nan')):.6f}</td></tr>" for name in metrics.llm_perf.keys())}
+            {"".join(f"<tr><td>{name}</td><td>{metrics.llm_perf.get(name, float('nan')):.4f}</td><td>{metrics.llm_cost.get(name, float('nan')):.6f}</td></tr>" for name in metrics.llm_perf.keys())}
           </table>
           <h2>Regret & Wins (WTP-selected)</h2>
           <table>
             <tr><th>Mean Regret</th><th>P95 Regret</th><th>Win Rate</th><th>Avg Cost Delta on Wins</th></tr>
             <tr>
-              <td>{'' if metrics.mean_regret is None else f'{metrics.mean_regret:.6f}'}</td>
-              <td>{'' if metrics.p95_regret is None else f'{metrics.p95_regret:.6f}'}</td>
-              <td>{'' if metrics.win_rate is None else f'{metrics.win_rate*100:.1f}%'} </td>
-              <td>{'' if metrics.avg_cost_delta_on_wins is None else f'{metrics.avg_cost_delta_on_wins:.6f}'}</td>
+              <td>{"" if metrics.mean_regret is None else f"{metrics.mean_regret:.6f}"}</td>
+              <td>{"" if metrics.p95_regret is None else f"{metrics.p95_regret:.6f}"}</td>
+              <td>{"" if metrics.win_rate is None else f"{metrics.win_rate * 100:.1f}%"} </td>
+              <td>{"" if metrics.avg_cost_delta_on_wins is None else f"{metrics.avg_cost_delta_on_wins:.6f}"}</td>
             </tr>
           </table>
-          {('<p class="muted">' + ' '.join(metrics.notes) + '</p>') if metrics.notes else ''}
+          {('<p class="muted">' + " ".join(metrics.notes) + "</p>") if metrics.notes else ""}
         </div>
         """
-    
+
     # Visible policy and coverage under Topline for clarity
     wtp_coverage_html = ""
     try:
         if metrics:
-            wn = next((n for n in metrics.notes if isinstance(n, str) and n.startswith("WTP policy:")), "")
+            wn = next(
+                (n for n in metrics.notes if isinstance(n, str) and n.startswith("WTP policy:")), ""
+            )
             co = getattr(metrics, "coverage_overlap", None)
             cc = getattr(metrics, "coverage_compitum", None)
             parts = []
             if wn:
                 parts.append(f'<p class="muted">{wn}</p>')
             if isinstance(co, int) and isinstance(cc, int):
-                parts.append(f'<p class="muted">Coverage: win-rate denominator = {co} evals; Compitum evals at this WTP = {cc}.</p>')
+                parts.append(
+                    f'<p class="muted">Coverage: win-rate denominator = {co} evals; Compitum evals at this WTP = {cc}.</p>'
+                )
             wtp_coverage_html = "".join(parts)
     except Exception:
         wtp_coverage_html = ""
@@ -582,8 +653,8 @@ def build_html_report(
 
       <div class="card">
         <h2>Unit Tests</h2>
-        <pre>{test_summary.get('stdout','').strip()}</pre>
-        <p class="muted">Exit code: {test_summary.get('returncode','')}</p>
+        <pre>{test_summary.get("stdout", "").strip()}</pre>
+        <p class="muted">Exit code: {test_summary.get("returncode", "")}</p>
       </div>
 
       {step_html}

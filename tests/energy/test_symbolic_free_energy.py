@@ -25,7 +25,12 @@ def _constant_predictors(D: int) -> dict[str, CalibratedPredictor]:
 
 def test_energy_monotonic_wrt_distance_and_evidence():
     D = 6
-    model = Model(name="m", center=np.zeros(D), capabilities=Capabilities(regions={"US"}, tools_allowed={"none"}), cost=0.1)
+    model = Model(
+        name="m",
+        center=np.zeros(D),
+        capabilities=Capabilities(regions={"US"}, tools_allowed={"none"}),
+        cost=0.1,
+    )
     predictors = _constant_predictors(D)
     metric = SymbolicManifoldMetric(D, rank=3, delta=1e-3)
     coherence = CoherenceFunctional(k=50)
@@ -60,7 +65,12 @@ def test_energy_evidence_uses_xR_minus_center_not_plus():
     signs produce opposite evidence orderings."""
     D = 1
     center = np.array([2.0])
-    model = Model(name="m", center=center, capabilities=Capabilities(regions={"US"}, tools_allowed={"none"}), cost=0.1)
+    model = Model(
+        name="m",
+        center=center,
+        capabilities=Capabilities(regions={"US"}, tools_allowed={"none"}),
+        cost=0.1,
+    )
     predictors = _constant_predictors(D)
     metric = SymbolicManifoldMetric(D, rank=1, delta=1e-3)
     coherence = CoherenceFunctional(k=50)
@@ -81,4 +91,3 @@ def test_energy_evidence_uses_xR_minus_center_not_plus():
     _, _, comps_mirrored = energy.compute(x_mirrored, model, predictors, coherence, metric)
 
     assert comps_at_center["evidence"] > comps_mirrored["evidence"]
-

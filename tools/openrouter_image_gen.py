@@ -6,6 +6,7 @@ writes each returned image to disk. Intended for generating the *background*
 layer of a hybrid figure -- the deterministic SVG overlay carries all text and
 claims, so prompts here must explicitly forbid embedded words/numbers.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -34,6 +35,8 @@ def load_env(path: Path) -> None:
         value = value.strip().strip('"').strip("'")
         if key and key not in os.environ:
             os.environ[key] = value
+
+
 DEFAULT_MODEL = "google/gemini-2.5-flash-image"
 
 
@@ -56,7 +59,9 @@ def post(payload: dict) -> dict:
         with urllib.request.urlopen(req, timeout=180) as resp:
             return json.loads(resp.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
-        raise SystemExit(f"OpenRouter HTTP {exc.code}: {exc.read().decode('utf-8','replace')}") from exc
+        raise SystemExit(
+            f"OpenRouter HTTP {exc.code}: {exc.read().decode('utf-8', 'replace')}"
+        ) from exc
 
 
 def extract_images(response: dict) -> list[bytes]:
@@ -73,7 +78,11 @@ def extract_images(response: dict) -> list[bytes]:
         if isinstance(content, list):
             for blk in content:
                 if isinstance(blk, dict):
-                    url = (blk.get("image_url") or {}).get("url", "") if blk.get("type") == "image_url" else ""
+                    url = (
+                        (blk.get("image_url") or {}).get("url", "")
+                        if blk.get("type") == "image_url"
+                        else ""
+                    )
                     if url.startswith("data:") and ";base64," in url:
                         out.append(base64.b64decode(url.split(";base64,", 1)[1]))
     return out

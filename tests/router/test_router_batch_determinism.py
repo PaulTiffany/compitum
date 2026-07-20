@@ -23,14 +23,18 @@ def _router(D: int = 35) -> CompitumRouter:
         q = rng.random(128)
         t = rng.random(128)
         c = rng.random(128)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=128)
     from pathlib import Path
+
     # Resolve constraints relative to a parent containing configs/ (works under mutmut)
     cur = Path(__file__).resolve().parent
     repo_root = None
@@ -46,8 +50,18 @@ def _router(D: int = 35) -> CompitumRouter:
     energy = SymbolicFreeEnergy(0.6, 0.1, 0.2, 0.2, 0.0)
     pgd = RegexPromptExtractor()
     return CompitumRouter(
-        models, predictors, solver, coherence, boundary, ctrl, pgd, metrics, energy,
-        update_stride=999, enable_metric_update=False, enable_controller=False,
+        models,
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        ctrl,
+        pgd,
+        metrics,
+        energy,
+        update_stride=999,
+        enable_metric_update=False,
+        enable_controller=False,
     )
 
 

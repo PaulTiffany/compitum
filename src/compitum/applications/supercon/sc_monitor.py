@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Dict, Optional
@@ -29,11 +29,16 @@ class SuperconMonitor:
     and an alarm if the proxy exceeds a threshold. This is a simulated example (no real data).
     """
 
-    def __init__(self, config: SuperconMonitorConfig | None = None,
-                 *, state_dim: int | None = None, rank: int | None = None,
-                 alarm_threshold: float | None = None,
-                 scales: Optional[np.ndarray] = None,
-                 norm_p: float | None = None) -> None:
+    def __init__(
+        self,
+        config: SuperconMonitorConfig | None = None,
+        *,
+        state_dim: int | None = None,
+        rank: int | None = None,
+        alarm_threshold: float | None = None,
+        scales: Optional[np.ndarray] = None,
+        norm_p: float | None = None,
+    ) -> None:
         cfg = config or SuperconMonitorConfig()
         if state_dim is not None:
             cfg.state_dim = state_dim
@@ -95,4 +100,3 @@ class SuperconMonitor:
     def reset_center(self, new_center: np.ndarray) -> None:
         self.center = new_center.copy()
         self.controller.drift_integral = 0.0
-

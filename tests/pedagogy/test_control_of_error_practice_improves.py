@@ -24,14 +24,18 @@ def _router(D: int = 32) -> CompitumRouter:
         q = rng.random(256)
         t = rng.random(256)
         c = rng.random(256)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=256)
     from pathlib import Path
+
     A, B = _load_constraints(Path("configs/constraints_us_default.yaml"))
     solver = ReflectiveConstraintSolver(A, B)
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)
@@ -41,8 +45,18 @@ def _router(D: int = 32) -> CompitumRouter:
     energy = SymbolicFreeEnergy(alpha=0.0, beta_t=0.0, beta_c=0.0, beta_d=0.0, beta_s=1.0)
     pgd = RegexPromptExtractor()
     return CompitumRouter(
-        models, predictors, solver, coherence, boundary, ctrl, pgd, metrics, energy,
-        update_stride=999, enable_metric_update=False, enable_controller=False,
+        models,
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        ctrl,
+        pgd,
+        metrics,
+        energy,
+        update_stride=999,
+        enable_metric_update=False,
+        enable_controller=False,
     )
 
 

@@ -28,9 +28,8 @@ class BoundaryAnalyzer:
         entropy = -float(np.sum(probs * np.log(probs + 1e-12)))
         sigma = float(u_sigma.get(m1, 0.0))
         # BRIDGEBLOCK_START def:boundary_condition
-        is_boundary = (
-            (gap < self.gap_threshold or entropy > self.entropy_threshold)
-            and (sigma > self.sigma_threshold)
+        is_boundary = (gap < self.gap_threshold or entropy > self.entropy_threshold) and (
+            sigma > self.sigma_threshold
         )
         # BRIDGEBLOCK_END def:boundary_condition
         return {

@@ -24,4 +24,3 @@ def test_shadow_prices_monotone_under_relaxation():
 
     # Non-decreasing (will be all zeros in this setup)
     assert all(lambdas[i] <= lambdas[i + 1] + 1e-12 for i in range(len(lambdas) - 1))
-

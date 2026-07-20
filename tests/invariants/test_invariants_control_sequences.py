@@ -28,4 +28,3 @@ def test_lyapunov_final_below_initial_under_decreasing_drift():
     v_final = ctrl.lyapunov_function()
     # Expect net recovery: final Lyapunov proxy below initial
     assert v_final < v_init
-

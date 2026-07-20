@@ -106,10 +106,17 @@ def slugify(s: str) -> str:
 def make_notebook(code: str, title: str) -> str:
     # Minimal nbformat v4 JSON (avoid nbformat dependency)
     import json
+
     nb = {
         "cells": [
             {"cell_type": "markdown", "metadata": {}, "source": [f"# {title}\n"]},
-            {"cell_type": "code", "metadata": {}, "execution_count": None, "outputs": [], "source": [code if code.endswith("\n") else code + "\n"]},
+            {
+                "cell_type": "code",
+                "metadata": {},
+                "execution_count": None,
+                "outputs": [],
+                "source": [code if code.endswith("\n") else code + "\n"],
+            },
         ],
         "metadata": {
             "kernelspec": {
@@ -125,16 +132,20 @@ def make_notebook(code: str, title: str) -> str:
     return json.dumps(nb, ensure_ascii=False, indent=2)
 
 
-def replace_blocks_with_markers(md: str, page_stem: str, min_lines: int, lang: str) -> tuple[str, List[tuple[str, str]]]:
+def replace_blocks_with_markers(
+    md: str, page_stem: str, min_lines: int, lang: str
+) -> tuple[str, List[tuple[str, str]]]:
     """Return new_md and list of (marker, code)."""
     # Regex for fenced code blocks ```lang ... ``` capturing content lazily
-    pattern = re.compile(r"^```(?P<lang>[A-Za-z0-9_-]+)?\s*\n(?P<code>[\s\S]*?)\n```\s*$", re.MULTILINE)
+    pattern = re.compile(
+        r"^```(?P<lang>[A-Za-z0-9_-]+)?\s*\n(?P<code>[\s\S]*?)\n```\s*$", re.MULTILINE
+    )
     out_parts = []
     last = 0
     collected: List[tuple[str, str]] = []
     index = 0
     for m in pattern.finditer(md):
-        out_parts.append(md[last:m.start()])
+        out_parts.append(md[last : m.start()])
         last = m.end()
         block_lang = (m.group("lang") or "").lower()
         code = m.group("code")
@@ -143,7 +154,9 @@ def replace_blocks_with_markers(md: str, page_stem: str, min_lines: int, lang: s
             index += 1
             marker = f"auto_{slugify(page_stem)}_{index}"
             collected.append((marker, code))
-            out_parts.append(f"<!-- NOTEBOOK:{marker}:BEGIN -->\n[Notebook content will be embedded by CI]\n<!-- NOTEBOOK:{marker}:END -->\n")
+            out_parts.append(
+                f"<!-- NOTEBOOK:{marker}:BEGIN -->\n[Notebook content will be embedded by CI]\n<!-- NOTEBOOK:{marker}:END -->\n"
+            )
         else:
             # keep original block untouched
             out_parts.append(m.group(0))
@@ -187,20 +200,27 @@ def main() -> None:
             if not args.dry_run:
                 nb_json = make_notebook(code, f"Snippet from {page.name}")
                 write_text(nb_abs, nb_json)
-            if (str(page.as_posix()), marker) not in existing_keys and (str(page.as_posix()), marker) not in {(e.get("page"), e.get("marker")) for e in new_entries}:
-                new_entries.append({
-                    "page": str(page.as_posix()),
-                    "notebook": str(nb_rel.as_posix()),
-                    "marker": marker,
-                    "heading": None,
-                })
+            if (str(page.as_posix()), marker) not in existing_keys and (
+                str(page.as_posix()),
+                marker,
+            ) not in {(e.get("page"), e.get("marker")) for e in new_entries}:
+                new_entries.append(
+                    {
+                        "page": str(page.as_posix()),
+                        "notebook": str(nb_rel.as_posix()),
+                        "marker": marker,
+                        "heading": None,
+                    }
+                )
             total_blocks += 1
 
     if new_entries:
         all_entries = existing_map + new_entries
         if not args.dry_run:
             save_map(all_entries)
-        print(f"Prepared {len(new_entries)} new mappings across {len(pages)} pages (blocks found: {total_blocks}).")
+        print(
+            f"Prepared {len(new_entries)} new mappings across {len(pages)} pages (blocks found: {total_blocks})."
+        )
     else:
         # Still rewrite the map to normalize any absolute paths
         if not args.dry_run and MAP_PATH.exists():

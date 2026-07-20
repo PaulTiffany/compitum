@@ -12,7 +12,7 @@ from compitum.applications.supercon.sc_monitor import SuperconMonitor, SuperconM
 
 def load_dataset(path: Path, state_dim: int) -> pd.DataFrame:
     df = pd.read_csv(path)
-    cols = [f"x{i+1}" for i in range(state_dim)]
+    cols = [f"x{i + 1}" for i in range(state_dim)]
     for c in cols + ["label_sc"]:
         if c not in df.columns:
             raise ValueError(f"Missing required column: {c}")
@@ -27,7 +27,7 @@ def evaluate_dir(data_dir: Path, state_dim: int, rank: int, alarm: float) -> pd.
         df = load_dataset(p, state_dim)
         tp = fp = tn = fn = 0
         for _, r in df.iterrows():
-            x = r[[f"x{i+1}" for i in range(state_dim)]].to_numpy(dtype=float)
+            x = r[[f"x{i + 1}" for i in range(state_dim)]].to_numpy(dtype=float)
             out = mon.ingest_features(x)
             pred = bool(out["alarm_status"])
             lab = bool(int(r["label_sc"]))
@@ -42,7 +42,18 @@ def evaluate_dir(data_dir: Path, state_dim: int, rank: int, alarm: float) -> pd.
         prec = tp / (tp + fp + 1e-12)
         rec = tp / (tp + fn + 1e-12)
         acc = (tp + tn) / max(1, (tp + tn + fp + fn))
-        rows.append({"file": p.name, "tp": tp, "fp": fp, "tn": tn, "fn": fn, "precision": prec, "recall": rec, "accuracy": acc})
+        rows.append(
+            {
+                "file": p.name,
+                "tp": tp,
+                "fp": fp,
+                "tn": tn,
+                "fn": fn,
+                "precision": prec,
+                "recall": rec,
+                "accuracy": acc,
+            }
+        )
     return pd.DataFrame(rows)
 
 

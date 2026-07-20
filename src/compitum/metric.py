@@ -141,10 +141,9 @@ class SymbolicManifoldMetric:
 
         d_batch_safe = np.maximum(d_batch, 1e-8)
         # Vectorized computation of A_batch and grad_L_batch
-        A_batch = (
-            beta_d
-            / (2 * d_batch_safe[:, np.newaxis, np.newaxis])
-        ) * np.einsum("bi,bj->bij", z_batch, z_batch)
+        A_batch = (beta_d / (2 * d_batch_safe[:, np.newaxis, np.newaxis])) * np.einsum(
+            "bi,bj->bij", z_batch, z_batch
+        )
 
         # Sum gradients over the batch
         grad_L = 2 * np.sum(np.einsum("bij,jk->bik", A_batch, self.L), axis=0)
@@ -191,7 +190,7 @@ class SymbolicManifoldMetric:
         W = self._update_cholesky()
 
         # Update whitened_residuals with the batch
-        wz_batch = np.einsum('ij,bj->bi', W, z_batch)
+        wz_batch = np.einsum("ij,bj->bi", W, z_batch)
         self.whitened_residuals.extend(wz_batch)
         while len(self.whitened_residuals) > 100:
             self.whitened_residuals.pop(0)

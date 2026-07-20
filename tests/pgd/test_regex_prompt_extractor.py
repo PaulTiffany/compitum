@@ -65,4 +65,3 @@ def test_semantic_proxies_unique_and_lengths():
     assert out[i_len] == 9.0
     # words of length > 6 should be counted (epsilon, quantum)
     assert out[i_long] >= 2.0
-

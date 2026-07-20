@@ -13,7 +13,20 @@ def run_py(args: list[str]) -> str:
 
 
 def test_synth_bench_quiet() -> None:
-    out = run_py(["examples/synth_bench.py", "--quiet", "--seed", "0", "--D", "16", "--rank", "4", "--n", "50"])  # quick
+    out = run_py(
+        [
+            "examples/synth_bench.py",
+            "--quiet",
+            "--seed",
+            "0",
+            "--D",
+            "16",
+            "--rank",
+            "4",
+            "--n",
+            "50",
+        ]
+    )  # quick
     data = json.loads(out)
     assert "avg_d_math" in data and "avg_d_code" in data
 

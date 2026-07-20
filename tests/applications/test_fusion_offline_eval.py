@@ -85,4 +85,3 @@ def test_lead_time_alarm_at_or_after_crash():
     lead_ms, crash_idx = lead_time_from_q_threshold(q_min, time_ms, alarm_idx=5, q_threshold=1.0)
     assert crash_idx == 3
     assert lead_ms == 0.0
-

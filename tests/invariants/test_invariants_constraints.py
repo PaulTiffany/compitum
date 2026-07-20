@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
+
 try:
     from hypothesis import assume, given, settings, HealthCheck
     from hypothesis import strategies as st

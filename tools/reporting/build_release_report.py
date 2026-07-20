@@ -23,16 +23,50 @@ def main() -> None:
     project_root = ROOT
     reports_dir = project_root / "reports"
 
-    ap = argparse.ArgumentParser(description="Build deterministic release report HTML from pinned artifacts")
-    ap.add_argument("--out", type=str, default=str(reports_dir / "report_release.html"), help="Output HTML path")
-    ap.add_argument("--pins", type=str, default=str(reports_dir / "report_release_pins.json"), help="Pins JSON path")
-    ap.add_argument("--compitum-csv", type=str, default=None, help="Explicit compitum CSV path (overrides pins)")
-    ap.add_argument("--rb-csv", type=str, nargs="*", default=None, help="Explicit RB CSV paths (overrides pins)")
-    ap.add_argument("--wtp-grid", type=str, default=None, help="Comma-separated WTP grid (e.g., '0.0001,0.001,0.01,0.1,1.0')")
-    ap.add_argument("--wtp-selection", type=str, choices=["best","fixed"], default=None, help="Use best-of-grid or fixed WTP")
-    ap.add_argument("--wtp", type=float, default=None, help="Fixed WTP to use when --wtp-selection=fixed")
-    ap.add_argument("--from-manifest", action="store_true", help="Fallback: derive artifacts from artifact_manifest.json if pins absent")
-    ap.add_argument("--write-pins", action="store_true", help="Write pins file capturing the artifacts and WTP settings used")
+    ap = argparse.ArgumentParser(
+        description="Build deterministic release report HTML from pinned artifacts"
+    )
+    ap.add_argument(
+        "--out", type=str, default=str(reports_dir / "report_release.html"), help="Output HTML path"
+    )
+    ap.add_argument(
+        "--pins",
+        type=str,
+        default=str(reports_dir / "report_release_pins.json"),
+        help="Pins JSON path",
+    )
+    ap.add_argument(
+        "--compitum-csv", type=str, default=None, help="Explicit compitum CSV path (overrides pins)"
+    )
+    ap.add_argument(
+        "--rb-csv", type=str, nargs="*", default=None, help="Explicit RB CSV paths (overrides pins)"
+    )
+    ap.add_argument(
+        "--wtp-grid",
+        type=str,
+        default=None,
+        help="Comma-separated WTP grid (e.g., '0.0001,0.001,0.01,0.1,1.0')",
+    )
+    ap.add_argument(
+        "--wtp-selection",
+        type=str,
+        choices=["best", "fixed"],
+        default=None,
+        help="Use best-of-grid or fixed WTP",
+    )
+    ap.add_argument(
+        "--wtp", type=float, default=None, help="Fixed WTP to use when --wtp-selection=fixed"
+    )
+    ap.add_argument(
+        "--from-manifest",
+        action="store_true",
+        help="Fallback: derive artifacts from artifact_manifest.json if pins absent",
+    )
+    ap.add_argument(
+        "--write-pins",
+        action="store_true",
+        help="Write pins file capturing the artifacts and WTP settings used",
+    )
     args = ap.parse_args()
 
     out_html = Path(args.out)
@@ -49,7 +83,11 @@ def main() -> None:
             if isinstance(run_meta, dict):
                 t = run_meta.get("tests") or {}
                 # Mirror the shape used by ci_orchestrator when embedding
-                test_summary = {k: t.get(k) for k in ("stdout", "returncode", "stderr", "timed_out", "duration_sec") if k in t}
+                test_summary = {
+                    k: t.get(k)
+                    for k in ("stdout", "returncode", "stderr", "timed_out", "duration_sec")
+                    if k in t
+                }
         except Exception:
             pass
 
@@ -84,13 +122,27 @@ def main() -> None:
             try:
                 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
                 if not rb_files:
-                    cand = [Path(e["path"]) for e in manifest if isinstance(e, dict) and str(e.get("path","")) .endswith("__rb_clean.csv")]
+                    cand = [
+                        Path(e["path"])
+                        for e in manifest
+                        if isinstance(e, dict) and str(e.get("path", "")).endswith("__rb_clean.csv")
+                    ]
                     if cand:
-                        rb_files = [sorted(cand, key=lambda p: p.stat().st_mtime if p.exists() else 0)[-1]]
+                        rb_files = [
+                            sorted(cand, key=lambda p: p.stat().st_mtime if p.exists() else 0)[-1]
+                        ]
                 if not compitum_file:
-                    cand = [Path(e["path"]) for e in manifest if isinstance(e, dict) and "eval_results-eval-" in str(e.get("path","")) and str(e.get("path","")) .endswith("-val_split.csv")]
+                    cand = [
+                        Path(e["path"])
+                        for e in manifest
+                        if isinstance(e, dict)
+                        and "eval_results-eval-" in str(e.get("path", ""))
+                        and str(e.get("path", "")).endswith("-val_split.csv")
+                    ]
                     if cand:
-                        compitum_file = sorted(cand, key=lambda p: p.stat().st_mtime if p.exists() else 0)[-1]
+                        compitum_file = sorted(
+                            cand, key=lambda p: p.stat().st_mtime if p.exists() else 0
+                        )[-1]
             except Exception:
                 pass
 
@@ -108,7 +160,7 @@ def main() -> None:
     wfixed: Optional[float] = None
     if args.wtp_grid:
         try:
-            wgrid = [float(x.strip()) for x in args.wtp_grid.split(',') if x.strip()]
+            wgrid = [float(x.strip()) for x in args.wtp_grid.split(",") if x.strip()]
         except Exception:
             wgrid = None
     if args.wtp_selection:
@@ -122,9 +174,9 @@ def main() -> None:
                 wgrid = [float(x) for x in pins.get("wtp_grid", [])]
             except Exception:
                 wgrid = None
-        if args.wtp_selection is None and pins.get("wtp_selection") in ("best","fixed"):
+        if args.wtp_selection is None and pins.get("wtp_selection") in ("best", "fixed"):
             wsel = pins.get("wtp_selection")
-        if wfixed is None and isinstance(pins.get("wtp"), (int,float)):
+        if wfixed is None and isinstance(pins.get("wtp"), (int, float)):
             wfixed = float(pins.get("wtp"))
 
     # Defaults if still not specified
@@ -161,7 +213,14 @@ def main() -> None:
         }
         pins_path.write_text(json.dumps(pins_out, indent=2), encoding="utf-8")
 
-    build_html_report(Path(out_html), test_summary, rb_files, Path(compitum_file) if compitum_file else None, metrics, run_meta)
+    build_html_report(
+        Path(out_html),
+        test_summary,
+        rb_files,
+        Path(compitum_file) if compitum_file else None,
+        metrics,
+        run_meta,
+    )
     print(f"Wrote sanitized release report to: {out_html}")
 
 

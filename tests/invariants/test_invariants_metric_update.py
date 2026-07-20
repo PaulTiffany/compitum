@@ -29,4 +29,3 @@ def test_metric_update_keeps_spd_and_nonincreasing_distance(D: int, rank: int) -
     d1, _ = met.distance(x, mu)
     # Allow tiny numeric wiggle; expect non-increase after a single descent step/backtracking
     assert d1 <= d0 + 1e-8
-

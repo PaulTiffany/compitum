@@ -107,4 +107,3 @@ def test_missing_label_column_raises(tmp_path: Path) -> None:
     _write_csv(csv)
     with pytest.raises(ValueError, match="label_column 'nope' not found"):
         CSVMatbenchAdapter(path=str(csv), label_column="nope")
-

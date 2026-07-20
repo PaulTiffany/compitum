@@ -83,4 +83,5 @@ class SRMFController(LyapunovController):
     functional in our setting; this alias preserves older imports while the
     canonical implementation is provided by ``LyapunovController``.
     """
+
     pass

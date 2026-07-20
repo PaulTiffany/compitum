@@ -15,9 +15,7 @@ from compitum.router import CompitumRouter
 def _build_router() -> CompitumRouter:
     D = 64
     models = _toy_models(D)
-    predictors = {
-        m.name: {"quality": None, "latency": None, "cost": None} for m in models
-    }
+    predictors = {m.name: {"quality": None, "latency": None, "cost": None} for m in models}
     # Cheap predictors: identity calibrators
     from compitum.predictors import CalibratedPredictor
 
@@ -72,14 +70,15 @@ def _build_router() -> CompitumRouter:
 def test_certificate_minimal_schema():
     router = _build_router()
     import numpy as np
+
     emb = np.zeros(64, dtype=np.float32)
     cert = router.route("Prove the AM-GM inequality.", embedding=emb)
     data = json.loads(cert.to_json())
 
     # Minimal structural checks (no jsonschema dependency)
-    assert set(["model", "utility", "utility_components", "constraints", "boundary", "drift"]).issubset(
-        data.keys()
-    )
+    assert set(
+        ["model", "utility", "utility_components", "constraints", "boundary", "drift"]
+    ).issubset(data.keys())
     assert isinstance(data["model"], str)
     assert isinstance(data["utility"], (int, float))
     assert isinstance(data["utility_components"], dict)

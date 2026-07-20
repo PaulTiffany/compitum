@@ -21,7 +21,7 @@ def test_negative_log_evidence_correlates_with_metric_distance(d: int, rank: int
     radii = np.linspace(0.0, 1.6, 9)
     vals = []
     v = rng.normal(0.0, 1.0, size=d)
-    v /= (np.linalg.norm(v) + 1e-9)
+    v /= np.linalg.norm(v) + 1e-9
     for r in radii:
         x = r * v
         d_m, _ = met.distance(x, mu)

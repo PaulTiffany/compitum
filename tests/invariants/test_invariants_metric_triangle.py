@@ -19,4 +19,3 @@ def test_triangle_inequality_under_spd_whitening(D: int, rank: int) -> None:
 
     # Triangle inequality with small numerical tolerance
     assert d_xz <= d_xy + d_yz + 1e-9
-

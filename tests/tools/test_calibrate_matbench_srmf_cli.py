@@ -66,4 +66,3 @@ def test_calibrate_matbench_srmf_cli(tmp_path: Path) -> None:
     payload = json.loads(out_json.read_text())
     assert "best_lambda" in payload and "val" in payload and "test" in payload
     assert scores_out.exists()
-

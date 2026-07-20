@@ -25,4 +25,3 @@ def test_split_features_from_dict_pragmatic_keys():
     assert np.allclose(B, [3.0, 4.0, 6.0, 7.0])
     # Riemannian vector should contain the rest in insertion order
     assert np.allclose(R, [1.0, 2.0, 5.0])
-

@@ -47,15 +47,23 @@ def summarize_collection(collection: Any) -> Dict[str, Dict[str, float]]:
         if "accuracy" in df.columns:
             metrics["accuracy_mean"] = float(pd.to_numeric(df["accuracy"], errors="coerce").mean())
         elif "performance" in df.columns:
-            metrics["accuracy_mean"] = float(pd.to_numeric(df["performance"], errors="coerce").mean())
+            metrics["accuracy_mean"] = float(
+                pd.to_numeric(df["performance"], errors="coerce").mean()
+            )
 
         # Oracle agreement (proxy for regret). Higher = lower regret.
         if {"chosen_model", "oracle_chosen_model"}.issubset(df.columns):
-            oracle_match = (df["chosen_model"].astype(str) == df["oracle_chosen_model"].astype(str)).mean()
+            oracle_match = (
+                df["chosen_model"].astype(str) == df["oracle_chosen_model"].astype(str)
+            ).mean()
             metrics["oracle_match"] = float(oracle_match)
 
         # Try to infer cost/latency if present
-        for col, key in (("cost", "cost_mean"), ("latency", "latency_mean"), ("e2e_ms", "e2e_mean_ms")):
+        for col, key in (
+            ("cost", "cost_mean"),
+            ("latency", "latency_mean"),
+            ("e2e_ms", "e2e_mean_ms"),
+        ):
             v = _safe_mean(df, col)
             if v is not None:
                 metrics[key] = float(v)
@@ -75,7 +83,9 @@ def generate_markdown(summary: Dict[str, Dict[str, float]]) -> str:
     lines = []
     lines.append("# Compitum RouterBench Evaluation Summary")
     lines.append("")
-    lines.append("This report compares Compitum against baseline routers on a bounded evaluation set.")
+    lines.append(
+        "This report compares Compitum against baseline routers on a bounded evaluation set."
+    )
     lines.append("Higher oracle_match indicates lower regret relative to the oracle assignment.")
     lines.append("")
 
@@ -199,7 +209,9 @@ def main() -> int:
         for name, g in group:
             metrics: Dict[str, float] = {}
             if "performance" in g.columns:
-                metrics["accuracy_mean"] = float(pd.to_numeric(g["performance"], errors="coerce").mean())
+                metrics["accuracy_mean"] = float(
+                    pd.to_numeric(g["performance"], errors="coerce").mean()
+                )
             if "mean_regret" in g.columns:
                 # Lower mean_regret is better; convert to an 'oracle_match' proxy = 1 - regret if bounded
                 mr = float(pd.to_numeric(g["mean_regret"], errors="coerce").mean())

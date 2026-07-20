@@ -6,9 +6,7 @@ from subprocess import run
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Run a one-line compitum CLI routing demo."
-    )
+    parser = argparse.ArgumentParser(description="Run a one-line compitum CLI routing demo.")
     parser.add_argument(
         "--prompt",
         default="Prove that the harmonic series diverges.",

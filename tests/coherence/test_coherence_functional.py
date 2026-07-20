@@ -19,4 +19,3 @@ def test_log_evidence_higher_near_training_cluster():
     assert e_near > e_far
     # Bounded
     assert -10.0 <= e_near <= 10.0
-

@@ -10,7 +10,8 @@ def test_mixture_discrimination_own_center_wins():
     coh = CoherenceFunctional(k=2000)
     d = 8
     mu_a = np.zeros(d)
-    mu_b = np.zeros(d); mu_b[0] = 2.0
+    mu_b = np.zeros(d)
+    mu_b[0] = 2.0
     # Populate two clusters for different model names
     for _ in range(600):
         coh.update("A", rng.normal(mu_a, 0.4), success=1.0)
@@ -28,4 +29,3 @@ def test_mixture_discrimination_own_center_wins():
     la2 = coh.log_evidence("A", x)
     lb2 = coh.log_evidence("B", x)
     assert lb2 >= la2 - 0.05
-

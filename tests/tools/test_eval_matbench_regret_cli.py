@@ -70,4 +70,3 @@ def test_eval_matbench_regret_basic(tmp_path: Path) -> None:
     assert set(["k", "regret", "regret_norm"]).issubset(df.columns)
     payload = json.loads(out_json.read_text())
     assert "AURC" in payload
-

@@ -29,12 +29,24 @@ def glob_many(root: Path, patterns: Iterable[str]) -> List[Path]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Clean build/test artifacts and optionally large eval outputs")
+    ap = argparse.ArgumentParser(
+        description="Clean build/test artifacts and optionally large eval outputs"
+    )
     ap.add_argument("--dry-run", action="store_true", help="Print what would be removed")
-    ap.add_argument("--artifacts", action="store_true", help="Remove caches, coverage, tox, .hypothesis, etc.")
-    ap.add_argument("--reports", action="store_true", help="Remove generated reports (*.html, *.json, *.md) under reports/")
-    ap.add_argument("--eval-outputs", action="store_true", help="Remove eval outputs under data/*/eval_results/")
-    ap.add_argument("--venvs", action="store_true", help="Remove local venvs like .venv-routerbench (DANGEROUS)")
+    ap.add_argument(
+        "--artifacts", action="store_true", help="Remove caches, coverage, tox, .hypothesis, etc."
+    )
+    ap.add_argument(
+        "--reports",
+        action="store_true",
+        help="Remove generated reports (*.html, *.json, *.md) under reports/",
+    )
+    ap.add_argument(
+        "--eval-outputs", action="store_true", help="Remove eval outputs under data/*/eval_results/"
+    )
+    ap.add_argument(
+        "--venvs", action="store_true", help="Remove local venvs like .venv-routerbench (DANGEROUS)"
+    )
     ap.add_argument("--all", action="store_true", help="Do all of the above")
     args = ap.parse_args()
 
@@ -70,7 +82,10 @@ def main() -> None:
             rm_path(p, dry)
 
     if args.eval_outputs or args.all:
-        for sub in [root / "data" / "rb_clean" / "eval_results", root / "data" / "routerbench" / "eval_results"]:
+        for sub in [
+            root / "data" / "rb_clean" / "eval_results",
+            root / "data" / "routerbench" / "eval_results",
+        ]:
             if sub.exists():
                 for p in sub.glob("*"):
                     rm_path(p, dry)
@@ -84,4 +99,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

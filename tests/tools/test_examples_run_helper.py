@@ -25,7 +25,10 @@ def test_examples_run_dry_quick() -> None:
 
 import pytest
 
-@pytest.mark.skipif(sys.platform == "win32", reason="Known OSError on Windows with subprocess.run and asyncio")
+
+@pytest.mark.skipif(
+    sys.platform == "win32", reason="Known OSError on Windows with subprocess.run and asyncio"
+)
 def test_examples_run_sets_pythonpath_for_quick_single() -> None:
     # Run a single quick example that imports compitum, with a minimal env
     env = {"HYPOTHESIS_PROFILE": "ci"}
@@ -35,7 +38,7 @@ def test_examples_run_sets_pythonpath_for_quick_single() -> None:
         text=True,
         check=False,
         env=env,
-        shell=True, # Added to mitigate Windows subprocess issues
+        shell=True,  # Added to mitigate Windows subprocess issues
     )
     # Should succeed because examples_run injects PYTHONPATH=src
     assert cp.returncode == 0, cp.stderr

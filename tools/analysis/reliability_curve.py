@@ -44,7 +44,9 @@ def _extract_ur(df: pd.DataFrame) -> pd.DataFrame:
     elif "utility_components" in df.columns:
         comp = df["utility_components"].map(_maybe_json)
         if len(comp) and isinstance(comp.iloc[0], dict):
-            out["uncertainty"] = pd.to_numeric([c.get("uncertainty", np.nan) for c in comp], errors="coerce")
+            out["uncertainty"] = pd.to_numeric(
+                [c.get("uncertainty", np.nan) for c in comp], errors="coerce"
+            )
     # Regret
     if "regret" in df.columns:
         out["regret"] = pd.to_numeric(df["regret"], errors="coerce").abs()
@@ -70,26 +72,35 @@ def main() -> None:
     if "uncertainty" not in ur.columns or ur["uncertainty"].isna().all():
         # Write minimal placeholders and exit without error
         args.out_csv.parent.mkdir(parents=True, exist_ok=True)
-        pd.DataFrame({
-            "bin": ["n/a"],
-            "mean_uncertainty": [np.nan],
-            "mean_abs_regret": [np.nan],
-            "count": [0],
-        }).to_csv(args.out_csv, index=False)
-        args.out_md.write_text("# Reliability Curve\n\nuncertainty not available; skipping.\n", encoding="utf-8")
+        pd.DataFrame(
+            {
+                "bin": ["n/a"],
+                "mean_uncertainty": [np.nan],
+                "mean_abs_regret": [np.nan],
+                "count": [0],
+            }
+        ).to_csv(args.out_csv, index=False)
+        args.out_md.write_text(
+            "# Reliability Curve\n\nuncertainty not available; skipping.\n", encoding="utf-8"
+        )
         # Skip plotting
         return
     m = ~(ur["uncertainty"].isna() | ur["regret"].isna())
     ur = ur[m]
     if ur.empty:
         args.out_csv.parent.mkdir(parents=True, exist_ok=True)
-        pd.DataFrame({
-            "bin": ["n/a"],
-            "mean_uncertainty": [np.nan],
-            "mean_abs_regret": [np.nan],
-            "count": [0],
-        }).to_csv(args.out_csv, index=False)
-        args.out_md.write_text("# Reliability Curve\n\nno overlapping uncertainty/retarget rows; skipping.\n", encoding="utf-8")
+        pd.DataFrame(
+            {
+                "bin": ["n/a"],
+                "mean_uncertainty": [np.nan],
+                "mean_abs_regret": [np.nan],
+                "count": [0],
+            }
+        ).to_csv(args.out_csv, index=False)
+        args.out_md.write_text(
+            "# Reliability Curve\n\nno overlapping uncertainty/retarget rows; skipping.\n",
+            encoding="utf-8",
+        )
         return
 
     # Bin by uncertainty quantiles
@@ -101,13 +112,17 @@ def main() -> None:
     if len(edges) < 3:
         umin, umax = ur["uncertainty"].min(), ur["uncertainty"].max()
         edges = np.linspace(umin, umax, min(args.bins, 5) + 1)
-    labels = [f"[{edges[i]:.3g}, {edges[i+1]:.3g})" for i in range(len(edges) - 1)]
+    labels = [f"[{edges[i]:.3g}, {edges[i + 1]:.3g})" for i in range(len(edges) - 1)]
     bins = pd.cut(ur["uncertainty"], bins=edges, include_lowest=True, right=False, labels=labels)
 
     tbl = (
         ur.assign(bin=bins)
         .groupby("bin", observed=True)
-        .agg(mean_uncertainty=("uncertainty", "mean"), mean_abs_regret=("regret", "mean"), count=("regret", "size"))
+        .agg(
+            mean_uncertainty=("uncertainty", "mean"),
+            mean_abs_regret=("regret", "mean"),
+            count=("regret", "size"),
+        )
         .reset_index()
     )
 
@@ -124,7 +139,9 @@ def main() -> None:
         "| --- | ---: | ---: | ---: |",
     ]
     for _, r in tbl.iterrows():
-        lines.append(f"| {r['bin']} | {r['mean_uncertainty']:.4f} | {r['mean_abs_regret']:.4f} | {int(r['count'])} |")
+        lines.append(
+            f"| {r['bin']} | {r['mean_uncertainty']:.4f} | {r['mean_abs_regret']:.4f} | {int(r['count'])} |"
+        )
     args.out_md.write_text("\n".join(lines), encoding="utf-8")
 
     # Optional plot if matplotlib is available

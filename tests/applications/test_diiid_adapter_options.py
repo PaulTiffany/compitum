@@ -28,4 +28,3 @@ def test_adapter_missing_required_column_raises(tmp_path: Path):
 
     with pytest.raises(ValueError, match="Missing required column 'q_min'"):
         load_shot_csv(p, state_dim=4)
-

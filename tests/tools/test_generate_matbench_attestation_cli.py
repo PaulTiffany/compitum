@@ -54,4 +54,3 @@ def test_generate_attestation(tmp_path: Path) -> None:
     payload = json.loads(out_json.read_text())
     assert "files" in payload and str(csv) in payload["files"]
     assert "calibration" in payload and "regret" in payload
-

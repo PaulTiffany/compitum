@@ -14,4 +14,3 @@ def test_pgd_feature_shapes_and_split():
     xR, xB = split_features(x)
     assert xR.shape[0] == 35
     assert xB.shape[0] == 4
-

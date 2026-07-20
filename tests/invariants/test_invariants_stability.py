@@ -32,4 +32,3 @@ def test_metric_update_monotone_surrogate_descent() -> None:
     e1 = _surrogate_energy(met.L, z, beta_d)
     # Monotone (non-increasing) surrogate energy
     assert e1 <= e0 + 1e-12
-

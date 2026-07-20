@@ -92,4 +92,3 @@ def test_eval_matbench_srmf_cli_with_metrics(tmp_path: Path) -> None:
     payload = json.loads(mjson.read_text())
     assert "metrics" in payload
     assert set(["precision", "recall", "accuracy"]).issubset(payload["metrics"].keys())
-

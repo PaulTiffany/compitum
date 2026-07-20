@@ -52,8 +52,11 @@ def test_srmf_controller_update() -> None:
     controller.trust_radius = 1.0
     controller.drift_ema = 1.0  # 0.7 <= 1.0 <= 1.5, so no change
     controller.drift_integral = 10.0
-    _, info = controller.update(d_star=0.0, grad_norm=1.0)  # d_star=0 to not change drift_ema from 1.0
+    _, info = controller.update(
+        d_star=0.0, grad_norm=1.0
+    )  # d_star=0 to not change drift_ema from 1.0
     assert np.isclose(controller.drift_integral, 9.5)
+
 
 def test_lyapunov_controller_integral_adjustment_and_clipping_duplicate_removed() -> None:
     controller = LyapunovController(kappa=0.1, r0=1.0, integral_gain=0.01)
@@ -75,6 +78,7 @@ def test_lyapunov_controller_integral_adjustment_and_clipping_duplicate_removed(
     # Expected: 0.25 - 0.01 * 10.0 = 0.15, clipped to 0.2
     assert np.isclose(info["trust_radius"], 0.2)
     assert np.isclose(controller.drift_integral, 9.5)
+
 
 def test_lyapunov_controller_integral_adjustment_and_clipping() -> None:
     controller = LyapunovController(kappa=0.1, r0=1.0, integral_gain=0.01)

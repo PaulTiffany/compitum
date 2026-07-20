@@ -67,6 +67,9 @@ jobs:
       - name: Lint
         run: ruff check .
 
+      - name: Format check
+        run: ruff format --check $(git ls-files '*.py')
+
       - name: MyPy
         run: mypy -p compitum --ignore-missing-imports --hide-error-context
 

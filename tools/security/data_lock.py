@@ -38,8 +38,15 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Data lock: hash inputs and verify against a manifest")
     ap.add_argument("--write", type=Path, help="Write manifest JSON here (hashes of inputs)")
     ap.add_argument("--verify", type=Path, help="Verify against an existing manifest JSON")
-    ap.add_argument("--paths", nargs="*", default=["data/rb_clean", "configs"], help="Paths to include")
-    ap.add_argument("--exts", nargs="*", default=[".csv", ".json", ".yaml", ".yml"], help="Extensions to include (empty=all)")
+    ap.add_argument(
+        "--paths", nargs="*", default=["data/rb_clean", "configs"], help="Paths to include"
+    )
+    ap.add_argument(
+        "--exts",
+        nargs="*",
+        default=[".csv", ".json", ".yaml", ".yml"],
+        help="Extensions to include (empty=all)",
+    )
     args = ap.parse_args()
 
     roots = [Path(p) for p in args.paths]
@@ -75,4 +82,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

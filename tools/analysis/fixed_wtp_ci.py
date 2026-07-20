@@ -96,7 +96,8 @@ def main() -> None:
         def _f(x: float) -> str:
             if x != x:
                 return "-"
-            return (f"{x*100:.1f}%" if pct else f"{x:.6f}")
+            return f"{x * 100:.1f}%" if pct else f"{x:.6f}"
+
         return f"{_f(mu)} [{_f(lo)}, {_f(hi)}]"
 
     lines = [
@@ -109,14 +110,16 @@ def main() -> None:
         mr = results[w]["mean_regret"]
         wr = results[w]["win_rate"]
         cd = results[w]["avg_cost_delta_on_wins"]
-        lines.append(
-            f"| {w:.2f} | {_fmt_ci(*mr)} | {_fmt_ci(*wr, pct=True)} | {_fmt_ci(*cd)} |"
-        )
+        lines.append(f"| {w:.2f} | {_fmt_ci(*mr)} | {_fmt_ci(*wr, pct=True)} | {_fmt_ci(*cd)} |")
     if all(results[w]["win_rate"][0] == 0.0 for w in results):
         lines.append("")
-        lines.append("_Note: No per-eval wins observed at these WTP slices; cost deltas on wins are undefined. See per-baseline win-rate and panel summaries for context._")
+        lines.append(
+            "_Note: No per-eval wins observed at these WTP slices; cost deltas on wins are undefined. See per-baseline win-rate and panel summaries for context._"
+        )
         lines.append("")
-        lines.append("_Note: No per-eval wins observed at these WTP slices; cost deltas on wins are undefined. See per-baseline win-rate and panel summaries for context._")
+        lines.append(
+            "_Note: No per-eval wins observed at these WTP slices; cost deltas on wins are undefined. See per-baseline win-rate and panel summaries for context._"
+        )
 
     Path(args.out_md).write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote: {args.out_json}\nWrote: {args.out_md}")
@@ -124,9 +127,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-

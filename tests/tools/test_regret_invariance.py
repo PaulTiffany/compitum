@@ -20,7 +20,11 @@ def _topk_regret(y: np.ndarray, scores: np.ndarray, ks: list[int]) -> list[float
 
 
 @given(
-    y=st.lists(st.floats(min_value=-10, max_value=10, allow_nan=False, allow_infinity=False), min_size=5, max_size=30),
+    y=st.lists(
+        st.floats(min_value=-10, max_value=10, allow_nan=False, allow_infinity=False),
+        min_size=5,
+        max_size=30,
+    ),
     a=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
     b=st.floats(min_value=-5.0, max_value=5.0, allow_nan=False, allow_infinity=False),
 )
@@ -36,4 +40,3 @@ def test_regret_invariant_under_positive_affine(y: list[float], a: float, b: flo
     r1 = _topk_regret(arr, base, ks)
     r2 = _topk_regret(arr, a * base + b, ks)
     assert np.allclose(r1, r2, atol=1e-12, rtol=0)
-

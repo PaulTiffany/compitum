@@ -40,7 +40,14 @@ def _offline_mock(n: int) -> List[Dict[str, Any]]:
     return rows
 
 
-def _from_mp(elements: List[str], nelements: Optional[int], objective: str, *, api_key: str, limit: Optional[int]) -> List[Dict[str, Any]]:
+def _from_mp(
+    elements: List[str],
+    nelements: Optional[int],
+    objective: str,
+    *,
+    api_key: str,
+    limit: Optional[int],
+) -> List[Dict[str, Any]]:
     try:
         from mp_api.client import MPRester  # type: ignore
     except Exception as e:
@@ -91,14 +98,30 @@ def _from_mp(elements: List[str], nelements: Optional[int], objective: str, *, a
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Export a Matbench-like CSV (SRMF features + objective)")
+    ap = argparse.ArgumentParser(
+        description="Export a Matbench-like CSV (SRMF features + objective)"
+    )
     src = ap.add_mutually_exclusive_group(required=False)
-    src.add_argument("--from-mp", action="store_true", help="Export from Materials Project search (requires MP_API_KEY)")
-    ap.add_argument("--elements", nargs="*", default=["La", "Ni", "O"], help="Elements for MP search")
+    src.add_argument(
+        "--from-mp",
+        action="store_true",
+        help="Export from Materials Project search (requires MP_API_KEY)",
+    )
+    ap.add_argument(
+        "--elements", nargs="*", default=["La", "Ni", "O"], help="Elements for MP search"
+    )
     ap.add_argument("--nelements", type=int, default=3, help="Number of elements in MP search")
-    ap.add_argument("--objective", type=str, default="band_gap", choices=["band_gap", "-formation_energy"], help="Objective to set as y_true")
+    ap.add_argument(
+        "--objective",
+        type=str,
+        default="band_gap",
+        choices=["band_gap", "-formation_energy"],
+        help="Objective to set as y_true",
+    )
     ap.add_argument("--limit", type=int, default=500, help="Max rows from MP search")
-    ap.add_argument("--offline-mock", action="store_true", help="Write a synthetic CSV for testing/demo")
+    ap.add_argument(
+        "--offline-mock", action="store_true", help="Write a synthetic CSV for testing/demo"
+    )
     ap.add_argument("--out", type=Path, default=Path("data/matbench_task.csv"))
     args = ap.parse_args()
 
@@ -111,7 +134,9 @@ def main() -> int:
         key = os.environ.get("MP_API_KEY")
         if not key:
             raise SystemExit("MP_API_KEY not set; use --offline-mock or export the variable")
-        rows = _from_mp(args.elements, args.nelements, args.objective, api_key=key, limit=args.limit)
+        rows = _from_mp(
+            args.elements, args.nelements, args.objective, api_key=key, limit=args.limit
+        )
         if not rows:
             raise SystemExit("No rows returned from MP; adjust criteria")
         _write_csv(rows, args.out)

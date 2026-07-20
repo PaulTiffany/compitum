@@ -60,4 +60,3 @@ def test_explore_layers_cli(tmp_path: Path) -> None:
     assert out_csv.exists() and out_json.exists()
     payload = json.loads(out_json.read_text())
     assert "quantile_layers" in payload and isinstance(payload["quantile_layers"], dict)
-

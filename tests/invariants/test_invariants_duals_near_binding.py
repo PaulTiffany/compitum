@@ -21,4 +21,3 @@ def test_duals_monotone_near_binding_small_steps():
         lambdas.append(info["shadow_prices"].get("lambda_0", 0.0))
     # Non-decreasing
     assert all(lambdas[i] <= lambdas[i + 1] + 1e-12 for i in range(len(lambdas) - 1))
-

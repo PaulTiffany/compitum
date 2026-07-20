@@ -62,4 +62,3 @@ def test_write_audit_record_roundtrip(tmp_path: Path):
     )
     assert out.exists()
     assert out.name.startswith("run_") and out.suffix == ".json"
-

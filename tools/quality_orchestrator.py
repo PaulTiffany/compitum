@@ -11,9 +11,12 @@ from typing import Dict, List, Optional
 def run(cmd: List[str], cwd: Optional[Path] = None, timeout: Optional[int] = None) -> Dict:
     start = datetime.utcnow()
     import time as _t
+
     t0 = _t.perf_counter()
     try:
-        p = subprocess.run(cmd, cwd=str(cwd) if cwd else None, text=True, capture_output=True, timeout=timeout)
+        p = subprocess.run(
+            cmd, cwd=str(cwd) if cwd else None, text=True, capture_output=True, timeout=timeout
+        )
         return {
             "cmd": cmd,
             "returncode": p.returncode,
@@ -36,7 +39,9 @@ def run(cmd: List[str], cwd: Optional[Path] = None, timeout: Optional[int] = Non
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Run quality gates: ruff, mypy, bandit, pytest w/ coverage, cosmic-ray")
+    ap = argparse.ArgumentParser(
+        description="Run quality gates: ruff, mypy, bandit, pytest w/ coverage, cosmic-ray"
+    )
     ap.add_argument("--mypy", action="store_true")
     ap.add_argument("--ruff", action="store_true")
     ap.add_argument("--bandit", action="store_true")
@@ -64,7 +69,10 @@ def main() -> None:
     if args.all or args.ruff:
         add("ruff", [py, "-m", "ruff", "check", "--quiet", "src", "tests"])
     if args.all or args.mypy:
-        add("mypy", [py, "-m", "mypy", "--strict", "--disable-error-code", "no-any-return", "src/compitum"])
+        add(
+            "mypy",
+            [py, "-m", "mypy", "--strict", "--disable-error-code", "no-any-return", "src/compitum"],
+        )
     if args.all or args.bandit:
         # Limit Bandit to our core library and exclude vendored benchmark code
         add("bandit", [py, "-m", "bandit", "-q", "-r", "src/compitum", "-x", "src/routerbench"])
@@ -113,6 +121,7 @@ def main() -> None:
 
     out = reports_dir / f"quality_{ts}.json"
     import json as _json
+
     out.write_text(_json.dumps(results, indent=2), encoding="utf-8")
     print(f"Quality report written to: {out}")
 

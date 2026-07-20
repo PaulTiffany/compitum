@@ -12,7 +12,7 @@ MP_API_KEY = os.environ.get("MP_API_KEY", "")
 if not MP_API_KEY:
     print("MP_API_KEY not set. Set it to run the live query against Materials Project.")
 else:
-    criteria = {"elements": ["La","Ni","O"], "nelements": 3}
+    criteria = {"elements": ["La", "Ni", "O"], "nelements": 3}
     df = audit_the_manifold(MP_API_KEY, criteria)
     display(df.sort_values("curvature_kappa", ascending=False).head(25))
 

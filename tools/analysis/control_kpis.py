@@ -42,11 +42,19 @@ def _extract_from_certs(df: pd.DataFrame) -> pd.DataFrame:
     # drift/trust
     drift = df.get("drift") or df.get("drift_status")
     if drift is not None:
-        parsed = drift.map(lambda x: json.loads(x) if isinstance(x, str) and x.strip().startswith("{") else x)
+        parsed = drift.map(
+            lambda x: json.loads(x) if isinstance(x, str) and x.strip().startswith("{") else x
+        )
         if len(parsed) and isinstance(parsed.iloc[0], dict):
-            out["trust_radius"] = pd.to_numeric([d.get("trust_radius", np.nan) for d in parsed], errors="coerce")
-            out["drift_ema"] = pd.to_numeric([d.get("drift_ema", np.nan) for d in parsed], errors="coerce")
-            out["drift_integral"] = pd.to_numeric([d.get("drift_integral", np.nan) for d in parsed], errors="coerce")
+            out["trust_radius"] = pd.to_numeric(
+                [d.get("trust_radius", np.nan) for d in parsed], errors="coerce"
+            )
+            out["drift_ema"] = pd.to_numeric(
+                [d.get("drift_ema", np.nan) for d in parsed], errors="coerce"
+            )
+            out["drift_integral"] = pd.to_numeric(
+                [d.get("drift_integral", np.nan) for d in parsed], errors="coerce"
+            )
     # keys for joining
     if "pgd_signature" in df.columns:
         out["pgd_signature"] = df["pgd_signature"]
@@ -121,7 +129,9 @@ def compute_event_regret_correlation(df: pd.DataFrame, window: int = 1) -> Dict[
     m = (~d["delta_r"].isna()) & (~d["delta_regret_future"].isna())
     if m.sum() < 5:
         return out
-    rho, _ = spearmanr(-d.loc[m, "delta_r"], d.loc[m, "delta_regret_future"])  # shrink vs improvement
+    rho, _ = spearmanr(
+        -d.loc[m, "delta_r"], d.loc[m, "delta_regret_future"]
+    )  # shrink vs improvement
     rho = 0.0 if not np.isfinite(rho) else float(rho)
     out.update({"available": True, "spearman": rho})
     return out
@@ -154,8 +164,16 @@ def write_outputs(metrics: Dict[str, Any], out_json: Path, out_md: Path) -> None
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Control KPIs from certificates and eval outputs")
-    ap.add_argument("--certs", required=True, help="Certificates JSONL or CSV (with drift/trust_radius and timestamp)")
-    ap.add_argument("--eval", required=True, help="Evaluation CSV/JSONL containing regret and optional timestamp")
+    ap.add_argument(
+        "--certs",
+        required=True,
+        help="Certificates JSONL or CSV (with drift/trust_radius and timestamp)",
+    )
+    ap.add_argument(
+        "--eval",
+        required=True,
+        help="Evaluation CSV/JSONL containing regret and optional timestamp",
+    )
     ap.add_argument("--out-json", type=Path, default=Path("reports/control_kpis.json"))
     ap.add_argument("--out-md", type=Path, default=Path("reports/control_kpis.md"))
     ap.add_argument("--window", type=int, default=1, help="Steps ahead for improvement correlation")
@@ -176,4 +194,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

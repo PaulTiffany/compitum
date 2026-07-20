@@ -7,9 +7,15 @@ from hypothesis import given, strategies as st, settings
 from compitum.applications import PlasmaMonitor
 
 
-@given(dim=st.integers(min_value=4, max_value=10),
-       scale=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
-       state_vals=st.lists(st.floats(min_value=-20, max_value=20, allow_nan=False, allow_infinity=False), min_size=4, max_size=10))
+@given(
+    dim=st.integers(min_value=4, max_value=10),
+    scale=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
+    state_vals=st.lists(
+        st.floats(min_value=-20, max_value=20, allow_nan=False, allow_infinity=False),
+        min_size=4,
+        max_size=10,
+    ),
+)
 @settings(deadline=None)
 def test_two_way_street_units_scale_invariance(dim: int, scale: float, state_vals: List[float]):
     s = np.array((state_vals + [0.0] * dim)[:dim], dtype=float)
@@ -22,6 +28,9 @@ def test_two_way_street_units_scale_invariance(dim: int, scale: float, state_val
     outB = pmB.ingest_profile(s * scale, t=0.0)
 
     # Invariance under consistent unit scaling
-    assert math.isclose(outA["confinement_distance"], outB["confinement_distance"], rel_tol=1e-9, abs_tol=1e-9)
-    assert math.isclose(outA["curvature_signal"], outB["curvature_signal"], rel_tol=1e-9, abs_tol=1e-9)
-
+    assert math.isclose(
+        outA["confinement_distance"], outB["confinement_distance"], rel_tol=1e-9, abs_tol=1e-9
+    )
+    assert math.isclose(
+        outA["curvature_signal"], outB["curvature_signal"], rel_tol=1e-9, abs_tol=1e-9
+    )

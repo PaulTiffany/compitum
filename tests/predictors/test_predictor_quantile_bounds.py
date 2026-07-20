@@ -19,4 +19,3 @@ def test_quantile_bounds_envelope(n: int, d: int) -> None:
     within = (y_hat >= lo) & (y_hat <= hi)
     # Allow small violations due to model mismatch; expect majority to be within
     assert float(np.mean(within)) >= 0.8
-

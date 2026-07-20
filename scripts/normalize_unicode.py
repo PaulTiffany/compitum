@@ -38,7 +38,7 @@ def normalize_readme(p: Path) -> None:
         fixed = (
             line.replace("A�v", "±v")
             .replace("�v", "±v")
-            .replace("I\"V", "ΔV")
+            .replace('I"V', "ΔV")
             .replace("I�_s", "beta_s")
             .replace("5�?`shot", "5-shot")
             .replace("5�?`", "5-")
@@ -65,9 +65,7 @@ def normalize_control_perspective(p: Path) -> None:
             )
             continue
         if "r_{t+1} =" in line:
-            out.append(
-                "  - `r_{t+1} = clip(r_t + f(EMA(d_t), integral(d_t)), r_min, r_max)`"
-            )
+            out.append("  - `r_{t+1} = clip(r_t + f(EMA(d_t), integral(d_t)), r_min, r_max)`")
             continue
         if "I�_cap" in line or "I_cap" in line:
             out.append("  - `I_cap = I / (||grad|| + I)`")
@@ -112,7 +110,7 @@ def main() -> int:
             # Prefer inserting within the <nav class="nav" ...> element
             nav_start = raw.find('<nav class="nav"')
             if nav_start != -1:
-                nav_close = raw.find('</nav>', nav_start)
+                nav_close = raw.find("</nav>", nav_start)
                 if nav_close != -1:
                     insertion = (
                         '\n                <a href="docs/Examples.html" class="nav-link">Examples</a>'

@@ -15,13 +15,17 @@ from compitum.integrations.materials_project_audit import map_material_to_srmf
     nsites=st.integers(min_value=1, max_value=200),
     fe=st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False),
 )
-def test_kappa_monotone_decreasing_in_band_gap(band_gap1: float, band_gap2: float, density: float, nsites: int, fe: float) -> None:
+def test_kappa_monotone_decreasing_in_band_gap(
+    band_gap1: float, band_gap2: float, density: float, nsites: int, fe: float
+) -> None:
     # Fix other fields; vary band_gap and check drift and kappa decrease when band_gap increases
     if np.isclose(band_gap1, band_gap2):
         return
     low, high = (band_gap1, band_gap2) if band_gap1 < band_gap2 else (band_gap2, band_gap1)
     d1 = SimpleNamespace(band_gap=low, density=density, nsites=nsites, formation_energy_per_atom=fe)
-    d2 = SimpleNamespace(band_gap=high, density=density, nsites=nsites, formation_energy_per_atom=fe)
+    d2 = SimpleNamespace(
+        band_gap=high, density=density, nsites=nsites, formation_energy_per_atom=fe
+    )
     s1 = map_material_to_srmf(d1)
     s2 = map_material_to_srmf(d2)
     # Drift is inversely related to band_gap (with epsilon), so it must decrease
@@ -30,4 +34,3 @@ def test_kappa_monotone_decreasing_in_band_gap(band_gap1: float, band_gap2: floa
     k1 = s1.drift / (1.0 + s1.constraint + s1.bias)
     k2 = s2.drift / (1.0 + s2.constraint + s2.bias)
     assert k1 >= k2
-

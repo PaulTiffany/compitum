@@ -26,14 +26,27 @@ def _router() -> CompitumRouter:
         t = rng.random(128)
         c = rng.random(128)
         predictors[m.name] = {
-            "quality": (lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): cp.fit(X,q) or cp)(),
-            "latency": (lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): cp.fit(X,t) or cp)(),
-            "cost": (lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): cp.fit(X,c) or cp)(),
+            "quality": (
+                lambda cp=(
+                    __import__("compitum.predictors").predictors.CalibratedPredictor()
+                ): cp.fit(X, q) or cp
+            )(),
+            "latency": (
+                lambda cp=(
+                    __import__("compitum.predictors").predictors.CalibratedPredictor()
+                ): cp.fit(X, t) or cp
+            )(),
+            "cost": (
+                lambda cp=(
+                    __import__("compitum.predictors").predictors.CalibratedPredictor()
+                ): cp.fit(X, c) or cp
+            )(),
         }
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=6, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=64)
     from pathlib import Path
+
     A, B = _load_constraints(Path("configs/constraints_us_default.yaml"))
     solver = ReflectiveConstraintSolver(A, B)
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)

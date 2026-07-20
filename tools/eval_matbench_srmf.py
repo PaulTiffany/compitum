@@ -100,9 +100,11 @@ def _bootstrap_metrics(
         acc.append(m["accuracy"])
     if not prec:
         return {}
+
     def q(a: List[float], lo: float, hi: float) -> Tuple[float, float]:
         arr = np.asarray(a)
         return float(np.quantile(arr, lo)), float(np.quantile(arr, hi))
+
     p_lo, p_hi = q(prec, 0.025, 0.975)
     r_lo, r_hi = q(rec, 0.025, 0.975)
     a_lo, a_hi = q(acc, 0.025, 0.975)
@@ -119,7 +121,9 @@ def main() -> int:
     ap.add_argument("--path", type=Path, required=True, help="Path to CSV file")
     ap.add_argument("--id-col", type=str, default=None, help="Column with material ID")
     ap.add_argument("--formula-col", type=str, default=None, help="Column with pretty formula")
-    ap.add_argument("--label-col", type=str, default=None, help="Optional label column (0/1 or bool)")
+    ap.add_argument(
+        "--label-col", type=str, default=None, help="Optional label column (0/1 or bool)"
+    )
     ap.add_argument("--kappa-threshold", type=float, default=0.5)
     ap.add_argument("--leak-threshold", type=float, default=0.1)
     ap.add_argument("--out", type=Path, default=Path("reports/matbench_srmf.csv"))

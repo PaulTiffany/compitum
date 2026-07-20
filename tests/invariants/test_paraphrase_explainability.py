@@ -23,14 +23,18 @@ def _router(D: int = 35) -> CompitumRouter:
         q = rng.random(256)
         t = rng.random(256)
         c = rng.random(256)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank=8, delta=1e-3) for m in models}
     coherence = CoherenceFunctional(k=128)
     from pathlib import Path
+
     A, B = _load_constraints(Path("configs/constraints_us_default.yaml"))
     solver = ReflectiveConstraintSolver(A, B)
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)
@@ -38,8 +42,18 @@ def _router(D: int = 35) -> CompitumRouter:
     energy = SymbolicFreeEnergy(0.6, 0.1, 0.2, 0.2, 0.1)
     pgd = RegexPromptExtractor()
     return CompitumRouter(
-        models, predictors, solver, coherence, boundary, ctrl, pgd, metrics, energy,
-        update_stride=999, enable_metric_update=False, enable_controller=False,
+        models,
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        ctrl,
+        pgd,
+        metrics,
+        energy,
+        update_stride=999,
+        enable_metric_update=False,
+        enable_controller=False,
     )
 
 
@@ -60,6 +74,7 @@ def test_paraphrase_flips_are_explainable():
     r = _router()
     base = "Prove AM-GM for nonnegative reals."
     import numpy as np
+
     emb = np.zeros(35, dtype=np.float32)
 
     def run(text: str):
@@ -75,6 +90,5 @@ def test_paraphrase_flips_are_explainable():
             d0 = float(c0["utility_components"]["distance"])  # negative distance
             d1 = float(c1["utility_components"]["distance"])  # negative distance
             feas0 = bool(c0["constraints"]["feasible"])
-            feas1 = bool(c1["constraints"]["feasible"]) 
+            feas1 = bool(c1["constraints"]["feasible"])
             assert (abs(d1 - d0) > 1e-3) or (feas0 != feas1)
-

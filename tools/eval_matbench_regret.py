@@ -52,7 +52,9 @@ def _compute_srmf_scores(
     return kappa - float(lambda_weight) * leak
 
 
-def _topk_regret(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str) -> List[Dict[str, float]]:
+def _topk_regret(
+    y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str
+) -> List[Dict[str, float]]:
     # Define utility u to always maximize
     if mode == "min":
         u = -y
@@ -72,13 +74,15 @@ def _topk_regret(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str) ->
         model_sum = float(u[model_idx].sum())
         regret = max(0.0, oracle_sum - model_sum)
         norm = 0.0 if oracle_sum == 0.0 else regret / abs(oracle_sum)
-        out.append({
-            "k": float(k),
-            "oracle_sum": oracle_sum,
-            "model_sum": model_sum,
-            "regret": regret,
-            "regret_norm": norm,
-        })
+        out.append(
+            {
+                "k": float(k),
+                "oracle_sum": oracle_sum,
+                "model_sum": model_sum,
+                "regret": regret,
+                "regret_norm": norm,
+            }
+        )
     return out
 
 
@@ -94,7 +98,9 @@ def _aurc(regret_rows: List[Dict[str, float]], key: str = "regret_norm") -> floa
     return float(_trapz(ys, xs) / xs[-1])
 
 
-def _bootstrap_aurc(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str, *, n_boot: int, seed: int) -> Dict[str, float]:
+def _bootstrap_aurc(
+    y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str, *, n_boot: int, seed: int
+) -> Dict[str, float]:
     if n_boot <= 0:
         return {}
     rng = np.random.default_rng(seed)
@@ -117,27 +123,63 @@ def _parse_grid(s: str) -> List[int]:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Evaluate regret on Matbench-style CSVs (offline-first)")
+    ap = argparse.ArgumentParser(
+        description="Evaluate regret on Matbench-style CSVs (offline-first)"
+    )
     ap.add_argument("--path", type=Path, required=True, help="Path to CSV file")
     ap.add_argument("--objective-col", type=str, required=True, help="Response/target column name")
-    ap.add_argument("--mode", type=str, choices=["max", "min"], default="max", help="Objective direction")
+    ap.add_argument(
+        "--mode", type=str, choices=["max", "min"], default="max", help="Objective direction"
+    )
     ap.add_argument("--score-col", type=str, default=None, help="Optional predicted score column")
-    ap.add_argument("--use-srmf", action="store_true", help="If set, derive score from SRMF proxies (kappa - lambda*leak)")
-    ap.add_argument("--lambda-weight", type=float, default=0.0, help="Lambda weight for leak in SRMF score")
-    ap.add_argument("--topk-grid", type=str, default="1,5,10", help="Comma-separated k values (e.g., 1,5,10)")
+    ap.add_argument(
+        "--use-srmf",
+        action="store_true",
+        help="If set, derive score from SRMF proxies (kappa - lambda*leak)",
+    )
+    ap.add_argument(
+        "--lambda-weight", type=float, default=0.0, help="Lambda weight for leak in SRMF score"
+    )
+    ap.add_argument(
+        "--topk-grid", type=str, default="1,5,10", help="Comma-separated k values (e.g., 1,5,10)"
+    )
     ap.add_argument("--out-csv", type=Path, default=Path("reports/matbench_regret.csv"))
     ap.add_argument("--out-json", type=Path, default=None, help="Optional JSON summary path")
-    ap.add_argument("--group-col", type=str, default=None, help="Optional group column for per-group regret")
-    ap.add_argument("--out-group-csv", type=Path, default=Path("reports/matbench_regret_groups.csv"))
+    ap.add_argument(
+        "--group-col", type=str, default=None, help="Optional group column for per-group regret"
+    )
+    ap.add_argument(
+        "--out-group-csv", type=Path, default=Path("reports/matbench_regret_groups.csv")
+    )
     ap.add_argument("--bootstrap", type=int, default=0, help="Bootstrap replicates for AURC CI")
     ap.add_argument("--seed", type=int, default=0, help="Random seed for bootstrap")
-    ap.add_argument("--lambda-per-group", type=Path, default=None, help="JSON mapping group->lambda (requires --group-col)")
+    ap.add_argument(
+        "--lambda-per-group",
+        type=Path,
+        default=None,
+        help="JSON mapping group->lambda (requires --group-col)",
+    )
     ap.add_argument("--cost-col", type=str, default=None, help="Cost column for budget regret")
-    ap.add_argument("--budget-grid", type=str, default=None, help="Comma-separated budgets (same units as cost)")
-    ap.add_argument("--cost-scale", type=float, default=1.0, help="Scale costs then round to int for knapsack")
-    ap.add_argument("--out-budget-csv", type=Path, default=Path("reports/matbench_budget_regret.csv"))
-    ap.add_argument("--selection-mode", action="store_true", help="If set, evaluate top-k regret under bootstrap resamples with optional feature noise")
-    ap.add_argument("--selection-noise-sigma", type=float, default=0.0, help="Stdev of Gaussian noise to add to features in selection mode")
+    ap.add_argument(
+        "--budget-grid", type=str, default=None, help="Comma-separated budgets (same units as cost)"
+    )
+    ap.add_argument(
+        "--cost-scale", type=float, default=1.0, help="Scale costs then round to int for knapsack"
+    )
+    ap.add_argument(
+        "--out-budget-csv", type=Path, default=Path("reports/matbench_budget_regret.csv")
+    )
+    ap.add_argument(
+        "--selection-mode",
+        action="store_true",
+        help="If set, evaluate top-k regret under bootstrap resamples with optional feature noise",
+    )
+    ap.add_argument(
+        "--selection-noise-sigma",
+        type=float,
+        default=0.0,
+        help="Stdev of Gaussian noise to add to features in selection mode",
+    )
     args = ap.parse_args()
 
     df = pd.read_csv(args.path)
@@ -155,11 +197,14 @@ def main() -> int:
             if args.group_col not in df.columns:
                 raise SystemExit(f"Missing group column: {args.group_col}")
             import json as _json
+
             mp = _json.loads(Path(args.lambda_per_group).read_text(encoding="utf-8"))
             groups = df[args.group_col].astype(str).to_numpy()
             lam = np.array([float(mp.get(str(g), args.lambda_weight)) for g in groups], dtype=float)
             lambda_per_item = lam
-        scores = _compute_srmf_scores(df, lambda_weight=args.lambda_weight, lambda_per_item=lambda_per_item)
+        scores = _compute_srmf_scores(
+            df, lambda_weight=args.lambda_weight, lambda_per_item=lambda_per_item
+        )
     elif args.score_col is not None:
         if args.score_col not in df.columns:
             raise SystemExit(f"Missing score column: {args.score_col}")
@@ -219,7 +264,9 @@ def main() -> int:
             g_aurc = _aurc(g_rows)
             entry: Dict[str, Any] = {"AURC": g_aurc}
             if args.bootstrap > 0:
-                entry["AURC_CI"] = _bootstrap_aurc(y[mask], scores[mask], ks, args.mode, n_boot=args.bootstrap, seed=args.seed)
+                entry["AURC_CI"] = _bootstrap_aurc(
+                    y[mask], scores[mask], ks, args.mode, n_boot=args.bootstrap, seed=args.seed
+                )
             group_summary[str(g)] = entry
         if all_group_rows:
             gdf = pd.DataFrame(all_group_rows)
@@ -228,7 +275,9 @@ def main() -> int:
             print(f"Wrote group regret: {args.out_group_csv}")
         summary["groups"] = group_summary
     if args.bootstrap > 0:
-        summary["AURC_CI"] = _bootstrap_aurc(y, scores, ks, args.mode, n_boot=args.bootstrap, seed=args.seed)
+        summary["AURC_CI"] = _bootstrap_aurc(
+            y, scores, ks, args.mode, n_boot=args.bootstrap, seed=args.seed
+        )
 
     # Budget regret (optional)
     if args.cost_col is not None and args.budget_grid is not None:
@@ -281,7 +330,15 @@ def main() -> int:
             modelv = model_under_budget(scores, util, costs, B)
             regret = max(0.0, oracle - modelv)
             nrm = 0.0 if oracle == 0.0 else regret / abs(oracle)
-            brow.append({"budget": float(B), "oracle": float(oracle), "model": float(modelv), "regret": float(regret), "regret_norm": float(nrm)})
+            brow.append(
+                {
+                    "budget": float(B),
+                    "oracle": float(oracle),
+                    "model": float(modelv),
+                    "regret": float(regret),
+                    "regret_norm": float(nrm),
+                }
+            )
         if brow:
             args.out_budget_csv.parent.mkdir(parents=True, exist_ok=True)
             pd.DataFrame(brow).to_csv(args.out_budget_csv, index=False)

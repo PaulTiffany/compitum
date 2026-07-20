@@ -9,6 +9,7 @@ try:
     from hypothesis import settings
 except Exception:  # pragma: no cover - optional hypothesis support
     if os.environ.get("HYPOTHESIS_OPTIONAL", "1") == "1":
+
         class _DummySettings:
             @staticmethod
             def register_profile(*args, **kwargs) -> None:
@@ -28,9 +29,7 @@ def pytest_configure(config: Any) -> None:
     config.addinivalue_line(
         "markers", "invariants: property-based tests for core system invariants"
     )
-    config.addinivalue_line(
-        "markers", "routerbench: RouterBench integration tests (optional)"
-    )
+    config.addinivalue_line("markers", "routerbench: RouterBench integration tests (optional)")
     # Ensure artifacts directory exists for Hypothesis DB and reports.
     try:
         os.makedirs("artifacts", exist_ok=True)

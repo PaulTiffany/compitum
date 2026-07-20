@@ -28,7 +28,9 @@ def _surrogate_energy(L: np.ndarray, z: np.ndarray, beta_d: float) -> float:
     eta=st.floats(1e-3, 0.5),
 )
 @example(D=4, rank=2, beta_d=0.5, eta=0.1)
-def test_metric_update_line_search_non_increase(D: int, rank: int, beta_d: float, eta: float) -> None:
+def test_metric_update_line_search_non_increase(
+    D: int, rank: int, beta_d: float, eta: float
+) -> None:
     rank = min(rank, D)
     met = SymbolicManifoldMetric(D=D, rank=rank)
     ctrl = LyapunovController()
@@ -39,7 +41,9 @@ def test_metric_update_line_search_non_increase(D: int, rank: int, beta_d: float
     assume(np.linalg.norm(z) > 1e-8)
 
     e0 = _surrogate_energy(met.L, z, beta_d)
-    g = met.update_spd(x=x, mu=mu, beta_d=beta_d, d=float(np.linalg.norm(z)), eta=eta, srmf_controller=ctrl)
+    g = met.update_spd(
+        x=x, mu=mu, beta_d=beta_d, d=float(np.linalg.norm(z)), eta=eta, srmf_controller=ctrl
+    )
     assert g >= 0.0
     e1 = _surrogate_energy(met.L, z, beta_d)
     # Line search ensures non-increase (ties allowed by clipping)
@@ -47,8 +51,15 @@ def test_metric_update_line_search_non_increase(D: int, rank: int, beta_d: float
 
 
 @pytest.mark.invariants
-@given(D=st.integers(2, 12), rank=st.integers(1, 6), beta_d=st.floats(1e-3, 2.0), eta=st.floats(1e-3, 0.5))
-def test_metric_update_zero_gradient_no_change(D: int, rank: int, beta_d: float, eta: float) -> None:
+@given(
+    D=st.integers(2, 12),
+    rank=st.integers(1, 6),
+    beta_d=st.floats(1e-3, 2.0),
+    eta=st.floats(1e-3, 0.5),
+)
+def test_metric_update_zero_gradient_no_change(
+    D: int, rank: int, beta_d: float, eta: float
+) -> None:
     rank = min(rank, D)
     met = SymbolicManifoldMetric(D=D, rank=rank)
     ctrl = LyapunovController()

@@ -1,4 +1,4 @@
-﻿import numpy as np
+import numpy as np
 
 from compitum.applications.supercon import SuperconMonitor, SuperconMonitorConfig
 
@@ -54,4 +54,3 @@ def test_supercon_non_euclidean_norm_p():
     x1 = np.array([1.0, 1.0, 0.0, 0.0], dtype=float)
     out = sc.ingest_features(x1)
     assert out["distance"] > 0
-

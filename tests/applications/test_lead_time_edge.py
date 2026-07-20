@@ -24,5 +24,3 @@ def test_lead_time_zero_when_alarm_at_crash(tmp_path: Path):
     assert res.crash_index == 0
     assert res.alarm_index is not None and res.alarm_index >= res.crash_index
     assert res.lead_time_ms == 0.0
-
-

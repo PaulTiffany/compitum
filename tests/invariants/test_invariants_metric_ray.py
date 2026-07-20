@@ -11,11 +11,10 @@ def test_distance_increases_along_ray(D: int, rank: int) -> None:
     rng = np.random.default_rng(0)
     mu = rng.standard_normal(D)
     v = rng.standard_normal(D)
-    v /= (np.linalg.norm(v) + 1e-9)
+    v /= np.linalg.norm(v) + 1e-9
     # Increasing radii
     r = [0.0, 0.2, 0.5, 1.0]
     ds = [met.distance(mu + t * v, mu)[0] for t in r]
     # Monotone non-decreasing and strictly increasing beyond tiny tolerance
     assert all(ds[i] <= ds[i + 1] + 1e-12 for i in range(len(ds) - 1))
     assert ds[0] <= ds[-1] + 1e-12
-

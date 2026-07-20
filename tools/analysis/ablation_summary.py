@@ -14,7 +14,9 @@ def _best_baseline_per_eval(b: pd.DataFrame, w: float) -> pd.DataFrame:
     return df.loc[df.groupby("eval_name")["utility"].idxmax()]
 
 
-def summarize(comp_csv: Path, base_csv: Path, wtps: List[float]) -> Dict[str, Dict[str, Dict[str, float]]]:
+def summarize(
+    comp_csv: Path, base_csv: Path, wtps: List[float]
+) -> Dict[str, Dict[str, Dict[str, float]]]:
     cdf = pd.read_csv(comp_csv)
     bdf = pd.read_csv(base_csv)
     out: Dict[str, Dict[str, Dict[str, float]]] = {}
@@ -42,13 +44,17 @@ def summarize(comp_csv: Path, base_csv: Path, wtps: List[float]) -> Dict[str, Di
             best_util = float(bb["utility"].values[0])
             regret = max(0.0, best_util - c_util)
             win = 1.0 if c_util >= best_util - 1e-12 else 0.0
-            agg.append((regret, win, c_cost - float(bb["total_cost"].values[0]) if win >= 0.5 else np.nan))
+            agg.append(
+                (regret, win, c_cost - float(bb["total_cost"].values[0]) if win >= 0.5 else np.nan)
+            )
         if agg:
             arr = np.array(agg)
             out[w_key]["compitum"] = {
                 "mean_regret": float(np.nanmean(arr[:, 0])),
                 "win_rate": float(np.nanmean(arr[:, 1])),
-                "avg_cost_delta_on_wins": float(np.nanmean(arr[arr[:, 1] >= 0.5][:, 2])) if (arr[:, 1] >= 0.5).any() else float("nan"),
+                "avg_cost_delta_on_wins": float(np.nanmean(arr[arr[:, 1] >= 0.5][:, 2]))
+                if (arr[:, 1] >= 0.5).any()
+                else float("nan"),
             }
         # Baseline regret summaries (vs the best baseline)
         for name, pred in groups.items():
@@ -74,7 +80,11 @@ def summarize(comp_csv: Path, base_csv: Path, wtps: List[float]) -> Dict[str, Di
 def main() -> None:
     ap = argparse.ArgumentParser(description="Summarize ablations vs baselines at fixed WTPs")
     ap.add_argument("--compitum", required=True, help="Compitum per-eval CSV (possibly combined)")
-    ap.add_argument("--baselines", required=True, help="RouterBench baselines CSV (eval_results__*__rb_clean.csv)")
+    ap.add_argument(
+        "--baselines",
+        required=True,
+        help="RouterBench baselines CSV (eval_results__*__rb_clean.csv)",
+    )
     ap.add_argument("--wtps", nargs="+", type=float, default=[0.1, 1.0])
     ap.add_argument("--out-json", type=str, default="reports/ablation_summary.json")
     ap.add_argument("--out-md", type=str, default="reports/ablation_summary.md")
@@ -83,9 +93,15 @@ def main() -> None:
     res = summarize(Path(args.compitum), Path(args.baselines), args.wtps)
     Path(args.out_json).parent.mkdir(parents=True, exist_ok=True)
     import json as _json
+
     Path(args.out_json).write_text(_json.dumps(res, indent=2), encoding="utf-8")
 
-    lines = ["# Ablation Summary (Fixed WTP)", "", "| WTP | Model | Mean Regret |", "|---:|:------|-----------:|"]
+    lines = [
+        "# Ablation Summary (Fixed WTP)",
+        "",
+        "| WTP | Model | Mean Regret |",
+        "|---:|:------|-----------:|",
+    ]
     for w in sorted(res.keys()):
         for model, stats in res[w].items():
             lines.append(f"| {w} | {model} | {stats.get('mean_regret', float('nan')):.6f} |")
@@ -95,4 +111,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

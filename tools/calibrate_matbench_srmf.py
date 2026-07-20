@@ -39,7 +39,9 @@ def _compute_kappa_leak(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
             pass
 
 
-def _topk_regret(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str) -> List[Dict[str, float]]:
+def _topk_regret(
+    y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str
+) -> List[Dict[str, float]]:
     if mode == "min":
         u = -y
     else:
@@ -70,7 +72,9 @@ def _aurc(rows: List[Dict[str, float]]) -> float:
     return float(_trapz(ys, xs) / xs[-1])
 
 
-def _bootstrap_aurc(y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str, *, n_boot: int, seed: int) -> Dict[str, float]:
+def _bootstrap_aurc(
+    y: np.ndarray, scores: np.ndarray, ks: List[int], mode: str, *, n_boot: int, seed: int
+) -> Dict[str, float]:
     if n_boot <= 0:
         return {}
     rng = np.random.default_rng(seed)
@@ -97,7 +101,9 @@ def _parse_lambdas(s: str) -> List[float]:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Calibrate SRMF lambda for Matbench regret (offline)")
     ap.add_argument("--path", type=Path, required=True, help="CSV with features and objective")
-    ap.add_argument("--objective-col", type=str, required=True, help="Objective column name (y_true)")
+    ap.add_argument(
+        "--objective-col", type=str, required=True, help="Objective column name (y_true)"
+    )
     ap.add_argument("--mode", type=str, choices=["max", "min"], default="max")
     ap.add_argument("--topk-grid", type=str, default="1,5,10")
     ap.add_argument("--lambda-grid", type=str, default="0.0,0.25,0.5,0.75,1.0")
@@ -106,8 +112,15 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--bootstrap", type=int, default=0)
     ap.add_argument("--out-json", type=Path, default=Path("reports/matbench_calibration.json"))
-    ap.add_argument("--scores-out", type=Path, default=None, help="Optional CSV with chosen scores (test split)")
-    ap.add_argument("--group-col", type=str, default=None, help="Optional per-group lambda calibration (outputs mapping)")
+    ap.add_argument(
+        "--scores-out", type=Path, default=None, help="Optional CSV with chosen scores (test split)"
+    )
+    ap.add_argument(
+        "--group-col",
+        type=str,
+        default=None,
+        help="Optional per-group lambda calibration (outputs mapping)",
+    )
     args = ap.parse_args()
 
     df = pd.read_csv(args.path)
@@ -149,7 +162,9 @@ def main() -> int:
     scores_test = kappas[i_test] - best_lambda * leaks[i_test]
     rows_test = _topk_regret(y[i_test], scores_test, ks, args.mode)
     aurc_test = _aurc(rows_test)
-    ci = _bootstrap_aurc(y[i_test], scores_test, ks, args.mode, n_boot=args.bootstrap, seed=args.seed)
+    ci = _bootstrap_aurc(
+        y[i_test], scores_test, ks, args.mode, n_boot=args.bootstrap, seed=args.seed
+    )
 
     out: Dict[str, Any] = {
         "best_lambda": best_lambda,
@@ -168,8 +183,8 @@ def main() -> int:
         groups = df[args.group_col].astype(str).to_numpy()
         per_group: Dict[str, Any] = {}
         for g in pd.unique(groups):
-            mask_val = (groups[i_val] == g)
-            mask_test = (groups[i_test] == g)
+            mask_val = groups[i_val] == g
+            mask_test = groups[i_test] == g
             if mask_val.sum() == 0 or mask_test.sum() == 0:
                 continue
             best_g = None
@@ -185,7 +200,9 @@ def main() -> int:
             sc_test = kappas[i_test][mask_test] - lamg * leaks[i_test][mask_test]
             rows_test_g = _topk_regret(y[i_test][mask_test], sc_test, ks, args.mode)
             aurc_test_g = _aurc(rows_test_g)
-            ci_g = _bootstrap_aurc(y[i_test][mask_test], sc_test, ks, args.mode, n_boot=args.bootstrap, seed=args.seed)
+            ci_g = _bootstrap_aurc(
+                y[i_test][mask_test], sc_test, ks, args.mode, n_boot=args.bootstrap, seed=args.seed
+            )
             per_group[str(g)] = {"lambda": lamg, "test": {"AURC": aurc_test_g, "AURC_CI": ci_g}}
         out["per_group"] = per_group
 

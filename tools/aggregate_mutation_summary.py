@@ -33,7 +33,9 @@ def aggregate() -> dict:
 def main() -> None:
     import argparse
 
-    ap = argparse.ArgumentParser(description="Aggregate mutmut/Cosmic Ray shard artifacts into one summary JSON")
+    ap = argparse.ArgumentParser(
+        description="Aggregate mutmut/Cosmic Ray shard artifacts into one summary JSON"
+    )
     ap.add_argument("out_path", type=Path, nargs="?", default=Path("MUTATION_SUMMARY.json"))
     args = ap.parse_args()
 

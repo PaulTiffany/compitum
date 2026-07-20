@@ -31,7 +31,8 @@ def test_energy_decreases_with_distance_and_cost_increases():
 
     x0 = np.zeros(D)
     U0, _, comps0 = energy.compute(x0, model, predictors, coh, met)
-    x1 = np.zeros(D); x1[0] = 1.0
+    x1 = np.zeros(D)
+    x1[0] = 1.0
     U1, _, comps1 = energy.compute(x1, model, predictors, coh, met)
 
     # Distance increases (comps uses negative distance) → value becomes more negative

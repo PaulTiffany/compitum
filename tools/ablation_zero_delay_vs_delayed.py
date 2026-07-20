@@ -164,7 +164,11 @@ def try_plot(out_png: Path, inst: RunResult, delay: RunResult) -> None:
 
 
 def main() -> None:
-    T = int(np.clip(int(Path.cwd().joinpath("T.txt").read_text()) if Path("T.txt").exists() else 50, 10, 200))
+    T = int(
+        np.clip(
+            int(Path.cwd().joinpath("T.txt").read_text()) if Path("T.txt").exists() else 50, 10, 200
+        )
+    )
     inst = run_instantaneous(T=T, D=8)
     delayed = run_delayed(T=T, D=8, K=5)
     reports = Path("reports")
@@ -175,4 +179,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

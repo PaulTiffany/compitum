@@ -22,4 +22,3 @@ def test_argmax_stability_under_positive_shift():
     utils2 = {"m1": utils["m1"] + 0.01, "m2": utils["m2"]}
     m_star2, _ = s.select(xB, [m1, m2], utils2, context={"region": "US"})
     assert m_star2.name == "m1"
-

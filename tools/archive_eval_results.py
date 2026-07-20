@@ -41,7 +41,9 @@ def archive_dir(src: Path, dst_root: Path, keep: int) -> List[Path]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Archive old eval result files to artifacts/legacy/")
-    ap.add_argument("--keep", type=int, default=4, help="Number of most recent files to keep per dir")
+    ap.add_argument(
+        "--keep", type=int, default=4, help="Number of most recent files to keep per dir"
+    )
     ap.add_argument(
         "--out",
         type=str,
@@ -73,4 +75,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -28,9 +28,12 @@ def build_router(D: int, defaults_path: Path, constraints_path: Path, seed: int)
         q = rng.random(128)
         t = rng.random(128)
         c = rng.random(128)
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     import yaml
@@ -38,7 +41,12 @@ def build_router(D: int, defaults_path: Path, constraints_path: Path, seed: int)
     dcfg = yaml.safe_load(Path(defaults_path).read_text())
     A, B = _load_constraints(constraints_path)
     solver = ReflectiveConstraintSolver(A, B)
-    met = {m.name: SymbolicManifoldMetric(D, rank=int(dcfg["metric"]["rank"]), delta=float(dcfg["metric"]["delta"])) for m in models}
+    met = {
+        m.name: SymbolicManifoldMetric(
+            D, rank=int(dcfg["metric"]["rank"]), delta=float(dcfg["metric"]["delta"])
+        )
+        for m in models
+    }
     coherence = CoherenceFunctional(k=64)
     boundary = BoundaryAnalyzer(
         float(dcfg.get("boundary", {}).get("gap_threshold", 0.05)),
@@ -51,7 +59,16 @@ def build_router(D: int, defaults_path: Path, constraints_path: Path, seed: int)
     )
     pgd = RegexPromptExtractor()
     return CompitumRouter(
-        models, predictors, solver, coherence, boundary, ctrl, pgd, met, energy, update_stride=int(dcfg["update_stride"])
+        models,
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        ctrl,
+        pgd,
+        met,
+        energy,
+        update_stride=int(dcfg["update_stride"]),
     )
 
 
@@ -71,12 +88,14 @@ def main() -> int:
     out: List[Dict[str, Any]] = []
     for c in certs:
         d = json.loads(c.to_json())
-        out.append({
-            "model": d.get("model"),
-            "utility": d.get("utility"),
-            "boundary_gap": d.get("boundary", {}).get("utility_gap"),
-            "feasible": d.get("constraints", {}).get("feasible"),
-        })
+        out.append(
+            {
+                "model": d.get("model"),
+                "utility": d.get("utility"),
+                "boundary_gap": d.get("boundary", {}).get("utility_gap"),
+                "feasible": d.get("constraints", {}).get("feasible"),
+            }
+        )
     print(json.dumps({"n": len(out), "samples": out}))
     return 0
 

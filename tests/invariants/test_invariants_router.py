@@ -3,6 +3,7 @@ from typing import Any, List, Tuple
 
 import numpy as np
 import pytest
+
 try:
     from hypothesis import assume, given
     from hypothesis import strategies as st

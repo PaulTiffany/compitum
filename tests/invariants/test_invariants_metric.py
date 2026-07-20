@@ -2,6 +2,7 @@ from typing import Any, Tuple
 
 import numpy as np
 import pytest
+
 try:
     from hypothesis import given
     from hypothesis import strategies as st

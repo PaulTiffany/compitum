@@ -2,6 +2,7 @@ from typing import Any, Dict, cast
 
 import numpy as np
 import pytest
+
 try:
     from hypothesis import strategies as st
     from hypothesis.stateful import RuleBasedStateMachine, invariant, precondition, rule

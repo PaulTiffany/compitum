@@ -14,4 +14,3 @@ def test_metric_matrix_spd_and_min_eig_ge_delta(D: int, rank: int) -> None:
     assert np.all(w > 0.0)
     # Lower bounded by approximately delta (account for low-rank L term)
     assert w.min() >= met.delta - 1e-6
-

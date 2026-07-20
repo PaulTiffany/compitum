@@ -60,19 +60,29 @@ def main() -> None:
     import argparse
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("--config", type=str, default=str(project_root / "data" / "rb_clean" / "evaluate_routers.yaml"))
-    ap.add_argument("--max-evals", type=int, default=0, help="Optional cap on number of eval rows (head)")
+    ap.add_argument(
+        "--config",
+        type=str,
+        default=str(project_root / "data" / "rb_clean" / "evaluate_routers.yaml"),
+    )
+    ap.add_argument(
+        "--max-evals", type=int, default=0, help="Optional cap on number of eval rows (head)"
+    )
     ap.add_argument(
         "--wtp-list",
         type=str,
         default="0.0001,0.001,0.01,0.1,1.0,10.0",
         help="Comma-separated willingness_to_pay values (e.g. '0.0001,0.001,0.01,0.1,1.0,10.0')",
     )
-    ap.add_argument("--filter-eval", type=str, default=None, help="Optional single eval_name to filter")
+    ap.add_argument(
+        "--filter-eval", type=str, default=None, help="Optional single eval_name to filter"
+    )
     args, unknown = ap.parse_known_args()
 
     cfg = yaml.safe_load(Path(args.config).read_text())
-    data_path = cfg.get("data_path", str(project_root / "src" / "routerbench" / "routerbench_5shot.pkl"))
+    data_path = cfg.get(
+        "data_path", str(project_root / "src" / "routerbench" / "routerbench_5shot.pkl")
+    )
     data_name = cfg.get("data_name", "rb_clean_compitum")
     wanted_eval_name = cfg.get("wanted_eval_name")
     train_fraction = float(cfg.get("train_fraction", 0.7))
@@ -105,7 +115,9 @@ def main() -> None:
     from tools.routerbench.routers.compitum_router import CompitumRouterAdapter
 
     # Use pretrained predictors if available to avoid lengthy fitting
-    pretrained_path = project_root / "data" / "pretrain_predictors" / "predictors_all-MiniLM-L12-v2_0.1.joblib"
+    pretrained_path = (
+        project_root / "data" / "pretrain_predictors" / "predictors_all-MiniLM-L12-v2_0.1.joblib"
+    )
     adapter = CompitumRouterAdapter(
         router_defaults_path="configs/router_defaults.yaml",
         constraints_path="configs/constraints_routerbench_default.yaml",
@@ -122,7 +134,7 @@ def main() -> None:
     rb_eval.MODELS_TO_ROUTE = MODELS_TO_ROUTE  # type: ignore[attr-defined]
     # Override WTP grid if provided
     try:
-        wtp_list = [float(x.strip()) for x in args.wtp_list.split(',') if x.strip()]
+        wtp_list = [float(x.strip()) for x in args.wtp_list.split(",") if x.strip()]
     except Exception:
         wtp_list = [1.0]
     rb_eval.WILLINGNESS_TO_PAY = wtp_list  # type: ignore[attr-defined]
@@ -138,7 +150,7 @@ def main() -> None:
     ts = datetime.utcnow().strftime("%m-%d-%H-%M").replace(":", "-")
     per_eval_path = project_root / "data" / data_name / "eval_results"
     per_eval_path.mkdir(parents=True, exist_ok=True)
-    label = args.filter_eval or (wanted_eval_name or 'all')
+    label = args.filter_eval or (wanted_eval_name or "all")
     per_eval_csv = per_eval_path / f"eval_results-eval-{label}-{ts}-val_split.csv"
     result_df.to_csv(per_eval_csv, index=False)
     print(f"Saved to: {per_eval_csv}")

@@ -33,4 +33,3 @@ def test_select_with_context_hits_capability_branches():
     assert info["status"] == "optimal"
     # Shadow prices present for each constraint index
     assert all(k.startswith("lambda_") for k in info["shadow_prices"].keys())
-

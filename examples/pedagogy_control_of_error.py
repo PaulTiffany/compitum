@@ -5,6 +5,7 @@ Runs a simple route, simulates "practice" by updating the coherence reservoir
 near the winner's whitened vector, then re-routes and prints evidence/utility deltas.
 No core code changes required.
 """
+
 from __future__ import annotations
 
 import json
@@ -49,9 +50,12 @@ def build_demo_router() -> CompitumRouter:
         q = 0.6 + 0.1 * np.tanh(X @ (m.center / (np.linalg.norm(m.center) + 1e-8)))
         t = 0.5 + 0.5 * np.abs(X @ np.ones(D) / np.sqrt(D))
         c = 0.2 + 0.4 * np.abs(X @ (np.arange(D) / D))
-        pq = CalibratedPredictor(); pq.fit(X, q)
-        pt = CalibratedPredictor(); pt.fit(X, t)
-        pc = CalibratedPredictor(); pc.fit(X, c)
+        pq = CalibratedPredictor()
+        pq.fit(X, q)
+        pt = CalibratedPredictor()
+        pt.fit(X, t)
+        pc = CalibratedPredictor()
+        pc.fit(X, c)
         predictors[m.name] = {"quality": pq, "latency": pt, "cost": pc}
 
     metrics = {m.name: SymbolicManifoldMetric(D, rank, delta) for m in models}
@@ -60,16 +64,40 @@ def build_demo_router() -> CompitumRouter:
     solver = ReflectiveConstraintSolver(np.array(A, float), np.array(b, float))
     boundary = BoundaryAnalyzer(gap_threshold=0.05, entropy_threshold=0.65, sigma_threshold=0.12)
     controller = LyapunovController()
-    energy = SymbolicFreeEnergy(defaults["alpha"], defaults["beta_t"], defaults["beta_c"], defaults["beta_d"], defaults["beta_s"])
+    energy = SymbolicFreeEnergy(
+        defaults["alpha"],
+        defaults["beta_t"],
+        defaults["beta_c"],
+        defaults["beta_d"],
+        defaults["beta_s"],
+    )
     pgd = RegexPromptExtractor()
-    return CompitumRouter(models, predictors, solver, coherence, boundary, controller, pgd, metrics, energy, update_stride=999, enable_metric_update=False, enable_controller=False)
+    return CompitumRouter(
+        models,
+        predictors,
+        solver,
+        coherence,
+        boundary,
+        controller,
+        pgd,
+        metrics,
+        energy,
+        update_stride=999,
+        enable_metric_update=False,
+        enable_controller=False,
+    )
 
 
 def explain(cert_json: str) -> None:
     data = json.loads(cert_json)
     comps = data.get("utility_components", {})
     print("Decision:", data.get("model"), f"Utility={data.get('utility')}")
-    print("Components: distance=", -float(comps.get("distance", 0.0)), "evidence=", comps.get("evidence", 0.0))
+    print(
+        "Components: distance=",
+        -float(comps.get("distance", 0.0)),
+        "evidence=",
+        comps.get("evidence", 0.0),
+    )
     print("Constraints:", data.get("constraints", {}))
     print("Boundary:", data.get("boundary", {}))
 
@@ -105,9 +133,13 @@ def main() -> None:
     print("\nPrepared environment (region=US -> JP -> US):")
     cUS = router.route("any", context={"region": "US"}, embedding=emb)
     cJP = router.route("any", context={"region": "JP"}, embedding=emb)
-    print("US feasible:", json.loads(cUS.to_json())["constraints"]["feasible"], ", JP feasible:", json.loads(cJP.to_json())["constraints"]["feasible"])
+    print(
+        "US feasible:",
+        json.loads(cUS.to_json())["constraints"]["feasible"],
+        ", JP feasible:",
+        json.loads(cJP.to_json())["constraints"]["feasible"],
+    )
 
 
 if __name__ == "__main__":
     main()
-

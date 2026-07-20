@@ -159,6 +159,7 @@ def test_update_cholesky_recovers_from_error(mock_cholesky: MagicMock) -> None:
     assert metric.delta > 0.0
     assert metric.W is not None
 
+
 def test_batch_distance_raises_error_if_w_is_none() -> None:
     metric = SymbolicManifoldMetric(D=2, rank=1)
     with patch.object(metric, "_update_cholesky") as mock_update:

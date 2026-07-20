@@ -74,11 +74,17 @@ def _extract_fields(df: pd.DataFrame) -> pd.DataFrame:
                 parsed = df[jcol].map(_maybe_json)
                 if len(parsed) and isinstance(parsed.iloc[0], dict):
                     if entropy is None:
-                        entropy = pd.to_numeric([x.get("entropy", np.nan) for x in parsed], errors="coerce")
+                        entropy = pd.to_numeric(
+                            [x.get("entropy", np.nan) for x in parsed], errors="coerce"
+                        )
                     if gap is None:
-                        gap = pd.to_numeric([x.get("utility_gap", np.nan) for x in parsed], errors="coerce")
+                        gap = pd.to_numeric(
+                            [x.get("utility_gap", np.nan) for x in parsed], errors="coerce"
+                        )
                     if uncert is None and "uncertainty" in parsed.iloc[0]:
-                        uncert = pd.to_numeric([x.get("uncertainty", np.nan) for x in parsed], errors="coerce")
+                        uncert = pd.to_numeric(
+                            [x.get("uncertainty", np.nan) for x in parsed], errors="coerce"
+                        )
                 break
     out["entropy"] = entropy if entropy is not None else np.nan
     out["gap"] = gap if gap is not None else np.nan
@@ -117,11 +123,13 @@ def compute_ambiguity_score(df: pd.DataFrame) -> pd.Series:
     u = _rank_standardize(df.get("uncertainty", pd.Series([], dtype=float)), invert=False)
     g = _rank_standardize(df.get("gap", pd.Series([], dtype=float)), invert=True)
     # average available components
-    arr = np.vstack([
-        e.fillna(np.nan).to_numpy(),
-        u.fillna(np.nan).to_numpy(),
-        g.fillna(np.nan).to_numpy(),
-    ])
+    arr = np.vstack(
+        [
+            e.fillna(np.nan).to_numpy(),
+            u.fillna(np.nan).to_numpy(),
+            g.fillna(np.nan).to_numpy(),
+        ]
+    )
     # Guard against all-NaN columns leading to empty slice warnings;
     # np.nanmean already ignores NaNs, but when every component is NaN for a row
     # it may emit a warning. Compute with nanmean and silence warning by prechecking.
@@ -129,6 +137,7 @@ def compute_ambiguity_score(df: pd.DataFrame) -> pd.Series:
         score = np.full(df.shape[0], np.nan)
     else:
         import warnings as _warn
+
         with _warn.catch_warnings():
             _warn.simplefilter("ignore", category=RuntimeWarning)
             score = np.nanmean(arr, axis=0)
@@ -178,12 +187,21 @@ def boundary_auc_ap(boundary_flag: Optional[pd.Series], score: pd.Series) -> Dic
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="cs.CL decision curves: ambiguity score deferral and boundary AUC/AP")
-    ap.add_argument("--input", "-i", required=True, help="Eval CSV/JSONL with regret and boundary info")
+    ap = argparse.ArgumentParser(
+        description="cs.CL decision curves: ambiguity score deferral and boundary AUC/AP"
+    )
+    ap.add_argument(
+        "--input", "-i", required=True, help="Eval CSV/JSONL with regret and boundary info"
+    )
     ap.add_argument("--out-json", type=Path, default=Path("reports/cl_decision_curves.json"))
     ap.add_argument("--out-md", type=Path, default=Path("reports/cl_decision_curves.md"))
     ap.add_argument("--out-png", type=Path, default=Path("reports/cl_decision_curve.png"))
-    ap.add_argument("--quantiles", type=str, default="0,0.05,0.1,0.2,0.3,0.4,0.5", help="Comma-separated deferral fractions")
+    ap.add_argument(
+        "--quantiles",
+        type=str,
+        default="0,0.05,0.1,0.2,0.3,0.4,0.5",
+        help="Comma-separated deferral fractions",
+    )
     args = ap.parse_args()
 
     df = _load_table(Path(args.input))
@@ -203,9 +221,13 @@ def main() -> None:
     lines.append("## Deferral (Upper-Bound) on Ambiguity Score")
     lines.append("| q_defer | mean_regret | mean_regret_with_deferral (upper bound) |")
     lines.append("| ---: | ---: | ---: |")
-    for q, r0, r1 in zip(curves["q"], curves["mean_regret"], curves["mean_regret_upperbound_with_deferral"]):
+    for q, r0, r1 in zip(
+        curves["q"], curves["mean_regret"], curves["mean_regret_upperbound_with_deferral"]
+    ):
+
         def _fmt(x: float) -> str:
             return "n/a" if not np.isfinite(x) else f"{x:.4f}"
+
         lines.append(f"| {q:.2f} | {_fmt(r0)} | {_fmt(r1)} |")
     lines.append("")
     if aucap.get("available"):
@@ -221,7 +243,12 @@ def main() -> None:
 
         fig, ax = plt.subplots(figsize=(6, 4))
         ax.plot(curves["q"], curves["mean_regret"], label="observed", marker="o")
-        ax.plot(curves["q"], curves["mean_regret_upperbound_with_deferral"], label="with deferral (upper bound)", marker="o")
+        ax.plot(
+            curves["q"],
+            curves["mean_regret_upperbound_with_deferral"],
+            label="with deferral (upper bound)",
+            marker="o",
+        )
         ax.set_xlabel("Deferral fraction by ambiguity score")
         ax.set_ylabel("Mean regret")
         ax.grid(True, alpha=0.3)

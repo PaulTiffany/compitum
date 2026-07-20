@@ -20,4 +20,3 @@ def test_quantile_calibration_on_holdout():
     y_hat, lo, hi = cp.predict(Xte)
     within = (y_hat >= lo) & (y_hat <= hi)
     assert float(np.mean(within)) >= 0.7
-

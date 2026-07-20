@@ -166,10 +166,7 @@ class CompitumRouter:
             pgd_signature=pgd_hash(prompt),
             timestamp=time.time(),
         )
-        if (
-            self._step % 100 == 0
-            and os.environ.get("COMPITUM_DEBUG_ROUTER") == "1"
-        ):
+        if self._step % 100 == 0 and os.environ.get("COMPITUM_DEBUG_ROUTER") == "1":
             print(f"CompitumRouter.route took {time.time() - start_time:.4f} seconds")
         return cert
 

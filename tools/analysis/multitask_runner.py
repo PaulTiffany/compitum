@@ -15,19 +15,28 @@ def run(cmd: List[str], cwd: Optional[Path] = None, timeout: Optional[int] = Non
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Run Compitum evaluation across multiple eval_names and aggregate per-eval CSVs")
+    ap = argparse.ArgumentParser(
+        description="Run Compitum evaluation across multiple eval_names and aggregate per-eval CSVs"
+    )
     ap.add_argument("--config", type=str, default="data/rb_clean/evaluate_routers.yaml")
-    ap.add_argument("--evals", nargs="*", type=str, default=[
-        "grade-school-math",
-        "hellaswag",
-        "mbpp",
-        "mmlu-high-school-mathematics",
-        "mmlu-logical-fallacies",
-    ])
+    ap.add_argument(
+        "--evals",
+        nargs="*",
+        type=str,
+        default=[
+            "grade-school-math",
+            "hellaswag",
+            "mbpp",
+            "mmlu-high-school-mathematics",
+            "mmlu-logical-fallacies",
+        ],
+    )
     ap.add_argument("--max-evals", type=int, default=0)
     ap.add_argument("--wtp-list", type=str, default="0.0001,0.001,0.01,0.1,1.0,10.0")
     ap.add_argument("--timeout", type=int, default=0)
-    ap.add_argument("--out", type=str, default="data/rb_clean/eval_results/compitum_multitask_combined.csv")
+    ap.add_argument(
+        "--out", type=str, default="data/rb_clean/eval_results/compitum_multitask_combined.csv"
+    )
     args = ap.parse_args()
 
     root = Path.cwd()
@@ -40,9 +49,12 @@ def main() -> None:
         cmd = [
             str(py),
             str(root / "tools" / "evaluate_compitum.py"),
-            "--config", args.config,
-            "--wtp-list", args.wtp_list,
-            "--filter-eval", ev,
+            "--config",
+            args.config,
+            "--wtp-list",
+            args.wtp_list,
+            "--filter-eval",
+            ev,
         ]
         if args.max_evals:
             cmd += ["--max-evals", str(args.max_evals)]
@@ -74,4 +86,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

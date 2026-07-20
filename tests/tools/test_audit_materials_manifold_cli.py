@@ -25,12 +25,13 @@ def test_audit_materials_manifold_cli_offline(tmp_path: Path) -> None:
     assert out.exists()
     df = pd.read_csv(out)
     assert len(df) == 2
-    assert set([
-        "material_id",
-        "formula",
-        "srmf_phase",
-        "curvature_kappa",
-        "stability_leak",
-        "prediction",
-    ]).issubset(df.columns)
-
+    assert set(
+        [
+            "material_id",
+            "formula",
+            "srmf_phase",
+            "curvature_kappa",
+            "stability_leak",
+            "prediction",
+        ]
+    ).issubset(df.columns)

@@ -22,16 +22,20 @@ def collect(paths: List[Path]) -> List[Dict[str, str]]:
     for p in paths:
         if not p.exists() or not p.is_file():
             continue
-        out.append({
-            "path": str(p),
-            "bytes": str(p.stat().st_size),
-            "sha256": sha256sum(p),
-        })
+        out.append(
+            {
+                "path": str(p),
+                "bytes": str(p.stat().st_size),
+                "sha256": sha256sum(p),
+            }
+        )
     return out
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Generate simple artifact manifest with SHA256 digests")
+    ap = argparse.ArgumentParser(
+        description="Generate simple artifact manifest with SHA256 digests"
+    )
     ap.add_argument("--out", type=str, default="reports/artifact_manifest.json")
     args = ap.parse_args()
 
@@ -47,10 +51,10 @@ def main() -> None:
     items = collect(candidates)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     import json as _json
+
     Path(args.out).write_text(_json.dumps(items, indent=2), encoding="utf-8")
     print(f"Wrote manifest: {args.out} ({len(items)} items)")
 
 
 if __name__ == "__main__":
     main()
-

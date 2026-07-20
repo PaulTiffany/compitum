@@ -20,7 +20,13 @@ def test_controller_zero_drift_non_decreasing_trust(n: int):
     assert 0.2 <= trust[-1] <= 5.0
 
 
-@given(seq=st.lists(st.floats(min_value=0.0, max_value=2.0, allow_nan=False, allow_infinity=False), min_size=5, max_size=25))
+@given(
+    seq=st.lists(
+        st.floats(min_value=0.0, max_value=2.0, allow_nan=False, allow_infinity=False),
+        min_size=5,
+        max_size=25,
+    )
+)
 @settings(deadline=None)
 def test_controller_eta_cap_scales_inverse_grad(seq: List[float]):
     c = LyapunovController(kappa=0.1, r0=1.0, integral_gain=0.01)
@@ -33,4 +39,3 @@ def test_controller_eta_cap_scales_inverse_grad(seq: List[float]):
     for (g1, e1), (g2, e2) in zip(zip(seq, eta_caps), zip(seq[1:], eta_caps[1:])):
         if g2 > g1 + 1e-12:
             assert e2 <= e1 + 1e-9
-

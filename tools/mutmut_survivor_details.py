@@ -32,14 +32,16 @@ def _extract_survivor_ids(text: str) -> List[int]:
     m = re.search(r"^Survived\b.*$", text, re.MULTILINE)
     if not m:
         return []
-    rest = text[m.end():]
+    rest = text[m.end() :]
     next_header = re.search(
         r"^(?:" + "|".join(h for h in _OUTCOME_HEADERS if h != "Survived") + r")\b",
-        rest, re.MULTILINE,
+        rest,
+        re.MULTILINE,
     )
     section = rest[: next_header.start()] if next_header else rest
     id_lines = [
-        line for line in section.splitlines()
+        line
+        for line in section.splitlines()
         if line.strip() and not line.strip().startswith("----")
     ]
     ids: List[int] = []
@@ -57,8 +59,14 @@ def _extract_survivor_ids(text: str) -> List[int]:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Append mutmut survivor details for one shard to a report file")
-    ap.add_argument("--base", required=True, help="Sanitized shard basename, e.g. metric or integrations_matbench_adapter")
+    ap = argparse.ArgumentParser(
+        description="Append mutmut survivor details for one shard to a report file"
+    )
+    ap.add_argument(
+        "--base",
+        required=True,
+        help="Sanitized shard basename, e.g. metric or integrations_matbench_adapter",
+    )
     args = ap.parse_args()
 
     results_path = Path(f"reports/mutmut_results_{args.base}.txt")
@@ -73,7 +81,9 @@ def main() -> None:
     with out_path.open("a", encoding="utf-8") as f:
         for mutant_id in ids:
             try:
-                details = subprocess.check_output(["mutmut", "show", mutant_id], text=True, errors="ignore")
+                details = subprocess.check_output(
+                    ["mutmut", "show", mutant_id], text=True, errors="ignore"
+                )
             except Exception as exc:
                 details = f"<error showing {mutant_id}: {exc}>"
             f.write(f"\n## survivor {mutant_id}\n\n{details}\n")

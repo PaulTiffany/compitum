@@ -7,12 +7,14 @@ Run:
 Produces:
   fusion_early_warning.png (curvature vs time with alarm region shaded)
 """
+
 from __future__ import annotations
 
 import numpy as np
 
 try:
     import matplotlib.pyplot as plt  # type: ignore
+
     HAVE_MPL = True
 except Exception:  # pragma: no cover - plotting optional in CI
     HAVE_MPL = False
@@ -81,4 +83,3 @@ if __name__ == "__main__":
     print("Simulating sawtooth instability...")
     res = simulate_sawtooth_cycle(steps=60, crash_at=50)
     plot_results(res)
-

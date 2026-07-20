@@ -68,7 +68,9 @@ def _build_router(enable_metric_update: bool, enable_controller: bool) -> Compit
     solver = ReflectiveConstraintSolver(np.array(A, float), np.array(b, float))  # type: ignore[name-defined]
     boundary = BoundaryAnalyzer(0.05, 0.65, 0.12)
     controller = LyapunovController()
-    energy = SymbolicFreeEnergy(dcfg["alpha"], dcfg["beta_t"], dcfg["beta_c"], dcfg["beta_d"], dcfg["beta_s"])
+    energy = SymbolicFreeEnergy(
+        dcfg["alpha"], dcfg["beta_t"], dcfg["beta_c"], dcfg["beta_d"], dcfg["beta_s"]
+    )
     pgd = RegexPromptExtractor()
 
     return CompitumRouter(

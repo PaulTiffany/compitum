@@ -8,6 +8,7 @@ Examples:
 
 The script prioritizes core code and key docs and ensures `.paleaeignore` is included.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -43,7 +44,11 @@ def run_paleae(paleae_path: Path, out: Path, fmt: str, includes: List[str]) -> N
 
 def load_snapshot(path: Path) -> Tuple[str, Any]:
     if path.suffix.lower() == ".jsonl":
-        return "jsonl", [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        return "jsonl", [
+            json.loads(line)
+            for line in path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
     return "json", json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -65,13 +70,31 @@ def prioritize(paths: Iterable[str]) -> Dict[str, int]:
     tiers = [
         (0, [r"^src/compitum/"]),
         (1, [r"^src/compitum/cli.py$"]),
-        (2, [r"^README.md$", r"^PHILOSOPHY.md$", r"^ACCESSIBILITY.md$", r"^SECURITY.md$", r"^CONTRIBUTING.md$", r"^SUPPORT.md$", r"^CHANGELOG.md$"]),
-        (3, [r"^compitum/docs/(Getting-Started|CLI|Philosophy|Invariants|LLM-Usage|API-Reference)\.md$"]),
+        (
+            2,
+            [
+                r"^README.md$",
+                r"^PHILOSOPHY.md$",
+                r"^ACCESSIBILITY.md$",
+                r"^SECURITY.md$",
+                r"^CONTRIBUTING.md$",
+                r"^SUPPORT.md$",
+                r"^CHANGELOG.md$",
+            ],
+        ),
+        (
+            3,
+            [
+                r"^compitum/docs/(Getting-Started|CLI|Philosophy|Invariants|LLM-Usage|API-Reference)\.md$"
+            ],
+        ),
         (4, [r"^pyproject.toml$", r"^compitum/.paleaeignore$", r"^compitum/docs/conf.py$"]),
     ]
     import re
 
-    compiled: List[Tuple[int, List[Any]]] = [(prio, [re.compile(p) for p in pats]) for prio, pats in tiers]
+    compiled: List[Tuple[int, List[Any]]] = [
+        (prio, [re.compile(p) for p in pats]) for prio, pats in tiers
+    ]
     prio_map: Dict[str, int] = {}
     for p in paths:
         prio = 10
@@ -105,7 +128,9 @@ def trim_to_budget(kind: str, data: Any, target_bytes: int) -> Any:
         if isinstance(files, list):
             paths = [record_path(r) for r in files]
             prio = prioritize(paths)
-            ordered = sorted(files, key=lambda r: (prio.get(record_path(r), 10), len(record_path(r))))
+            ordered = sorted(
+                files, key=lambda r: (prio.get(record_path(r), 10), len(record_path(r)))
+            )
             kept: List[Dict[str, Any]] = []
             for rec in ordered:
                 trial = {**data, "files": kept + [rec]}
@@ -125,7 +150,9 @@ def main() -> None:
     ap.add_argument("--out", default="compitum_context.jsonl", help="Output snapshot path")
     ap.add_argument("--format", choices=["json", "jsonl"], default="jsonl")
     ap.add_argument("--target-size", default="1MB", help="Size budget (e.g., 512KB, 1MB)")
-    ap.add_argument("--paleae-path", default="paleae/paleae.py", help="Path to paleae.py (external repo)")
+    ap.add_argument(
+        "--paleae-path", default="paleae/paleae.py", help="Path to paleae.py (external repo)"
+    )
     args = ap.parse_args()
 
     target_bytes = parse_size(args.target_size)
@@ -157,4 +184,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

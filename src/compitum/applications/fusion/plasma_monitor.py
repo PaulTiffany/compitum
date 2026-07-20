@@ -32,14 +32,17 @@ class PlasmaMonitor:
     using Compitum's SPD metric and Lyapunov-based controller.
     """
 
-    def __init__(self, config: PlasmaMonitorConfig | None = None,
-                 *,
-                 state_dim: int | None = None,
-                 rank: int | None = None,
-                 q_threshold: float | None = None,
-                 curvature_alarm: float | None = None,
-                 scales: Optional[np.ndarray] = None,
-                 norm_p: float | None = None) -> None:
+    def __init__(
+        self,
+        config: PlasmaMonitorConfig | None = None,
+        *,
+        state_dim: int | None = None,
+        rank: int | None = None,
+        q_threshold: float | None = None,
+        curvature_alarm: float | None = None,
+        scales: Optional[np.ndarray] = None,
+        norm_p: float | None = None,
+    ) -> None:
         # Accept either a config dataclass or individual overrides for quick use
         cfg = config or PlasmaMonitorConfig()
         if state_dim is not None:
@@ -63,9 +66,7 @@ class PlasmaMonitor:
         self.beta_d = cfg.beta_d
         self.eta = cfg.eta
         self.norm_p = float(cfg.norm_p)
-        self.scales = (
-            cfg.scales if cfg.scales is not None else np.ones(cfg.state_dim, dtype=float)
-        )
+        self.scales = cfg.scales if cfg.scales is not None else np.ones(cfg.state_dim, dtype=float)
         self._initialized = False
 
     def _normalize(self, x: np.ndarray) -> np.ndarray:
@@ -133,4 +134,3 @@ class PlasmaMonitor:
         """Re-center stability basin after a mode change or controlled crash."""
         self.equilibrium = new_eq.copy()
         self.controller.drift_integral = 0.0
-

@@ -8,8 +8,15 @@ from examples.certificate_card import render_markdown_card  # reuse
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Explain an existing certificate JSON as a Markdown card.")
-    ap.add_argument("--input", type=Path, required=True, help="Path to certificate JSON or JSONL (uses first line)")
+    ap = argparse.ArgumentParser(
+        description="Explain an existing certificate JSON as a Markdown card."
+    )
+    ap.add_argument(
+        "--input",
+        type=Path,
+        required=True,
+        help="Path to certificate JSON or JSONL (uses first line)",
+    )
     args = ap.parse_args()
 
     p = args.input
@@ -25,4 +32,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
