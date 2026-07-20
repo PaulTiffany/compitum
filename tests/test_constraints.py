@@ -64,6 +64,22 @@ def test_solver_feasibility_at_exact_boundary() -> None:
     assert info["feasible"] is True
 
 
+def test_solver_feasibility_at_exact_epsilon_boundary() -> None:
+    """The test above uses x == b exactly, where `A@x <= b + 1e-10` and
+    `A@x < b + 1e-10` both agree (True either way, since b+1e-10 > b) -- the
+    `1e-10` tolerance itself was never actually put at stake. Construct x so
+    `A@x` lands exactly on `b + 1e-10` (same literal arithmetic as the
+    source), where `<=` (True, feasible) and `<` (False, infeasible)
+    genuinely disagree."""
+    caps = Capabilities(set(), set())
+    A = np.eye(1)
+    b = np.array([1.0])
+    solver = ReflectiveConstraintSolver(A, b)
+    models = [Model(name="a", center=np.array([]), capabilities=caps, cost=0.0)]
+    _, info = solver.select(np.array([1.0 + 1e-10]), models, {"a": 0.5})
+    assert info["feasible"] is True
+
+
 def test_solver_missing_utility_defaults_to_worst_not_best() -> None:
     """No existing test omits a model from the utilities dict -- the
     `-np.inf` default (vs a mutated `+np.inf`) that makes an unscored model
@@ -79,6 +95,26 @@ def test_solver_missing_utility_defaults_to_worst_not_best() -> None:
     # "b" is intentionally absent from utilities.
     m_star, _ = solver.select(np.array([0.5]), models, {"a": 0.5})
     assert m_star.name == "a"
+
+
+def test_solver_shadow_price_competitor_missing_utility_defaults_to_worst() -> None:
+    """The missing-utility test above only checks m_star selection (which
+    exercises the sort key's `-np.inf` default), never the *separate*
+    `utilities.get(competitor.name, -np.inf)` inside the shadow-price loop
+    (a different line, same default pattern). A missing competitor must
+    still lose there too -- shadow_price must stay 0.0, not become a huge
+    value from a wrongly-defaulted +inf utility beating the real m_star."""
+    caps = Capabilities(set(), set())
+    A = np.eye(1)
+    b = np.array([1.0])
+    solver = ReflectiveConstraintSolver(A, b)
+    models = [
+        Model(name="m_star", center=np.array([]), capabilities=caps, cost=0.0),
+        Model(name="competitor", center=np.array([]), capabilities=caps, cost=0.0),
+    ]
+    # "competitor" is intentionally absent from utilities.
+    _, info = solver.select(np.array([0.5]), models, {"m_star": 0.5})
+    assert info["shadow_prices"]["lambda_0"] == 0.0
 
 
 def test_solver_capability_support_filters_model() -> None:

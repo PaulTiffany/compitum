@@ -56,8 +56,9 @@ each, no test re-run) rather than guessing from source.
 | IDs | Classification | Reasoning |
 |---|---|---|
 | 21, 22, 23, 36 | **Defect (fixed, `f542273`)** | `"status"`/`"violations"` dict keys/values were never checked on either the feasible or infeasible-fallback path |
-| 9 | **Defect (fixed, `f542273`)** | Feasibility exactly at `A@x == b` (`<=` vs `<`) was never exercised |
-| 14, 60 | **Defect (fixed, `f542273`)** | A model missing from the `utilities` dict was never tested to confirm it loses (`-inf` default) rather than wins (mutated `+inf`) |
+| 9 | **Defect (fixed, `f542273`, then corrected in a real-CI re-verification pass)** | Feasibility exactly at `A@x == b`. The original fix used `x == b` exactly, but `A@x <= b + 1e-10` and `A@x < b + 1e-10` both agree there (`b+1e-10 > b`, so both sides of the comparison are still True) -- a real CI mutmut run showed this survived. Fixed for real with `x = b + 1e-10` exactly (same literal arithmetic as the source), where `<=`/`<` actually disagree |
+| 14 | **Defect (fixed, `f542273`)** | The sort key's `utilities.get(m.name, -np.inf)` default -- a model missing from `utilities` must sort last, not first |
+| 60 | **Defect (found via real-CI re-verification, fixed this pass)** | A *second*, separate `utilities.get(competitor.name, -np.inf)` default inside the shadow-price loop -- the existing missing-utility test only ever checked `m_star` selection (exercising ID 14's line), never `info["shadow_prices"]`, so this distinct line's default was never actually put at stake despite looking superficially covered |
 | 62 | **Defect (logged, not fixed)** | Same class as 14/60 but for `m_star`'s own utility lookup -- in practice `m_star` should always have a real utility entry (it comes from the same `utilities` dict used to rank it), so this default may be closer to defensive dead code; not confirmed either way |
 | 42 | **Defect (logged, not fixed)** | `b_relaxed[i] += 1e-5` sign flipped to `-=` -- inverts the entire economic meaning of "relaxation"; not covered by any existing test |
 | 47 | **Defect (logged, not fixed)** | `continue`→`break` on `if competitor == m_star` would exit the whole competitor loop the moment `m_star` is encountered in sorted order, silently skipping every competitor after it |
@@ -99,7 +100,21 @@ a re-run of the whole file.
 | `models.py` | 1 | 1 | 0 | 0 | **Green**, no fix needed |
 | `capabilities.py` | 9 | 7 | 2 | 0 | **Fully classified.** Both survivors (`deterministic` default `False`->`True` and `->None`) are killed by the existing `f9a98ca` fix's `is False` (strict identity) assertion -- `True is False` and `None is False` are both `False`, so one test kills both mutants. The earlier note undercounted this as "targets 1 of 2." Zero unclassified. |
 | `effort_qp.py` | 25 | 19 | 6 | 0 | **Fully classified this pass.** IDs 2, 4, 6 (arithmetic op flips on the 3 `grad` terms) and 9 (`>` -> `>=` boundary) were already killed by the existing `689b6ea`/`9bfd747` fixes on closer inspection (undercounted before); 13 (`max(0.0,-grad)` -> `max(1.0,...)`) was already killed by the zero-grad-boundary test. Only 19 (`max(0.0,grad)` -> `max(1.0,...)` on `lambda_high`) was a real gap -- the existing non-unity test's `grad=8.0` happens to exceed the mutant's `1.0` floor, masking it. New `test_solve_effort_1d_lambda_high_below_one` uses `0 < grad < 1`. Zero unclassified. |
-| `boundary.py` | 44 | 35 | 9 | 0 | **Fully classified this pass.** 3 IDs (34, 35, 37) are phantom/non-existent cache entries. 32 (`u_sigma.get` default) was already killed by the existing `0fea79e` fix. 23 (`exp(arr-u1)` -> `exp(arr+u1)`) is a confirmed equivalent mutant (softmax shift-invariance after normalization). Real gaps: 1 (`gap_threshold` default `0.05`->`1.05`, masked in every existing case by either a small gap or a failing sigma condition) and 28/29/30 (entropy formula/epsilon mutations, never checked against an exact value) -- both fixed by 2 new tests. Zero unclassified. |
+| `boundary.py` | 44 | 35 | 9 | 0 | **Fully classified, corrected after a real CI run.** 32 (`u_sigma.get` default) was already killed by the existing `0fea79e` fix. 23 (`exp(arr-u1)` -> `exp(arr+u1)`) is a confirmed equivalent mutant (softmax shift-invariance after normalization). Real gaps fixed: 1 (`gap_threshold` default `0.05`->`1.05`) and 28/29/30 (entropy formula/epsilon mutations). **34, 35, 37 were originally misclassified as phantom/non-existent cache IDs** -- a real CI mutmut run showed they're genuine `<`/`<=` and `>`/`>=` exact-threshold mutants on `gap_threshold`/`entropy_threshold`/`sigma_threshold` that the stale archived cache never had (see the real-CI note below the table). Fixed this pass. Zero unclassified. |
+
+**Real-CI correction (2026-07-20):** IDs 34, 35, 37 were originally logged as "phantom" because
+`mutmut show <id>` raised `ValueError: Obtained null mutant for pk: <id>` against this session's
+*archived* cache (`artifacts/mutation_cache/boundary.mutmut-cache`). A real `mutation_dispatch.yml`
+run showed these IDs are genuine, currently-surviving mutants with real diffs -- `gap < threshold`
+mutated to `<=`, `entropy > threshold` to `>=`, `sigma > threshold` to `>=`. The likely explanation:
+the archived cache predates this session's coverage-guidance bug fix (`0cd02a3`, which fixed
+`--cov` receiving a bare file path instead of a dotted module name, and an incomplete `TEST_PATHS`
+list) -- under the old, broken coverage guidance, mutmut may never have generated candidate
+mutations for these comparison operators at all, since `--use-coverage` skips lines absent from
+coverage data. **Lesson: an archived cache's "null mutant" result is not proof a mutant doesn't
+exist -- it may only prove the cache that was archived didn't have complete/correct coverage data
+when it was generated.** Any other file's "phantom ID" classifications in this document (`energy.py`,
+`router.py`) are suspect for the same reason and need the same real-CI re-check before being trusted.
 | `predictors.py` | 22 | 15 | 7 | 0 | **Fully classified this pass.** All 7 were ML hyperparameter/default mutations previously guessed as "probably equivalent" -- on inspection all 7 are directly testable via sklearn's public constructor attributes (`n_estimators`, `random_state`) without needing to fit anything, plus a strict-identity fix for `fitted`'s `False`/`None` default (`not x` passes for both). None were actually equivalent -- just under-tested. Zero unclassified. |
 | `control.py` | 52 | 47 | 5 | 0 | **Fully classified this pass.** 2 of 5 (`>`->`>=`, `<`->`<=` at the EMA thresholds) were already killed by the existing `32d92fa` exact-threshold test (undercounted as "1 of 5" before). 3 real gaps fixed: `kappa`/`r0` constructor defaults were never exercised (every test passes them explicitly), and the `eta_cap` epsilon's existing check uses `grad_norm=2.0` where the epsilon is too small a relative perturbation for `np.isclose`'s default tolerance to catch a 2x change in it. Zero unclassified. |
 | `pgd.py` | — | — | — | — | **Crashed** -- real Windows-only bug in mutmut itself (`cache.py`'s `update_line_numbers` opens files via the system cp1252 locale, not UTF-8; unrelated to compitum code). CI runs on `ubuntu-latest`, so this specific crash is very unlikely to recur there. |
@@ -190,13 +205,22 @@ quirks) is expected to re-verify these cleanly.
 | 15 | **Defect (fixed)** | `out_dir.mkdir(parents=True, ...)` -> `parents=False` -- the existing roundtrip test passes `tmp_path` (already exists), so `parents` never mattered. New `test_write_audit_record_creates_nested_directories` uses a 3-levels-deep not-yet-existing path |
 | 17, 18, 19 | **Defect (fixed)** | `ts_ms = int(time.time() * 1000)` mutated to `/ 1000`, `* 1001`, and `= None` -- only the filename's *shape* (`run_....json`) was ever checked, not that the embedded number is a plausible current epoch-ms value. New `test_write_audit_record_filename_is_plausible_epoch_ms_and_exact_indent` brackets it against `time.time()*1000` taken immediately before/after the call |
 | 23 | **Defect (fixed)** | `json.dumps(..., indent=2)` -> `indent=3` -- doesn't change parsed content, only raw formatting, so a content-equality check alone can't catch it. Same new test asserts the literal 2-space indentation on the first written line |
-| 25, 26, 27, 36, 46 | **Defect (fixed)** | Five different ways `git_commit_short()`'s repo-root/HEAD/ref resolution breaks (`here = None`; `.parents[2]` -> `.parents[3]`; `repo_root = None`; `errors="ignore"` -> `"XXignoreXX"` on both the HEAD read and the ref-file read) -- every one of them is swallowed by the function's own broad `except Exception: return None`, and no existing test ever asserted the *real* return value is non-`None`/well-formed. One new `test_git_commit_short_resolves_real_repo_head` (run inside the real compitum repo, on a normal non-detached branch, so both the HEAD read and the ref-file read execute) kills all five at once |
+| 25, 26, 27 | **Defect (fixed)** | Three ways `git_commit_short()`'s repo-root resolution breaks (`here = None`; `.parents[2]` -> `.parents[3]`; `repo_root = None`) -- all swallowed by the function's own broad `except Exception: return None`, never asserted against a real non-`None` return. `test_git_commit_short_resolves_real_repo_head` kills all three |
+| 36, 46 | **Equivalent (corrected after a real CI run)** | `errors="ignore"` -> `"XXignoreXX"` on the HEAD/ref-file reads. Originally classified "fixed" by the same test above, on the (wrong) assumption that an invalid `errors=` value always raises. **A real CI mutmut run showed both still SURVIVED** -- direct reproduction confirmed why: Python's `errors=` handler is only consulted when an actual decode error occurs, and git's `HEAD`/ref files are always clean ASCII (hex hashes, ref paths), so they decode successfully regardless of what garbage string `errors=` holds. No test built on realistic git repository content can ever distinguish this |
 | 40 | **Equivalent** | `head.split(":", 1)[1]` -> `head.split(":", 2)[1]` -- git forbids `:` in ref names, so a real `HEAD` content (`ref: refs/heads/<branch>`) contains exactly one `:`; `str.split` with `maxsplit=2` on a string with only one occurrence produces the identical result to `maxsplit=1`. No real git repository state can ever distinguish the two |
 
-Net: 4 defect-classes fixed (10 individual survivor IDs) via 4 new tests, 2 confirmed equivalent (6
-IDs total across both equivalent classifications). **Zero unclassified survivors.** Not re-verified
-against a fresh mutmut run for the same environment reasons as `energy.py` above; verified instead
-via direct line-by-line reasoning against the real source, each new test run and passing locally.
+Net: 4 defect-classes fixed (8 individual survivor IDs) via 4 new tests, 3 confirmed equivalent (5
+IDs total across all three equivalent classifications, 2 of them corrected after a real CI run
+disproved the original "fixed" claim). **Zero unclassified survivors.**
+
+**Real-CI correction (2026-07-20):** the initial version of this table classified 36 and 46 as
+fixed based on reasoning alone ("an invalid `errors=` raises, so it's caught and returns `None`").
+Triggering `mutation_dispatch.yml` for real and reading the actual `mutmut_survivors_security.txt`
+artifact showed both still SURVIVED against the real test. Direct reproduction (`Path('.git/HEAD').
+read_text(encoding='utf-8', errors='XXignoreXX')`) confirmed the reasoning error: the `errors=`
+parameter is inert unless a decode error actually happens. This is the general risk of classifying
+without a working automated re-run, called out explicitly when local `mutmut` became unreliable
+this session -- a real CI pass is what actually caught it.
 
 ## Efficiency lessons learned this session (read before continuing)
 

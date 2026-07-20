@@ -64,7 +64,10 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   the winning model is missing from `u_sigma`; the real `gap_threshold` default (`0.05`) is
   exercised where a much-larger mutated default would flip the result (every other case either has
   a small gap or a failing sigma condition that masks it); `entropy`'s exact value is pinned (not
-  just which side of `entropy_threshold` it lands on) — `tests/test_boundary.py`
+  just which side of `entropy_threshold` it lands on); `gap < gap_threshold`,
+  `entropy > entropy_threshold`, and `sigma > sigma_threshold` are each exercised at *exact*
+  equality (not just clearly inside/outside), where a `<`/`>` vs `<=`/`>=` mutation would otherwise
+  survive — `tests/test_boundary.py`
 - `predictors.py`: isotonic calibration clips out-of-domain raw values to the boundary's fitted `y`
   rather than extrapolating; each of the 3 internal `GradientBoostingRegressor`s' exact
   `n_estimators`/`random_state` hyperparameters; `fitted` defaults to `False`, not `None` (`not x`
@@ -86,7 +89,11 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   `git_commit_short()` resolves a real, well-formed commit hash from this repo's own `.git` state
   (not silently swallowed to `None`) — `tests/security/test_security_utils.py`
 - `constraints.py`: shadow price matches the exact `(Δutility)/1e-5` value, not just its sign;
-  multi-constraint infeasible fallback zeros every `lambda_i` — `tests/test_constraints.py`
+  multi-constraint infeasible fallback zeros every `lambda_i`; feasibility's `A@x <= b + 1e-10`
+  tolerance is exercised at `A@x` exactly equal to `b + 1e-10` (not just `b` itself, where the
+  epsilon makes `<=` and `<` agree regardless); a competitor missing from `utilities` still loses
+  in the shadow-price calculation specifically (`-inf` default), not just in `m_star` selection (a
+  separate line with the same default pattern) — `tests/test_constraints.py`
 - `integrations/matbench_adapter.py`: CSV columns map to the correct attribute *values*, not just
   present attributes; `id_column`/`formula_column`/`label_column` default to `None`, not `""`
   (both falsy everywhere they're checked); all 4 "column not found"/"missing columns" error
@@ -137,6 +144,12 @@ Known true equivalent mutants (not gaps):
 - `security.py`'s `git_commit_short()`: `head.split(":", 1)` vs `split(":", 2)` — git forbids `:` in
   ref names, so a real `HEAD` (`ref: refs/heads/<branch>`) always contains exactly one `:`, making
   `maxsplit=1` and `maxsplit=2` produce identical results against any real repository state.
+- `security.py`'s `git_commit_short()`: `errors="ignore"` vs `errors="XXignoreXX"` on the HEAD/ref
+  file reads — confirmed equivalent only after a real CI run showed it still surviving despite a
+  test asserting a real non-`None` result (see `MUTATION_HARDENING_STATUS.md`'s real-CI correction
+  note). Python's `errors=` decode-error handler is only consulted when an actual decode error
+  occurs; git's HEAD/ref files are always clean ASCII, so they decode successfully regardless of
+  what garbage string `errors=` holds.
 - `boundary.py`'s `probs = np.exp(arr - u1)` vs `np.exp(arr + u1)` — the immediately-following
   `probs /= probs.sum()` normalization is invariant to any constant additive shift applied uniformly
   to `arr` before the exponential (softmax shift-invariance), and `u1` is a single scalar shared
