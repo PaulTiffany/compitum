@@ -1,4 +1,6 @@
 import hashlib
+import re
+import time
 from pathlib import Path
 
 from compitum.security import (
@@ -62,3 +64,71 @@ def test_write_audit_record_roundtrip(tmp_path: Path):
     )
     assert out.exists()
     assert out.name.startswith("run_") and out.suffix == ".json"
+
+
+def test_audit_record_commit_defaults_to_none():
+    # No existing test constructs AuditRecord without an explicit `commit=`
+    # -- the dataclass default (None) was never exercised, so a mutation to
+    # e.g. `= ""` would survive.
+    record = AuditRecord(
+        version="0.0.0",
+        offline=False,
+        seed=1,
+        prompt={},
+        config={},
+        certificate={},
+    )
+    assert record.commit is None
+
+
+def test_write_audit_record_creates_nested_directories(tmp_path: Path):
+    # The roundtrip test above passes tmp_path directly, which pytest already
+    # creates -- `mkdir(exist_ok=True)` succeeds there regardless of
+    # `parents`. Use a not-yet-existing multi-level path so `parents=True`
+    # is actually required.
+    nested = tmp_path / "a" / "b" / "c"
+    out = write_audit_record(
+        AuditRecord(
+            version="0.0.0", offline=False, seed=1, prompt={}, config={}, certificate={}
+        ),
+        nested,
+    )
+    assert out.exists()
+
+
+def test_write_audit_record_filename_is_plausible_epoch_ms_and_exact_indent(tmp_path: Path):
+    # The roundtrip test above only checks the filename's prefix/suffix, not
+    # that the embedded number is actually a millisecond epoch timestamp (a
+    # `* 1000` -> `/ 1000` or `* 1001` mutation, or `= None`, would all still
+    # produce a "run_....json"-shaped name). Bound it against the real clock.
+    before_ms = time.time() * 1000
+    out = write_audit_record(
+        AuditRecord(
+            version="0.0.0", offline=False, seed=1, prompt={}, config={}, certificate={}
+        ),
+        tmp_path,
+    )
+    after_ms = time.time() * 1000
+    ts_ms = int(out.stem.removeprefix("run_"))
+    assert before_ms - 1000 <= ts_ms <= after_ms + 1000
+
+    # The written JSON is never checked for its actual formatting -- an
+    # `indent=2` -> `indent=3` mutation doesn't change parsed content, only
+    # the raw text, so assert the literal indentation directly.
+    lines = out.read_text().splitlines()
+    assert lines[1].startswith('  "') and not lines[1].startswith('   "')
+
+
+def test_git_commit_short_resolves_real_repo_head():
+    # The roundtrip test above never asserts git_commit_short() returns a
+    # non-None, well-formed value -- so a mutation that breaks repo-root
+    # resolution (`here = None`, wrong `.parents[N]` index, `repo_root =
+    # None`) or that breaks the `errors="ignore"` codec name on either the
+    # HEAD or ref-file read (making the internal read raise, silently
+    # swallowed by the function's broad `except Exception: return None`)
+    # would all survive undetected. This test module lives inside the real
+    # compitum git repository, so the default (no `repo_root` arg) code path
+    # is exercised end-to-end against real `.git` state.
+    result = git_commit_short()
+    assert result is not None
+    assert re.fullmatch(r"[0-9a-f]{7}", result)

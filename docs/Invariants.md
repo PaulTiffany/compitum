@@ -66,7 +66,11 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   thresholds, not just clearly above/below them — `tests/test_control.py`
 - `symbolic.py`: `+`, `*`, `@` operators evaluate correctly, not just `-`/`/` — `tests/test_symbolic.py`
 - `security.py`: SHA-256 outputs match the exact expected digest (not just length 64);
-  `is_offline()`/`redaction_enabled()` default to `False` when unset — `tests/security/test_security_utils.py`
+  `is_offline()`/`redaction_enabled()` default to `False` when unset; `AuditRecord.commit` defaults
+  to `None`, not `""`; `write_audit_record` creates missing parent directories and its filename
+  embeds a plausible current epoch-ms timestamp with exact 2-space JSON indentation;
+  `git_commit_short()` resolves a real, well-formed commit hash from this repo's own `.git` state
+  (not silently swallowed to `None`) — `tests/security/test_security_utils.py`
 - `constraints.py`: shadow price matches the exact `(Δutility)/1e-5` value, not just its sign;
   multi-constraint infeasible fallback zeros every `lambda_i` — `tests/test_constraints.py`
 - `integrations/matbench_adapter.py`: CSV columns map to the correct attribute *values*, not just
@@ -89,3 +93,9 @@ Known true equivalent mutants (not gaps):
 - `flush=True` on `energy.py`'s `compute()` debug prints — every test captures stdout via
   `redirect_stdout` to an in-memory buffer, where `flush` has no observable effect on the captured
   text; distinguishing it would require asserting on real OS-level buffering, not this code's logic.
+- The unused default string in `security.py`'s `is_offline()`/`redaction_enabled()`
+  (`os.environ.get(..., "0")`) — both functions' entire contract is `== "1"`, so any non-`"1"`
+  default produces the same result; the raw default string is never itself observable.
+- `security.py`'s `git_commit_short()`: `head.split(":", 1)` vs `split(":", 2)` — git forbids `:` in
+  ref names, so a real `HEAD` (`ref: refs/heads/<branch>`) always contains exactly one `:`, making
+  `maxsplit=1` and `maxsplit=2` produce identical results against any real repository state.

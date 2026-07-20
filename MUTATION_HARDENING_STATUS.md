@@ -84,7 +84,7 @@ a re-run of the whole file.
 | `integrations/matbench_adapter.py` | 32 | 24 | 8 | 0 | 1 fix (`721a8b1`) targets 1 of 8 |
 | `coherence.py` | 55 | 43 | 12 | 0 | 1 fix (`683e041`) targets 1 of 12 |
 | `symbolic.py` | 36 | 30 | 6 | 0 | 1 fix (`e2743f0`) targets 3 of 6 (`+`, `*`, `@` operators all fixed by one commit) |
-| `security.py` | 49 | 35 | 14 | 0 | 2 fixes (`8d575f5`) target 2+ of 14 (hash-value assertions cover 2 functions) |
+| `security.py` | 49 | 35 | 14 | 0 | **Fully classified this pass** -- see worked table above. All genuine defects fixed (batched, 4 new tests); 2 confirmed equivalent. Zero unclassified. |
 | `constraints.py` | 72 | 47 | 23 | 2 | 2 fixes (`6eab4cb`) target 2 of 23; largest raw survivor count before energy.py |
 | `energy.py` | 178 | 104 | 73 | 1 | **Fully classified this pass** -- see worked table below. All genuine defects fixed (batched); 2 confirmed equivalent; 6 IDs are phantom/non-existent cache entries; 1 Suspicious ID undiagnosable from the archived cache. Zero unclassified. |
 | `router.py` | 137 | 105 | 32 | 0 | 3 fixes (`7c3200f`) target 3 of 32; 2 more are a confirmed true equivalent mutant (`abs(-x)`), not a gap |
@@ -131,6 +131,23 @@ rigorous line-by-line arithmetic verification against the actual source and actu
 named limitation, not a hidden gap -- a clean CI runner (no stale local caches, no Windows path
 quirks) is expected to re-verify these cleanly.
 
+### `security.py` -- full classification (14 survivors, worked example)
+
+| IDs | Classification | Reasoning |
+|---|---|---|
+| 2, 6 | **Equivalent** | `os.environ.get("COMPITUM_OFFLINE"/"COMPITUM_REDACT", "0")` default string mutated to `"XX0XX"` -- both functions' entire contract is `== "1"`, so *any* string other than `"1"` produces the same `False` result. No test could ever distinguish the two default strings without reading the raw `os.environ.get` return value directly, which isn't part of either function's observable behavior |
+| 14 | **Defect (fixed)** | `AuditRecord.commit` dataclass default `None` -> `""` -- no existing test constructed a record without an explicit `commit=`, so the default itself was unexercised. New `test_audit_record_commit_defaults_to_none` |
+| 15 | **Defect (fixed)** | `out_dir.mkdir(parents=True, ...)` -> `parents=False` -- the existing roundtrip test passes `tmp_path` (already exists), so `parents` never mattered. New `test_write_audit_record_creates_nested_directories` uses a 3-levels-deep not-yet-existing path |
+| 17, 18, 19 | **Defect (fixed)** | `ts_ms = int(time.time() * 1000)` mutated to `/ 1000`, `* 1001`, and `= None` -- only the filename's *shape* (`run_....json`) was ever checked, not that the embedded number is a plausible current epoch-ms value. New `test_write_audit_record_filename_is_plausible_epoch_ms_and_exact_indent` brackets it against `time.time()*1000` taken immediately before/after the call |
+| 23 | **Defect (fixed)** | `json.dumps(..., indent=2)` -> `indent=3` -- doesn't change parsed content, only raw formatting, so a content-equality check alone can't catch it. Same new test asserts the literal 2-space indentation on the first written line |
+| 25, 26, 27, 36, 46 | **Defect (fixed)** | Five different ways `git_commit_short()`'s repo-root/HEAD/ref resolution breaks (`here = None`; `.parents[2]` -> `.parents[3]`; `repo_root = None`; `errors="ignore"` -> `"XXignoreXX"` on both the HEAD read and the ref-file read) -- every one of them is swallowed by the function's own broad `except Exception: return None`, and no existing test ever asserted the *real* return value is non-`None`/well-formed. One new `test_git_commit_short_resolves_real_repo_head` (run inside the real compitum repo, on a normal non-detached branch, so both the HEAD read and the ref-file read execute) kills all five at once |
+| 40 | **Equivalent** | `head.split(":", 1)[1]` -> `head.split(":", 2)[1]` -- git forbids `:` in ref names, so a real `HEAD` content (`ref: refs/heads/<branch>`) contains exactly one `:`; `str.split` with `maxsplit=2` on a string with only one occurrence produces the identical result to `maxsplit=1`. No real git repository state can ever distinguish the two |
+
+Net: 4 defect-classes fixed (10 individual survivor IDs) via 4 new tests, 2 confirmed equivalent (6
+IDs total across both equivalent classifications). **Zero unclassified survivors.** Not re-verified
+against a fresh mutmut run for the same environment reasons as `energy.py` above; verified instead
+via direct line-by-line reasoning against the real source, each new test run and passing locally.
+
 ## Efficiency lessons learned this session (read before continuing)
 
 1. **`mutmut run <id>` re-tests one mutant at a time, but re-runs the full baseline test suite
@@ -157,22 +174,22 @@ quirks) is expected to re-verify these cleanly.
 
 ## Next steps, in priority order
 
-`constraints.py` and `energy.py` are now **fully classified, zero unclassified survivors** (see
-their worked tables above). None have been re-verified with a fresh full sweep yet locally (only
-`energy.py` mutant 21 and `router.py`'s were spot-confirmed via targeted single-ID re-checks before
-this environment's `mutmut run` became unreliable -- see the note at the end of `energy.py`'s
-table). In priority order for a future session:
+`constraints.py`, `energy.py`, and `security.py` are now **fully classified, zero unclassified
+survivors** (see their worked tables above). None have been re-verified with a fresh full sweep yet
+locally (only `energy.py` mutant 21 and `router.py`'s were spot-confirmed via targeted single-ID
+re-checks before this environment's `mutmut run` became unreliable -- see the note at the end of
+`energy.py`'s table). In priority order for a future session:
 
-1. `security.py` (14 survivors, 2 fixes committed): next-largest unclassified count.
-2. The remaining 7 files (`capabilities.py`, `effort_qp.py`, `boundary.py`, `predictors.py`,
+1. The remaining 7 files (`capabilities.py`, `effort_qp.py`, `boundary.py`, `predictors.py`,
    `control.py`, `matbench_adapter.py`, `coherence.py`, `symbolic.py`, `router.py`) each have
    single-digit-to-low-teens survivor counts -- a batched fresh sweep per file is cheap once a
    few more fixes accumulate per file, rather than re-sweeping after every single commit.
-3. Decide whether to pursue `pgd.py` further (the Windows-only crash) -- likely not worth it locally
+2. Decide whether to pursue `pgd.py` further (the Windows-only crash) -- likely not worth it locally
    given CI runs on `ubuntu-latest`; a real CI run of the fixed workflow would settle this for free.
-4. A real GitHub Actions run of the mutation workflow is the cleanest way to re-verify every fix
-   committed locally this session (`energy.py`'s in particular) -- CI has no stale local mutmut
-   caches and no Windows path/venv quirks, both of which caused real friction re-verifying locally.
+3. A real GitHub Actions run of the mutation workflow is the cleanest way to re-verify every fix
+   committed locally this session (`energy.py`'s and `security.py`'s in particular) -- CI has no
+   stale local mutmut caches and no Windows path/venv quirks, both of which caused real friction
+   re-verifying locally.
 
 ## CI-side changes made this session (informed by this data)
 
