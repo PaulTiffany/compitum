@@ -93,7 +93,19 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   tolerance is exercised at `A@x` exactly equal to `b + 1e-10` (not just `b` itself, where the
   epsilon makes `<=` and `<` agree regardless); a competitor missing from `utilities` still loses
   in the shadow-price calculation specifically (`-inf` default), not just in `m_star` selection (a
-  separate line with the same default pattern) — `tests/test_constraints.py`
+  separate line with the same default pattern); the relaxation epsilon's sign (`b_relaxed[i] +=
+  1e-5`) is exercised where the unrelaxed constraint passes by a margin under `1e-5`; the
+  competitor-skip (`continue`, not `break`) and utility-tie boundary (`>`, not `>=`) are checked via
+  a later competitor's capability call actually happening, not just the resulting shadow price
+  (which can coincidentally match either way); `context` is passed through on *every* recorded
+  capability call, not just at least one (an unmutated code path elsewhere already guarantees one
+  correct-looking call regardless); a failed capability check keeps a competitor non-viable even
+  though a separate, independent feasibility re-check happens right after it; the first (not last)
+  qualifying competitor's shadow price sticks — `tests/test_constraints.py`. A Hypothesis property
+  test additionally sweeps `select()` across random utility assignments and feasible/infeasible `xB`
+  values, checking invariants that must hold regardless of the specific numbers (returned model is
+  always an input, shadow prices non-negative, `m_star` is the max-utility model when all models
+  share equal viability).
 - `integrations/matbench_adapter.py`: CSV columns map to the correct attribute *values*, not just
   present attributes; `id_column`/`formula_column`/`label_column` default to `None`, not `""`
   (both falsy everywhere they're checked); all 4 "column not found"/"missing columns" error
