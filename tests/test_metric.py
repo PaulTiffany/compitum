@@ -296,10 +296,12 @@ def test_batch_update_spd_grad_norm_arithmetic_exact() -> None:
 
 
 def test_batch_update_spd_lipschitz_eta_stab_and_z_norm2_exact() -> None:
-    """`z_norm2_batch` (`z*z` vs `z/z`), `lipschitz` (`*`/epsilon), and
-    `eta_stab` (`1.0/lipschitz`) were never pinned to exact values -- a huge
-    `eta`/`eta_cap` make `eta_stab` the sole binding constraint, so the
-    exact `self.L` displacement reveals it directly."""
+    """`z_norm2_batch` (`z*z` vs `z/z`) and `eta_stab`'s `1.0/lipschitz`
+    arithmetic were never pinned to exact values -- a huge `eta`/`eta_cap`
+    make `eta_stab` the sole binding constraint, so the exact `self.L`
+    displacement reveals it directly. `lipschitz`'s `1e-8` epsilon floor is
+    NOT exercised here -- `z_norm2=13` is far above it, so that floor
+    doesn't bind; see the dedicated epsilon test below."""
     metric = SymbolicManifoldMetric(D=2, rank=1, delta=0.1)
     metric.L = np.array([[1.0], [2.0]])
     L_before = metric.L.copy()
@@ -322,6 +324,37 @@ def test_batch_update_spd_lipschitz_eta_stab_and_z_norm2_exact() -> None:
     delta_L = L_before - metric.L
     assert np.isclose(delta_L[0, 0] / grad_L[0, 0], expected_eta_stab)
     assert np.isclose(delta_L[1, 0] / grad_L[1, 0], expected_eta_stab)
+
+
+def test_batch_update_spd_lipschitz_epsilon_floor_is_1e_minus_8() -> None:
+    """Found via a real CI re-verification run (2026-07-21): the test above
+    uses `z_norm2=13`, far above both `1e-8` and the mutant's `2e-8`, so the
+    epsilon floor never actually binds there and the mutation survived
+    undetected. A near-zero `z` (well below `sqrt(1e-8)`) forces
+    `beta_d * avg_z_norm2` below the floor, making the floor itself (not
+    just the surrounding arithmetic) the binding constraint."""
+    metric = SymbolicManifoldMetric(D=2, rank=1, delta=0.1)
+    metric.L = np.array([[1.0], [2.0]])
+    L_before = metric.L.copy()
+    metric._update_cholesky()
+    srmf_controller = MagicMock()
+    srmf_controller.update.return_value = (1e15, {})
+    tiny = 1e-6
+    metric.batch_update_spd(
+        np.array([[tiny, 0.0]]),
+        np.array([[0.0, 0.0]]),
+        beta_d=1.0,
+        d_batch=np.array([2.0]),
+        eta=1e15,
+        srmf_controller=srmf_controller,
+    )
+    z = np.array([tiny, 0.0])
+    d_safe = max(2.0, 1e-8)
+    A = (1.0 / (2 * d_safe)) * np.outer(z, z)
+    grad_L = 2 * (A @ L_before)
+    expected_eta_stab = 1.0 / max(1.0 * float(np.sum(z * z)), 1e-8)
+    delta_L = L_before - metric.L
+    assert np.isclose(delta_L[0, 0] / grad_L[0, 0], expected_eta_stab)
 
 
 def test_batch_update_spd_gradient_descent_direction_decreases_L() -> None:
