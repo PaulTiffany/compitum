@@ -1,29 +1,209 @@
 {
-  "schema": "compitum.mutation-summary/v2",
-  "note": "Replaces a stale October 2025 summary (mutation_score: 1.0, from a historical local Cosmic Ray campaign predating this commit by ~9 months) that was silently being re-attested under fresh commit hashes. This file reflects the actual local mutmut sweep run against the current tree; see MUTATION_HARDENING_STATUS.md for full per-file detail, exact commits, and the classification of every survivor (equivalent / defect-fixed / defect-logged).",
-  "generated_from": "artifacts/mutation_cache/*.mutmut-cache and *_run.log, this session's local sweep",
+  "schema": "compitum.mutation-summary/v3",
+  "note": "Reflects MUTATION_HARDENING_STATUS.md's per-file accounting as of this commit -- the authoritative source, with exact survivor IDs, equivalence proofs, and fix commits for every entry. This JSON separates three distinct states per file, per the release checklist's requirement not to claim a flattering aggregate that conflates them: (1) killed/survived as-run -- the literal last real mutmut-tool result (local or CI, see verified_by), unmodified by any fix written afterward; (2) fixes_pending_reverification -- survivor IDs this session wrote a fix for and verified independently (direct mutant simulation, or targeted pytest runs against a manually-applied mutant), but has NOT yet re-run through the mutation tool itself to confirm the kill; (3) accepted_survivors -- IDs confirmed equivalent or explicitly accepted as defensive/unreachable, with documented reasoning, not gaps. No full CI-run re-verification of the complete 20-file matrix against this exact commit has been executed -- mutation.yml was repaired this pass (added a missing cosmic-ray baseline step, fixed a gate-check silent-pass bug, fixed shard-identity and nested-path bugs) and a fresh sweep is expected post-push, per this release's explicit instruction not to trigger mutation CI before that point.",
+  "authoritative_source": "MUTATION_HARDENING_STATUS.md",
   "per_file": {
-    "embedding_pgd.py": {"total": 1, "killed": 1, "survived": 0, "status": "green"},
-    "utils.py": {"total": 9, "killed": 9, "survived": 0, "status": "green"},
-    "models.py": {"total": 1, "killed": 1, "survived": 0, "status": "green"},
-    "capabilities.py": {"total": 9, "killed": 7, "survived": 2, "status": "1 defect fixed, 1 unclassified"},
-    "effort_qp.py": {"total": 25, "killed": 19, "survived": 6, "status": "2 defects fixed, 4 unclassified"},
-    "boundary.py": {"total": 44, "killed": 35, "survived": 9, "status": "1 defect fixed, 8 unclassified (likely equivalent: log-epsilon)"},
-    "predictors.py": {"total": 22, "killed": 15, "survived": 7, "status": "1 defect fixed, 6 unclassified (likely equivalent: ML hyperparameters)"},
-    "control.py": {"total": 52, "killed": 47, "survived": 5, "status": "1 defect fixed, 4 unclassified"},
-    "pgd.py": {"total": null, "killed": null, "survived": null, "status": "run crashed: real Windows-only bug in mutmut's own cache.py cp1252 file-encoding, unrelated to compitum code; CI runs on ubuntu-latest"},
-    "integrations/matbench_adapter.py": {"total": 32, "killed": 24, "survived": 8, "status": "1 defect fixed, 7 unclassified"},
-    "coherence.py": {"total": 55, "killed": 43, "survived": 12, "status": "1 defect fixed, 11 unclassified"},
-    "symbolic.py": {"total": 36, "killed": 30, "survived": 6, "status": "1 defect fixed (covers 3 survivor IDs), 3 unclassified"},
-    "security.py": {"total": 49, "killed": 35, "survived": 14, "status": "2 defects fixed, 12 unclassified"},
-    "constraints.py": {"total": 72, "killed": 47, "survived": 23, "suspicious": 2, "status": "fully classified: 5 equivalent, 4 likely-fixed-pending-reverify, 9 defects fixed, 5 defects logged not yet fixed"},
-    "energy.py": {"total": 178, "killed": 104, "survived": 73, "suspicious": 1, "status": "3 defects fixed (1 confirmed killed via targeted re-check), majority unclassified"},
-    "router.py": {"total": 137, "killed": 105, "survived": 32, "status": "3 defects fixed, 1 confirmed equivalent (abs(-x)==abs(x), 2 IDs), 27 unclassified"}
+    "embedding_pgd.py": {
+      "total": 1,
+      "killed": 1,
+      "survived": 0,
+      "verified_by": "local",
+      "fixes_pending_reverification": 0,
+      "accepted_survivors": 0,
+      "status": "green, no fix needed"
+    },
+    "utils.py": {
+      "total": 9,
+      "killed": 9,
+      "survived": 0,
+      "verified_by": "local",
+      "fixes_pending_reverification": 0,
+      "accepted_survivors": 0,
+      "status": "green, no fix needed"
+    },
+    "models.py": {
+      "total": 1,
+      "killed": 1,
+      "survived": 0,
+      "verified_by": "local",
+      "fixes_pending_reverification": 0,
+      "accepted_survivors": 0,
+      "status": "green, no fix needed"
+    },
+    "capabilities.py": {
+      "total": 9,
+      "killed": 7,
+      "survived": 2,
+      "verified_by": "local",
+      "fixes_pending_reverification": 2,
+      "accepted_survivors": 0,
+      "status": "both survivors believed killed by an existing test (is False strict-identity assertion), not yet re-run"
+    },
+    "effort_qp.py": {
+      "total": 25,
+      "killed": 19,
+      "survived": 6,
+      "verified_by": "local",
+      "fixes_pending_reverification": 6,
+      "accepted_survivors": 0,
+      "status": "fully classified, fixes not yet re-run"
+    },
+    "boundary.py": {
+      "total": 44,
+      "killed": 35,
+      "survived": 9,
+      "verified_by": "CI (2026-07-20)",
+      "fixes_pending_reverification": 9,
+      "accepted_survivors": 0,
+      "status": "fully classified, fixes not yet re-run"
+    },
+    "predictors.py": {
+      "total": 22,
+      "killed": 15,
+      "survived": 7,
+      "verified_by": "local",
+      "fixes_pending_reverification": 7,
+      "accepted_survivors": 0,
+      "status": "fully classified, fixes not yet re-run"
+    },
+    "control.py": {
+      "total": 52,
+      "killed": 47,
+      "survived": 5,
+      "verified_by": "local",
+      "fixes_pending_reverification": 5,
+      "accepted_survivors": 0,
+      "status": "fully classified, fixes not yet re-run"
+    },
+    "pgd.py": {
+      "total": 137,
+      "killed": 118,
+      "survived": 19,
+      "verified_by": "CI (2026-07-21)",
+      "fixes_pending_reverification": 2,
+      "accepted_survivors": 17,
+      "status": "CI-verified; 17 confirmed equivalent; 2 real gaps found+fixed by a later local re-verification pass, not yet re-run through CI again"
+    },
+    "integrations/matbench_adapter.py": {
+      "total": 32,
+      "killed": 24,
+      "survived": 8,
+      "verified_by": "local",
+      "fixes_pending_reverification": 8,
+      "accepted_survivors": 0,
+      "status": "fully classified, fixes not yet re-run"
+    },
+    "integrations/materials_project_audit.py": {
+      "total": 72,
+      "killed": 69,
+      "survived": 3,
+      "verified_by": "local",
+      "fixes_pending_reverification": 3,
+      "accepted_survivors": 0,
+      "status": "added to scope this release, fixes not yet re-run"
+    },
+    "applications/fusion/diiid_adapter.py": {
+      "total": 72,
+      "killed": 63,
+      "survived": 9,
+      "verified_by": "local",
+      "fixes_pending_reverification": 9,
+      "accepted_survivors": 0,
+      "status": "added to scope this release, fixes not yet re-run"
+    },
+    "applications/fusion/eval_offline.py": {
+      "total": null,
+      "killed": null,
+      "survived": null,
+      "verified_by": "not tool-run (crashed twice; hardened by hand)",
+      "fixes_pending_reverification": null,
+      "accepted_survivors": null,
+      "status": "added to scope this release; 2 fixes + 1 equivalent found via direct code review, never confirmed by the mutation tool itself"
+    },
+    "coherence.py": {
+      "total": 55,
+      "killed": 43,
+      "survived": 12,
+      "verified_by": "local",
+      "fixes_pending_reverification": 11,
+      "accepted_survivors": 1,
+      "status": "of 12 survived: 1 (weight-clamp epsilon) already killed by an existing assertion, 1 (sample_weight rescale) confirmed equivalent, 10 real gaps fixed this pass -- all 11 non-equivalent IDs not yet re-run"
+    },
+    "symbolic.py": {
+      "total": 36,
+      "killed": 30,
+      "survived": 6,
+      "verified_by": "local",
+      "fixes_pending_reverification": 6,
+      "accepted_survivors": 0,
+      "status": "fully classified, fixes not yet re-run"
+    },
+    "security.py": {
+      "total": 49,
+      "killed": 35,
+      "survived": 14,
+      "verified_by": "local",
+      "fixes_pending_reverification": 14,
+      "accepted_survivors": 0,
+      "status": "fully classified, fixes not yet re-run"
+    },
+    "constraints.py": {
+      "total": 72,
+      "killed": 60,
+      "survived": 12,
+      "verified_by": "CI (2026-07-20/21)",
+      "fixes_pending_reverification": 6,
+      "accepted_survivors": 6,
+      "status": "CI-verified 12 survived (7 logged-not-fixed + 5 equivalent); 6 of the 7 logged IDs (42/47/50/54/64/69) fixed this pass via side-channel techniques, not yet re-run; 1 remains accepted-defensive (ID 62); plus the 5 confirmed equivalent = 6 accepted total"
+    },
+    "energy.py": {
+      "total": 178,
+      "killed": 172,
+      "survived": 6,
+      "verified_by": "CI (2026-07-20)",
+      "fixes_pending_reverification": 0,
+      "accepted_survivors": 6,
+      "status": "CI-verified, 6 confirmed equivalent"
+    },
+    "router.py": {
+      "total": 137,
+      "killed": 133,
+      "survived": 4,
+      "verified_by": "CI (2026-07-20 and 2026-07-21, twice)",
+      "fixes_pending_reverification": 0,
+      "accepted_survivors": 4,
+      "status": "CI-verified twice, 4 confirmed equivalent"
+    },
+    "metric.py": {
+      "total": 140,
+      "killed": 124,
+      "survived": 16,
+      "verified_by": "CI (2026-07-21)",
+      "fixes_pending_reverification": 7,
+      "accepted_survivors": 9,
+      "status": "CI-verified 16 survived (6 equivalent + 9 backtracking-loop + 1 (ID125) accepted-defensive); this pass fixed 7 of the 9 backtracking IDs and proved 1 (ID108) equivalent, not yet re-run; 1 (ID125) remains accepted-defensive"
+    }
   },
-  "aggregate": {
-    "total_mutants_with_real_data": 722,
-    "total_killed": 522,
-    "total_survived_or_suspicious": 200,
-    "note_on_aggregate": "This raw ratio (~72%) is not the release gate. The gate is: every survivor classified as equivalent/defect-fixed/defect-logged, with zero unclassified. constraints.py is the only file taken to that standard fully this session; the rest have at least one real defect found and fixed but are not exhaustively classified yet -- see MUTATION_HARDENING_STATUS.md."
-  }
+  "totals": {
+    "total_mutants": 1143,
+    "killed_as_run": 1005,
+    "survived_as_run": 138,
+    "of_survived_believed_fixed_pending_reverification": 95,
+    "of_survived_accepted_equivalent_or_defensive": 43,
+    "of_survived_genuinely_open": 0
+  },
+  "mutation_score_as_run": 0.8793,
+  "note_on_score": "mutation_score_as_run is the literal killed/total ratio from each file's last real tool run -- it does NOT credit this session's not-yet-reverified fixes, which is why it understates the current believed-true state. Do not read this figure as 100 percent mutation adequacy or cite it without the per_file breakdown alongside it.",
+  "accepted_defensive_survivors_detail": [
+    {
+      "file": "constraints.py",
+      "id": 62,
+      "reason": "m_star's own utility lookup default; plausibly defensive dead code, not confirmed either way -- see MUTATION_HARDENING_STATUS.md"
+    },
+    {
+      "file": "metric.py",
+      "id": 125,
+      "reason": "post-loop pragma-exempted (pragma: no cover - defensive fallback) boundary; reachability proven, exact >/>= boundary judged disproportionate effort -- see MUTATION_HARDENING_STATUS.md"
+    }
+  ]
 }

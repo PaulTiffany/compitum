@@ -1,0 +1,5 @@
+{
+  "command": "sphinx -n -W -b html docs docs_build/html",
+  "result": "build succeeded",
+  "warnings": 0
+}

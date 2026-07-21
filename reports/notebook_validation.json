@@ -1,0 +1,7 @@
+{
+  "command": "pytest --nbmake -q <13 supported release notebooks, see notebooks/MANIFEST.md>",
+  "total": 13,
+  "passed": 13,
+  "failed": 0,
+  "manifest": "notebooks/MANIFEST.md"
+}

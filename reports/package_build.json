@@ -1,0 +1,11 @@
+{
+  "dist/compitum-0.2.0-py3-none-any.whl": {
+    "sha256": "c3e0561012c0eda326f53ddde84e84cd8c1ddbd9ac122e75eb37094ae1c713c4",
+    "size": 39161
+  },
+  "dist/compitum-0.2.0.tar.gz": {
+    "sha256": "d5c82ac9df23933e0c3ca1bc39f7aed8578476795abe5863b454629be0d2d519",
+    "size": 75154
+  },
+  "twine_check": "PASSED (both)"
+}

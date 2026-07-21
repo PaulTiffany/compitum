@@ -1,6 +1,6 @@
 {
   "command": "pytest -m \"not routerbench and not heavy_bench\" -ra --maxfail=1 --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=100",
-  "passed": 348,
+  "passed": 350,
   "failed": 0,
   "skipped": 1,
   "deselected": 3,

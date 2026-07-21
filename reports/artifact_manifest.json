@@ -91,8 +91,8 @@
   },
   {
     "path": "reports/artifact_manifest.json",
-    "bytes": "16597",
-    "sha256": "139e276db2b3be8cd3fb6f9657712602cd63b058af298c6c1abc287b66b7d71f"
+    "bytes": "15375",
+    "sha256": "6bf7ecb875a7a3e83e55a61c8c72a92d55962b5a1793803225651f279725b322"
   },
   {
     "path": "reports/benchmarks_pytest.json",
@@ -116,8 +116,8 @@
   },
   {
     "path": "reports/coverage.json",
-    "bytes": "99236",
-    "sha256": "02ed42f3cf5996de1018b9827a96fb0f3c1de2780eeb98c245f1f0496b7754e3"
+    "bytes": "99830",
+    "sha256": "92990da245e3e651b1bb40821e77e4a0e3bbb2312f2500f7bb95478da265b410"
   },
   {
     "path": "reports/cr_report.json",
@@ -176,8 +176,18 @@
   },
   {
     "path": "reports/mutation_summary.json",
-    "bytes": "3261",
-    "sha256": "23f663f6ab688991a41a4d322f3ab2a397da4e5745dd8ee4c1d0d60b6e1bb03a"
+    "bytes": "8737",
+    "sha256": "62194864115d9e5cfba6b0c8aa656b19702ea999241a4b4dea9aa0383f1a6afd"
+  },
+  {
+    "path": "reports/notebook_validation.json",
+    "bytes": "188",
+    "sha256": "a2a770afc6565774e216d9e515cab95e99cb1f1dac87620580b70e8cfedb89d8"
+  },
+  {
+    "path": "reports/package_build.json",
+    "bytes": "334",
+    "sha256": "3a66516c33334c4dc89c22edcc4e6e115687522bd4540ff6dfe364e92d97f40c"
   },
   {
     "path": "reports/per_baseline_agreement.json",
@@ -221,8 +231,8 @@
   },
   {
     "path": "reports/release_attestation.json",
-    "bytes": "267614",
-    "sha256": "58e69c1b2112064ce871531f47ce3d37d7ee03ce4e3a93318271740e10ca50df"
+    "bytes": "268546",
+    "sha256": "28db55c859d01c749a09767ae53c730f1844774e84efa2e10b3e61690939d9d9"
   },
   {
     "path": "reports/report_20251017-0351.json",
@@ -253,6 +263,16 @@
     "path": "reports/report_release_pins.json",
     "bytes": "383",
     "sha256": "b116d9e6c263197234a935283aa139f7e36f35ed322f727ca7606a735971cb94"
+  },
+  {
+    "path": "reports/sphinx_build.json",
+    "bytes": "112",
+    "sha256": "9bacb7669b90902bea3bf1381e02295d57e3bd07105c1830686c3b76ddd72014"
+  },
+  {
+    "path": "reports/sphinx_linkcheck.json",
+    "bytes": "120",
+    "sha256": "35db5ed5dff5df0eb22d0eb0d2a8585e55c97e98410188b87dc894491cfb2d5d"
   },
   {
     "path": "reports/synth_bench_output.json",

@@ -1,0 +1,5 @@
+{
+  "command": "sphinx -b linkcheck docs docs_build/linkcheck",
+  "result": "build succeeded",
+  "broken_links": 0
+}
