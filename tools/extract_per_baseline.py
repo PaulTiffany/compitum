@@ -6,16 +6,19 @@ import pandas as pd
 p = sorted(glob.glob("data/rb_clean/eval_results/eval_results-eval-all-*-val_split.csv"))[-1]
 df = pd.read_csv(p)
 # Expect long format with columns: eval_name, model_name, performance, total_cost, embedding, fraction, willingness_to_pay
-# Separate compitum and baselines
-is_comp = df["model_name"].astype(str).str.startswith("compitum|")
-is_baseline = df["model_name"].astype(str).str.match(r"^(svm\||mlp\||knn\||cascading router\|)")
+# Separate compitum and baselines. model_name values are bare strings (e.g.
+# "compitum", "knn") -- a stale "name|variant" pipe-suffix convention here
+# never matched anything, silently making this script permanently report
+# "no comparable rows" regardless of what the actual eval data contained.
+is_comp = df["model_name"].astype(str) == "compitum"
+is_baseline = df["model_name"].astype(str).isin(["svm", "mlp", "knn", "cascading router"])
 comp = df[is_comp].copy()
 base = df[is_baseline].copy()
 
 # For each baseline type and WTP, compute agreement where compitum's performance >= baseline performance at same eval_name and WTP
 rows = []
 for base_type in ["svm", "mlp", "knn", "cascading router"]:
-    bsub = base[base["model_name"].str.startswith(base_type + "|")]
+    bsub = base[base["model_name"] == base_type]
     if bsub.empty:
         continue
     for w in sorted(bsub["willingness_to_pay"].dropna().unique()):

@@ -21,8 +21,13 @@ def main() -> int:
         for wtp_key in sorted(data.keys(), key=lambda x: float(x)):
             entry = data[wtp_key]
             mean_regret = format_ci_mid_low_high(entry.get("mean_regret", [0, 0, 0]))
+            # fixed_wtp_ci.py's _ci() returns (mid, low, high) -- indices 0/1/2,
+            # same order mean_regret uses above. This previously read index 1
+            # (low) as the displayed value and index 0 (the real mid) as the
+            # CI's lower bound, invisible only because every win_rate here
+            # happens to be 0.0 (low == mid == high == 0).
             win_rate_ci = entry.get("win_rate", [0, 0, 0])
-            win_rate = f"{win_rate_ci[1] * 100:.1f}% [{win_rate_ci[0] * 100:.1f}%, {win_rate_ci[2] * 100:.1f}%]"
+            win_rate = f"{win_rate_ci[0] * 100:.1f}% [{win_rate_ci[1] * 100:.1f}%, {win_rate_ci[2] * 100:.1f}%]"
             acd = entry.get("avg_cost_delta_on_wins")
             if acd is None or any(v is None for v in acd):
                 avg_cost_delta = "N/A"
