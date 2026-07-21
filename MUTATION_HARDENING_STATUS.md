@@ -1,5 +1,24 @@
 # Mutation Hardening Status
 
+**Update, day 5b: fast scoped re-verification confirms both corrections (2026-07-21).** Added
+`target_files`/`cr_quick` inputs to `mutation_dispatch.yml` (commit `923ce7c`) so a re-verification
+run can scope to just the files that changed instead of the full 17-file, ~1-2h sweep. Triggered a
+scoped run for `["metric.py","pgd.py"]` with `cr_quick=false` -- **complete in ~42 minutes** (vs.
+~90+ for the full matrix), and confirmed both of this session's corrections for real:
+
+- `metric.py`: 125/140 killed, exactly 15 survivors (9, 11, 13, 24, 98, 108, 109, 111-113, 122-125,
+  129 -- the 6 equivalents + 9 logged-not-fixed, ID 114 correctly absent). ID 90 is gone -- the
+  epsilon fix genuinely works.
+- `pgd.py`: 120/137 killed, exactly 17 survivors (13, 93, 108-110, 113, 116, 119, 122, 129-136 --
+  the full documented equivalent set). IDs 72 and 88 are gone -- both test corrections genuinely
+  work.
+
+This also incidentally confirmed the `summarize` job's missing-checkout fix (commit `5331263`):
+it completed successfully this run, for the first time.
+
+**Every fix and correction made this session is now CI-confirmed. No known open discrepancies
+remain in the 17-file shard matrix.**
+
 **Update, day 5: second full CI re-verification run complete (2026-07-21).** Triggered
 `mutation_dispatch.yml` a second time, specifically to re-verify `metric.py`, `pgd.py`, and
 `energy.py`'s newest fixes. Results:
@@ -383,22 +402,23 @@ the real run exposed -- see each file's "real-CI correction" note above). It als
   not a crash-only file. The "not worth pursuing" framing was wrong. **Now fully classified** (see
   its worked table above) -- 46 fixed, 16 equivalent. Not yet re-verified against a fresh CI run.
 
-**Every file in the 17-shard matrix is now fully classified, zero unclassified survivors, including
-both fronts this real CI run originally surfaced as open.** `pgd.py` was the last one. A second CI
-run (2026-07-21, see the day-5 update at the top of this file) re-verified `router.py`,
-`constraints.py`, `security.py`, `matbench_adapter.py`, and `boundary.py` as stable, and caught 4
-more real classification errors in `metric.py` (IDs 90, 114) and `pgd.py` (IDs 72, 88) -- all
-corrected. Priority for a future session:
+**Every file in the 17-shard matrix is now fully classified, zero unclassified survivors, and every
+fix/correction made this session is CI-confirmed.** `pgd.py` was the last file to get classified. A
+second full CI run (2026-07-21) re-verified `router.py`, `constraints.py`, `security.py`,
+`matbench_adapter.py`, and `boundary.py` as stable, and caught 4 more real classification errors in
+`metric.py` (IDs 90, 114) and `pgd.py` (IDs 72, 88). A third, fast, *scoped* run (`target_files:
+["metric.py","pgd.py"]`, `cr_quick: false`, ~42 min instead of ~90+) confirmed both corrections work
+for real -- see the day-5b update at the top of this file. Remaining priorities for a future
+session:
 
-1. `metric.py`'s 90 fix and `pgd.py`'s 72/88 test corrections have *not themselves* been
-   re-verified by a subsequent CI run yet (they were fixed locally in response to the second run's
-   findings, after which no third run was triggered). A third run would close that loop -- though
-   given this session's demonstrated 2-for-2 track record of local-only fixes needing a real-CI
-   catch, treat that as expected due diligence, not paranoia.
-2. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
-   that's still SURVIVED, or an "equivalent" that's actually KILLED for a reason not yet understood),
-   treat that as a real finding to investigate, not noise -- every classification here was made
-   without a working fresh sweep to check against.
+1. Nothing is currently known-unverified. If a fresh CI run turns up any classification that
+   doesn't hold (e.g. a "defect fixed" survivor that's still SURVIVED, or an "equivalent" that's
+   actually KILLED for a reason not yet understood), treat that as a real finding to investigate,
+   not noise -- this session's history (5 real classification errors caught across 3 runs) shows
+   it's a genuine, recurring risk, not a hypothetical one.
+2. Use the new `target_files`/`cr_quick` dispatch inputs for future re-verification passes -- scope
+   to just the file(s) that changed rather than re-running the full matrix, unless specifically
+   trying to catch cross-file regressions.
 
 ## CI-side changes made this session (informed by this data)
 
