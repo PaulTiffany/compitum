@@ -71,40 +71,40 @@ def test_extract_features_comprehensive_exact_values():
     prompt = (
         "Prove the theorem. Solve this lemma. See the proof, please; consider it.\n"
         "x^2^3_a_b_c and $y+z$ or \\frac{a}{b}.\n"
-        "```python\ndef f(x):\n    if x: return x\n```\n"
+        "```python\ndef f(x):\n    if x: return x\n    for y in range(1): pass\n```\n"
         "This uses python language. SELECT * FROM t; import os; class Foo: def bar(self): pass\n"
-        "alpha beta gamma delta epsilon zeta eta theta quantum"
+        "a bb ccc dddd eeeee ffffff ggggggg iiiiiiiii"
     )
     out = rx.extract_features(prompt)
     expected = np.array(
         [
-            8.166666984558105,
-            6.094168663024902,
+            8.833333015441895,
+            6.59334659576416,
             6.0,
             1.0,
             3.0,
-            293.0,
+            312.0,
             1.0,
             1.0,
             2.0,
-            2.0,
+            3.0,
             5.0,
             1.0,
             1.0,
             1.0,
             1.0,
             2.0,
+            2.0,
+            13.0,
             1.0,
-            11.0,
             1.0,
             1.0,
-            1.0,
-            138.0,
-            2.875,
-            2.2232203483581543,
-            46.0,
+            152.0,
+            2.923076868057251,
+            2.25188946723938,
             49.0,
-            10.0,
+            53.0,
+            11.0,
             0.0,
             0.0,
             0.0,
