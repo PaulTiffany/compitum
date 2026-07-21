@@ -7,6 +7,14 @@ on:
         description: 'Enable CR gating (advisory artifacts still produced)'
         required: false
         default: 'false'
+      target_files:
+        description: 'JSON array of filenames to scope the mutmut sweep to (e.g. ["metric.py","pgd.py"]); empty = full 17-file matrix'
+        required: false
+        default: ''
+      cr_quick:
+        description: 'Also run the secondary Cosmic Ray quick-check shards (much slower, advisory only -- leave off for a fast mutmut-only re-verification)'
+        required: false
+        default: 'true'
   schedule:
     # Weekly, not daily: the full mutmut+Cosmic Ray sweep is real compute even
     # though this repo's public-repo Actions minutes are free. PRs labeled
@@ -38,9 +46,13 @@ jobs:
     uses: ./.github/workflows/mutation.yml
     with:
       mutmut: true
-      cr_quick: true
+      # Schedule runs always include the CR quick-check; manual dispatches can
+      # skip it (default on, to preserve prior behavior) for a fast mutmut-only
+      # re-verification run.
+      cr_quick: ${{ github.event_name != 'workflow_dispatch' || inputs.cr_quick == 'true' }}
       cr_gate: ${{ inputs.strict == 'true' }}
       cr_score_threshold: '1.0'
+      target_files: ${{ inputs.target_files }}
     secrets: inherit
 
   summarize:
