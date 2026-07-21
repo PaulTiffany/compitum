@@ -14,8 +14,8 @@ Compitum plays nicely with LLMs by emitting structured JSON certificates and by 
 curl -fsSL https://raw.githubusercontent.com/PaulTiffany/paleae/main/paleae.py -o paleae.py
 python paleae.py --profile ai_optimized \
   --include "^src/compitum/" \
-  --include "^(README|PHILOSOPHY|ACCESSIBILITY|SECURITY|CONTRIBUTING|SUPPORT|CHANGELOG)\.md$" \
-  --include "^docs/(Getting-Started|CLI|Invariants|Philosophy|API-Reference|LLM-Usage)\.md$"
+  --include "^(README|PHILOSOPHY|SECURITY|CONTRIBUTING|SUPPORT|CHANGELOG)\.md$" \
+  --include "^docs/(Getting-Started|CLI|Invariants|Philosophy|API-Reference|LLM-Usage|ACCESSIBILITY)\.md$"
 ```
 
 Tip: Add exclusions to `.paleaeignore` to skip caches/artifacts: `.venv*`, `__pycache__/`, `.pytest_cache/`, `.ruff_cache/`, `.mypy_cache/`, `.hypothesis/`, `data/`, `artifacts/`, `reports/`.
@@ -28,7 +28,7 @@ Tip: Add exclusions to `.paleaeignore` to skip caches/artifacts: `.venv*`, `__py
 - `src/compitum/boundary.py:1` — tie/boundary diagnostics
 - `src/compitum/control.py:1` — trust region and drift
 - `PHILOSOPHY.md:1` — instantaneous RL, geometry, constraints
-- `ACCESSIBILITY.md:1` — a11y standards for docs and outputs
+- `docs/ACCESSIBILITY.md:1` — a11y standards for docs and outputs
 
 ## Traces for Verification
 

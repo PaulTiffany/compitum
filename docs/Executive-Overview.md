@@ -28,15 +28,19 @@ Why it’s different
 
 Results (high level)
 
-- Per‑baseline wins at fixed WTP slices (0.1, 1.0) on a bounded panel; detailed per‑task summaries available.
-- Frontier gap is small with frequent “at‑frontier” cases; 95% bootstrap CIs included.
+- Mean regret at fixed WTP slices (0.1, 1.0) on a bounded panel is the primary claim (see
+  {doc}`PEER_REVIEW` for exact figures and per‑task breakdown); envelope win rate is reported as
+  illustrative secondary context, not a pass/fail bar, and is expected to be low on this kind of
+  flat, one‑shot benchmark data (see PEER_REVIEW's Methodological Limitation note).
 - Constraint compliance ~100% by design.
 
 Ethics and Reproducibility
 
 - Offline, deterministic pipeline with fixed seeds; no judge‑based model calls.
 - Licensed inputs only; we do not redistribute proprietary datasets. Artifacts are local with SHA‑256 manifest.
-- 100% line+branch coverage; mutation score 1.0; lint/type/security checks are clean. Docs build warning‑free.
+- 100% line+branch coverage; every release-critical module fully mutation-classified with only 2
+  accepted, documented defensive survivors remaining (see `MUTATION_HARDENING_STATUS.md`); lint/type/security
+  checks are clean. Docs build warning‑free.
 
 How to try (Windows one‑shot)
 

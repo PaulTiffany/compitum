@@ -55,7 +55,7 @@ python tools\analysis\reliability_curve.py ^
 
 - Shadow price diagnostics behave as expected: slack~0 when clearly non-binding; boundary>=0; monotone near binding; scale with utility units.
   - Tests: `tests/invariants/test_invariants_constraints_duals.py`, `tests/invariants/test_invariants_duals_near_binding.py`, `tests/invariants/test_invariants_duals_monotone.py`, `tests/invariants/test_invariants_duals_scaling.py`
-\r\n- Constraints: linear feasibility Ax_B ≤ b enforced before selection; selection is argmax_U among feasible models; see src/compitum/constraints.py:36.
+- Constraints: linear feasibility Ax_B ≤ b enforced before selection; selection is argmax_U among feasible models; see src/compitum/constraints.py:36.
 - Shadow prices: approximate local signals computed via finite‑difference feasibility/viability; reported for auditing; not used to drive selection (i.e., not KKT duals).
 
 ## Multiple Comparisons and Pre‑registration

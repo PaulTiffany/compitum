@@ -31,7 +31,7 @@ Example (verified live run, `compitum route --prompt "..." --trace`)
   "drift": {"trust_radius": 1.088503, "drift_ema": 0.229943, "drift_integral": 2.184457, "lyapunov_function": 4.771852},
   "pgd_signature": "eff8b649c985f166",
   "timestamp": 1784341869.07,
-  "router_version": "0.1.1"
+  "router_version": "0.2.0"
 }
 ```
 

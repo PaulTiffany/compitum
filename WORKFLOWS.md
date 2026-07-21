@@ -21,7 +21,7 @@ This repository uses a small set of focused GitHub Actions workflows. Names and 
 - Stability: concurrency on Pages; least-privileged permissions
 
 ## Validation: Full
-- Name: `Validation: Full`
+- Name: `Validation Full`
 - Triggers: workflow_dispatch, schedule (daily)
 - What it does:
   - Installs minimal deps for core tasks

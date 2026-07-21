@@ -24,7 +24,7 @@ Privacy & Data Handling
 Security Posture
 
 - Offline by default: no judge calls; scripts do not auto-fetch datasets.
-- Integrity: mutation testing (score 1.0), 100% line+branch coverage, lint/type/security checks (ruff/mypy/bandit) are clean; docs build without warnings.
+- Integrity: mutation testing — every release-critical module fully classified, with only 2 documented, accepted defensive survivors remaining across the matrix (see `MUTATION_HARDENING_STATUS.md`); 100% line+branch coverage; lint/type/security checks (ruff/mypy/bandit) are clean; docs build without warnings.
 - Supply chain: versions pinned in `pyproject.toml`; optional SBOM and lock snapshot targets (`make sbom`, `make lock`). Packaging excludes `*.mp4` and `*.sqlite`.
 - Secrets hygiene: `.gitignore` patterns and optional local secrets scanning (see CONTRIBUTING).
 

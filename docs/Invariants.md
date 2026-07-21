@@ -48,11 +48,15 @@ pytest -q tests/invariants
 ## Mutation-Hardening Coverage (Boundary & Edge-Case Invariants)
 
 A separate category from the property-based suite above: exact-value and boundary-condition
-invariants found via a real mutmut sweep across the full `src/compitum` shard matrix (16/17 files
-run to completion; see `MUTATION_HARDENING_STATUS.md` for per-file scores). Each line below was a
-genuine survivor -- an existing test exercised the code path but didn't pin down the exact value or
-boundary needed to actually kill a behavioral mutation -- confirmed against real code before the
-fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
+invariants found via a real mutmut sweep across the full `src/compitum` shard matrix (20 files in
+scope -- the original 17 plus `integrations/materials_project_audit.py`,
+`applications/fusion/diiid_adapter.py`, and `applications/fusion/eval_offline.py`; see
+`MUTATION_HARDENING_STATUS.md` for per-file scores). Every release-critical module is now fully
+classified, with only 2 accepted, documented defensive survivors remaining across the whole matrix
+(`constraints.py` ID 62, `metric.py` ID 125). Each line below was a genuine survivor -- an existing
+test exercised the code path but didn't pin down the exact value or boundary needed to actually kill
+a behavioral mutation -- confirmed against real code before the fix, and in `energy.py`'s case
+confirmed killed against the real mutant diff.
 
 - `effort_qp.py`: `e_star` resolves to `0.0` (not `1.0`) exactly at the `grad == 0` boundary; q1/t1/c1
   multiplier terms are exercised with non-unity values; `lambda_high`'s `max(0.0, grad)` floor is

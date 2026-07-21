@@ -7,7 +7,7 @@ Baseline
 
 How We Run RouterBench (Upstream)
 
-- Wrapper: `tools/run_routerbench_clean.py` (invoked by `scripts/run_routerbench_clean.bat`).
+- Wrapper: `tools/run_routerbench_clean.py`, invoked directly with Python (also orchestrated via `tools/ci_orchestrator.py --bench-routerbench`).
   - Suppresses tokencost stdout warnings.
   - Standardizes token counts via tiktoken with `cl100k_base` fallback.
   - On Windows, fixes unsafe filename characters in per-eval CSV save.
@@ -16,13 +16,13 @@ How We Run RouterBench (Upstream)
 Fast Config
 
 - Config: `data/rb_clean/evaluate_routers.yaml`
-- Run: `scripts\run_routerbench_clean.bat --config=data/rb_clean/evaluate_routers.yaml --local`
+- Run: `python tools\run_routerbench_clean.py --config=data/rb_clean/evaluate_routers.yaml --local`
 
 Compitum Evaluation
 
 - Our router remains in `src/compitum`. Adapter lives outside RouterBench at `tools/routerbench/routers/compitum_router.py`.
-- Driver: `tools/evaluate_compitum.py` (invoked by `scripts/run_compitum_eval.bat`).
-- Run: `scripts\run_compitum_eval.bat --config=data/rb_clean/evaluate_routers.yaml`
+- Driver: `tools/evaluate_compitum.py`, invoked directly with Python (also orchestrated via `tools/ci_orchestrator.py --bench-compitum`).
+- Run: `python tools\evaluate_compitum.py --config=data/rb_clean/evaluate_routers.yaml`
 
 Outputs
 
@@ -37,12 +37,12 @@ Tokenization Policy
 
 Diff Against Upstream
 
-- Full diff of prior forked changes exists at `src/routerbench/DIFF_WITH_UPSTREAM.patch` (archival reference). Final runs do not rely on these changes.
+- `src/routerbench` is a git submodule pinned to the upstream commit above; we do not carry a local patch/fork against it. Any behavior changes are applied via the external wrapper scripts described above, not by editing the submodule in place.
 
 One-Command Report
 
 - End-to-end (tests + both benchmarks + HTML report):
-- `scripts\run_full_report.bat`
+- `scripts\run_peer_review.bat` (wraps `python tools/ci_orchestrator.py --all --config=data/rb_clean/evaluate_routers.yaml --report-out=reports/report_release.html`)
 - Output report path is printed at the end, under `reports/`.
 
 Individual Steps

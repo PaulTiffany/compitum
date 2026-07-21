@@ -16,7 +16,9 @@ Logging (Structured)
   - `constraints.feasible`, `constraints.shadow_prices`
   - `boundary_analysis.gap`, `boundary_analysis.entropy`, `boundary_analysis.sigma`
   - `drift_status.trust_radius`, `drift_status.ema`
-- Example: see `examples/cert_to_logging.py`.
+- Example: run the CLI with `--trace` to print each decision's `cert.to_json()`, or see
+  `examples/certificate_card.py` for a worked example that builds a router and renders a
+  certificate's fields programmatically.
 
 Metrics (Suggested)
 
@@ -75,5 +77,5 @@ References
 - {doc}`Certificate-Schema`
 - {doc}`PEER_REVIEW` (Routing Certificate)
 - {doc}`Panel-Summary`
-- `examples/cert_to_logging.py`
+- `examples/certificate_card.py`
 

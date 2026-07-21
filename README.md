@@ -39,7 +39,7 @@ Quick run:
 pytest
 ```
 
-CI‑parity run (mirrors CI markers):
+CI‑parity run (mirrors CI deselections and markers):
 
 ```bash
 make test-ci
@@ -132,7 +132,7 @@ The project maintains a rigorous, deterministic testing program.
 *   **Mutation Profile:** For mutation testing with `mutmut`/`cosmic-ray`, a dedicated `HYPOTHESIS_PROFILE=mutation_ci` is used via `scripts/cr_pytest.sh`. This allows for a different number of examples to balance thoroughness and speed.
 *   **Invariants Suite:** A dedicated property-based test suite in `tests/invariants/` validates the core mathematical and operational invariants of the system. These tests are marked with `@pytest.mark.invariants`.
 
-Locally, `make check` runs lint + mypy + bandit + tests, and `make test-ci` mirrors CI's test selection. Mutation testing itself is advisory and dispatch/label-gated, not part of local `make check` — see `WORKFLOWS.md` for how to trigger the `Mutation Dispatcher`/`Mutation PR Label` workflows, or run `bash scripts/cr_pytest.sh` directly against a local `cosmic-ray` session.
+Locally, `make check` runs lint (`ruff check .`) + `mypy -p compitum --ignore-missing-imports --hide-error-context` + `bandit` + `pytest`; CI additionally runs `mypy --strict --disable-error-code no-any-return src/compitum` and `ruff format --check` as separate jobs. All of these currently pass clean. Mutation testing itself is advisory and dispatch/label-gated, not part of local `make check` — see `WORKFLOWS.md` for how to trigger the `Mutation Dispatcher`/`Mutation PR Label` workflows, or run `bash scripts/cr_pytest.sh` directly against a local `cosmic-ray` session.
 
 ## Export Control
 
@@ -189,7 +189,7 @@ For fast evaluation, it's crucial to pre-train the `CalibratedPredictor` models 
 Run the `pretrain_predictors.py` script using the `routerbench` virtual environment:
 
 ```bash
-set PYTHONPATH=C:\Users\paulc\projects\compitum\src && .\.venv-routerbench\Scripts\python.exe -m scripts.pretrain_predictors
+set PYTHONPATH=%CD%\src && .\.venv-routerbench\Scripts\python.exe -m scripts.pretrain_predictors
 ```
 
 This will save the pre-trained predictors to `data/pretrain_predictors/predictors_all-MiniLM-L12-v2_0.1.joblib`.
@@ -199,7 +199,7 @@ This will save the pre-trained predictors to `data/pretrain_predictors/predictor
 Execute the `evaluate_routers.py` script as a module within the `routerbench` package. This command will run the full evaluation and generate the results.
 
 ```bash
-set PYTHONPATH=C:\Users\paulc\projects\compitum\src && .\.venv-routerbench\Scripts\python.exe -m routerbench.evaluate_routers --config data\routerbench\evaluate_routers.yaml --local --data-path routerbench_5shot.pkl
+set PYTHONPATH=%CD%\src && .\.venv-routerbench\Scripts\python.exe -m routerbench.evaluate_routers --config data\routerbench\evaluate_routers.yaml --local --data-path routerbench_5shot.pkl
 ```
 
 This command will generate CSV and PKL files in the `data/eval_results` directory, containing the evaluation metrics for various router models.

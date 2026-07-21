@@ -14,7 +14,7 @@ We will acknowledge receipt within 3 business days and aim to provide an initial
 
 ## Supported Versions
 
-- Stable: 0.1.x (security fixes considered)
+- Stable: 0.2.x (security fixes considered)
 - Older versions: best‑effort only
 
 ## Scope
