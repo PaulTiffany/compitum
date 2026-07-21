@@ -80,7 +80,10 @@ jobs:
             mkdir -p site_out/media/reviewed
             cp media/reviewed/*.svg site_out/media/reviewed/ 2>/dev/null || true
           fi
-          # Tess video is hosted externally (Sora); no local binary needed
+          # Tess video (assets/tess.mp4, generated with Sora 2 -- see docs/Media.md
+          # for provenance) is a real, git-tracked local asset copied by the
+          # `assets` copy step above; it was briefly served externally in an
+          # earlier revision, but that is no longer how it's deployed.
           # Provide root-level Examples redirect if present
           if [ -f Examples.html ]; then cp Examples.html site_out/Examples.html; fi
           # Publish reports (static HTML/JSON/CSV) under /reports
