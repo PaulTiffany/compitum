@@ -1,5 +1,75 @@
 # Mutation Hardening Status
 
+**Update, day 7: bounded scope-expansion sprint -- 3 files added to the matrix (2026-07-21).** With
+the 17-file matrix down to just two accepted defensive survivors (`constraints.py` ID 62,
+`metric.py` ID 125), audited the rest of `src/compitum` for behavior-bearing modules that were
+covered (100% line+branch, per the `fail_under=100` gate) but never mutation-tested. Selected 3:
+`integrations/materials_project_audit.py` (a 3-way phase classifier plus threshold-based
+candidate selection), `applications/fusion/diiid_adapter.py` (CSV validation, column-mapping,
+crash-index detection), and `applications/fusion/eval_offline.py` (alarm-latch state machine,
+lead-time arithmetic). Declined `cli.py` (thin argparse wiring over already-tested classes) and
+`plasma_monitor.py`/`sc_monitor.py` (real branching, but near-duplicate wrappers whose numeric
+core is already exhaustively tested via `metric.py`/`control.py` -- flagged as a future candidate,
+not folded into this bounded pass).
+
+Ran local `mutmut` against the 3 selected files (Windows, since remote CI is off-limits this
+sprint). Results and two new tooling findings, both confirmed by direct simulation rather than
+taken on faith:
+
+- `materials_project_audit.py`: 72 mutants, 3 reported survivors (3, 5, 73). ID 3 (the
+  `drift == bias` boundary in `current_phase()`) was a genuine gap -- fixed. IDs 5 and 73 turned
+  out to be **false survivors**: direct simulation confirmed existing tests (the loose
+  `map_material_to_srmf` "in {phase set}" check, and the drift/constraint tie test) already kill
+  both mutants for real; `mutmut --use-coverage`'s test-selection heuristic simply failed to
+  credit them. Added 4 new tests anyway (exact `"drift"`/`"constraint"` assertions and both
+  tie-boundary cases) so future runs don't depend on that heuristic working correctly.
+- `applications/fusion/diiid_adapter.py`: 9 survivors (5, 8, 12, 14, 17, 19, 29, 33, 34), all
+  genuine -- `load_shot_csv` had zero dedicated tests before this pass (only indirect coverage via
+  `eval_offline`'s round-trips, which always supplied every column). Fixed with 6 new tests
+  (default `state_dim`, exact column mapping, missing-column error message, zero-fill of optional
+  columns, and the crash-threshold/first-index boundaries), each confirmed to kill its target
+  mutant by direct `mutmut apply` + test-run verification.
+- `applications/fusion/eval_offline.py`: local `mutmut run` was killed by the environment twice
+  (no survivor data recovered either time -- see "Known local-tooling issues" below). Rather than
+  claim a run that didn't finish, hardened this file the same way pre-mutmut sessions handled
+  files before automation existed: direct code+test review found two real gaps (the exact
+  lead-time arithmetic was only ever checked as `> 0`, never the precise value; the first-alarm
+  latch was only exercised indirectly, never proven to *stay* on the first index rather than the
+  last). Fixed both, each confirmed by manually simulating the specific mutation
+  (`-`->`+`, swapped indices, `and`->`or`) against the new test. Also found, via the same direct
+  method, that `lead_time_from_q_threshold`'s `alarm_idx >= crash_idx` is a **genuine equivalent
+  mutant**: at the one point `>=` and `>` disagree (exact equality), the `>` variant falls through
+  to `time_ms[crash_idx] - time_ms[alarm_idx]` with `crash_idx == alarm_idx`, which is always
+  exactly `0.0` -- identical to the early-return value. Not chased further.
+
+**Known local-tooling issues (Windows-specific, worth recording so they aren't re-discovered from
+scratch next time):**
+1. `mutmut run` reliably leaves the *last-checked* mutant applied on disk if the run reaches its
+   final mutant without an intervening one (observed 3 times this pass, across 2 different files;
+   also observed in earlier sessions). Always `git status --short src/` and `git checkout --` the
+   affected file immediately after any local mutmut run, before trusting or acting on results.
+2. `pytest --cov=<dotted.submodule.path>` crashes with `ValueError: _CopyMode.IF_NEEDED is neither
+   True nor False` (a numpy-reloaded-twice artifact) when the targeted submodule imports `pandas`
+   -- reproduced consistently for both fusion modules. Whole-package `--cov=compitum` does not
+   trigger it and still reports accurate per-file coverage. Prefer whole-package coverage over a
+   narrow dotted target when the target imports pandas.
+3. Backgrounding `mutmut run` via a shell `&` *inside* an already-backgrounded tool call orphans
+   the process (it keeps running, invisible, holding the `.mutmut-cache` SQLite lock, and the
+   apparent "0 survivors" result from the foreground call is actually just an empty/stale read).
+   Let the tool's own backgrounding manage the process; don't double-background.
+4. `mutmut --use-coverage`'s test-selection can under-select and falsely report "survived" for a
+   mutant an existing test already kills (see IDs 5/73 above) -- always verify a handful of
+   reported survivors directly (simulate the mutation in Python, or `mutmut apply` + run the
+   specific test file) before writing a new test to "fix" something that isn't actually broken.
+5. On this file class, `mutmut run` was twice killed by the environment before producing any
+   survivor data (`eval_offline.py`). No root cause identified; the file was hardened via direct
+   code review and manual mutation simulation instead, which is the same rigor standard applied to
+   every other real gap in this document.
+
+The mutmut shard matrix (`.github/workflows/mutation.yml`) now includes these 3 files (20 total),
+so future scheduled/dispatched runs cover them going forward -- not run this sprint, per the
+"no remote mutation CI" constraint.
+
 **Update, day 6: `metric.py`'s last 9 logged-not-fixed survivors resolved (2026-07-21).** Per
 explicit instruction to keep closing testable survivors, revisited the backtracking-loop `bt`-
 counter/boundary mutants (108, 109, 111, 112, 113, 122, 123, 124, 125) previously deferred as
@@ -210,6 +280,9 @@ when it was generated.** Any other file's "phantom ID" classifications in this d
 | `control.py` | 52 | 47 | 5 | 0 | **Fully classified this pass.** 2 of 5 (`>`->`>=`, `<`->`<=` at the EMA thresholds) were already killed by the existing `32d92fa` exact-threshold test (undercounted as "1 of 5" before). 3 real gaps fixed: `kappa`/`r0` constructor defaults were never exercised (every test passes them explicitly), and the `eta_cap` epsilon's existing check uses `grad_norm=2.0` where the epsilon is too small a relative perturbation for `np.isclose`'s default tolerance to catch a 2x change in it. Zero unclassified. |
 | `pgd.py` | — | — | — | — | **Crashed** -- real Windows-only bug in mutmut itself (`cache.py`'s `update_line_numbers` opens files via the system cp1252 locale, not UTF-8; unrelated to compitum code). CI runs on `ubuntu-latest`, so this specific crash is very unlikely to recur there. |
 | `integrations/matbench_adapter.py` | 32 | 24 | 8 | 0 | **Fully classified this pass.** 30 (label value replaced with `None`) was already killed by the existing `721a8b1` exact-value assertion. Real gaps: 2/3/4 (dataclass field defaults `None`->`""`, both falsy everywhere they're used -- fixed with direct `is None` attribute checks) and 8/11/14/17 (all four error messages wrapped in extra text still contain the substring `pytest.raises(match=...)` was searching for, since `match` does an unanchored `re.search` -- fixed by asserting the exact full message string instead). Zero unclassified. |
+| `integrations/materials_project_audit.py` | 72 | 69 | 3 | 0 | **Added to scope and fully classified (2026-07-21, local mutmut).** 1 real gap (ID 3, the `drift == bias` boundary in `current_phase()` -- fixed). IDs 5 and 73 were false survivors: existing tests already kill both, confirmed by direct simulation; `--use-coverage`'s test-selection just missed crediting them (added 4 explicit tests regardless). Zero unclassified. Not yet CI-verified. |
+| `applications/fusion/diiid_adapter.py` | 72 | 63 | 9 | 0 | **Added to scope and fully classified (2026-07-21, local mutmut).** All 9 survivors were genuine gaps -- `load_shot_csv` had no dedicated tests before this pass. Fixed with 6 new tests (default `state_dim`, exact Te_core/ne/q_min column mapping, exact missing-column error message, zero-fill of optional columns, crash-threshold strictness, first-crash-index selection), each confirmed to kill its target mutant via direct `mutmut apply` + test-run verification. Zero unclassified. Not yet CI-verified. |
+| `applications/fusion/eval_offline.py` | — | — | — | — | **Added to scope; local mutmut run was killed by the environment twice, no survivor data recovered.** Hardened via direct code+test review instead (2 real gaps: the exact lead-time arithmetic, and the first-alarm latch's "stays on first, not last" semantics -- both fixed, each confirmed by manually simulating the specific mutation). Also found one genuine equivalent mutant this way (`alarm_idx >= crash_idx`'s boundary -- see prose above). Not yet run to completion locally or in CI; treat as reviewed-by-hand, not mutation-confirmed. |
 | `coherence.py` | 55 | 43 | 12 | 0 | **Fully classified this pass.** 8 (weight-clamp epsilon `1e-6`->`2e-6`) was already killed by the existing `683e041` exact-value assertion. 36 (`sample_weight=w/w.sum()`->`w*w.sum()`) is a confirmed equivalent mutant -- sklearn's `KernelDensity.fit` internally renormalizes `sample_weight`, so any positive scalar rescaling produces bit-identical results up to ~1e-15 floating-point noise (verified empirically). 10 real gaps fixed: `WeightedReservoir`/`CoherenceFunctional`'s untested `k=1000` defaults, the `j < k` vs `<= k` boundary at `j == k` exactly, Scott's-rule bandwidth's exact value (sign/denominator mutations), and the `log_evidence`/`batch_log_evidence` clip bounds (never naturally exceeded by realistic KDE scores, so tested via a mocked KDE forcing extreme scores). Zero unclassified. |
 | `symbolic.py` | 36 | 30 | 6 | 0 | **Fully classified this pass.** 9 (`*`'s custom `latex_op`) was already killed by the existing `e2743f0` exact-latex assertion (undercounted as covering 3 -- it only covered `*`; `+`/`@` had no latex_op mutants to begin with). Real gaps fixed: 2/36 (`TypeError`/`ValueError` messages, `pytest.raises` without `match=` doesn't check text at all), 5 (`@abstractmethod` removal -- no test ever attempted to instantiate `SymbolicValue` directly), 11/13 (`__matmul__`'s empty `latex_op` and `SymbolicMatrix.T`'s `f"{name}^T"` label, neither ever checked via `to_latex()`/`.name`, only `.evaluate()`). Zero unclassified. |
 | `security.py` | 49 | 35 | 14 | 0 | **Fully classified this pass** -- see worked table above. All genuine defects fixed (batched, 4 new tests); 2 confirmed equivalent. Zero unclassified. |

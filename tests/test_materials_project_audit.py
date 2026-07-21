@@ -18,6 +18,36 @@ def test_current_phase_tie_falls_to_bias():
     assert s.current_phase() == "bias"
 
 
+def test_current_phase_drift_dominant():
+    """No existing test ever asserted `current_phase()` actually returns
+    "drift" -- only a loose `in {"drift", "constraint", "bias"}` check
+    elsewhere, which can't distinguish the real label from e.g. a typo'd
+    one."""
+    s = SRMFState(drift=5.0, constraint=1.0, bias=1.0)
+    assert s.current_phase() == "drift"
+
+
+def test_current_phase_constraint_dominant():
+    """No existing test ever exercised the "constraint" branch at all."""
+    s = SRMFState(drift=1.0, constraint=5.0, bias=1.0)
+    assert s.current_phase() == "constraint"
+
+
+def test_current_phase_drift_equals_bias_falls_through():
+    """`self.drift > self.bias` was never exercised at exact equality --
+    with `drift > constraint` but `drift == bias`, the phase must fall all
+    the way through to "bias", not "drift"."""
+    s = SRMFState(drift=5.0, constraint=1.0, bias=5.0)
+    assert s.current_phase() == "bias"
+
+
+def test_current_phase_constraint_equals_bias_falls_through():
+    """Same boundary as above, mirrored for the "constraint" branch's own
+    `self.constraint > self.bias` check."""
+    s = SRMFState(drift=1.0, constraint=5.0, bias=5.0)
+    assert s.current_phase() == "bias"
+
+
 def test_map_material_to_srmf_handles_none():
     doc = SimpleNamespace(band_gap=None, density=None, nsites=None, formation_energy_per_atom=None)
     s = map_material_to_srmf(doc)

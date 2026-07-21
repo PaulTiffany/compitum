@@ -167,6 +167,21 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   to `0.0`; the `len(w) > 6` "long word" boundary is exercised at exactly 6 characters; `"class " in
   prompt or "def " in prompt` is exercised with each operand isolated (both, neither, and each alone)
   — `tests/pgd/test_regex_prompt_extractor.py`
+- `integrations/materials_project_audit.py`: `SRMFState.current_phase()`'s three-way classification
+  asserts exact `"drift"`/`"constraint"` labels (not just membership in a loose set) and is exercised
+  at both tie boundaries (`drift == bias`, `constraint == bias`, each falling through to `"bias"`) —
+  `tests/test_materials_project_audit.py`
+- `applications/fusion/diiid_adapter.py`: `load_shot_csv()`'s required-column check raises its exact
+  message (not just a substring), the default `state_dim` is exercised, Te_core/ne/q_min map into
+  state columns 0/1/2 exactly (distinct per-column values catch swaps or renamed lookups), missing
+  optional columns zero-fill, and the crash-index threshold (`q_min < 1.0`, first index only) is
+  exercised at exact equality and with multiple below-threshold samples —
+  `tests/applications/test_diiid_adapter_options.py`
+- `applications/fusion/eval_offline.py`: `lead_time_from_q_threshold()`'s positive-lead-time
+  arithmetic is pinned to its exact value (non-uniform `time_ms` spacing rules out a coincidental
+  match), and `compute_alarm_series()`'s first-alarm latch is proven to stay on the first alarming
+  index rather than a later one, via a canned monitor replaying a fixed alarm/no-alarm sequence —
+  `tests/applications/test_fusion_offline_eval.py`
 
 Known true equivalent mutants (not gaps):
 - `d_best = abs(-comps[...]["distance"])` — appears 3 times (`route()`'s metric-update branch,
@@ -230,3 +245,8 @@ Known true equivalent mutants (not gaps):
   immediately after being unconditionally assigned the *same* value the `.get()` default uses, so
   renaming either the assignment's key or the read's key, or changing the read's default, all fall
   through to a value that coincidentally equals what would have been produced anyway.
+- `applications/fusion/eval_offline.py`'s `lead_time_from_q_threshold()`: `alarm_idx >= crash_idx`
+  vs `>` — the two conditions disagree only when `alarm_idx == crash_idx` exactly, but at that
+  point the `>` variant falls through to `time_ms[crash_idx] - time_ms[alarm_idx]` with identical
+  indices, which is always exactly `0.0` in IEEE754 — the same value the early `return 0.0` gives.
+  Confirmed by direct simulation, not just inspection.

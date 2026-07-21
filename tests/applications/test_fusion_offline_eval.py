@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from compitum.applications.fusion.eval_offline import (
+    compute_alarm_series,
     evaluate_dir_csv,
     evaluate_shot_csv,
     lead_time_from_q_threshold,
@@ -85,3 +86,53 @@ def test_lead_time_alarm_at_or_after_crash():
     lead_ms, crash_idx = lead_time_from_q_threshold(q_min, time_ms, alarm_idx=5, q_threshold=1.0)
     assert crash_idx == 3
     assert lead_ms == 0.0
+
+
+def test_lead_time_positive_case_exact_value():
+    """The one existing "positive lead time" test only checks `> 0` through
+    the full PlasmaMonitor pipeline -- never the exact arithmetic
+    (`time_ms[crash_idx] - time_ms[alarm_idx]`) in isolation, so a wrong
+    operator or swapped indices could still coincidentally stay positive.
+    Non-uniform `time_ms` spacing rules out a coincidental match."""
+    time_ms = np.array([0.0, 1.0, 3.5, 4.0, 10.0], dtype=float)
+    q_min = np.array([5.0, 5.0, 0.5, 0.5, 0.5])  # crash_idx == 2
+    lead_ms, crash_idx = lead_time_from_q_threshold(q_min, time_ms, alarm_idx=1, q_threshold=1.0)
+    assert crash_idx == 2
+    assert lead_ms == 2.5  # time_ms[2] - time_ms[1] == 3.5 - 1.0
+
+
+class _CannedMonitor:
+    """Replays a fixed sequence of `ingest_profile` outputs, independent of
+    PlasmaMonitor's real geometry -- isolates `compute_alarm_series`'s own
+    latch logic from the metric/controller arithmetic underneath it."""
+
+    def __init__(self, outputs):
+        self._outputs = outputs
+        self.calls = 0
+
+    def ingest_profile(self, state, t):
+        out = self._outputs[self.calls]
+        self.calls += 1
+        return out
+
+
+def test_compute_alarm_series_latches_first_alarm_not_last():
+    """`if alarm_idx is None and bool(out["alarm_status"])` was only ever
+    exercised indirectly through the real PlasmaMonitor, where the alarm
+    condition (once triggered by real drift) plausibly never turns back off
+    -- never proving the *first-index* latch specifically. A canned monitor
+    that alarms at steps 1 and 3, staying quiet in between and after, pins
+    both the first-wins semantics and that curvature is read every step."""
+    outputs = [
+        {"curvature_signal": 0.1, "alarm_status": False},
+        {"curvature_signal": 0.9, "alarm_status": True},
+        {"curvature_signal": 0.2, "alarm_status": False},
+        {"curvature_signal": 0.8, "alarm_status": True},
+    ]
+    monitor = _CannedMonitor(outputs)
+    time_ms = np.arange(4, dtype=float)
+    state_seq = np.zeros((4, 1))
+
+    curvature, alarm_idx = compute_alarm_series(monitor, time_ms, state_seq)
+    assert alarm_idx == 1
+    assert np.allclose(curvature, [0.1, 0.9, 0.2, 0.8])
