@@ -42,13 +42,73 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Curated allowlist to keep CI green and reliable.
-          CURATED=(
+          # Full supported-release-notebook list -- must match notebooks/MANIFEST.md
+          # exactly (that file documents *why* each one is supported and what was
+          # fixed to make it pass; this list is not a separate, undocumented subset).
+          SUPPORTED=(
             notebooks/Getting_Started.ipynb
             notebooks/Examples_Tour.ipynb
             notebooks/Integration_Snippets.ipynb
+            notebooks/CLI_Routing_From_Prompt.ipynb
+            notebooks/examples/demo_route.ipynb
+            notebooks/examples/batch_route_demo.ipynb
+            notebooks/examples/certificate_card.ipynb
+            notebooks/examples/synth_bench.ipynb
+            notebooks/examples/explain_certificate_file.ipynb
+            notebooks/examples/pedagogy_control_of_error.ipynb
+            notebooks/examples/Fusion_Quickstart.ipynb
+            notebooks/examples/Supercon_Quickstart.ipynb
+            notebooks/examples/bridge_demo.ipynb
           )
-          echo "Executing curated notebooks with nbmake:" "${CURATED[@]}"
-          pytest --nbmake -q "${CURATED[@]}"
+          echo "Executing supported release notebooks with nbmake:" "${SUPPORTED[@]}"
+          pytest --nbmake -q "${SUPPORTED[@]}"
         env:
           PYTHONUNBUFFERED: "1"
+
+  validate-wiki-snippets:
+    name: Structurally validate wiki_snippets (parse only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Parse every wiki_snippets notebook as JSON + valid Python
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import ast
+          import glob
+          import json
+          import sys
+
+          bad = []
+          for path in sorted(glob.glob("notebooks/wiki_snippets/**/*.ipynb", recursive=True)):
+              try:
+                  nb = json.load(open(path, encoding="utf-8"))
+              except Exception as e:
+                  bad.append((path, f"invalid notebook JSON: {e}"))
+                  continue
+              for cell in nb.get("cells", []):
+                  if cell.get("cell_type") != "code":
+                      continue
+                  src = "".join(cell.get("source", []))
+                  # IPython magics (e.g. `!pip install ...`) are valid only inside a
+                  # real kernel, not under plain ast.parse -- skip lines starting with
+                  # "!" or "%" before checking syntax, matching MANIFEST.md's approach.
+                  filtered = "\n".join(
+                      "" if ln.strip().startswith(("!", "%")) else ln
+                      for ln in src.splitlines()
+                  )
+                  try:
+                      ast.parse(filtered)
+                  except SyntaxError as e:
+                      bad.append((path, f"syntax error: {e}"))
+          if bad:
+              for path, reason in bad:
+                  print(f"::error file={path}::{reason}")
+              sys.exit(1)
+          print(f"All wiki_snippets notebooks are structurally valid.")
+          PY
