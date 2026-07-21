@@ -1,0 +1,9 @@
+{
+  "command": "pytest -m \"not routerbench and not heavy_bench\" -ra --maxfail=1 --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=100",
+  "passed": 348,
+  "failed": 0,
+  "skipped": 1,
+  "deselected": 3,
+  "skipped_reason": "tests/tools/test_examples_run_helper.py:29 - Known OSError on Windows with subprocess.run and asyncio",
+  "coverage_line_branch_pct": 100.0
+}

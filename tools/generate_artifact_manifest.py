@@ -17,14 +17,18 @@ def sha256sum(path: Path, chunk_size: int = 1024 * 1024) -> str:
     return h.hexdigest()
 
 
-def collect(paths: List[Path]) -> List[Dict[str, str]]:
+def collect(paths: List[Path], root: Path) -> List[Dict[str, str]]:
     out = []
     for p in paths:
         if not p.exists() or not p.is_file():
             continue
         out.append(
             {
-                "path": str(p),
+                # Repo-relative, not root.cwd()-absolute -- an absolute path
+                # bakes one machine's directory layout into a committed
+                # artifact, meaningless (and identifying) on anyone else's
+                # checkout.
+                "path": p.relative_to(root).as_posix(),
                 "bytes": str(p.stat().st_size),
                 "sha256": sha256sum(p),
             }
@@ -48,7 +52,7 @@ def main() -> None:
     candidates += sorted((root / "data" / "rb_clean" / "eval_results").glob("*.csv"))
     candidates += sorted((root / "data" / "rb_clean" / "eval_results").glob("*.pkl"))
 
-    items = collect(candidates)
+    items = collect(candidates, root)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     import json as _json
 

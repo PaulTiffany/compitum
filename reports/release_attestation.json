@@ -1,391 +1,454 @@
 {
-  "schema": "compitum.release-attestation/v1",
-  "generated_at": "2026-07-20T19:08:33.552976+00:00",
-  "commit": "2c26cac",
+  "schema": "compitum.release-attestation/v2",
+  "generated_at": "2026-07-21T21:36:45.150599+00:00",
+  "compitum_version": "0.2.0",
+  "tested_commit": "e019d76",
+  "publication_commit": null,
+  "dirty_tree": true,
   "environment": {
     "python": "3.13.4",
     "platform": "Windows 11 (AMD64)",
-    "executable": "C:\\Users\\paulc\\projects\\compitum\\.venv\\Scripts\\python.exe",
-    "cwd": "C:\\Users\\paulc\\projects\\compitum"
+    "key_dependency_versions": {
+      "numpy": "2.3.4",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.7.2",
+      "pandas": "2.3.3",
+      "pydantic": "2.12.3",
+      "pyyaml": "6.0.3",
+      "mutmut": "2.5.1",
+      "cosmic-ray": "8.4.3",
+      "pytest": "8.4.2",
+      "hypothesis": "6.142.4"
+    }
   },
   "artifact_manifest": [
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0238.html",
+      "path": "reports/report_20251017-0238.html",
       "bytes": "75898",
       "sha256": "0fb0d3c504699634a99bccd0a09a5c7e8220153f47df234f246f821d409581e7"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0343.html",
+      "path": "reports/report_20251017-0343.html",
       "bytes": "88841",
       "sha256": "a28fdb3aeb50e9884525885640c640d8c45a4afe2ebc7a0be7e8019af7bfb899"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0344.html",
+      "path": "reports/report_20251017-0344.html",
       "bytes": "88841",
       "sha256": "7deab54ed5ac63b3f52857da24980202f584b13fffa33162979e8fc1ce5534be"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0348.html",
+      "path": "reports/report_20251017-0348.html",
       "bytes": "88893",
       "sha256": "25e2f3ed04cd8c6501ea640f980bb5c8d6206a30a19832a749588f87ab68924f"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0351.html",
+      "path": "reports/report_20251017-0351.html",
       "bytes": "89496",
       "sha256": "471537617af4e32328c4edcb168b2a3070b27b32c299bf307230a1bfc0e67fd6"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0352.html",
+      "path": "reports/report_20251017-0352.html",
       "bytes": "89496",
       "sha256": "deec4729ddbb0c6f79ded25ffc6a61c238409a83c478be1bb25b02d7c30ac12e"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0353.html",
+      "path": "reports/report_20251017-0353.html",
       "bytes": "90467",
       "sha256": "b08c384ec6a6369bc9844f673ec402c79251f5c5255c94db9044381b36d9fca7"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0416.html",
+      "path": "reports/report_20251017-0416.html",
       "bytes": "107147",
       "sha256": "5ae5ae689ac5686105e06f56ec0e67ba713e4fbcd4c59b465eabe4e9ce4557b4"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0451.html",
+      "path": "reports/report_20251017-0451.html",
       "bytes": "143143",
       "sha256": "1c88bfa32aab47a531d53160b4e7292312df8033995002053bc631e6d1c680c9"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_release.html",
-      "bytes": "249908",
-      "sha256": "61f3ad204aa5db93fe21aa416ad8902edf343cfbe546dd062645cb13ebb8766a"
+      "path": "reports/report_release.html",
+      "bytes": "246438",
+      "sha256": "f5bb5238bfc5e4b5942ec712fa91b2b4adea41af08335f912229a534c6d72ac9"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\cei_report.md",
+      "path": "reports/cei_report.md",
       "bytes": "133",
       "sha256": "ca4616721e7d7b995b928b184cad2ae142e44b7a05b641280d19a40309f5fc6d"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\cl_decision_curves.md",
+      "path": "reports/cl_decision_curves.md",
       "bytes": "308",
       "sha256": "bf128631f1ff4be6197596bbab4cbf6687840a540852eb382834c540939d1a9b"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\cl_summary.md",
+      "path": "reports/cl_summary.md",
       "bytes": "81",
       "sha256": "5b5ccc6431e3ec7bad22a9908b91d3b9b54118c2ead6f95db36e1493e3e56b63"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\fixed_wtp_summary.md",
-      "bytes": "554",
-      "sha256": "cc0fbf6def34de8a3b1cb6c5d5fb8de9e087f983e56b0477c50015a51c3b411c"
+      "path": "reports/fixed_wtp_summary.md",
+      "bytes": "564",
+      "sha256": "f200fe235d96b198f5020d58f25c84001fbecaa95b78ea00def3ebf41e02a3e8"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\lg_summary.md",
+      "path": "reports/lg_summary.md",
       "bytes": "290",
       "sha256": "a35cb831bfd09bf0e678d8b2412ffd8db3d174d32b606e329ecb8261c08af8a4"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\release_notes_v0.1.0.md",
+      "path": "reports/release_notes_v0.1.0.md",
       "bytes": "1804",
       "sha256": "15bdb1c139e65173275cd481ad1d9dc42582643abb14f1c5fecf3f45328847db"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\reliability_curve.md",
+      "path": "reports/reliability_curve.md",
       "bytes": "58",
       "sha256": "1bf527dc57ce64c0a07ee1c1bb05cc21e453198238afab97335470638de0e5ac"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\routerbench_report.md",
+      "path": "reports/routerbench_report.md",
       "bytes": "2960",
       "sha256": "d3c43a4d23ccaba6fa5751f50b7bd8dbb0ddc4a90e32f7007df5f43529a6f4cd"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\artifact_manifest.json",
-      "bytes": "13986",
-      "sha256": "e7aa99d51f027a7ea6bf4b76c71d716218284f2d3812a030e5e892da124fb336"
+      "path": "reports/artifact_manifest.json",
+      "bytes": "16597",
+      "sha256": "139e276db2b3be8cd3fb6f9657712602cd63b058af298c6c1abc287b66b7d71f"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\cei_report.json",
+      "path": "reports/benchmarks_pytest.json",
+      "bytes": "9298199",
+      "sha256": "2085fb971bf37dfeb78d07e4d08e3fe37267d5f939c5398464213eda3842a6a0"
+    },
+    {
+      "path": "reports/cei_report.json",
       "bytes": "207",
       "sha256": "4c18dfc1033e661513ae35f738727e5c63a55c23e2e348298da893d09d316e78"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\cl_decision_curves.json",
+      "path": "reports/cl_decision_curves.json",
       "bytes": "407",
       "sha256": "2a0153a9320b3a4e1551a55577bca8bc5c7668d7ef682a1126bae5ba1b1bef2a"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\cl_summary.json",
+      "path": "reports/cl_summary.json",
       "bytes": "203",
       "sha256": "d1bf23cf7d9a666f09b1145780b5470ddadfdd33818eb82a70a37ac3ec4339f9"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\coverage.json",
-      "bytes": "69465",
-      "sha256": "deb5cdaac8dd35c41807203bb54592e56216b8730f1ed792cd21c8d298da5ff5"
+      "path": "reports/coverage.json",
+      "bytes": "99236",
+      "sha256": "02ed42f3cf5996de1018b9827a96fb0f3c1de2780eeb98c245f1f0496b7754e3"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\cr_report.json",
+      "path": "reports/cr_report.json",
       "bytes": "4823238",
       "sha256": "e8b4c93af13e561308f1a52b792914851aaa4d3228613677c132dbbee6085d7a"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\fixed_wtp_summary.json",
-      "bytes": "460",
-      "sha256": "a5ee7b3ee1e99eff62ebaad51e52f997114f681a669e2a51cedc2874870e95b3"
+      "path": "reports/fixed_wtp_summary.json",
+      "bytes": "493",
+      "sha256": "f9a467231164d2721db30af65f71c7e604933fd974484742c3f41169c714e8cf"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\lg_summary.json",
+      "path": "reports/lg_summary.json",
       "bytes": "1006",
       "sha256": "0ffacd18ef787259c9ecaf1b17035533585c408a164dbbe79714c0bdd4bae5fb"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\matbench_attestation.json",
+      "path": "reports/matbench_attestation.json",
       "bytes": "2316",
-      "sha256": "1c1f80f9d34b89fb0f88438804d2a95b030db19ac91eed7af84a22bb0c6653b1"
+      "sha256": "2b242a693db367b1c7e747433f032ac819d2c7df13d4c02afa9cf15bb658bb83"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\matbench_baseline_regret.json",
+      "path": "reports/matbench_baseline_regret.json",
       "bytes": "90",
       "sha256": "d9f6cdc728979f2c5bc8d0416777695d7a3e5dd7e2b8e7da80c7f810a492ae24"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\matbench_calibration.json",
+      "path": "reports/matbench_baseline_regret_smoke.json",
+      "bytes": "72",
+      "sha256": "d5b926bb13ffaa1fa34925b0f806bdcc978a4e6acae9938698fecb827b8822df"
+    },
+    {
+      "path": "reports/matbench_calibration.json",
       "bytes": "1052",
       "sha256": "060f2eabc894db9eddf517f92304f6746a17ea0cbf067af8f9aaaef1e4c6e651"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\matbench_layers.json",
+      "path": "reports/matbench_calibration_smoke.json",
+      "bytes": "587",
+      "sha256": "06f1c6addf210a5e0a285e0a8a65eadd5e01379776365bea9a30c2df3dc1aacd"
+    },
+    {
+      "path": "reports/matbench_layers.json",
       "bytes": "400",
       "sha256": "ae58270980449a96205328c508292fee6556ffa287b3655a12ac318b9df2f5a3"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\matbench_regret.json",
+      "path": "reports/matbench_regret.json",
       "bytes": "458",
       "sha256": "06724ef97329de78984ec321d979bf8835cc1c018977b3bed3d8a67098490c11"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\mutation_summary.json",
-      "bytes": "109",
-      "sha256": "606411134269a8a563d59fda476e3d154867ca067031722ac6b5152138427938"
+      "path": "reports/matbench_regret_smoke.json",
+      "bytes": "121",
+      "sha256": "10267d38a9a23ea301ad01751e98970a9099730211415a16c4593c4ee89936b0"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\per_baseline_agreement.json",
+      "path": "reports/mutation_summary.json",
+      "bytes": "3261",
+      "sha256": "23f663f6ab688991a41a4d322f3ab2a397da4e5745dd8ee4c1d0d60b6e1bb03a"
+    },
+    {
+      "path": "reports/per_baseline_agreement.json",
       "bytes": "131",
       "sha256": "68becc246894923224a275aa4596f28d603e844483442330c758089eb589b99a"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\per_baseline_win_rate.json",
-      "bytes": "121",
-      "sha256": "8dad9bd3fadb5f6ab8aeae97673fbd96701522717e4a44f2de47618079a4040f"
+      "path": "reports/per_baseline_win_rate.json",
+      "bytes": "124",
+      "sha256": "72a8cfc8edf14f6c37e22dcdb1666d23d70beed655cc63a3e44b32f8f0aa9d56"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\quality_20251018-1600.json",
+      "path": "reports/quality_20251018-1600.json",
       "bytes": "2676",
       "sha256": "8a1669aad704510d7656d70b3739a56332ed54cf385b8001cc4b87e4c3890c45"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\quality_20251019-1651.json",
+      "path": "reports/quality_20251019-1651.json",
       "bytes": "13706",
       "sha256": "b49a121b9ebe87ab569670240238f23e1cbb8c0d2cfd6905443c687ea28e3f4a"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\quality_20251019-1654.json",
+      "path": "reports/quality_20251019-1654.json",
       "bytes": "3095",
       "sha256": "9a228e94a40f5cb21a15b8db3309544e354b17f8473c487411c565a77b05bf20"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\quality_20251022-0313.json",
+      "path": "reports/quality_20251022-0313.json",
       "bytes": "5026502",
       "sha256": "f92c0d36e1d3378d44b215f99605cb9437ee7edf5dbbacaf8ecd3ecbbbada4de"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\quality_20251022-0324.json",
+      "path": "reports/quality_20251022-0324.json",
       "bytes": "5026645",
       "sha256": "54335b7771bfc30fbddb5e522232d5505d11a30b7a6807778c9a545114509f7c"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\quality_20251022-0524.json",
+      "path": "reports/quality_20251022-0524.json",
       "bytes": "5022920",
       "sha256": "58c955046cd1af95300f871bc0e9aa38e1ed2307cfb52d0027fcb9f908fbba2f"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\release_attestation.json",
-      "bytes": "178294",
-      "sha256": "1f77a116dc488c422ee0553fd57b7cf484c1d097d5d61fb8ce3faf50e0b006fb"
+      "path": "reports/release_attestation.json",
+      "bytes": "267614",
+      "sha256": "58e69c1b2112064ce871531f47ce3d37d7ee03ce4e3a93318271740e10ca50df"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0351.json",
+      "path": "reports/report_20251017-0351.json",
       "bytes": "2908",
       "sha256": "69732aeb011217fa62e66c867ee6e17432a3026413124603459a7f00958cd2a8"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0352.json",
+      "path": "reports/report_20251017-0352.json",
       "bytes": "2908",
       "sha256": "71342b935749ecfefd3e567419c53635ab577db90b2f5b35bfdfa6c2aea614d3"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0353.json",
+      "path": "reports/report_20251017-0353.json",
       "bytes": "9382",
       "sha256": "ddaf599af9d9645f6cb24e9829b5714dd41d0dfd385ab130388c21c909438f9f"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_20251017-0451.json",
+      "path": "reports/report_20251017-0451.json",
       "bytes": "25085",
       "sha256": "18f1215985ba8feb5e6906dc590c68a3a564d3413bf15c20218fc76acf36aa35"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_release.json",
-      "bytes": "798597",
-      "sha256": "a14fa66a87bfb2a67cc6695f87c8f2afc1ab15703a176a5770a633c1e81efc8d"
+      "path": "reports/report_release.json",
+      "bytes": "2204",
+      "sha256": "f7465fb142feb1b77163008099f1d9b6e40340a3ad38425114dfef3da623150f"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\reports\\report_release_pins.json",
+      "path": "reports/report_release_pins.json",
       "bytes": "383",
       "sha256": "b116d9e6c263197234a935283aa139f7e36f35ed322f727ca7606a735971cb94"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\compitum_multitask_combined.csv",
+      "path": "reports/synth_bench_output.json",
+      "bytes": "160",
+      "sha256": "e4da0bd47460561b2ff22543f2a4e9c42a87230b578a0456962dd31e717a41b8"
+    },
+    {
+      "path": "reports/test_results.json",
+      "bytes": "396",
+      "sha256": "a6f133f8c6dfbc833bb610c40e4a49e456915430d46750950537ccb711f5cee3"
+    },
+    {
+      "path": "data/rb_clean/eval_results/compitum_multitask_combined.csv",
       "bytes": "2922",
       "sha256": "836568acbfd5ed7489b594b7fb8c9869f43fece864e9924e0bfe2bf804ab03c5"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-all-10-22-07-09-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-all-07-21-21-12-val_split.csv",
+      "bytes": "120883",
+      "sha256": "7b26a212f56794e025f53830db10daee27a5f92fe2e966f2b449a94f63e0b649"
+    },
+    {
+      "path": "data/rb_clean/eval_results/eval_results-eval-all-07-21-21-31-val_split.csv",
+      "bytes": "120883",
+      "sha256": "7b26a212f56794e025f53830db10daee27a5f92fe2e966f2b449a94f63e0b649"
+    },
+    {
+      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-22-07-09-val_split.csv",
       "bytes": "128981",
       "sha256": "b25f74ec2b8f2744b038dca79172b18489e4277f8bc80419e7cc3314fa461706"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-all-10-22-07-28-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-22-07-28-val_split.csv",
       "bytes": "129067",
       "sha256": "33cccf2f005eb6223b7f7d93fed109085aad7960139c7a46abe60664408234a5"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-all-10-26-16-47-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-26-16-47-val_split.csv",
       "bytes": "129463",
       "sha256": "d2ba3918c99361ede386b6d758303d9ae95297f409e854ef83ff9029ca1e0727"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-all-10-26-17-07-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-26-17-07-val_split.csv",
       "bytes": "120823",
       "sha256": "ddfd532c03fd88596cfcf76882b95e633341c429708185c2997a58b791233c97"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-20-04-04-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-20-04-04-val_split.csv",
       "bytes": "129047",
       "sha256": "180cb653b40580a147a7dbcce3cd54ac134aa854be819ba53cc85ad4e4e20e03"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-20-05-02-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-20-05-02-val_split.csv",
       "bytes": "1594",
       "sha256": "b8ca716ba017babfa58f7fe76ad2689613d2142b5f2500dfa79e1fd005c47438"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-22-02-51-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-02-51-val_split.csv",
       "bytes": "129183",
       "sha256": "fa9b30ed2c70dbaf4821dad5780caa05f2c48146b8f324f2df79e525ebd7123f"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-22-03-02-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-03-02-val_split.csv",
       "bytes": "128901",
       "sha256": "97fad9a8e01b50c4281701800a6160aae23e1ca364c0b3966cabbb106f6632bd"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-22-03-51-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-03-51-val_split.csv",
       "bytes": "129028",
       "sha256": "5f1e29bde3cdf45f8373d65571da8888d7d74019f4526652d33acb0d9730336d"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-22-04-02-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-04-02-val_split.csv",
       "bytes": "128915",
       "sha256": "e09ec0e1f4b3af20d480be1bccfb0f9ef3927fb61d222efa736e718ef9dcfd38"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-grade-school-math-10-22-04-47-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-04-47-val_split.csv",
       "bytes": "128958",
       "sha256": "2463e9c8d260710b57930b7dec65543103a95a3d1d79b4d4b09d8aee6ff84f7c"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results-eval-hellaswag-10-20-05-03-val_split.csv",
+      "path": "data/rb_clean/eval_results/eval_results-eval-hellaswag-10-20-05-03-val_split.csv",
       "bytes": "1416",
       "sha256": "f6128db98352a22e02aeb840779e7c90f844a6cb61d3e0ae63525583aa297cfb"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-02__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__07-21-21__rb_clean.csv",
+      "bytes": "116224",
+      "sha256": "da038a8e9239f01299390d60a94119f65e7a442045945183231a8004ca364fd2"
+    },
+    {
+      "path": "data/rb_clean/eval_results/eval_results__10-22-02__rb_clean.csv",
       "bytes": "15678",
       "sha256": "c1a7db97ce2761ffe2f975ce8cb499d2576d8d9d0d47bc8b444fbac080e8a456"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-03__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-03__rb_clean.csv",
       "bytes": "15678",
       "sha256": "c1a7db97ce2761ffe2f975ce8cb499d2576d8d9d0d47bc8b444fbac080e8a456"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-04__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-04__rb_clean.csv",
       "bytes": "15678",
       "sha256": "c1a7db97ce2761ffe2f975ce8cb499d2576d8d9d0d47bc8b444fbac080e8a456"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-06__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-06__rb_clean.csv",
       "bytes": "1251097",
       "sha256": "1c871bc9b218afa292371ebb13ddabd0e22520de68d49d42faeebc22f6d11458"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-07__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-07__rb_clean.csv",
       "bytes": "123378",
       "sha256": "71df6c0be97420cf5579ae961cd9d73bd1ec76a3bf089228219594c37b3b7270"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-26-16__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__10-26-16__rb_clean.csv",
       "bytes": "124184",
       "sha256": "777368bb57e463a5ec5b69db86a69c3bb2dfd6cf7297e4714cdf662a9b0bdfd0"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-26-17__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__10-26-17__rb_clean.csv",
       "bytes": "116304",
       "sha256": "6e1c2747478092ab9504b9dbf020bfe4f0c89818d5fc2fad52966a616e2adf96"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__11-07-06__rb_clean.csv",
+      "path": "data/rb_clean/eval_results/eval_results__11-07-06__rb_clean.csv",
       "bytes": "1969344",
       "sha256": "358f88c5146c77bdd3529b8869676dea92cf84f2324892f7b0053e2aa305f74c"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-02__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__07-21-21__rb_clean.pkl",
+      "bytes": "103398",
+      "sha256": "4b88a096c6381a6c706fe91e79d8ead6230cdbf1283c956c43fd5ccfb3a271b0"
+    },
+    {
+      "path": "data/rb_clean/eval_results/eval_results__10-22-02__rb_clean.pkl",
       "bytes": "62021",
       "sha256": "57cba6a8b26663549080f3d019c9c338b93c9b4b998c9b10648a678f8ffe4e0e"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-03__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-03__rb_clean.pkl",
       "bytes": "62021",
       "sha256": "57cba6a8b26663549080f3d019c9c338b93c9b4b998c9b10648a678f8ffe4e0e"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-04__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-04__rb_clean.pkl",
       "bytes": "62021",
       "sha256": "57cba6a8b26663549080f3d019c9c338b93c9b4b998c9b10648a678f8ffe4e0e"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-06__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-06__rb_clean.pkl",
       "bytes": "2268269",
       "sha256": "7009a445c1692bfa6883b543699b3bb020197b1a88c1fe8986552e699d8ea7bf"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-22-07__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__10-22-07__rb_clean.pkl",
       "bytes": "108907",
       "sha256": "2f01046ab692eb105175734321b519c9a965088d1a04c094e87a2eeebc42efa4"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-26-16__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__10-26-16__rb_clean.pkl",
       "bytes": "108907",
       "sha256": "17ce6598853b04c5784f179334ae1201aab5dcf3cca4eb325e52fdf93c2d7cd4"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__10-26-17__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__10-26-17__rb_clean.pkl",
       "bytes": "103398",
       "sha256": "ca10cee1cccadf05d075b1b6fde7462c15a3545c695488051d151d729cba613f"
     },
     {
-      "path": "C:\\Users\\paulc\\projects\\compitum\\data\\rb_clean\\eval_results\\eval_results__11-07-06__rb_clean.pkl",
+      "path": "data/rb_clean/eval_results/eval_results__11-07-06__rb_clean.pkl",
       "bytes": "3741241",
       "sha256": "3931753b8bfb101d5e2e648a2a56a83938e6ca02c8439d9b7aa0a0f6bf5f7485"
     }
@@ -10899,36 +10962,83 @@
       "missing_branches": 0
     }
   },
+  "test_results": {
+    "command": "pytest -m \"not routerbench and not heavy_bench\" -ra --maxfail=1 --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=100",
+    "passed": 348,
+    "failed": 0,
+    "skipped": 1,
+    "deselected": 3,
+    "skipped_reason": "tests/tools/test_examples_run_helper.py:29 - Known OSError on Windows with subprocess.run and asyncio",
+    "coverage_line_branch_pct": 100.0
+  },
+  "notebook_validation": null,
+  "sphinx_build": null,
+  "sphinx_linkcheck": null,
+  "package_build": null,
   "artifacts": {
     "snapshot": {
-      "path": "docs\\repo_snapshot.jsonl",
+      "path": "docs/repo_snapshot.jsonl",
       "size": 106170,
       "sha256": "3dc4899f0fcb06d8e5ace837fe576a99425fac90b7dd5510cf01b3cf2b28e6a9",
       "mtime": "2025-10-26T17:38:39.356800+00:00"
     },
     "manifest": {
-      "path": "reports\\artifact_manifest.json",
-      "size": 16597,
-      "sha256": "139e276db2b3be8cd3fb6f9657712602cd63b058af298c6c1abc287b66b7d71f",
-      "mtime": "2026-07-20T19:05:50.572024+00:00"
+      "path": "reports/artifact_manifest.json",
+      "size": 15375,
+      "sha256": "6bf7ecb875a7a3e83e55a61c8c72a92d55962b5a1793803225651f279725b322",
+      "mtime": "2026-07-21T21:36:45.039932+00:00"
     },
     "mutation": {
-      "path": "reports\\mutation_summary.json",
-      "size": 3232,
-      "sha256": "c4dfbde359baf44a6fefe473ae56b3f0b617c885a35653580ae6bf5a61d3aaa2",
-      "mtime": "2026-07-20T19:08:22.624289+00:00"
+      "path": "reports/mutation_summary.json",
+      "size": 3261,
+      "sha256": "23f663f6ab688991a41a4d322f3ab2a397da4e5745dd8ee4c1d0d60b6e1bb03a",
+      "mtime": "2026-07-21T19:48:50.287074+00:00"
     },
     "coverage": {
-      "path": "reports\\coverage.json",
+      "path": "reports/coverage.json",
       "size": 99236,
       "sha256": "02ed42f3cf5996de1018b9827a96fb0f3c1de2780eeb98c245f1f0496b7754e3",
-      "mtime": "2026-07-20T19:07:38.682335+00:00"
+      "mtime": "2026-07-21T19:48:50.287074+00:00"
+    }
+  },
+  "benchmarks": {
+    "benchmarks_pytest": {
+      "path": "reports/benchmarks_pytest.json",
+      "size": 9298199,
+      "sha256": "2085fb971bf37dfeb78d07e4d08e3fe37267d5f939c5398464213eda3842a6a0",
+      "mtime": "2026-07-21T20:29:36.077669+00:00"
+    },
+    "synth_bench_output": {
+      "path": "reports/synth_bench_output.json",
+      "size": 160,
+      "sha256": "e4da0bd47460561b2ff22543f2a4e9c42a87230b578a0456962dd31e717a41b8",
+      "mtime": "2026-07-21T20:30:04.568806+00:00"
+    },
+    "fixed_wtp_summary": {
+      "path": "reports/fixed_wtp_summary.json",
+      "size": 493,
+      "sha256": "f9a467231164d2721db30af65f71c7e604933fd974484742c3f41169c714e8cf",
+      "mtime": "2026-07-21T21:17:15.458366+00:00"
+    }
+  },
+  "dataset_hashes": {
+    "routerbench": {
+      "path": "routerbench_5shot.pkl",
+      "size": 171091324,
+      "sha256": "fbd7d3d16fba2759a18fa0ad44409d3e0e92ba80d03d90827eed1a6d084c9ffe",
+      "mtime": "2025-10-26T17:38:39.841181+00:00"
+    },
+    "matbench_demo": {
+      "path": "data/matbench_demo.csv",
+      "size": 20431,
+      "sha256": "9bd516c0bd71952646fa440a74098667cc15cb4854ea21e4f753cc47369d37dc",
+      "mtime": "2026-07-21T20:30:19.647613+00:00"
     }
   },
   "latest_eval_csv": {
-    "path": "data\\rb_clean\\eval_results\\eval_results__11-07-06__rb_clean.csv",
-    "size": 1969344,
-    "sha256": "358f88c5146c77bdd3529b8869676dea92cf84f2324892f7b0053e2aa305f74c",
-    "mtime": "2025-11-07T06:12:11.816448+00:00"
+    "path": "data/rb_clean/eval_results/eval_results__07-21-21__rb_clean.csv",
+    "size": 116224,
+    "sha256": "da038a8e9239f01299390d60a94119f65e7a442045945183231a8004ca364fd2",
+    "mtime": "2026-07-21T21:31:55.884726+00:00"
   }
 }
