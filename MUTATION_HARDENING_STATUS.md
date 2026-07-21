@@ -1,5 +1,26 @@
 # Mutation Hardening Status
 
+**Update, day 4: every file in the 17-shard matrix classified, including two discovered live.**
+Per user request, triggered `mutation_dispatch.yml` for real (2026-07-20). It found real value
+beyond just confirming prior work:
+
+- Confirmed `router.py`, `constraints.py`, `security.py`, and (after corrections) `boundary.py` and
+  `energy.py` exactly match their documented classifications.
+- Found and corrected 3 real classification errors that local-reasoning-only work had gotten wrong
+  (`boundary.py`/`energy.py`'s "phantom IDs" were actually real gaps from a stale archived cache;
+  `constraints.py` IDs 9/60 weren't actually killed by their supposed fixes; `security.py` IDs 36/46
+  were wrongly called "fixed" when they're genuinely equivalent).
+- Found and fixed 3 real `mutation.yml`/`mutation_dispatch.yml` infrastructure bugs unrelated to
+  mutation testing itself: an artifact-naming collision, a too-short job timeout, and a missing
+  `actions/checkout` step in two separate "summarize" jobs (commits `ecbcb1c`, `5331263`).
+- Surfaced two files that had never been touched this session at all: `metric.py` (47 survivors)
+  and `pgd.py` (63 survivors, previously wrongly assumed to be "just a Windows-only crash"). Both
+  are now fully classified using the same real-diff methodology as everything else.
+
+**Every one of the 17 shard-matrix files is now fully classified with zero unclassified survivors.**
+None of this session's newest fixes (`metric.py`, `pgd.py`, `energy.py`'s last 4 IDs) have been
+re-verified by a subsequent CI run yet -- see "Next steps" below.
+
 **Update, day 3: classification front complete.** All 17 shard-matrix files with runnable mutmut
 data (`.github/workflows/mutation.yml`'s `mutmut-shard` matrix, minus `pgd.py`'s Windows-only
 mutmut crash) are now fully classified with **zero unclassified survivors** --
@@ -126,6 +147,7 @@ when it was generated.** Any other file's "phantom ID" classifications in this d
 | `energy.py` | 178 | 172 | 6 | 0 | **Fully classified, corrected after a real CI run.** A real `mutation_dispatch.yml` run (2026-07-20) confirmed the fixes and settled every open item: exactly 6 survivors remain, all confirmed equivalent (37, 40 -- `flush=True`/`False`, as already documented). **24, 25, 31, 108 were originally misclassified as phantom/non-existent cache IDs** -- they're real, previously-uncaught gaps in the debug-print gate (`step % 100 == 0 and env == "1"`, checked *before* `self._step` increments): the existing tests only exercised this gate at `_step == 0`/`99`, never at a nonzero multiple of 100 where a `%`-vs-`/` or `%100`-vs-`%101` or `and`-vs-`or` mutation actually diverges. 3 new tests fixed all 4. Zero unclassified. |
 | `router.py` | 137 | 105 | 32 | 0 | **Fully classified this pass.** 5 IDs (75, 131-134) are phantom/non-existent cache entries. 3 (`7c3200f`, prior pass) already fixed. 3 already covered by existing exact-text `re.fullmatch` debug-print assertions (81, 136, 137). 4 confirmed equivalent (`abs(-comps[...]["distance"])` appears 3 times -- 62, 66, 109 -- not 2 as previously noted; plus a newly-found 4th, 118, see below). 20 real gaps fixed this pass (see worked table below). Zero unclassified. |
 | `metric.py` | 140 | 93 | 47 | 0 | **Fully classified this pass.** Discovered via a real CI run (2026-07-20) -- never appeared in this file's per-file table before this pass. 31 real gaps fixed (see worked table below): `_update_cholesky()`'s error-recovery delta/prints/triangular-form, `distance()`/`batch_distance()`'s `> rank` vs `>= rank` boundary and `x - mu` sign, the `ValueError` exact message, the sigma-squared clamp, and `batch_update_spd()`'s entire gradient-descent/backtracking/stability-cap arithmetic chain. 6 confirmed equivalent (3 unused `SymbolicMatrix`/`SymbolicScalar` labels discarded before `evaluate()`; the upper delta-clamp, unreachable in practice; the surrogate-energy scaling constant, scale-invariant to the comparison that's its only consumer; the fnorm clamp at exactly `10.0`, a mathematical no-op regardless of `>`/`>=`). 10 logged-not-fixed (the backtracking loop's `bt`-counter/boundary mutants -- genuinely testable, but forcing them requires precision-engineering the exact loop-iteration count, judged disproportionate to the value given everything else this session). Zero unclassified. |
+| `pgd.py` | 137 | 74 | 63 | 0 | **Fully classified this pass.** Discovered via a real CI run (2026-07-20) -- previously assumed to be just "a Windows-only mutmut crash," but it runs fine on `ubuntu-latest` with a large real surface. 46 real gaps fixed via one comprehensive golden-vector test (a single engineered prompt giving every feature a distinct nonzero value, checked against the exact full output array -- this class of mutation, mostly dict-key renames, is silently masked by the function's own "ensure all keys present" 0.0-backfill safety net, so a loose `>= 1.0`-style check can miss it even though the mutation is genuinely observable) plus 4 small supplementary tests for boundary/branch cases the one golden prompt couldn't isolate (an empty prompt, an exactly-2-token case, a `len(w) > 6` boundary, and `"class " in prompt or "def " in prompt` with each operand isolated). 16 confirmed equivalent (see worked table below -- all either `aux_*` padding, permanently `0.0` regardless of the mutation, or `prag_*` features whose defensive `.get(key, default)` reads are entirely masked by unconditional assignments a few lines earlier that happen to use the exact same values as the defaults). Zero unclassified. |
 
 ### `router.py` -- full classification (32 survivors, worked example)
 
@@ -188,6 +210,30 @@ equivalent, 10 logged as a real, open, deliberately-deferred gap. **Zero unclass
 Not yet re-verified against a fresh CI run (this classification itself came from the CI artifact
 that surfaced the file, not a subsequent confirmation pass) -- the same caveat as `energy.py`'s
 24/25/31/108 fixes below.
+
+### `pgd.py` -- full classification (63 survivors, worked example)
+
+Discovered via the same real CI run as `metric.py`. `RegexPromptExtractor.extract_features()`
+builds a ~40-entry feature dict via string/regex checks, then orders it into a fixed-length numpy
+array; missing keys are silently backfilled with `0.0` by a safety loop, and unrelated `prag_*`
+Banach features are read back via `.get(key, default)` right after being unconditionally set to
+those exact same default values a few lines earlier -- both patterns mask large classes of mutation
+that would otherwise look identical to genuine survivors.
+
+| IDs | Classification | Reasoning |
+|---|---|---|
+| 21, 22, 24, 25, 29, 30, 32, 33, 38, 44, 52, 53, 54, 55, 56, 57, 58, 59, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 88, 90, 92, 94, 97, 106 | **Defect (fixed)** | Dict-key renames (masked by the "ensure all keys present" `0.0` backfill), regex-string mutations (a wrapped `"XX...XX"` pattern breaks the regex into a literal-string match that never fires), arithmetic sign/operator flips (`+`/`-`/wrong-substring on `math_4`; `i+1`/`i-1`, `+`/`-` on the semantic token-length diffs), `in`/`not in`/`and`/`or` boolean-logic flips, and one boundary (`len(w) > 6` vs `>= 6`) -- fixed via one comprehensive golden-vector test (a single prompt engineered to give every feature a distinct nonzero value) plus 4 small supplementary tests for cases that one prompt structurally couldn't isolate (`code_4`'s `or` needing each operand tested alone; the `len(w) > 6` boundary needing a 6-char word) |
+| 98, 100, 102 | **Defect (fixed)** | `sem_0`/`sem_1`/`sem_2`'s `if diffs else 0.0` fallback (mutated to `else 1.0`) -- never exercised with an empty token/diff list; caught by the same empty-prompt test used for `syn_0`/`syn_1`'s equivalent fallback (an empty prompt empties both `sents` and `tokens`/`diffs` at once) |
+| 93 | **Equivalent** | `if len(tokens) > 1` -> `>= 1` -- at exactly 1 token, `range(len(tokens) - 1)` is `range(0)` either way, so both branches produce the same empty `diffs` list regardless of which comparison is used |
+| 13, 108, 109, 110 | **Equivalent** | `aux_*` padding: the `_r_keys` label string (13), the loop bound `range(8)`->`range(9)` (108, the extra `aux_8` isn't in `_r_keys` so it's never read back), and two key-name mismatches between the write and the `.get()` read (109, 110) -- `aux_*` features are permanently `0.0` by construction (nothing else in the function ever assigns them a nonzero value), and the "ensure all keys present" safety loop backfills any genuinely-missing key with the same `0.0` regardless, so no combination of these mutations can ever produce an observable difference |
+| 113, 116, 119, 122 | **Equivalent** | Key-rename on the unconditional `feats["prag_*"] = <value>` assignments -- each `prag_*` feature is *also* read back later via `feats.get("prag_*", <same value>)`; renaming the assignment's key just means the `.get()` falls through to its default, which was deliberately chosen to equal what the (now-skipped) assignment would have produced |
+| 129, 131, 133, 135 | **Equivalent** | Key-rename on the `.get()` reads themselves -- the renamed key is never present either way, so `.get()` returns its default, which (per the pair above) equals the real value regardless |
+| 130, 132, 134, 136 | **Equivalent** | Default-value change on the same `.get()` reads (e.g. `1.0`->`2.0`) -- the real key genuinely *is* present (set unconditionally a few lines earlier, unaffected by this specific mutation), so `.get()` returns the actual value, never falling through to the mutated default at all |
+
+Net: 46 defect-classes fixed across 2 test files (one comprehensive golden-vector test plus 5
+small supplementary tests), 16 confirmed equivalent (all traced to one of two structural patterns:
+permanently-zero `aux_*` padding, or `prag_*`'s redundant-by-construction `.get()` defensive reads).
+**Zero unclassified survivors.** Not yet re-verified against a fresh CI run.
 
 ### `energy.py` -- full classification (73 survivors + 1 suspicious, worked example)
 
@@ -298,19 +344,19 @@ the real run exposed -- see each file's "real-CI correction" note above). It als
 - **`pgd.py`** (`RegexPromptExtractor`) -- previously assumed to be just "a Windows-only mutmut
   crash, not worth pursuing locally since CI runs on ubuntu-latest." On real `ubuntu-latest` CI it
   does run (no crash), but has **63 of 137 survived** -- a large, completely unaddressed surface,
-  not a crash-only file. The "not worth pursuing" framing was wrong; this needs real attention.
-  **Still open** -- not yet classified.
+  not a crash-only file. The "not worth pursuing" framing was wrong. **Now fully classified** (see
+  its worked table above) -- 46 fixed, 16 equivalent. Not yet re-verified against a fresh CI run.
 
-Priority for a future session:
+**Every file in the 17-shard matrix is now fully classified, zero unclassified survivors, including
+both fronts this real CI run originally surfaced as open.** `pgd.py` was the last one. Priority for
+a future session:
 
-1. `pgd.py`: full classification pass, same methodology as every file above (read real diffs from
-   the CI artifact, classify each, batch-fix genuine defects, document equivalents with real
-   reasoning). Comparable in scope to `router.py`'s or `metric.py`'s passes.
-2. Re-verify `metric.py`'s 31 fixes and `energy.py`'s 24/25/31/108 fixes with a fresh CI run --
-   neither has been confirmed by automated re-execution yet, only local pytest runs against real
-   (unmutated) code, which this session's own history (`security.py` 36/46, `constraints.py` 9/60)
-   has shown isn't sufficient proof by itself.
-3. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
+1. Re-verify `metric.py`'s 31 fixes, `pgd.py`'s 46 fixes, and `energy.py`'s 24/25/31/108 fixes with
+   a fresh CI run -- none have been confirmed by automated re-execution yet, only local pytest runs
+   against real (unmutated) code, which this session's own history (`security.py` 36/46,
+   `constraints.py` 9/60, `boundary.py` 34/35/37) has shown isn't sufficient proof by itself. This is
+   the single most valuable remaining next step.
+2. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
    that's still SURVIVED, or an "equivalent" that's actually KILLED for a reason not yet understood),
    treat that as a real finding to investigate, not noise -- every classification here was made
    without a working fresh sweep to check against.

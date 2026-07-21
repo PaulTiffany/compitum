@@ -142,6 +142,14 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   `fnorm` strictly between 10 and 11 (not just at 10 exactly, where the clamp is a no-op regardless
   of `>`/`>=`); the residual-pruning loop removes from the front (FIFO), not an arbitrary index —
   `tests/test_metric.py`, `tests/test_metric_debug_path.py`
+- `pgd.py`: `RegexPromptExtractor.extract_features()`'s ~40 feature-dict entries all match their
+  exact computed value (one comprehensive golden-vector test on an engineered prompt), not just a
+  loose `>= 1.0`/presence check that a dict-key-rename mutation could pass by coincidence (a missing
+  key is silently backfilled with `0.0`, which a loose check can miss when the real value happens to
+  also look "present enough"); `syn_0`/`syn_1`/`sem_0`/`sem_1`/`sem_2`'s empty-input fallbacks default
+  to `0.0`; the `len(w) > 6` "long word" boundary is exercised at exactly 6 characters; `"class " in
+  prompt or "def " in prompt` is exercised with each operand isolated (both, neither, and each alone)
+  — `tests/pgd/test_regex_prompt_extractor.py`
 
 Known true equivalent mutants (not gaps):
 - `d_best = abs(-comps[...]["distance"])` — appears 3 times (`route()`'s metric-update branch,
@@ -190,3 +198,12 @@ Known true equivalent mutants (not gaps):
   clamp (`self.L *= 10.0/fnorm`) multiplies by exactly `1.0`, a no-op in IEEE754 regardless of
   whether it fires; the only point where `>` and `>=` disagree is also the only point where the
   clamp can't have any effect.
+- `pgd.py`'s `aux_*` feature padding (loop bound, key-name mismatches between the write and the
+  `.get()` read) — `aux_*` features are permanently `0.0` by construction (nothing else in
+  `extract_features()` ever assigns them a nonzero value), and any genuinely-missing key gets
+  backfilled with `0.0` anyway by the "ensure all keys present" safety loop, so no combination of
+  these mutations can ever produce an observable difference.
+- `pgd.py`'s `prag_*` Banach features' defensive `.get(key, default)` reads — each is read back
+  immediately after being unconditionally assigned the *same* value the `.get()` default uses, so
+  renaming either the assignment's key or the read's key, or changing the read's default, all fall
+  through to a value that coincidentally equals what would have been produced anyway.
