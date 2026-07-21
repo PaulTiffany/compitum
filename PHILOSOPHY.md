@@ -111,7 +111,7 @@ Compitum turns model routing into a principled, auditable control problem. We re
 
 When gradients, constraints, and coherence disagree, Compitum makes the tradeoffs explicit, bounded, and reproducible.
 
-## Core Science 0.1.1 — Validated Claims
+## Core Science 0.2.0 — Validated Claims
 
 These claims are backed by property‑based tests and structural checks. Each bullet links to representative test files (see `tests/`).
 

@@ -5,6 +5,8 @@ All notable changes to this project are documented here.
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
 
 ## [Unreleased]
+
+## [0.2.0] - 2026-07-21
 - Invariants: additional deep tests for score directionality, mixture discrimination, dual scaling, batch determinism
 - Docs: Core Science 0.1.1 coverage mapped to tests; index strip and README guidance
 - CI: invariants job (PR) + nightly deep; docs linkcheck
@@ -30,6 +32,21 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Homepage: honest hero metrics, researcher identity, cross-links to the Verifiable Routing paper and
   certified hybrid figures.
 - Docs/notebooks/wiki: notebook-to-wiki embedding pipeline, Binder links for example notebooks.
+- Mutation hardening: real `mutmut` sweeps (CI-verified where noted) across the full `src/compitum`
+  shard matrix, closing every genuinely-testable survivor with behavioral tests rather than
+  line-coverage padding. `constraints.py` and `metric.py`'s previously-deferred survivors were
+  resolved this pass: `constraints.py`'s shadow-price/relaxation/tie-boundary gaps (via call-count
+  side-channel observability, since several mutations don't change the final returned value) plus a
+  new Hypothesis property test sweeping `ReflectiveConstraintSolver.select()`; `metric.py`'s
+  backtracking-loop `bt`-counter/boundary gaps (via batches engineered to need an exact, discrete
+  number of halvings to converge, rather than fragile floating-point bisection), with one mutant
+  proven genuinely equivalent by direct simulation. Extended mutation scope to 3 previously-untested
+  behavior-bearing modules (`integrations/materials_project_audit.py`,
+  `applications/fusion/diiid_adapter.py`, `applications/fusion/eval_offline.py`); see
+  `MUTATION_HARDENING_STATUS.md` for the full per-file accounting, survivor dispositions, and known
+  local-tooling caveats.
+- Packaging: `compitum.__version__` and Sphinx's `version`/`release` now derive from installed
+  package metadata (`importlib.metadata`) instead of duplicating the version string.
 
 ## [0.1.1] - 2025-10-27
 ### Added

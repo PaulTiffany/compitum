@@ -75,7 +75,7 @@ python tools\analysis\control_kpis.py ^
   --out-md reports\control_kpis.md
 ```
 
-## Stability Evidence (0.1.1)
+## Stability Evidence (0.2.0)
 
 - Lyapunov proxy decay under zero drift; saturation under sustained drift; recovery when drift ceases.
   - `tests/invariants/test_invariants_control_lyapunov.py`

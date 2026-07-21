@@ -80,7 +80,7 @@ python tools\analysis\cl_decision_curves.py ^
 - Deterministic evaluation with fixed seeds and offline artifacts.
 - Attach reports/cl_summary.md, reliability_curve.md/png, cei_report.md, fixed_wtp_summary.md.
 
-## Determinism & Explainability (0.1.1)
+## Determinism & Explainability (0.2.0)
 
 - Determinism
   - Repeated route and batch determinism under fixed seeds/embeddings.

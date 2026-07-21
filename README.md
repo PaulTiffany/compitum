@@ -87,7 +87,7 @@ See `configs/` and `examples/` for constraints and a synthetic benchmark.
 - Calibration CLI: `tools/calibrate_matbench_srmf.py`
 - Regret CLI: `tools/eval_matbench_regret.py`
 
-## Core Science 0.1.1
+## Core Science 0.2.0
 
 - Geometry: SPD bounds, triangle inequality, ray monotonicity, update descent.
 - Stability: Lyapunov decay/saturation/recovery; ΔV proxy sequences; combined update boundedness.

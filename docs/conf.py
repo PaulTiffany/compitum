@@ -1,10 +1,16 @@
 import os
 import sys
 from datetime import datetime
+from importlib.metadata import version as _pkg_version
 
 project = "Compitum"
 author = "Compitum authors"
 copyright = f"{datetime.now():%Y}, {author}"
+
+# Single-language, non-versioned site (see sitemap_url_scheme below) -- these
+# feed template substitutions like |version|, not a version switcher.
+release = _pkg_version("compitum")
+version = release
 
 extensions = [
     "myst_parser",

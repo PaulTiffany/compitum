@@ -51,7 +51,7 @@ python tools\analysis\reliability_curve.py ^
 
 ## Constraints and Shadow Prices
 
-### Duals Evidence (0.1.1)
+### Duals Evidence (0.2.0)
 
 - Shadow price diagnostics behave as expected: slack~0 when clearly non-binding; boundary>=0; monotone near binding; scale with utility units.
   - Tests: `tests/invariants/test_invariants_constraints_duals.py`, `tests/invariants/test_invariants_duals_near_binding.py`, `tests/invariants/test_invariants_duals_monotone.py`, `tests/invariants/test_invariants_duals_scaling.py`

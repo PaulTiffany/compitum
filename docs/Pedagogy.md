@@ -37,7 +37,7 @@ Further Resources
 - {doc}`Math-Brief` - plain-language math overview
 - {doc}`PEER_REVIEW` - reproducibility and evidence package
 
-## Evidence of "Control of Error" (0.1.1)
+## Evidence of "Control of Error" (0.2.0)
 
 - Practice improves performance where the environment encodes feedback
   - Coherence reservoir updates around the winner's whitened vector increase evidence and (with I_s > 0) utility.

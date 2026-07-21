@@ -85,7 +85,7 @@ python tools\analysis\lg_summary.py ^
 - Claim boundary (honest positioning)
   - Same data-generation process as RL, different estimator: we use full-information, judge-free surrogates available at decision time. We do not introduce a judge model or delayed reward; conclusions are empirical and robust across lambda, beta_s, and rank sweeps.
 
-## Geometry & Coherence Evidence (0.1.1)
+## Geometry & Coherence Evidence (0.2.0)
 
 - Geometry
   - SPD eigenvalue bounds, triangle inequality, ray monotonicity, multi‑step update descent.
