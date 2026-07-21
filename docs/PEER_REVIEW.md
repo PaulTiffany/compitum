@@ -125,9 +125,18 @@ provides by construction.
 
 ### Acceptance criteria (example)
 
-- Panel average mean regret lower than best baseline at lambda in {0.1, 1.0}
-- Win rate > 50% with non-overlapping 95% CI vs. parity for at least one lambda slice
-- Constraint compliance rate >= 99.9%
+The primary, load-bearing claim is mean regret, not win rate -- see **Near-Frontier Behavior**
+above and the **Methodological Limitation** note below for why envelope wins are expected to be
+rare on flat, one-shot benchmark data. The win-rate bullet below is illustrative methodology (what
+a reviewer *could* also check), not a pass/fail bar this release is claimed to clear -- the current
+run's win rate is 0.0% at both audited WTP slices (see **Results (Fill-In Table)**), which is
+consistent with, not a violation of, the mean-regret claim above.
+
+- Panel average mean regret lower than best baseline at lambda in {0.1, 1.0} (the actual claim)
+- Constraint compliance rate >= 99.9% (the actual claim)
+- Win rate > 50% with non-overlapping 95% CI vs. parity for at least one lambda slice (illustrative
+  secondary methodology only; not expected to hold on flat benchmark data by this document's own
+  Near-Frontier framing)
 
 ## Datasets, Tasks, and Baselines
 
@@ -162,7 +171,7 @@ than as proof of a geometric routing advantage.
   -> `matbench-calibrate` -> `matbench-eval` -> `matbench-attest`; see `Makefile`).
 - Artifacts and provenance: `tools/generate_matbench_attestation.py` produces a hash-manifested
   attestation (`reports/matbench_attestation.json`) of the calibration + regret run, following the
-  same `compitum.release-attestation/v1`-style schema as the rest of this document's evidence chain.
+  same `compitum.release-attestation/v2`-style schema as the rest of this document's evidence chain.
 
 ## One-Shot Reproduction
 
@@ -276,20 +285,29 @@ python -m sphinx -b html docs docs/_build/html
 - Determinism: Hypothesis tests set derandomize=true; demo fits accept `--seed`; orchestration scripts fix seeds.
 - Provenance: a manifest records git SHA, tool versions, WTP grid, and SHA-256 of generated artifacts.
 
-Engineering note: We follow the same Control‑of‑Error ethos in development. Invariants + Hypothesis, mutation testing, strict docs gates, and audience‑specific analyses (CEI, reliability, decision/control KPIs) provide immediate, judge‑free feedback for the codebase. During release preparation we briefly edited and promptly reverted one source file; all results and reports here were generated from the current tagged code with fixed seeds and a recorded environment.
+Engineering note: We follow the same Control‑of‑Error ethos in development. Invariants + Hypothesis, mutation testing, strict docs gates, and audience‑specific analyses (CEI, reliability, decision/control KPIs) provide immediate, judge‑free feedback for the codebase. During release preparation we briefly edited and promptly reverted one source file; all results and reports here were generated from the current frozen release-candidate commit with fixed seeds and a recorded environment.
 
-## Mutation Testing (Cosmic Ray)
+## Mutation Testing (mutmut + Cosmic Ray)
 
-We run a fresh Cosmic Ray session as part of the quality pipeline and publish both the raw dump and a compact summary.
+Mutation testing runs two complementary tools rather than a single aggregate score: `mutmut`
+(the primary per-file certification tool, sharded across a matrix of 20 `src/compitum/` modules
+in `.github/workflows/mutation.yml`) and Cosmic Ray (a secondary cross-check with narrower,
+flat-module scope). A single "mutation_score: 1.0000"-style number is not, by itself, a
+certification -- see `MUTATION_HARDENING_STATUS.md` at the repo root for the authoritative,
+per-file accounting: every survivor is classified as a genuine defect (fixed), a proven equivalent
+mutant, or an explicitly accepted defensive/unreachable case with its exact source location and
+reasoning recorded, rather than collapsed into a bare percentage.
 
-- Summary (JSON): `reports/mutation_summary.json`
-- Raw dump (NDJSON): `reports/cr_report.json`
+Current status: every release-critical module in the 20-file matrix is fully classified. Exactly
+2 survivors remain, both explicitly accepted (not gaps): `constraints.py` ID 62 and `metric.py`
+ID 125, each a documented defensive/pragma-exempted case. A fresh CI-run re-verification of the
+full matrix against this exact commit has not yet completed as of this writing (the mutation
+workflows were recently repaired -- a missing Cosmic Ray baseline step, a silent-pass bug in
+gate-checking, and shard-identity/nested-path bugs were all found and fixed this pass).
 
-Current run (this branch):
-
-- jobs: 5562; mutations_seen: 5562; outcomes: killed: 5562; mutation_score: 1.0000
-
-The summary JSON aggregates Cosmic Ray's NDJSON dump and reports mutation score = killed / total. A score near 1.0 indicates tests reliably detect injected faults.
+- Per-file detail, survivor dispositions, exact commits: `MUTATION_HARDENING_STATUS.md`
+- Aggregate summary (JSON, when a sweep has run): `reports/mutation_summary.json`
+- Cosmic Ray raw dump (NDJSON, when a sweep has run): `reports/cr_report.json`
 
 ### Cross-platform notes
 
@@ -298,27 +316,43 @@ The summary JSON aggregates Cosmic Ray's NDJSON dump and reports mutation score 
 
 ## Results (Fill-In Table)
 
-Populate the following with the outputs from step (3). Report both per-task values and panel averages.
+Populated from a real, fresh RouterBench evaluation run against this exact 0.2.0 candidate (not
+stale data -- reproduces the previously-committed panel-average numbers almost exactly). Per-task
+rows are single point estimates (this repo's shipped bootstrap tooling resamples over *tasks*, i.e.
+`eval_name` values, as the evaluation unit -- see `tools/analysis/fixed_wtp_ci.py` -- so a
+single-task row has nothing further to resample; only the **Panel Avg** row has a genuine 95%
+bootstrap CI, carried over unchanged from `reports/fixed_wtp_summary.md`). "lambda Utility" is not
+a metric computed by any script in this repo -- left as N/A rather than fabricated; if this column
+is meant to mean something specific, it should be defined or removed in a future pass. "Avg Cost
+delta (wins)" is undefined everywhere here since win rate is 0.0% (no wins to compute a cost delta
+over).
 
 ### WTP = 0.1
 
 | Task | Best Baseline Utility | Compitum Utility | lambda Utility | Mean Regret | P95 Regret | Win Rate | Avg Cost delta (wins) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| grade-school math | "" | "" | "" | "" | "" | "" | "" |
-| hellaSWAG | "" | "" | "" | "" | "" | "" | "" |
-| MBPP | "" | "" | "" | "" | "" | "" | "" |
-| Panel Avg | "" | "" | "" | "" | "" | "" | "" |
+| grade-school math | -3.838395 | 0.388201 | N/A | 4.226597 | 4.226597 | 0.0% | N/A |
+| hellaSWAG | -5.931090 | 0.663423 | N/A | 6.594513 | 6.594513 | 0.0% | N/A |
+| MBPP | 0.392420 | 0.846178 | N/A | 0.453759 | 0.453759 | 0.0% | N/A |
+| Panel Avg | 0.249926 | 0.850629 | N/A | 0.601950 [0.456828, 0.801042] | 1.011092 | 0.0% [0.0%, 0.0%] | N/A |
 
-95% CIs (per column) from bootstrap over evaluation units.
+Panel Avg's Mean Regret carries its real 95% bootstrap CI (1000 resamples over the 86-task panel);
+per-task rows above it are single-point values, not independently bootstrapped.
 
 ### WTP = 1.0
 
 | Task | Best Baseline Utility | Compitum Utility | lambda Utility | Mean Regret | P95 Regret | Win Rate | Avg Cost delta (wins) |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| grade-school math | "" | "" | "" | "" | "" | "" | "" |
-| hellaSWAG | "" | "" | "" | "" | "" | "" | "" |
-| MBPP | "" | "" | "" | "" | "" | "" | "" |
-| Panel Avg | "" | "" | "" | "" | "" | "" | "" |
+| grade-school math | -44.347208 | -0.281866 | N/A | 44.065342 | 44.065342 | 0.0% | N/A |
+| hellaSWAG | -62.135830 | -1.015686 | N/A | 61.120145 | 61.120145 | 0.0% | N/A |
+| MBPP | -1.850978 | 0.663190 | N/A | 2.514167 | 2.514167 | 0.0% | N/A |
+| Panel Avg | -2.100669 | 0.731502 | N/A | 2.842856 [1.396108, 4.863837] | 5.591175 | 0.0% [0.0%, 0.0%] | N/A |
+
+The regret gap is concentrated in grade-school math and hellaSWAG specifically (Compitum's utility
+is strongly negative on both, at both WTP slices) -- MBPP is comparatively competitive (mean regret
+0.45 at WTP=0.1, vs. 4.2-6.6 for the other two tasks). This is a real, current characteristic of
+this evaluation run, not a stale-data artifact -- see the **Methodological Limitation** note above
+for the scope reason this benchmark isn't expected to showcase Compitum's geometric mechanism.
 
 ## Results (Panel Averages - Auto-Included)
 
