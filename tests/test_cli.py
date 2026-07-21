@@ -1,9 +1,38 @@
 import runpy
 import sys
+from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
 import yaml
+
+
+def test_resolve_config_path_uses_given_path_when_it_exists(tmp_path: Any) -> None:
+    from compitum.cli import _resolve_config_path
+
+    real_path = tmp_path / "router_defaults.yaml"
+    real_path.write_text("alpha: 0.1")
+    resolved = _resolve_config_path(real_path, "router_defaults.yaml")
+    assert resolved == real_path
+
+
+def test_resolve_config_path_falls_back_to_packaged_default(tmp_path: Any) -> None:
+    """A `pip install`ed wheel has no `configs/` directory alongside it -- only
+    whatever ships inside the package itself (src/compitum/configs/*.yaml).
+    A nonexistent CWD-relative path must fall back to that bundled copy,
+    not raise FileNotFoundError, matching what a fresh clean-install user
+    running `compitum route` with no repo checkout actually experiences."""
+    from compitum.cli import _resolve_config_path
+
+    missing_path = tmp_path / "does_not_exist.yaml"
+    resolved = _resolve_config_path(missing_path, "router_defaults.yaml")
+    assert resolved != missing_path
+    assert resolved.exists()
+    assert resolved.name == "router_defaults.yaml"
+    # Confirm it's the real packaged default, not an empty/placeholder file
+    cfg = yaml.safe_load(resolved.read_text())
+    assert "metric" in cfg
+    assert isinstance(Path(resolved), Path)
 
 
 def test_cli_route_command_verbose(tmp_path: Any, capsys: Any) -> None:

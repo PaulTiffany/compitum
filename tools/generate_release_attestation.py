@@ -67,9 +67,7 @@ def _latest_eval_csv(eval_dir: Path) -> Optional[Path]:
 
 def _git(args: List[str]) -> Optional[str]:
     try:
-        out = subprocess.run(
-            ["git", *args], capture_output=True, text=True, check=True, timeout=10
-        )
+        out = subprocess.run(["git", *args], capture_output=True, text=True, check=True, timeout=10)
         return out.stdout.strip()
     except Exception:
         return None

@@ -72,7 +72,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Summarize Cosmic Ray dump into a compact JSON")
     ap.add_argument("dump_path", type=str)
     ap.add_argument("out_path", type=str)
-    ap.add_argument("--group", default=None, help="Shard/module name, embedded into the output JSON")
+    ap.add_argument(
+        "--group", default=None, help="Shard/module name, embedded into the output JSON"
+    )
     args = ap.parse_args()
 
     text = Path(args.dump_path).read_text(encoding="utf-8")

@@ -51,7 +51,7 @@ include = ["compitum*"]
 exclude = ["routerbench*"]
 
 [tool.setuptools.package-data]
-compitum = ["py.typed"]
+compitum = ["py.typed", "configs/*.yaml"]
 
 # --------------------------- 
 # Ruff

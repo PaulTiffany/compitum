@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from importlib.resources import files
 from pathlib import Path
 from typing import List, Tuple
 
@@ -37,6 +38,16 @@ def _load_constraints(path: Path) -> Tuple[np.ndarray, np.ndarray]:
     return np.array(cfg["A"], float), np.array(cfg["b"], float)
 
 
+def _resolve_config_path(path: Path, package_filename: str) -> Path:
+    """Fall back to this package's bundled default config when the given
+    (typically CWD-relative) path doesn't exist -- a `pip install`ed wheel has
+    no `configs/` directory alongside it, only whatever ships inside the
+    package itself."""
+    if path.exists():
+        return path
+    return Path(str(files("compitum.configs").joinpath(package_filename)))
+
+
 def _toy_models(D: int) -> List[Model]:
     rng = np.random.default_rng(7)
     centers = {
@@ -53,6 +64,9 @@ def route_command(args: argparse.Namespace) -> None:
     # Honor offline flag early for any optional integrations that may be added later
     if getattr(args, "offline", False):
         os.environ["COMPITUM_OFFLINE"] = "1"
+
+    args.defaults = _resolve_config_path(args.defaults, "router_defaults.yaml")
+    args.constraints = _resolve_config_path(args.constraints, "constraints_us_default.yaml")
 
     dcfg = yaml.safe_load(args.defaults.read_text())
     D = int(dcfg["metric"]["D"])
