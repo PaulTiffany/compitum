@@ -406,6 +406,117 @@ def test_batch_update_spd_backtracking_engages_and_arithmetic_is_exact() -> None
     assert np.allclose(metric.L, np.array([[-4.0], [-3.0]]))
 
 
+def test_batch_update_spd_backtracking_stops_exactly_at_bt_8_boundary() -> None:
+    """`bt < 8` was only ever exercised where convergence happens well
+    before the cap. A batch needing *exactly* 8 halvings to converge pins
+    the `bt < 8` cutoff itself: mutating the loop's initial `bt = 0` to
+    `bt = 1` makes the loop exit one halving early (still unconverged),
+    falling into the defensive fallback and leaving `self.L` completely
+    unchanged -- rather than the correct, fully-converged result."""
+    metric = SymbolicManifoldMetric(D=2, rank=1, delta=0.1)
+    metric.L = np.array([[3.0], [4.0]])
+    metric._update_cholesky()
+    srmf_controller = MagicMock()
+    srmf_controller.update.return_value = (1e6, {})
+    n = 512
+    x_batch = np.zeros((n, 2))
+    x_batch[0] = [100.0, 100.0]
+    x_batch[1:] = 0.001
+    mu_batch = np.zeros((n, 2))
+    metric.batch_update_spd(
+        x_batch,
+        mu_batch,
+        beta_d=0.5,
+        d_batch=np.ones(n),
+        eta=100.0,
+        srmf_controller=srmf_controller,
+    )
+    assert np.allclose(metric.L, np.array([[-4.0], [-3.0]]))
+
+
+def test_batch_update_spd_backtracking_cap_triggers_defensive_fallback() -> None:
+    """A batch needing *9* halvings to fully converge, with the loop capped
+    at 8, exercises the `if e1 > e0:` post-loop defensive-fallback branch
+    for real: `self.L` is left completely unchanged. This pins the `bt < 8`
+    cutoff from the other side (`bt <= 8` and `bt < 9` would each allow a
+    9th halving, reaching convergence and updating `self.L` instead), and
+    also pins the `bt` counter's own increment mechanics (`bt = 1` and
+    `bt -= 1` both prevent `bt` from ever reaching 8, so the loop would
+    instead run until natural convergence instead of hitting the cap)."""
+    metric = SymbolicManifoldMetric(D=2, rank=1, delta=0.1)
+    metric.L = np.array([[3.0], [4.0]])
+    metric._update_cholesky()
+    srmf_controller = MagicMock()
+    srmf_controller.update.return_value = (1e6, {})
+    n = 1024
+    x_batch = np.zeros((n, 2))
+    x_batch[0] = [100.0, 100.0]
+    x_batch[1:] = 0.001
+    mu_batch = np.zeros((n, 2))
+    metric.batch_update_spd(
+        x_batch,
+        mu_batch,
+        beta_d=0.5,
+        d_batch=np.ones(n),
+        eta=100.0,
+        srmf_controller=srmf_controller,
+    )
+    assert np.allclose(metric.L, np.array([[3.0], [4.0]]))
+
+
+def test_batch_update_spd_backtracking_counter_doubling_cuts_off_early() -> None:
+    """A batch that converges normally in 6 halvings -- comfortably under
+    the 8-halving cap -- still catches a counter that advances *twice* as
+    fast as it should (`bt += 1` -> `bt += 2`): the mutant reaches the
+    `bt < 8` cutoff after only 4 real halvings, before convergence, landing
+    in the defensive fallback (`self.L` unchanged) instead of the correct
+    converged result."""
+    metric = SymbolicManifoldMetric(D=2, rank=1, delta=0.1)
+    metric.L = np.array([[3.0], [4.0]])
+    metric._update_cholesky()
+    srmf_controller = MagicMock()
+    srmf_controller.update.return_value = (1e6, {})
+    n = 128
+    x_batch = np.zeros((n, 2))
+    x_batch[0] = [100.0, 100.0]
+    x_batch[1:] = 0.001
+    mu_batch = np.zeros((n, 2))
+    metric.batch_update_spd(
+        x_batch,
+        mu_batch,
+        beta_d=0.5,
+        d_batch=np.ones(n),
+        eta=100.0,
+        srmf_controller=srmf_controller,
+    )
+    assert np.allclose(metric.L, np.array([[-4.0], [-3.0]]))
+
+
+def test_batch_update_spd_backtracking_loop_condition_boundary_is_strict() -> None:
+    """The `while` loop's own `e1 > e0` re-check (distinct from the
+    pre-loop `if e1 > e0:`) was never exercised at an exact equality
+    boundary. This batch overshoots such that, after exactly one halving,
+    `e1 == e0` bit-for-bit: correct code (`>`) stops there (one halving),
+    while a `>=` mutant would perform a second halving, landing on a
+    different `self.L`."""
+    metric = SymbolicManifoldMetric(D=2, rank=1, delta=0.1)
+    metric.L = np.array([[3.0], [4.0]])
+    metric._update_cholesky()
+    srmf_controller = MagicMock()
+    srmf_controller.update.return_value = (1e6, {})
+    x_batch = np.array([[10.0, 10.0], [0.001, 0.001], [0.001, 0.001], [0.001, 0.001]])
+    mu_batch = np.zeros((4, 2))
+    metric.batch_update_spd(
+        x_batch,
+        mu_batch,
+        beta_d=0.5,
+        d_batch=np.array([1.0, 1.0, 1.0, 1.0]),
+        eta=100.0,
+        srmf_controller=srmf_controller,
+    )
+    assert np.allclose(metric.L, np.array([[-4.0], [-3.0]]))
+
+
 def test_batch_update_spd_fnorm_clamp_between_10_and_11() -> None:
     """`fnorm > 10.0` was never tested with `fnorm` strictly between 10 and
     11 -- exactly at `fnorm == 10.0`, the clamp (`*= 10.0/fnorm`) is a

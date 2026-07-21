@@ -150,7 +150,12 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   the gradient-descent direction (`- eta_eff * grad_L`, not `+`) are all pinned to exact values; a
   wildly-skewed-magnitude batch forces the backtracking loop to genuinely engage (the `eta_stab`
   "stability cap" is only an average-based Lipschitz estimate, not worst-case), pinning its `eta_eff
-  *= 0.5` / `new_L = self.L - eta_eff * grad_L` arithmetic; `fnorm > 10.0`'s clamp is exercised with
+  *= 0.5` / `new_L = self.L - eta_eff * grad_L` arithmetic; the loop's `bt`-counter and its `bt < 8`
+  boundary (and the `while` condition's own `e1 > e0` re-check, distinct from the pre-loop `if`) are
+  each pinned by batches engineered to need a *specific, exact* number of halvings to converge —
+  controlled discretely via the batch's sample count (more small "padding" samples alongside one
+  large outlier shrinks the average-based Lipschitz estimate, requiring proportionally more
+  halvings), landing precisely on the loop's iteration-count boundaries; `fnorm > 10.0`'s clamp is exercised with
   `fnorm` strictly between 10 and 11 (not just at 10 exactly, where the clamp is a no-op regardless
   of `>`/`>=`); the residual-pruning loop removes from the front (FIFO), not an arbitrary index —
   `tests/test_metric.py`, `tests/test_metric_debug_path.py`
@@ -210,6 +215,12 @@ Known true equivalent mutants (not gaps):
   clamp (`self.L *= 10.0/fnorm`) multiplies by exactly `1.0`, a no-op in IEEE754 regardless of
   whether it fires; the only point where `>` and `>=` disagree is also the only point where the
   clamp can't have any effect.
+- `metric.py`'s `batch_update_spd()`'s pre-loop `if e1 > e0:` vs `>=` — the two conditions disagree
+  only at `e1 == e0` exactly, but the only statement gated by this `if` before the `while` loop is
+  `bt = 0` (a local counter with no effect if the loop never iterates); the loop's own re-check
+  (`bt < 8 and e1 > e0`, unmutated) independently re-derives the identical `e1 > e0` from the same
+  unchanged values, so at the one point of disagreement the loop still runs zero iterations either
+  way, and `self.L` ends up bit-identical regardless of how the `if` was entered.
 - `pgd.py`'s `aux_*` feature padding (loop bound, key-name mismatches between the write and the
   `.get()` read) — `aux_*` features are permanently `0.0` by construction (nothing else in
   `extract_features()` ever assigns them a nonzero value), and any genuinely-missing key gets
