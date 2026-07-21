@@ -95,9 +95,7 @@ def test_missing_required_column_raises(tmp_path: Path) -> None:
     pd.DataFrame([{"band_gap": 0.1, "density": 7.2, "nsites": 5}]).to_csv(csv, index=False)
     with pytest.raises(ValueError) as exc_info:
         CSVMatbenchAdapter(path=str(csv))
-    assert str(exc_info.value) == (
-        "Missing required columns: ['formation_energy_per_atom']"
-    )
+    assert str(exc_info.value) == ("Missing required columns: ['formation_energy_per_atom']")
 
 
 def test_missing_id_column_raises(tmp_path: Path) -> None:

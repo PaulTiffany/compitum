@@ -88,9 +88,7 @@ def test_write_audit_record_creates_nested_directories(tmp_path: Path):
     # is actually required.
     nested = tmp_path / "a" / "b" / "c"
     out = write_audit_record(
-        AuditRecord(
-            version="0.0.0", offline=False, seed=1, prompt={}, config={}, certificate={}
-        ),
+        AuditRecord(version="0.0.0", offline=False, seed=1, prompt={}, config={}, certificate={}),
         nested,
     )
     assert out.exists()
@@ -103,9 +101,7 @@ def test_write_audit_record_filename_is_plausible_epoch_ms_and_exact_indent(tmp_
     # produce a "run_....json"-shaped name). Bound it against the real clock.
     before_ms = time.time() * 1000
     out = write_audit_record(
-        AuditRecord(
-            version="0.0.0", offline=False, seed=1, prompt={}, config={}, certificate={}
-        ),
+        AuditRecord(version="0.0.0", offline=False, seed=1, prompt={}, config={}, certificate={}),
         tmp_path,
     )
     after_ms = time.time() * 1000

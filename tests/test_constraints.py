@@ -249,8 +249,12 @@ def test_solver_shadow_price_relaxation_epsilon_sign_is_plus() -> None:
     # keeps it comfortably feasible; -1e-5 pushes it back out.
     xB = np.array([1.0 + 0.5e-10])
 
-    m_star = Model(name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0)
-    competitor = Model(name="competitor", center=np.array([]), capabilities=OnceFalseCaps(), cost=0.0)
+    m_star = Model(
+        name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0
+    )
+    competitor = Model(
+        name="competitor", center=np.array([]), capabilities=OnceFalseCaps(), cost=0.0
+    )
 
     _, info = solver.select(xB, [m_star, competitor], {"m_star": 0.5, "competitor": 0.9})
     assert np.isclose(info["shadow_prices"]["lambda_0"], (0.9 - 0.5) / 1e-5)
@@ -271,10 +275,14 @@ def test_solver_shadow_price_context_passed_through_on_every_call() -> None:
     xB = np.array([0.5])
     context = {"region": "US"}
 
-    m_star = Model(name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0)
+    m_star = Model(
+        name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0
+    )
     competitor_caps = MagicMock()
     competitor_caps.supports.return_value = True
-    competitor = Model(name="competitor", center=np.array([]), capabilities=competitor_caps, cost=0.0)
+    competitor = Model(
+        name="competitor", center=np.array([]), capabilities=competitor_caps, cost=0.0
+    )
 
     solver.select(xB, [m_star, competitor], {"m_star": 0.5, "competitor": 0.3}, context=context)
 
@@ -306,7 +314,9 @@ def test_solver_shadow_price_ok_cap_false_keeps_competitor_non_viable() -> None:
     solver = ReflectiveConstraintSolver(A, b)
     xB = np.array([0.5])
 
-    m_star = Model(name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0)
+    m_star = Model(
+        name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0
+    )
     competitor = Model(
         name="competitor", center=np.array([]), capabilities=TwiceFalseCaps(), cost=0.0
     )
@@ -364,7 +374,9 @@ def test_solver_shadow_price_keeps_first_winner_not_last() -> None:
     solver = ReflectiveConstraintSolver(A, b)
     xB = np.array([0.5])
 
-    m_star = Model(name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0)
+    m_star = Model(
+        name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0
+    )
     strong = Model(name="strong", center=np.array([]), capabilities=OnceFalseCaps(), cost=0.0)
     weak = Model(name="weak", center=np.array([]), capabilities=OnceFalseCaps(), cost=0.0)
 
