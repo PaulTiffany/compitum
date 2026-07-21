@@ -17,7 +17,10 @@ def test_metric_distance_debug_prints_when_env_set():
         with redirect_stdout(buf):
             d, sigma = metric.distance(x, mu)
         out = buf.getvalue()
-        assert "!!! DISTANCE METHOD CALLED !!!" in out
+        # `in` is a substring check -- a mutation wrapping the text in extra
+        # characters (e.g. "XX...XX") would still satisfy it. Assert exact
+        # equality of the printed line.
+        assert out == "!!! DISTANCE METHOD CALLED !!!\n"
         assert isinstance(d, float) and isinstance(sigma, float)
     finally:
         os.environ.pop("COMPITUM_DEBUG_METRIC", None)

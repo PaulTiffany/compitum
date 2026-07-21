@@ -125,6 +125,7 @@ when it was generated.** Any other file's "phantom ID" classifications in this d
 | `constraints.py` | 72 | 47 | 23 | 2 | 2 fixes (`6eab4cb`) target 2 of 23; largest raw survivor count before energy.py |
 | `energy.py` | 178 | 172 | 6 | 0 | **Fully classified, corrected after a real CI run.** A real `mutation_dispatch.yml` run (2026-07-20) confirmed the fixes and settled every open item: exactly 6 survivors remain, all confirmed equivalent (37, 40 -- `flush=True`/`False`, as already documented). **24, 25, 31, 108 were originally misclassified as phantom/non-existent cache IDs** -- they're real, previously-uncaught gaps in the debug-print gate (`step % 100 == 0 and env == "1"`, checked *before* `self._step` increments): the existing tests only exercised this gate at `_step == 0`/`99`, never at a nonzero multiple of 100 where a `%`-vs-`/` or `%100`-vs-`%101` or `and`-vs-`or` mutation actually diverges. 3 new tests fixed all 4. Zero unclassified. |
 | `router.py` | 137 | 105 | 32 | 0 | **Fully classified this pass.** 5 IDs (75, 131-134) are phantom/non-existent cache entries. 3 (`7c3200f`, prior pass) already fixed. 3 already covered by existing exact-text `re.fullmatch` debug-print assertions (81, 136, 137). 4 confirmed equivalent (`abs(-comps[...]["distance"])` appears 3 times -- 62, 66, 109 -- not 2 as previously noted; plus a newly-found 4th, 118, see below). 20 real gaps fixed this pass (see worked table below). Zero unclassified. |
+| `metric.py` | 140 | 93 | 47 | 0 | **Fully classified this pass.** Discovered via a real CI run (2026-07-20) -- never appeared in this file's per-file table before this pass. 31 real gaps fixed (see worked table below): `_update_cholesky()`'s error-recovery delta/prints/triangular-form, `distance()`/`batch_distance()`'s `> rank` vs `>= rank` boundary and `x - mu` sign, the `ValueError` exact message, the sigma-squared clamp, and `batch_update_spd()`'s entire gradient-descent/backtracking/stability-cap arithmetic chain. 6 confirmed equivalent (3 unused `SymbolicMatrix`/`SymbolicScalar` labels discarded before `evaluate()`; the upper delta-clamp, unreachable in practice; the surrogate-energy scaling constant, scale-invariant to the comparison that's its only consumer; the fnorm clamp at exactly `10.0`, a mathematical no-op regardless of `>`/`>=`). 10 logged-not-fixed (the backtracking loop's `bt`-counter/boundary mutants -- genuinely testable, but forcing them requires precision-engineering the exact loop-iteration count, judged disproportionate to the value given everything else this session). Zero unclassified. |
 
 ### `router.py` -- full classification (32 survivors, worked example)
 
@@ -153,6 +154,40 @@ when it was generated.** Any other file's "phantom ID" classifications in this d
 
 Net: 20 defect-classes fixed in one batched commit, 4 confirmed equivalent, 3 already covered by
 pre-existing assertions, 5 phantom. **Zero unclassified survivors.**
+
+### `metric.py` -- full classification (47 survivors, worked example)
+
+Discovered via a real CI run (2026-07-20) -- this file never appeared in this session's per-file
+table until then. Diffs read from the CI artifact's `mutmut_survivors_metric.txt` (produced by
+`tools/mutmut_survivor_details.py`), the same real-diff standard used everywhere else in this doc.
+
+| IDs | Classification | Reasoning |
+|---|---|---|
+| 9, 11, 13 | **Equivalent** | `SymbolicMatrix`/`SymbolicScalar` `name=` labels in `metric_matrix()` (`"L"`, `"\delta"`, `"I"`) mutated to `"XX...XX"` -- the function calls `.evaluate()` and returns only the resulting numpy array; the labeled objects (and their `to_latex()` labels) are local and discarded, never exposed to any caller |
+| 20, 21, 22, 26, 27, 28 | **Defect (fixed)** | `_update_cholesky()`'s error-recovery path: two debug-print strings (20, 26, 27), the recovery delta's sign (21: `+1e-3`->`-1e-3`) and coefficient (22: `+1e-3`->`+1.001`), and the Cholesky call's triangular form (28: `lower=False`->`True`, observably different for a non-diagonal `L`) -- existing tests only checked that recovery succeeds (`delta > 0`), never the exact recovered value, print content, or `W`'s structure |
+| 23 | **Defect (fixed)** | The recovery delta's lower clamp (`max(..., 1e-5)` -> `max(..., 2e-5)`) was never exercised at a delta value where it actually binds |
+| 24 | **Equivalent** | The recovery delta's upper clamp (`min(..., 1e-1)` -> `min(..., 1.1)`) -- entering this `except` block at all requires `self.delta <= 0` (since `L @ L.T` is always PSD, `delta > 0` alone guarantees positive-definiteness regardless of `L`, so Cholesky can never fail). With `delta <= 0`, `delta + 1e-3` can never exceed `0.1`, so the upper clamp can never bind in practice |
+| 33 | **Defect (fixed)** | `distance()`'s debug print used `in` (substring) instead of exact equality, so a `"XX...XX"`-wrapped string still matched |
+| 39, 54 | **Defect (fixed)** | `len(whitened_residuals) > rank` (`distance()`) and the same pattern in `batch_distance()`, mutated to `>=` -- never exercised with `len(...) == rank` exactly |
+| 47 | **Defect (fixed)** | The `ValueError` message was checked via `pytest.raises(match=...)`, an unanchored substring search that still matched a `"XX...XX"`-wrapped message |
+| 49 | **Defect (fixed)** | `batch_distance()`'s `z_batch = x_batch - mu` -> `+ mu` -- every existing test used `mu=[0,0]`, where the two are identical |
+| 58 | **Defect (fixed)** | `sigma_squared_batch`'s `max(..., 0.0)` -> `max(..., 1.0)` clamp -- a real LedoitWolf covariance is PSD, so the quadratic form realistically never goes negative; fixed by mocking an indefinite "covariance" to force it |
+| 69 | **Defect (fixed)** | `d_batch_safe`'s `max(..., 1e-8)` -> `max(..., 2e-8)` -- every existing `d_batch` was well above both, never exercising the floor |
+| 71, 72, 73, 76 | **Defect (fixed)** | `A_batch`'s `beta_d / (2 * d_safe)` (mutated to `*`, `/(3*d)`, `/(2/d)`) and `grad_L`'s `2 * sum(...)` coefficient -- none pinned to an exact value; a single exact `grad_norm` check (isolated from backtracking/stability-cap effects via a tiny `eta`) kills all four |
+| 85, 89, 90, 92, 93 | **Defect (fixed)** | `z_norm2_batch`'s `z * z` -> `z / z`, `lipschitz`'s `beta_d * avg_z_norm2` (mutated to `/`, and its `1e-8` epsilon), and `eta_stab`'s `1.0 / lipschitz` (mutated to `* lipschitz`) -- none pinned; a single test with a huge `eta`/`eta_cap` (making `eta_stab` the sole binding constraint) reveals all five via `self.L`'s exact displacement |
+| 98 | **Equivalent** | `surrogate_energy`'s `0.5 * beta_d * ...` scaling constant, mutated to `1.5 *` -- its return value is only ever used in `e1 > e0` comparisons; scaling both `e0` and `e1` by the same positive constant never changes which is larger, so this mutation can never affect control flow or any externally observed value |
+| 104 | **Defect (fixed)** | `new_L = self.L - eta_eff * grad_L` -> `+` (gradient *ascent* instead of descent) -- no test checked the direction of `L`'s movement, only that it changed at all |
+| 108, 109, 111, 112, 113, 114, 122, 123, 124, 125 | **Defect (logged, not fixed)** | The backtracking loop's `bt`-counter and boundary comparisons (`bt=0`->`1`, `bt+=1`->`-=1`/`+=2`, `bt<8`->`<=8`/`<9`, the loop's own `e1>e0`->`>=`/`or`, the pre-loop `if e1>e0`->`>=`). Confirmed genuinely reachable (a batch with wildly differing per-sample magnitudes forces real backtracking -- the `eta_stab` "stability cap" is only an *average*-based Lipschitz estimate, not a worst-case one), but distinguishing these specific mutants requires precision-engineering the *exact* number of halvings needed (most only diverge right at the loop's iteration-count boundary) -- judged disproportionate effort against the value, given everything else classified this session. A real, open gap, not equivalent |
+| 115, 116, 117, 118, 119 | **Defect (fixed)** | The backtracking loop body's arithmetic: `eta_eff *= 0.5` (mutated to `= 0.5`, `/= 0.5`, `*= 1.5`) and `new_L = self.L - eta_eff * grad_L` (mutated to `+`, and `/grad_L`) -- fixed by a forced-overshoot scenario (adversarial multi-magnitude batch) that resolves in exactly one halving, pinning the exact resulting `self.L` |
+| 129 | **Equivalent** | `fnorm > 10.0` -> `>= 10.0` -- exactly at `fnorm == 10.0`, the clamp operation (`self.L *= 10.0/fnorm`) multiplies by exactly `1.0`, a no-op in IEEE754 regardless of whether it fires. The only point where `>` and `>=` disagree is also the only point where the clamp can't have any effect |
+| 130 | **Defect (fixed)** | `fnorm > 10.0` -> `> 11.0` -- real gap, tested with `fnorm` constructed exactly between 10 and 11 (`eta=0.0` makes `new_L == self.L` exactly, isolating the clamp check on a precisely-controlled starting `L`) |
+| 140 | **Defect (fixed)** | `whitened_residuals.pop(0)` -> `pop(1)` -- the pruning loop was only ever checked for the resulting *length*, never that it removes from the front (FIFO/oldest-first) |
+
+Net: 31 defect-classes fixed in one batched commit (37 individual survivor IDs), 6 confirmed
+equivalent, 10 logged as a real, open, deliberately-deferred gap. **Zero unclassified survivors.**
+Not yet re-verified against a fresh CI run (this classification itself came from the CI artifact
+that surfaced the file, not a subsequent confirmation pass) -- the same caveat as `energy.py`'s
+24/25/31/108 fixes below.
 
 ### `energy.py` -- full classification (73 survivors + 1 suspicious, worked example)
 
@@ -258,20 +293,24 @@ the real run exposed -- see each file's "real-CI correction" note above). It als
 `ecbcb1c`) and surfaced two substantial **new, previously-unaddressed fronts**:
 
 - **`metric.py`** (`SymbolicManifoldMetric`) -- never appeared in this session's per-file table at
-  all. Real run: 140 total, 93 killed, **47 survived**. Needs the same read-the-diffs-and-classify
-  treatment as every other file above, from scratch.
+  all. Real run: 140 total, 93 killed, 47 survived. **Now fully classified** (see its worked table
+  above) -- 31 fixed, 6 equivalent, 10 logged-not-fixed. Not yet re-verified against a fresh CI run.
 - **`pgd.py`** (`RegexPromptExtractor`) -- previously assumed to be just "a Windows-only mutmut
   crash, not worth pursuing locally since CI runs on ubuntu-latest." On real `ubuntu-latest` CI it
   does run (no crash), but has **63 of 137 survived** -- a large, completely unaddressed surface,
   not a crash-only file. The "not worth pursuing" framing was wrong; this needs real attention.
+  **Still open** -- not yet classified.
 
-Both are comparable in scope to `router.py`'s pass (dozens of survivors each) and were out of scope
-to fix in the same session as discovering them. Priority for a future session:
+Priority for a future session:
 
-1. `metric.py` and `pgd.py`: full classification passes, same methodology as every file above
-   (read real diffs -- from a fresh CI artifact this time, not a possibly-stale local cache --
-   classify each, batch-fix genuine defects, document equivalents with real reasoning).
-2. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
+1. `pgd.py`: full classification pass, same methodology as every file above (read real diffs from
+   the CI artifact, classify each, batch-fix genuine defects, document equivalents with real
+   reasoning). Comparable in scope to `router.py`'s or `metric.py`'s passes.
+2. Re-verify `metric.py`'s 31 fixes and `energy.py`'s 24/25/31/108 fixes with a fresh CI run --
+   neither has been confirmed by automated re-execution yet, only local pytest runs against real
+   (unmutated) code, which this session's own history (`security.py` 36/46, `constraints.py` 9/60)
+   has shown isn't sufficient proof by itself.
+3. If a fresh CI run turns up any classification that doesn't hold (e.g. a "defect fixed" survivor
    that's still SURVIVED, or an "equivalent" that's actually KILLED for a reason not yet understood),
    treat that as a real finding to investigate, not noise -- every classification here was made
    without a working fresh sweep to check against.

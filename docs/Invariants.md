@@ -129,6 +129,19 @@ fix, and in `energy.py`'s case confirmed killed against the real mutant diff.
   placeholder; both route()'s and batch_route()'s debug-print elapsed times are bounded, not just
   regex-shaped (a `time.time() + start_time` sign flip still matches `\d+\.\d{4}`) —
   `tests/test_router_simple.py`, `tests/test_router_batch.py`
+- `metric.py`: `_update_cholesky()`'s error-recovery delta/prints are exact and the recovered `W` is
+  upper-triangular; `distance()`/`batch_distance()`'s `len(whitened_residuals) > rank` boundary is
+  exercised at exact equality, and `z = x - mu` (not `+ mu`); the `ValueError` when `W` stays `None`
+  matches its exact message; the sigma-squared clamp floors at exactly `0.0`, not `1.0` (forced via
+  a mocked indefinite covariance, since a real PSD one never goes negative); `batch_update_spd()`'s
+  `d_batch_safe` epsilon, `A_batch`/`grad_L`/`z_norm2_batch`/`lipschitz`/`eta_stab` arithmetic, and
+  the gradient-descent direction (`- eta_eff * grad_L`, not `+`) are all pinned to exact values; a
+  wildly-skewed-magnitude batch forces the backtracking loop to genuinely engage (the `eta_stab`
+  "stability cap" is only an average-based Lipschitz estimate, not worst-case), pinning its `eta_eff
+  *= 0.5` / `new_L = self.L - eta_eff * grad_L` arithmetic; `fnorm > 10.0`'s clamp is exercised with
+  `fnorm` strictly between 10 and 11 (not just at 10 exactly, where the clamp is a no-op regardless
+  of `>`/`>=`); the residual-pruning loop removes from the front (FIFO), not an arbitrary index —
+  `tests/test_metric.py`, `tests/test_metric_debug_path.py`
 
 Known true equivalent mutants (not gaps):
 - `d_best = abs(-comps[...]["distance"])` — appears 3 times (`route()`'s metric-update branch,
@@ -163,3 +176,17 @@ Known true equivalent mutants (not gaps):
   internally renormalizes `sample_weight` before use, so any positive scalar rescaling of the same
   weight vector produces identical results up to ~1e-15 floating-point noise (verified empirically,
   not assumed).
+- `metric.py`'s `metric_matrix()`: the `name=` labels passed to `SymbolicMatrix`/`SymbolicScalar`
+  (`"L"`, `"\delta"`, `"I"`) — the function returns only `.evaluate()`'s numpy array; the labeled
+  objects (and their `to_latex()` output) are local and discarded, never exposed to any caller.
+- `metric.py`'s `_update_cholesky()` recovery delta's upper clamp (`min(..., 1e-1)` vs `1.1`) —
+  entering that `except` block at all requires `self.delta <= 0` (any positive delta alone
+  guarantees `L @ L.T + delta*I` is positive-definite, so Cholesky can never fail), and the
+  recovery step only adds `1e-3`, so the result can never exceed `0.1` regardless of the mutation.
+- `metric.py`'s `surrogate_energy`'s `0.5 *` scaling constant vs `1.5 *` — its return value is only
+  ever used in `e1 > e0` comparisons; scaling both sides by the same positive constant never
+  changes which is larger, so it can't affect control flow or any other observed value.
+- `metric.py`'s `batch_update_spd()`'s `fnorm > 10.0` vs `>= 10.0` — exactly at `fnorm == 10.0`, the
+  clamp (`self.L *= 10.0/fnorm`) multiplies by exactly `1.0`, a no-op in IEEE754 regardless of
+  whether it fires; the only point where `>` and `>=` disagree is also the only point where the
+  clamp can't have any effect.
