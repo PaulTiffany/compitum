@@ -276,10 +276,15 @@ jobs:
           mkdir -p reports
           SESSION_DB="$RUNNER_TEMP/cr-${GROUP}-${{ github.run_id }}.sqlite"
           cosmic-ray init --force "$CFG" "$SESSION_DB"
+          # Prove the unmutated suite passes before spending time on mutants --
+          # without this, a broken baseline (bad config, real test failure)
+          # would just show up as every mutant "surviving," indistinguishable
+          # from a genuine mutation-coverage gap.
+          cosmic-ray baseline "$CFG"
           cosmic-ray exec "$CFG" "$SESSION_DB"
           cr-report "$SESSION_DB" > "reports/cr_quick_summary_${GROUP}.txt"
           cosmic-ray dump "$SESSION_DB" > "reports/cr_quick_dump_${GROUP}.jsonl"
-          python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json"
+          python tools/mutation_summary.py "reports/cr_quick_dump_${GROUP}.jsonl" "reports/cr_quick_summary_${GROUP}.json" --group "${GROUP}"
 
       - name: Gate on CR score (${{ matrix.group }})
         run: |

@@ -33,9 +33,14 @@ jobs:
               per_page: 100
             });
             const files = res.data.map(f => f.filename);
+            const PREFIX = 'src/compitum/';
+            // Preserve the path relative to src/compitum/ (not just the
+            // basename) -- mutation.yml's matrix targets nested modules like
+            // "integrations/matbench_adapter.py" by their full relative path;
+            // a bare basename silently mismatches every nested-path target.
             const mods = files
-              .filter(f => f.startsWith('src/compitum/') && f.endsWith('.py'))
-              .map(f => f.split('/').pop());
+              .filter(f => f.startsWith(PREFIX) && f.endsWith('.py'))
+              .map(f => f.slice(PREFIX.length));
             const unique = [...new Set(mods)];
             core.setOutput('files', unique.length ? JSON.stringify(unique) : '');
 

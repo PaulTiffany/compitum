@@ -26,7 +26,7 @@ def _iter_json_lines(text: str) -> Iterable[dict]:
                 continue
 
 
-def summarize_dump_text(dump_text: str) -> Dict[str, object]:
+def summarize_dump_text(dump_text: str, group: str | None = None) -> Dict[str, object]:
     outcomes = Counter()
     mutations = 0
     jobs = 0
@@ -54,6 +54,10 @@ def summarize_dump_text(dump_text: str) -> Dict[str, object]:
     total = sum(outcomes.values())
     score = (killed / total) if total else 0.0
     return {
+        # Self-describing: the shard/group name used to only be recoverable
+        # from the output filename, which is lost the moment the JSON is
+        # read out of context (e.g. after artifact download/merge).
+        "group": group,
         "jobs": jobs,
         "mutations_seen": mutations,
         "outcomes": dict(outcomes),
@@ -68,10 +72,11 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Summarize Cosmic Ray dump into a compact JSON")
     ap.add_argument("dump_path", type=str)
     ap.add_argument("out_path", type=str)
+    ap.add_argument("--group", default=None, help="Shard/module name, embedded into the output JSON")
     args = ap.parse_args()
 
     text = Path(args.dump_path).read_text(encoding="utf-8")
-    summary = summarize_dump_text(text)
+    summary = summarize_dump_text(text, group=args.group)
     Path(args.out_path).write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(f"Wrote mutation summary to: {args.out_path}")
 

@@ -21,11 +21,17 @@ def main() -> int:
     try:
         data = json.loads(args.summary_json.read_text(encoding="utf-8"))
     except FileNotFoundError:
+        # A missing summary means the shard's own automation never completed
+        # (crash, timeout, bad config) -- categorically different from "ran
+        # fine but scored below threshold," which is what --gate controls.
+        # Always surface this as a failure so a tool crash can't look like a
+        # quiet, ungated pass.
         print(
-            f"Cosmic Ray (quick shard) {args.group}: summary file missing at {args.summary_json}",
+            f"::error::Cosmic Ray (quick shard) {args.group}: summary file missing at "
+            f"{args.summary_json} -- treating as an infrastructure failure, not a low score",
             file=sys.stderr,
         )
-        return 0 if not args.gate else 1
+        return 1
 
     score = float(data.get("mutation_score", 0))
     print(
