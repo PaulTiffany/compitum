@@ -3,9 +3,10 @@
   "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/mutation_clean_fe995f8, fresh venv, fresh .mutmut-cache, part of the main 20-file sweep",
   "commit": "fe995f8943ea17d1665fb04699d395de59481156",
   "total_mutants": 49,
-  "killed": 41,
-  "survived": 8,
-  "survivor_ids": [2, 6, 25, 26, 27, 36, 40, 46],
+  "killed": 44,
+  "survived": 5,
+  "survivor_ids": [2, 6, 36, 40, 46],
+  "real_ci_correction_2026_07_23": "A real mutation_dispatch.yml run against release/v0.2.0-reverify showed only 5 survivors (2, 6, 36, 40, 46), not 8 -- IDs 25, 26, and 27 are KILLED in a real checkout, confirming this file's own reasoning below that they were worktree-only artifacts (test_git_commit_short_resolves_real_repo_head genuinely runs and kills them outside a worktree). However, the reasoning originally given for 36/40/46 (grouped with 25/26/27 as 'same root cause, downstream of unreachable code') was WRONG -- they are NOT worktree artifacts. They still survive in the real CI run too, but for the distinct, already-established reason documented in MUTATION_HARDENING_STATUS.md (confirmed there by two separate real CI runs on 2026-07-20): errors= is inert unless an actual decode error occurs, and git's HEAD/ref files are always clean ASCII, so 'ignore' vs any other string never matters; and head.split(':', 1) vs split(':', 2) are identical whenever the string contains exactly one ':', which git ref syntax guarantees. These are genuine, permanent equivalent mutants unrelated to worktree vs. real-checkout distinctions. The classification entries for 36/40/46 below are corrected accordingly; 25/26/27 are removed from survivor_ids as confirmed killed.",
   "classification": {
     "2": {
       "diff": "is_offline(): `os.environ.get(\"COMPITUM_OFFLINE\", \"0\")` -> default `\"XX0XX\"`",
@@ -19,35 +20,35 @@
     },
     "25": {
       "diff": "git_commit_short(): `here = Path(__file__).resolve()` -> `here = None`",
-      "verdict": "genuine mutation, but undetectable ONLY in this verification environment -- explained by a known, pre-existing, already-documented limitation, not a fresh gap",
-      "reasoning": "Empirically verified (not paper reasoning): applied this mutant directly and ran the full non-deselected test suite -- all 9 tests still pass. Root cause: this whole verification runs inside a git WORKTREE, where `.git` is a text file (not a directory) pointing at `<main-repo>/.git/worktrees/<name>`. Confirmed directly (`git_dir.is_file() == True`, `head_file.exists() == False`) that `git_commit_short()`'s own `head_file.exists()` check already returns False for the REAL, unmutated code in this environment -- a pre-existing, already-documented worktree incompatibility (found and accepted as a non-blocking 0.2.1 candidate earlier in this release cycle). The ONE test that resolves a real repo end-to-end and would catch this mutation, `test_git_commit_short_resolves_real_repo_head`, is deliberately deselected throughout this entire clean-verification sweep specifically because it cannot pass inside a worktree at all (unrelated to whether the mutation is present). Its own docstring names this exact mutation class (`here = None`) as what it exists to catch. The single remaining non-deselected caller (`test_write_audit_record_roundtrip`) only passes the return value through without asserting on it, so it can't distinguish outcomes either way."
+      "verdict": "KILLED in real CI -- confirmed worktree-only artifact, not a gap",
+      "reasoning": "Locally appeared to survive only because this verification ran inside a git WORKTREE (`.git` is a text file, not a directory, so `head_file.exists()` is already False for real code, before this mutation's line is ever reached), and `test_git_commit_short_resolves_real_repo_head` -- the one test that resolves a real repo end-to-end -- is deliberately deselected in a worktree since it can't pass there regardless of mutation. A real mutation_dispatch.yml CI run (2026-07-23, actions/checkout gives a normal clone, not a worktree) confirmed this test genuinely runs and kills this mutant for real. No fix needed; local report's original theory for this ID was correct."
     },
     "26": {
       "diff": "git_commit_short(): `here.parents[2]` -> `here.parents[3]`",
-      "verdict": "same as ID 25",
-      "reasoning": "Same root cause and same deselected test as ID 25 -- confirmed via the same test-suite run (mutant not independently re-applied, since it sits on the identical code path guarded by the identical test gap)."
+      "verdict": "KILLED in real CI -- confirmed worktree-only artifact, not a gap",
+      "reasoning": "Same as ID 25 -- confirmed killed by the same real CI run."
     },
     "27": {
       "diff": "git_commit_short(): `repo_root = here.parents[2]` -> `repo_root = None`",
-      "verdict": "same as ID 25",
-      "reasoning": "Same root cause and same deselected test as ID 25."
+      "verdict": "KILLED in real CI -- confirmed worktree-only artifact, not a gap",
+      "reasoning": "Same as ID 25 -- confirmed killed by the same real CI run."
     },
     "36": {
       "diff": "git_commit_short(): `head_file.read_text(encoding=\"utf-8\", errors=\"ignore\")` -> `errors=\"XXignoreXX\"`",
-      "verdict": "same as ID 25",
-      "reasoning": "Empirically verified: applied this mutant directly, ran the full non-deselected test suite -- all 9 pass. This line is downstream of `head_file.exists()`, which is already False for the real code in this worktree, so the mutated line is never reached at all in this environment by any non-deselected test. Same deselected test (`test_git_commit_short_resolves_real_repo_head`) is the one whose docstring explicitly names 'the errors=\"ignore\" codec name on either the HEAD or ref-file read' as a mutation class it exists to catch."
+      "verdict": "equivalent -- CORRECTED 2026-07-23, original reasoning was wrong",
+      "reasoning": "Originally (wrongly) grouped with 25/26/27 as 'same worktree-unreachability root cause'. A real CI run showed this is NOT a worktree artifact -- it still SURVIVES in a normal checkout too. The actual, established reason (matching MUTATION_HARDENING_STATUS.md's own two independent real-CI confirmations from 2026-07-20): `errors=` is only consulted when an actual decode error occurs, and git's HEAD/ref files are always clean ASCII (hex hashes, ref paths), so they decode successfully regardless of what garbage string `errors=` holds. No test built on realistic git repository content can ever distinguish this, in a worktree or not."
     },
     "40": {
       "diff": "git_commit_short(): `head.split(\":\", 1)[1]` -> `head.split(\":\", 2)[1]`",
-      "verdict": "same as ID 25",
-      "reasoning": "Same root cause -- downstream of the same unreachable-in-this-environment code path."
+      "verdict": "equivalent -- CORRECTED 2026-07-23, original reasoning was wrong",
+      "reasoning": "Originally (wrongly) grouped with 25/26/27. Real CI confirms it still survives outside a worktree too, for the established reason: git forbids `:` in ref names, so real `HEAD` content (`ref: refs/heads/<branch>`) contains exactly one `:`; `str.split` with `maxsplit=2` on a string with only one occurrence produces the identical result to `maxsplit=1`. No real git repository state can ever distinguish the two."
     },
     "46": {
       "diff": "git_commit_short(): second `read_text(..., errors=\"ignore\")` (ref-file read) -> `errors=\"XXignoreXX\"`",
-      "verdict": "same as ID 25",
-      "reasoning": "Same root cause -- downstream of the same unreachable-in-this-environment code path."
+      "verdict": "equivalent -- CORRECTED 2026-07-23, original reasoning was wrong",
+      "reasoning": "Same corrected reasoning as ID 36 (ref-file read instead of HEAD read) -- confirmed still surviving in real CI, for the same errors= inertness reason, not a worktree artifact."
     }
   },
-  "verdict": "CLEAN with a single, already-known, explained root cause -- not a new release blocker. 2 survivors (2, 6) are ordinary equivalent mutants. 6 survivors (25, 26, 27, 36, 40, 46) all sit inside git_commit_short()'s real-repo-resolution path, which is provably unreachable/unobservable in a git-worktree verification environment due to a pre-existing, already-documented worktree incompatibility (found earlier this release cycle, judged not a 0.2.1 blocker since it doesn't affect pip-install or primary-checkout usage). The one test that would kill all 6 is deliberately deselected throughout this entire sweep for exactly that reason. In a normal (non-worktree) checkout, that test runs and does catch these mutation classes -- confirmed by its own docstring, which explicitly names each of them as its reason for existing. No production-source change was made; this is a verification-environment artifact of the worktree, not a test-coverage gap in the ordinary sense.",
+  "verdict": "CLEAN, confirmed by real CI (2026-07-23). 2 survivors (2, 6) are ordinary equivalent mutants (env-var default strings, both != \"1\"). 3 IDs originally reported as surviving (25, 26, 27) were a worktree-only verification artifact -- confirmed KILLED in a real, non-worktree CI checkout. 3 IDs (36, 40, 46) remain genuine, permanent equivalent mutants for a distinct reason (errors= inertness on always-clean-ASCII git ref/HEAD content; split(maxsplit=) equivalence given git's no-colon-in-ref-names guarantee) -- confirmed still surviving in the same real CI run, matching this repo's own independently-established classification in MUTATION_HARDENING_STATUS.md. No production-source change was made or needed.",
   "note_on_untested_category": "mutmut also reported 1 'untested/skipped' mutant (ID 49) at the moment this file was captured, but that was simply the 49th of 49 mutants still being processed when checked (progress was 48/49) -- not a genuine coverage gap. Confirmed by the final SUMMARY.txt entry (exit=3, all 49 accounted for as 41 killed + 8 survived)."
 }
