@@ -193,29 +193,52 @@ jobs:
   cr-quick-shard:
     if: ${{ inputs.cr_quick }}
     runs-on: ubuntu-latest
-    # Raised from 60: even with coverage-scoped test selection (below), the
-    # handful of "hub" modules (energy, metric, pgd, router, constraints)
-    # that are transitively exercised by most of the invariants/pedagogy
-    # suite only see a ~25-35% per-mutant speedup from file-level scoping
-    # (measured locally: energy.py's scoped subset is 51 tests/52s vs the
-    # full suite's 367 tests/71s) -- not enough on its own to guarantee
-    # every file finishes within an hour. This is a simple backstop, not a
-    # substitute for the scoping fix itself.
+    # Raised from 60. Two compounding causes were found and fixed alongside
+    # this: (1) excluded-modules below was previously using dotted
+    # Python-import names ("compitum.energy"), which Cosmic Ray silently
+    # never matched -- every past run actually mutated the entire src/ tree,
+    # compitum AND routerbench, regardless of shard target (see the
+    # excluded-modules comment below for the fix and how it was verified).
+    # (2) even correctly scoped to just the target file, "hub" modules
+    # (energy, metric, pgd, router, constraints) that are transitively
+    # exercised by much of the invariants/pedagogy suite only see a
+    # ~25-35% per-mutant speedup from file-level test selection (measured
+    # locally: energy.py's scoped subset is 51 tests/52s vs the full
+    # suite's 367 tests/71s), and Cosmic Ray's own operator set generates
+    # dramatically more candidate mutants per file than mutmut's does for
+    # the same source (measured locally, post-exclusion-fix: energy.py 836
+    # vs mutmut's 178; control.py 147 vs 52; constraints.py 113 vs 72).
+    # 180 minutes comfortably covers control.py and constraints.py at their
+    # scoped per-mutant cost, but energy.py's mutant count means it will
+    # likely still exceed any reasonable timeout here -- a known, narrow,
+    # advisory-only limitation now, not the systemic "every shard mutates
+    # everything" bug this replaces.
     timeout-minutes: 180
     strategy:
       fail-fast: false
       max-parallel: 6
       matrix:
-        # TEMPORARY, for validation only: shrunk to 3 representative groups
-        # (embedding_pgd = trivial/1-mutant, models = the import-time-only
-        # edge case that falls back to full-suite, control = a real
-        # mid-sized scoping win) to cheaply confirm the coverage-scoping fix
-        # works in real CI before trusting a full 20-group dispatch. Revert
-        # to the full list before merging.
         group: [
-          embedding_pgd,
+          metric,
+          constraints,
+          router,
+          predictors,
+          control,
+          energy,
           models,
-          control
+          pgd,
+          utils,
+          symbolic,
+          coherence,
+          security,
+          embedding_pgd,
+          effort_qp,
+          capabilities,
+          boundary,
+          integrations.matbench_adapter,
+          integrations.materials_project_audit,
+          applications.fusion.diiid_adapter,
+          applications.fusion.eval_offline
         ]
     steps:
       - name: Checkout
@@ -271,7 +294,24 @@ jobs:
         run: |
           set -e
           GROUP="${{ matrix.group }}"
+          TARGET="src/compitum/$(echo "${GROUP}" | tr '.' '/').py"
           CFG="$RUNNER_TEMP/cr_${GROUP}.toml"
+          # excluded-modules takes glob patterns matched against paths
+          # relative to the CWD Cosmic Ray is invoked from (repo root), NOT
+          # dotted Python-import names -- confirmed against cosmic-ray's own
+          # test suite (tests/unittests/test_find_modules.py upstream) after
+          # discovering that every entry below used to be silently ignored:
+          # "compitum.metric" et al, and even "routerbench.*", never matched
+          # anything, so every past cr-quick-shard run has actually been
+          # mutating the ENTIRE src/ tree (compitum AND routerbench) instead
+          # of just its target module -- a correctness bug predating this
+          # session's coverage-scoping/timeout work, discovered while
+          # validating that work in real CI (the "embedding_pgd" shard's
+          # result turned out to contain coherence.py mutants). Also note:
+          # a single "*" does not cross a "/" boundary, so recursively
+          # excluding a whole package needs "**", not "*" (confirmed: with
+          # "src/routerbench/*", only routerbench's direct-child files were
+          # excluded, not its subpackages).
           printf '%s\n' \
             "[cosmic-ray]" \
             "module = \"compitum\"" \
@@ -283,36 +323,39 @@ jobs:
             "excluded-modules = [" \
             "    \"tests/*\"," \
             "    \"**/__init__.py\"," \
-            "    \"routerbench.*\"," \
-            "    \"compitum.cli\"," \
-            "    \"compitum.metric\"," \
-            "    \"compitum.constraints\"," \
-            "    \"compitum.router\"," \
-            "    \"compitum.predictors\"," \
-            "    \"compitum.utils\"," \
-            "    \"compitum.symbolic\"," \
-            "    \"compitum.security\"," \
-            "    \"compitum.pgd\"," \
-            "    \"compitum.models\"," \
-            "    \"compitum.embedding_pgd\"," \
-            "    \"compitum.effort_qp\"," \
-            "    \"compitum.coherence\"," \
-            "    \"compitum.capabilities\"," \
-            "    \"compitum.boundary\"," \
-            "    \"compitum.control\"," \
-            "    \"compitum.energy\"," \
-            "    \"compitum.integrations.matbench_adapter\"," \
-            "    \"compitum.integrations.materials_project_audit\"," \
-            "    \"compitum.applications.fusion.diiid_adapter\"," \
-            "    \"compitum.applications.fusion.eval_offline\"," \
+            "    \"src/routerbench/**\"," \
+            "    \"src/compitum/cli.py\"," \
+            "    \"src/compitum/applications/fusion/plasma_monitor.py\"," \
+            "    \"src/compitum/applications/supercon/sc_monitor.py\"," \
+            "    \"src/compitum/metric.py\"," \
+            "    \"src/compitum/constraints.py\"," \
+            "    \"src/compitum/router.py\"," \
+            "    \"src/compitum/predictors.py\"," \
+            "    \"src/compitum/utils.py\"," \
+            "    \"src/compitum/symbolic.py\"," \
+            "    \"src/compitum/security.py\"," \
+            "    \"src/compitum/pgd.py\"," \
+            "    \"src/compitum/models.py\"," \
+            "    \"src/compitum/embedding_pgd.py\"," \
+            "    \"src/compitum/effort_qp.py\"," \
+            "    \"src/compitum/coherence.py\"," \
+            "    \"src/compitum/capabilities.py\"," \
+            "    \"src/compitum/boundary.py\"," \
+            "    \"src/compitum/control.py\"," \
+            "    \"src/compitum/energy.py\"," \
+            "    \"src/compitum/integrations/matbench_adapter.py\"," \
+            "    \"src/compitum/integrations/materials_project_audit.py\"," \
+            "    \"src/compitum/applications/fusion/diiid_adapter.py\"," \
+            "    \"src/compitum/applications/fusion/eval_offline.py\"," \
             "]" \
             "" \
             "[cosmic-ray.distributor]" \
             "name = \"local\"" \
             > "$CFG"
           sed -i "s/^timeout = .*/timeout = ${CR_TIMEOUT}.0/" "$CFG" || true
-          # Remove the target group from excluded-modules so this shard mutates only that module
-          sed -i "s/\"compitum.${GROUP}\",//" "$CFG" || true
+          # Remove the target module's own entry from excluded-modules so
+          # this shard mutates only that one file.
+          sed -i "s|\"${TARGET}\",||" "$CFG" || true
           echo "Using CR config:"; cat "$CFG"
 
           mkdir -p reports
