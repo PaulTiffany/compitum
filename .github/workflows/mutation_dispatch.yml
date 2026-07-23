@@ -27,7 +27,15 @@ permissions:
 
 concurrency:
   group: mutation-dispatch-${{ github.ref }}
-  cancel-in-progress: true
+  # false, not true: mutation sweeps are expensive (up to hours), and a
+  # second manual dispatch against the same ref is much more likely to be a
+  # deliberate, complementary re-run (e.g. re-running just the files a prior
+  # dispatch's concurrency collision cut off) than a supersession -- unlike
+  # mutation_on_label.yml, where a new PR commit genuinely should cancel a
+  # stale in-flight check for the old one. Queueing means the second
+  # dispatch waits its turn instead of silently destroying the first run's
+  # progress, which happened twice in one session before this fix.
+  cancel-in-progress: false
 
 jobs:
   guard:

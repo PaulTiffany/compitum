@@ -193,7 +193,15 @@ jobs:
   cr-quick-shard:
     if: ${{ inputs.cr_quick }}
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    # Raised from 60: even with coverage-scoped test selection (below), the
+    # handful of "hub" modules (energy, metric, pgd, router, constraints)
+    # that are transitively exercised by most of the invariants/pedagogy
+    # suite only see a ~25-35% per-mutant speedup from file-level scoping
+    # (measured locally: energy.py's scoped subset is 51 tests/52s vs the
+    # full suite's 367 tests/71s) -- not enough on its own to guarantee
+    # every file finishes within an hour. This is a simple backstop, not a
+    # substitute for the scoping fix itself.
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       max-parallel: 6
@@ -214,7 +222,11 @@ jobs:
           embedding_pgd,
           effort_qp,
           capabilities,
-          boundary
+          boundary,
+          integrations.matbench_adapter,
+          integrations.materials_project_audit,
+          applications.fusion.diiid_adapter,
+          applications.fusion.eval_offline
         ]
     steps:
       - name: Checkout
@@ -232,6 +244,33 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e .[dev]
 
+      - name: Derive coverage-scoped test selection (${{ matrix.group }})
+        env:
+          HYPOTHESIS_PROFILE: mutation_ci
+          OMP_NUM_THREADS: 1
+          MKL_NUM_THREADS: 1
+          OPENBLAS_NUM_THREADS: 1
+          NUMEXPR_NUM_THREADS: 1
+        run: |
+          set -e
+          GROUP="${{ matrix.group }}"
+          TARGET="src/compitum/$(echo "${GROUP}" | tr '.' '/').py"
+          # One-time, full-suite run with per-test coverage contexts -- NOT
+          # repeated per-mutant. This is what lets every subsequent mutant
+          # run scope down to only the test files that actually exercise
+          # this shard's target module, instead of Cosmic Ray's default of
+          # rerunning the entire suite for every single mutant (the root
+          # cause of every cr-quick-shard timing out at the previous 60-min
+          # cap, even for trivial single-mutant files like models.py). This
+          # same .coverage file also feeds Cosmic Ray's own built-in
+          # coverage-guided mutant skipping (the coverage-file config key
+          # below), so it isn't a new cost on top of an existing one.
+          pytest -q --cov=compitum --cov-branch --cov-context=test
+          python scripts/derive_test_scope.py \
+            --target "${TARGET}" \
+            --out "$RUNNER_TEMP/cr_scope_${GROUP}.txt"
+          echo "CR_TEST_SCOPE_FILE=$RUNNER_TEMP/cr_scope_${GROUP}.txt" >> "$GITHUB_ENV"
+
       - name: Prepare CR config (${{ matrix.group }})
         env:
           HYPOTHESIS_PROFILE: mutation_ci
@@ -239,7 +278,6 @@ jobs:
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
-          PYTEST_COVERAGE: 1
           CR_TIMEOUT: ${{ inputs.cr_timeout }}
         run: |
           set -e
@@ -274,6 +312,10 @@ jobs:
             "    \"compitum.boundary\"," \
             "    \"compitum.control\"," \
             "    \"compitum.energy\"," \
+            "    \"compitum.integrations.matbench_adapter\"," \
+            "    \"compitum.integrations.materials_project_audit\"," \
+            "    \"compitum.applications.fusion.diiid_adapter\"," \
+            "    \"compitum.applications.fusion.eval_offline\"," \
             "]" \
             "" \
             "[cosmic-ray.distributor]" \
