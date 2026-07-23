@@ -206,27 +206,16 @@ jobs:
       fail-fast: false
       max-parallel: 6
       matrix:
+        # TEMPORARY, for validation only: shrunk to 3 representative groups
+        # (embedding_pgd = trivial/1-mutant, models = the import-time-only
+        # edge case that falls back to full-suite, control = a real
+        # mid-sized scoping win) to cheaply confirm the coverage-scoping fix
+        # works in real CI before trusting a full 20-group dispatch. Revert
+        # to the full list before merging.
         group: [
-          metric,
-          constraints,
-          router,
-          predictors,
-          control,
-          energy,
-          models,
-          pgd,
-          utils,
-          symbolic,
-          coherence,
-          security,
           embedding_pgd,
-          effort_qp,
-          capabilities,
-          boundary,
-          integrations.matbench_adapter,
-          integrations.materials_project_audit,
-          applications.fusion.diiid_adapter,
-          applications.fusion.eval_offline
+          models,
+          control
         ]
     steps:
       - name: Checkout
