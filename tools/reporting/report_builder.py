@@ -314,7 +314,7 @@ def build_html_report(
         # Sort baselines by performance descending for readability (keep compitum first)
         if len(labels) > 1:
             pairs = list(zip(labels[1:], values[1:]))
-            pairs.sort(key=lambda t: (t[1] if t[1] == t[1] else -1e9), reverse=True)
+            pairs.sort(key=lambda t: t[1] if t[1] == t[1] else -1e9, reverse=True)
             labels = [labels[0]] + [p[0] for p in pairs]
             values = [values[0]] + [p[1] for p in pairs]
         fig, ax = plt.subplots(figsize=(7, 3.2))
@@ -330,7 +330,7 @@ def build_html_report(
         values_c = [metrics.compitum_cost] + [metrics.llm_cost[k] for k in metrics.llm_cost.keys()]
         if len(labels_c) > 1:
             pairs_c = list(zip(labels_c[1:], values_c[1:]))
-            pairs_c.sort(key=lambda t: (t[1] if t[1] == t[1] else 1e9))  # ascending cost
+            pairs_c.sort(key=lambda t: t[1] if t[1] == t[1] else 1e9)  # ascending cost
             labels_c = [labels_c[0]] + [p[0] for p in pairs_c]
             values_c = [values_c[0]] + [p[1] for p in pairs_c]
         fig, ax = plt.subplots(figsize=(7, 3.2))

@@ -21,8 +21,8 @@ dev = [
  "hypothesis>=6.98",
  "jsonschema>=4.0",
  "pytest-cov>=5.0",
- "ruff>=0.5.0",
- "mypy>=1.10",
+ "ruff==0.15.22",
+ "mypy==2.3.0",
  "lightgbm>=4.3 ; python_version < '3.13'",
  "types-PyYAML",
  "cosmic-ray>=8,<9", # CLI/config format verified against 8.x (init/baseline/exec/dump, TOML schema)

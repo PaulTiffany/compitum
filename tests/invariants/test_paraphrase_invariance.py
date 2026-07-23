@@ -27,19 +27,19 @@ def _router() -> CompitumRouter:
         c = rng.random(128)
         predictors[m.name] = {
             "quality": (
-                lambda cp=(
-                    __import__("compitum.predictors").predictors.CalibratedPredictor()
-                ): cp.fit(X, q) or cp
+                lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): (
+                    cp.fit(X, q) or cp
+                )
             )(),
             "latency": (
-                lambda cp=(
-                    __import__("compitum.predictors").predictors.CalibratedPredictor()
-                ): cp.fit(X, t) or cp
+                lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): (
+                    cp.fit(X, t) or cp
+                )
             )(),
             "cost": (
-                lambda cp=(
-                    __import__("compitum.predictors").predictors.CalibratedPredictor()
-                ): cp.fit(X, c) or cp
+                lambda cp=(__import__("compitum.predictors").predictors.CalibratedPredictor()): (
+                    cp.fit(X, c) or cp
+                )
             )(),
         }
 
