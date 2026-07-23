@@ -1,0 +1,60 @@
+{
+  "file": "constraints.py",
+  "status": "FIXED -- test-only changes applied and re-verified clean",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/metric_reverify, fresh venv, fresh .mutmut-cache, fully re-run against the FIXED tests/test_constraints.py (production src/compitum/constraints.py untouched throughout).",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156 (production source unchanged; fixes are test-only, applied on top in the working tree)",
+  "total_mutants": 72,
+  "killed": 66,
+  "suspicious_but_killed": 1,
+  "survived": 5,
+  "survivor_ids": [11, 43, 55, 59, 62],
+  "fix_summary": "4 of the original 9 survivors (47, 50, 52, 64) were genuine test-coverage gaps, all traced to tests asserting `mock.called` (true regardless of which branch/how-many-times a mock is invoked) instead of `call_count` or full `call_args_list` inspection. Fixed via test-only changes to tests/test_constraints.py: (1) test_solver_shadow_price_context_passed_through_on_every_call -- fixed a SILENT TEST-SETUP BUG (m_star's `Capabilities(set(), set())` had empty regions, which rejects ANY non-None context and was filtering m_star out of `viable` entirely, silently swapping which model played which internal role -- changed to `Capabilities({'US'}, set())` so m_star stays feasible under the test's own context) and strengthened the assertion to check call_count==3 in addition to context-kwarg presence on every call (kills ID 50). (2) Added test_solver_shadow_price_m_star_skip_continues_past_earlier_infeasible_models, a new test asserting call_count==3 on a later tied-utility competitor's capability mock, to catch the continue->break mutation on the m_star-skip check (kills ID 47). (3) Added test_solver_shadow_price_context_ok_cap_actually_used_not_nulled, a new test with a flipping-capability competitor under a real context, asserting a positive exact shadow price value (kills ID 52). (4) Fixed test_solver_shadow_price_utility_tie_does_not_break_loop_early's assertion from `later_caps.supports.called` to `later_caps.supports.call_count == 3` (kills ID 64). Every fix was empirically verified via `mutmut apply <id>` + test run BEFORE and AFTER the fix (confirmed failing pre-fix, passing post-fix on real code, failing again when the mutant is reapplied post-fix).",
+  "classification": {
+    "11": {
+      "diff": "_is_feasible: `self.A @ xB <= self.b + 1e-10` -> `+ 2e-10`",
+      "verdict": "equivalent",
+      "reasoning": "Unchanged from original assessment -- negligible floating-point epsilon-tolerance boundary, not functionally meaningful."
+    },
+    "43": {
+      "diff": "shadow-price loop: `b_relaxed[i] += 1e-5` -> `+= 2e-05`",
+      "verdict": "genuine gap (narrow) -- NOT fixed, documented as accepted",
+      "reasoning": "Investigated a precise fix and found it structurally very hard: distinguishing 1e-5 from 2e-5 relaxation requires a constraint row where xB sits strictly between b+1e-5 and b+2e-5 -- but select()'s single shared xB and A/b are used identically for EVERY model's admission into `viable` (via _is_feasible's own, unrelaxed, 1e-10-tolerance check), so any xB offset large enough to matter for a specific row's 1e-5-vs-2e-5 sensitivity would ALSO push that same row's ORIGINAL admission check (needed for m_star itself to be viable) out of its 1e-10 tolerance, forcing infeasible_fallback instead. This conflict could only be resolved with per-model or per-row xB values, which the current select(xB, models, utilities, context) API does not support. Accepted as a narrow, disclosed, low-impact gap rather than force an artificial/fragile test."
+    },
+    "47": {
+      "diff": "shadow-price loop: `if competitor == m_star: continue` -> `break`",
+      "verdict": "FIXED",
+      "reasoning": "New test test_solver_shadow_price_m_star_skip_continues_past_earlier_infeasible_models added and empirically verified: kills this mutant via call_count==3 on a later tied-utility competitor's capability mock (3 under real code -- continues past m_star; 1 under the mutant -- breaks at m_star, never reaching the later competitor)."
+    },
+    "50": {
+      "diff": "shadow-price loop: `if context is None: ok_cap = ...supports(xB)` -> `if context is not None:` (swaps which branch fires)",
+      "verdict": "FIXED",
+      "reasoning": "Root cause was actually a silent test-SETUP bug, not just a weak assertion: the existing test's m_star used `Capabilities(set(), set())` (empty regions), which genuinely rejects any non-None context and filtered m_star out of `viable`, silently swapping which model became the internal m_star/competitor. Fixed m_star's capabilities to `Capabilities({'US'}, set())` so it stays feasible under the test's own context, and strengthened the assertion to also check call_count==3. Empirically verified: passes on real code, fails when mutant 50 is reapplied."
+    },
+    "52": {
+      "diff": "shadow-price loop: `ok_cap = ...supports(xB, context=context)` -> `ok_cap = None`",
+      "verdict": "FIXED",
+      "reasoning": "New test test_solver_shadow_price_context_ok_cap_actually_used_not_nulled added: a competitor whose capability flips to supporting the given region on the second call (excluded from initial viable, but genuinely viable under relaxation) must produce a positive, exact shadow price under real code; the mutant's `ok_cap = None` forces is_competitor_viable_relaxed=False regardless (the flag is only ever cleared, never restored), zeroing the shadow price. Empirically verified real=40000.0, mutant=0.0."
+    },
+    "55": {
+      "diff": "`is_competitor_viable_relaxed = False` (after `if not ok_cap:`) -> `= None`",
+      "verdict": "equivalent",
+      "reasoning": "Unchanged from original assessment -- False vs None indistinguishable under the sole bare truthy-check consumption of this variable."
+    },
+    "59": {
+      "diff": "`is_competitor_viable_relaxed = False` (after the relaxed-`_is_feasible` check) -> `= None`",
+      "verdict": "equivalent",
+      "reasoning": "Same as ID 55."
+    },
+    "62": {
+      "diff": "`utility_m_star = utilities.get(m_star.name, -np.inf)` -> `+np.inf`",
+      "verdict": "accepted (known, previously documented)",
+      "reasoning": "Unchanged -- m_star's name is guaranteed present in utilities in every real call path; unreachable dead-code default."
+    },
+    "64": {
+      "diff": "`if utility_competitor > utility_m_star:` -> `>=`",
+      "verdict": "FIXED",
+      "reasoning": "test_solver_shadow_price_utility_tie_does_not_break_loop_early's assertion changed from `later_caps.supports.called` (True either way, due to an unconditional initial viable-filter call) to `later_caps.supports.call_count == 3` (3 under real code -- loop continues past the tie; 1 under the mutant -- breaks immediately on the tie, forced by `>=` at exact equality). Empirically verified: passes on real code, fails when mutant 64 is reapplied."
+    }
+  },
+  "verdict": "CLEAN (with one disclosed, accepted narrow exception) -- 4 of the original 5 genuine gaps (47, 50, 52, 64) are fixed via test-only changes to tests/test_constraints.py, each empirically verified against its specific mutant both before and after the fix. The 5th (43) remains a documented, narrow, structurally-hard-to-test gap, disclosed rather than silently accepted or forced into an artificial test. The 1 'suspicious' mutant (ID 34, a dict-key mangle on the info['status'] construction) is confirmed killed -- multiple existing tests assert `info['status'] == 'optimal'` directly, so this would raise KeyError; 'suspicious' reflects timing classification only, not a coverage gap. No production source (src/compitum/constraints.py) was modified -- all changes are in tests/test_constraints.py."
+}

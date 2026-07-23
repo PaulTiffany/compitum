@@ -1,0 +1,9 @@
+{
+  "file": "utils.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/mutation_clean_fe995f8, fresh venv, fresh .mutmut-cache, part of the main 20-file sweep",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 9,
+  "killed": 9,
+  "survived": 0,
+  "verdict": "CLEAN -- zero survivors."
+}

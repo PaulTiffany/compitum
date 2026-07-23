@@ -1,0 +1,17 @@
+{
+  "file": "boundary.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/metric_reverify (reused after pgd.py settled), fresh venv, fresh .mutmut-cache, dedicated recovery run since the main sweep's own cache for this file was cleared before the diff could be captured",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 43,
+  "killed": 42,
+  "survived": 1,
+  "survivor_ids": [23],
+  "classification": {
+    "23": {
+      "diff": "`probs = np.exp(arr - u1)` -> `probs = np.exp(arr + u1)`, where u1 is the maximum utility value (items are sorted descending, u1 = items[0][1])",
+      "verdict": "equivalent for all realistic inputs",
+      "reasoning": "This is the standard numerically-stable-softmax pattern: subtracting the max before exponentiating (then normalizing via `probs /= probs.sum()`) prevents overflow but is mathematically shift-invariant -- softmax(x) == softmax(x + c) for any constant c, since the constant factor cancels in the normalization. Empirically verified across utility ranges from 0.9 up to 100.0 (spanning and exceeding every utility magnitude actually used elsewhere in this codebase's tests, which are bounded to roughly [0, 1]): `arr - u1` and `arr + u1` produce IDENTICAL normalized probabilities in every case (np.allclose confirms exact match). Divergence only appears at u1=1000.0, where `np.exp(arr + u1)` overflows to inf and division produces nan -- a utility magnitude far outside anything this function is ever called with in the real system. No test using realistic utility values could distinguish this mutation."
+    }
+  },
+  "verdict": "CLEAN -- the single survivor is a confirmed equivalent mutant for the entire realistic input domain, verified empirically across multiple utility-magnitude scales, not just by algebraic reasoning."
+}

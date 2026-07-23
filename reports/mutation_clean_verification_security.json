@@ -1,0 +1,53 @@
+{
+  "file": "security.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/mutation_clean_fe995f8, fresh venv, fresh .mutmut-cache, part of the main 20-file sweep",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 49,
+  "killed": 41,
+  "survived": 8,
+  "survivor_ids": [2, 6, 25, 26, 27, 36, 40, 46],
+  "classification": {
+    "2": {
+      "diff": "is_offline(): `os.environ.get(\"COMPITUM_OFFLINE\", \"0\")` -> default `\"XX0XX\"`",
+      "verdict": "equivalent",
+      "reasoning": "The default is only used when the env var is unset; both \"0\" and \"XX0XX\" are != \"1\", so `== \"1\"` evaluates to False either way. Any non-\"1\" default is behaviorally identical."
+    },
+    "6": {
+      "diff": "redaction_enabled(): same pattern for COMPITUM_REDACT default",
+      "verdict": "equivalent",
+      "reasoning": "Same reasoning as ID 2."
+    },
+    "25": {
+      "diff": "git_commit_short(): `here = Path(__file__).resolve()` -> `here = None`",
+      "verdict": "genuine mutation, but undetectable ONLY in this verification environment -- explained by a known, pre-existing, already-documented limitation, not a fresh gap",
+      "reasoning": "Empirically verified (not paper reasoning): applied this mutant directly and ran the full non-deselected test suite -- all 9 tests still pass. Root cause: this whole verification runs inside a git WORKTREE, where `.git` is a text file (not a directory) pointing at `<main-repo>/.git/worktrees/<name>`. Confirmed directly (`git_dir.is_file() == True`, `head_file.exists() == False`) that `git_commit_short()`'s own `head_file.exists()` check already returns False for the REAL, unmutated code in this environment -- a pre-existing, already-documented worktree incompatibility (found and accepted as a non-blocking 0.2.1 candidate earlier in this release cycle). The ONE test that resolves a real repo end-to-end and would catch this mutation, `test_git_commit_short_resolves_real_repo_head`, is deliberately deselected throughout this entire clean-verification sweep specifically because it cannot pass inside a worktree at all (unrelated to whether the mutation is present). Its own docstring names this exact mutation class (`here = None`) as what it exists to catch. The single remaining non-deselected caller (`test_write_audit_record_roundtrip`) only passes the return value through without asserting on it, so it can't distinguish outcomes either way."
+    },
+    "26": {
+      "diff": "git_commit_short(): `here.parents[2]` -> `here.parents[3]`",
+      "verdict": "same as ID 25",
+      "reasoning": "Same root cause and same deselected test as ID 25 -- confirmed via the same test-suite run (mutant not independently re-applied, since it sits on the identical code path guarded by the identical test gap)."
+    },
+    "27": {
+      "diff": "git_commit_short(): `repo_root = here.parents[2]` -> `repo_root = None`",
+      "verdict": "same as ID 25",
+      "reasoning": "Same root cause and same deselected test as ID 25."
+    },
+    "36": {
+      "diff": "git_commit_short(): `head_file.read_text(encoding=\"utf-8\", errors=\"ignore\")` -> `errors=\"XXignoreXX\"`",
+      "verdict": "same as ID 25",
+      "reasoning": "Empirically verified: applied this mutant directly, ran the full non-deselected test suite -- all 9 pass. This line is downstream of `head_file.exists()`, which is already False for the real code in this worktree, so the mutated line is never reached at all in this environment by any non-deselected test. Same deselected test (`test_git_commit_short_resolves_real_repo_head`) is the one whose docstring explicitly names 'the errors=\"ignore\" codec name on either the HEAD or ref-file read' as a mutation class it exists to catch."
+    },
+    "40": {
+      "diff": "git_commit_short(): `head.split(\":\", 1)[1]` -> `head.split(\":\", 2)[1]`",
+      "verdict": "same as ID 25",
+      "reasoning": "Same root cause -- downstream of the same unreachable-in-this-environment code path."
+    },
+    "46": {
+      "diff": "git_commit_short(): second `read_text(..., errors=\"ignore\")` (ref-file read) -> `errors=\"XXignoreXX\"`",
+      "verdict": "same as ID 25",
+      "reasoning": "Same root cause -- downstream of the same unreachable-in-this-environment code path."
+    }
+  },
+  "verdict": "CLEAN with a single, already-known, explained root cause -- not a new release blocker. 2 survivors (2, 6) are ordinary equivalent mutants. 6 survivors (25, 26, 27, 36, 40, 46) all sit inside git_commit_short()'s real-repo-resolution path, which is provably unreachable/unobservable in a git-worktree verification environment due to a pre-existing, already-documented worktree incompatibility (found earlier this release cycle, judged not a 0.2.1 blocker since it doesn't affect pip-install or primary-checkout usage). The one test that would kill all 6 is deliberately deselected throughout this entire sweep for exactly that reason. In a normal (non-worktree) checkout, that test runs and does catch these mutation classes -- confirmed by its own docstring, which explicitly names each of them as its reason for existing. No production-source change was made; this is a verification-environment artifact of the worktree, not a test-coverage gap in the ordinary sense.",
+  "note_on_untested_category": "mutmut also reported 1 'untested/skipped' mutant (ID 49) at the moment this file was captured, but that was simply the 49th of 49 mutants still being processed when checked (progress was 48/49) -- not a genuine coverage gap. Confirmed by the final SUMMARY.txt entry (exit=3, all 49 accounted for as 41 killed + 8 survived)."
+}

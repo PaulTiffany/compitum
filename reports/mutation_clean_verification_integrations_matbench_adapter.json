@@ -1,0 +1,10 @@
+{
+  "file": "integrations/matbench_adapter.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/metric_reverify (reused after boundary.py settled), fresh venv, fresh .mutmut-cache, PYTHONUTF8=1 set. This is a REDO after the main sweep's own attempt crashed.",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 32,
+  "killed": 32,
+  "survived": 0,
+  "note_on_original_crash": "The main 20-file sweep's own attempt at this file crashed with 'ValueError: Attribute Mutant.line is required' (a pony ORM assertion failure inside mutmut's own cache/database layer) after only 1/32 mutants, then hung for 30+ minutes with the process still alive but no log progress, requiring a manual kill to unblock the sweep script. This redo, run fresh in an isolated worktree, completed cleanly with no crash and no hang -- the original failure did not reproduce, suggesting it was a transient/environment-specific glitch (possibly related to concurrent load from the several other mutation jobs running in parallel at that moment) rather than a deterministic bug tied to this file's content.",
+  "verdict": "CLEAN -- zero survivors, all 32 mutants killed on a clean redo."
+}

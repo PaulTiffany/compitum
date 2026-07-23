@@ -1,0 +1,9 @@
+{
+  "file": "predictors.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/mutation_clean_fe995f8, fresh venv, fresh .mutmut-cache, part of the main 20-file sweep",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 22,
+  "killed": 22,
+  "survived": 0,
+  "verdict": "CLEAN -- zero survivors. All 7 previously believed-fixed-pending-reverification mutants (per MUTATION_HARDENING_STATUS.md) are confirmed genuinely killed by this fresh, undisrupted run."
+}

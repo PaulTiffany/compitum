@@ -1,5 +1,57 @@
 # Mutation Hardening Status
 
+**Update, day 8: pre-release clean re-verification of the day-7 files, local-only (2026-07-22).**
+Per an explicit pre-release gate ("was the existing mutation certification a genuinely clean,
+single reproduction against the frozen release commit?" -- see
+`reports/mutation_provenance_assessment.md`), re-ran all 4 files day 7 had touched
+(`constraints.py`, `integrations/materials_project_audit.py`,
+`applications/fusion/diiid_adapter.py`, `applications/fusion/eval_offline.py`) from a fresh
+isolated worktree pinned to the frozen commit (`fe995f8`), fresh `.mutmut-cache`, no inherited
+results. Per-file results and fixes are in `reports/mutation_clean_verification_<file>.json`
+(one per file, all 20 now present, matching this doc's existing per-file table). Two outcomes
+worth recording here:
+
+- `constraints.py`: fresh run reproduced 72 total, 66 killed, 5 survived (11, 43, 55, 59, 62 --
+  exactly this doc's own documented equivalent/logged-not-fixed set above). One test correction
+  needed: `test_solver_shadow_price_context_passed_through_on_every_call`'s `m_star` used
+  `Capabilities(set(), set())` (empty regions), which combined with a non-`None` context silently
+  filtered `m_star` out of `viable`, swapping which model played which role -- fixed by giving
+  `m_star` a matching region. Also added a new test isolating `m_star`-skip-continues-past-earlier-
+  infeasible-models. Zero unclassified, zero regressions from this doc's prior classification.
+- `integrations/materials_project_audit.py`: fresh run found 5 survivors (42, 43, 44, 46, 49), not
+  the day-7 table's "3, fully classified." Direct empirical testing (running
+  `LyapunovController` with 5 different `kappa`/`r0`/`integral_gain`/`grad_norm` combinations,
+  observing an identical `lyapunov_function` output every time) proved `_lyapunov_leak`'s
+  4 constructor/call-argument mutations (42/43/44/46) are equivalent -- `lyapunov_function()`
+  depends only on `drift_integral`, which only accumulates `d_star`; the other 3 controller
+  parameters can never reach it. ID 49 (the status-dict `.get(..., default)` fallback value) is
+  accepted defensive dead code, same class as this doc's `constraints.py` ID 62. 8 new tests
+  closed the remaining genuine gaps (exact drift/curvature/leak values, the `is_cand` threshold
+  boundaries via `inspect.signature`, since realistic doc-driven scenarios are mathematically
+  incapable of reaching the default thresholds -- `kappa <= drift` always, and `leak <= 0.1`
+  forces `drift` low enough to already cap `kappa` below either threshold).
+- `applications/fusion/diiid_adapter.py` and `applications/fusion/eval_offline.py`: day 7 logged
+  local `mutmut run` as environment-killed twice for `eval_offline.py`, hardened by hand instead
+  (see day 7's entry). Root-caused this pass: it's not numpy/OS/process-state at all (ruled out via
+  a full reboot, still failed identically) -- `pytest --cov` targeting anything at or below
+  `compitum.applications.fusion` crashes; targeting the parent `compitum.applications` works and
+  still gives fully accurate per-file coverage. With that workaround, both files ran to completion:
+  `diiid_adapter.py` 34/34 killed, 0 survived (existing tests already adequate, no changes needed).
+  `eval_offline.py` 37 total, 36 killed, 1 survived (ID 20, `alarm_idx >= crash_idx` vs `>` --
+  confirmed genuine equivalent: both branches yield exactly `0.0` at the tie, since
+  `time_ms[crash_idx] - time_ms[alarm_idx]` with `crash_idx == alarm_idx` is `0.0` regardless of
+  which path executes). 7 new tests closed real gaps day 7's hand-review had not covered directly
+  (the `q_threshold`/`state_dim` defaults, the `<` vs `<=` crash boundary, which state row resets
+  equilibrium, and `evaluate_dir_csv`'s config-building `or` logic).
+
+**This entire pass was local-only (Windows), same as day 7 -- not yet confirmed by a real
+`mutation_dispatch.yml` CI run.** Per this doc's own repeated lesson (5 real classification errors
+this project have only ever been caught by a real CI run, never by local reasoning or local mutmut
+alone -- see `boundary.py`/`energy.py`'s phantom IDs, `metric.py`'s 90/114, `pgd.py`'s 72/88,
+`security.py`'s 36/46, all below), the fixes above should be treated as locally-verified, not yet
+CI-verified. A full unscoped `mutation_dispatch.yml` run against all 20 files is the planned next
+step before this release proceeds.
+
 **Update, day 7: bounded scope-expansion sprint -- 3 files added to the matrix (2026-07-21).** With
 the 17-file matrix down to just two accepted defensive survivors (`constraints.py` ID 62,
 `metric.py` ID 125), audited the rest of `src/compitum` for behavior-bearing modules that were

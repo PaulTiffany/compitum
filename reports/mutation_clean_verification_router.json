@@ -1,0 +1,22 @@
+{
+  "file": "router.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/mutation_clean_fe995f8, fresh venv, fresh .mutmut-cache, part of the main 20-file sweep",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 137,
+  "killed": 133,
+  "survived": 4,
+  "survivor_ids": [
+    62,
+    66,
+    109,
+    118
+  ],
+  "note": "Exact ID match to MUTATION_HARDENING_STATUS.md's twice-CI-verified accounting (2026-07-20 and 2026-07-21) -- same environment class (ubuntu/Python-3.11-like) as this local re-run, so IDs aligned exactly (unlike metric.py, whose historical work used a Python 3.13 venv and showed shifted IDs).",
+  "classification": {
+    "62": "Equivalent -- abs(-comps[...][\"distance\"]) in route()'s metric-update branch; abs(-x)==abs(x) always.",
+    "66": "Equivalent -- same abs(-x)==abs(x) pattern in route()'s controller branch.",
+    "109": "Equivalent -- same abs(-x)==abs(x) pattern in batch_route()'s per-sample loop.",
+    "118": "Equivalent -- batch-level gate `enable_metric_update and (_step>=_stride)` mutated to `or`; update_data can only be non-empty if the per-sample gate already fired (since _step only increases, _step>=_stride is already guaranteed true by then), so the outer gate can never actually block populated data; the only other possible effect (skipping an already-guaranteed-empty pass) is unobservable since the per-model loop's own `if not data: continue` would skip it anyway."
+  },
+  "verdict": "CLEAN -- zero genuine survivors. All 4 are confirmed equivalent mutants, exact match to twice-CI-verified historical accounting. Raw log tail shows gradual, non-anomalous progression through 137/137 -- no corruption signature."
+}

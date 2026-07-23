@@ -1,0 +1,17 @@
+{
+  "file": "coherence.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/coherence_reverify (dedicated recovery worktree -- the main sweep's own cache for this file was cleared for the next file before diffs could be captured), fresh venv, fresh .mutmut-cache, PYTHONUTF8=1 set (precautionary; not required for this file since its non-ASCII bytes don't hit cp1252's undefined codepoints).",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 55,
+  "killed": 54,
+  "survived": 1,
+  "survivor_ids": [36],
+  "classification": {
+    "36": {
+      "diff": "`KernelDensity(...).fit(X, sample_weight=w / w.sum())` -> `sample_weight=w * w.sum()`",
+      "verdict": "equivalent",
+      "reasoning": "Empirically verified (not paper reasoning): fit the same KDE with sample_weight=w/w.sum() and sample_weight=w*w.sum() on random data, then compared score_samples() output on held-out points. Max absolute difference was ~1.8e-15 (floating-point noise). sklearn's KernelDensity internally normalizes sample_weight before computing the density estimate, so any positive constant scale factor applied uniformly to all weights (w.sum() is a scalar, identical for every sample) cancels out and has zero effect on the fitted model's behavior."
+    }
+  },
+  "verdict": "CLEAN -- the single survivor is a confirmed equivalent mutant (empirically verified via direct KDE output comparison, not just code-reading)."
+}

@@ -1,0 +1,11 @@
+{
+  "file": "effort_qp.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/mutation_clean_fe995f8, fresh venv, resumed cache (17/25 pre-existing from before a session interruption, remaining 8 completed after resume), part of the main 20-file sweep",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 25,
+  "killed": 20,
+  "survived": 0,
+  "suspicious": 5,
+  "suspicious_ids": [12, 13, 15, 17, 18],
+  "verdict": "CLEAN -- zero survivors. The 5 'suspicious' mutants (tests ran slower than the timeout-multiplier threshold but still completed and were killed, not left unresolved) are a performance signal, not a correctness gap -- all 25 mutants ended up killed or suspicious-but-killed, none survived."
+}

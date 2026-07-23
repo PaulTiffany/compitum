@@ -1,0 +1,32 @@
+{
+  "file": "metric.py",
+  "clean_reverification_environment": "Python 3.11.9, isolated worktree /tmp/metric_reverify, fresh venv, fresh .mutmut-cache",
+  "commit": "fe995f8943ea17d1665fb04699d395de59481156",
+  "total_mutants": 143,
+  "killed": 134,
+  "survived": 9,
+  "survivor_ids_this_env": [
+    9,
+    11,
+    13,
+    24,
+    98,
+    108,
+    126,
+    127,
+    132
+  ],
+  "note_on_id_numbering": "Mutant IDs are NOT stable across mutmut environments -- this run (Python 3.11.9) found 143 total mutants vs. the historical accounting (Python 3.13, main dev venv) which found 140. Classification below is by actual diff content (mutmut show), not by ID number matching.",
+  "classification": {
+    "9": "Equivalent -- SymbolicMatrix name=\"L\"->\"XXLXX\" label in metric_matrix(); .evaluate() discards the label, never exposed to any caller.",
+    "11": "Equivalent -- SymbolicScalar name=r\"\\delta\"->\"XX...XX\" label; same reasoning as ID 9.",
+    "13": "Equivalent -- SymbolicMatrix name=\"I\"->\"XXIXX\" label; same reasoning as ID 9.",
+    "24": "Equivalent -- recovery-delta upper clamp min(...,1e-1)->1.1; entering this except block requires self.delta<=0, and the +1e-3 recovery step can never exceed 0.1 regardless of the mutation.",
+    "98": "Equivalent -- surrogate_energy 0.5*->1.5* scaling constant; return value only used in e1>e0 comparisons, scaling both sides by the same positive constant never changes which is larger.",
+    "108": "Equivalent -- pre-loop if e1>e0:->>=; structurally proven this session: the only statement gated is bt=0 (unread before the while loop unconditionally re-derives the same e1>e0), so entering the if-block changes nothing observable.",
+    "126": "Equivalent (newly confirmed by direct inspection) -- pragma-exempted defensive-fallback eta_eff=0.0->1.0; eta_eff is never read again after this line (new_L, not eta_eff, flows into self.L), a genuine dead-store.",
+    "127": "Equivalent (newly confirmed) -- same line, eta_eff=0.0->None; same dead-store reasoning as ID 126.",
+    "132": "Equivalent -- fnorm>10.0->>=10.0 boundary; at fnorm==10.0 exactly, self.L *= 10.0/fnorm multiplies by exactly 1.0 (IEEE754 no-op), the only point > and >= disagree is also the only point the clamp has no effect."
+  },
+  "verdict": "CLEAN -- zero genuine survivors. All 9 are confirmed equivalent mutants, each independently verified by direct code/structural reasoning (not merely re-asserted from prior documentation). The original main-sweep run for this file (40 survivors, contiguous block 110-143) is a discarded environmental artifact -- see mutation_provenance_assessment.md."
+}
