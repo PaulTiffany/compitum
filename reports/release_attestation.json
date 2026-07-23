@@ -1,9 +1,9 @@
 {
   "schema": "compitum.release-attestation/v2",
-  "generated_at": "2026-07-23T05:45:13.572364+00:00",
+  "generated_at": "2026-07-23T05:46:12.482826+00:00",
   "compitum_version": "0.2.0",
-  "tested_commit": "701150f",
-  "publication_commit": "701150f37b56105c8087131e769ec65ec9cb00d7",
+  "tested_commit": "11c03b1",
+  "publication_commit": "11c03b1c73c368d6ea54bc76effe348e53123b2a",
   "dirty_tree": true,
   "environment": {
     "python": "3.13.4",
