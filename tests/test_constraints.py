@@ -268,7 +268,14 @@ def test_solver_shadow_price_context_passed_through_on_every_call() -> None:
     *own*, unmutated branching (used both during filtering and inside the
     relaxed-constraint check) still passes it. Checking that *every*
     recorded call included `context` catches the one that silently
-    stopped."""
+    stopped.
+
+    m_star's capabilities must actually support the given region --
+    `Capabilities(set(), set())` (empty regions) rejects *any* non-None
+    context, which would silently filter m_star out of `viable` entirely and
+    swap which model plays which role (the mock competitor would then never
+    be the one probed in the shadow-price loop at all, making this test pass
+    regardless of the mutation for the wrong reason)."""
     A = np.eye(1)
     b = np.array([1.0])
     solver = ReflectiveConstraintSolver(A, b)
@@ -276,7 +283,7 @@ def test_solver_shadow_price_context_passed_through_on_every_call() -> None:
     context = {"region": "US"}
 
     m_star = Model(
-        name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0
+        name="m_star", center=np.array([]), capabilities=Capabilities({"US"}, set()), cost=0.0
     )
     competitor_caps = MagicMock()
     competitor_caps.supports.return_value = True
@@ -286,9 +293,86 @@ def test_solver_shadow_price_context_passed_through_on_every_call() -> None:
 
     solver.select(xB, [m_star, competitor], {"m_star": 0.5, "competitor": 0.3}, context=context)
 
-    assert competitor_caps.supports.call_args_list  # sanity: it was called at all
+    # 3 calls expected: the initial viable-filter pass, the shadow-price
+    # loop's own ok_cap check, and temp_solver._is_feasible's internal check.
+    assert competitor_caps.supports.call_count == 3
     for call in competitor_caps.supports.call_args_list:
         assert call.kwargs.get("context") == context
+
+
+def test_solver_shadow_price_m_star_skip_continues_past_earlier_infeasible_models() -> None:
+    """`if competitor == m_star: continue` -> `break` -- when an earlier,
+    higher-utility model is infeasible (so m_star sits mid-list, not at
+    sorted_models[0]), the loop must CONTINUE past m_star to check
+    later-sorted competitors, not stop dead at the first self-match. A later
+    competitor tied in utility with m_star (which can sort after it under
+    Python's stable sort, given this input order) is only reached if the
+    loop continues past the m_star match -- call_count on its capability
+    mock distinguishes continuing (reached 3 times: viable-filter, the
+    shadow-price loop's own ok_cap check, and temp_solver._is_feasible) from
+    breaking (reached only once, during the initial viable-filter pass)."""
+    A = np.eye(1)
+    b = np.array([1.0])
+    solver = ReflectiveConstraintSolver(A, b)
+    xB = np.array([0.5])
+
+    infeasible_caps = MagicMock()
+    infeasible_caps.supports.return_value = False
+    infeasible_high = Model(
+        name="infeasible_high", center=np.array([]), capabilities=infeasible_caps, cost=0.0
+    )
+
+    m_star = Model(
+        name="m_star", center=np.array([]), capabilities=Capabilities(set(), set()), cost=0.0
+    )
+
+    later_caps = MagicMock()
+    later_caps.supports.return_value = True
+    later_tied = Model(name="later_tied", center=np.array([]), capabilities=later_caps, cost=0.0)
+
+    utilities = {"infeasible_high": 0.9, "m_star": 0.5, "later_tied": 0.5}
+    solver.select(xB, [infeasible_high, m_star, later_tied], utilities)
+
+    assert later_caps.supports.call_count == 3
+
+
+def test_solver_shadow_price_context_ok_cap_actually_used_not_nulled() -> None:
+    """`ok_cap = competitor.capabilities.supports(xB, context=context)` (the
+    `else` branch, when `context` is not None) was replaced with
+    `ok_cap = None` -- this silently disables the context-based capability
+    check, forcing `is_competitor_viable_relaxed = False` regardless of the
+    real answer, since the code only ever *clears* the flag on failure and
+    never restores it afterward. A competitor whose capability genuinely
+    flips to supporting the region on the second call (excluded from
+    `viable` during the initial filter, but viable under relaxation) must
+    still produce a positive shadow price when its utility beats m_star's;
+    the mutant zeroes it out."""
+
+    class FlippingCapsWithContext(Capabilities):
+        def __init__(self) -> None:
+            super().__init__(set(), set())
+            self.calls = 0
+
+        def supports(self, pgd_vector: Any, context: Dict[str, Any] | None = None) -> bool:
+            self.calls += 1
+            return self.calls > 1
+
+    A = np.eye(1)
+    b = np.array([1.0])
+    solver = ReflectiveConstraintSolver(A, b)
+    xB = np.array([0.5])
+    context = {"region": "US"}
+
+    m_star = Model(
+        name="m_star", center=np.array([]), capabilities=Capabilities({"US"}, set()), cost=0.0
+    )
+    competitor = Model(
+        name="competitor", center=np.array([]), capabilities=FlippingCapsWithContext(), cost=0.0
+    )
+
+    _, info = solver.select(xB, [m_star, competitor], {"m_star": 0.5, "competitor": 0.9}, context=context)
+    assert info["shadow_prices"]["lambda_0"] > 0.0
+    assert np.isclose(info["shadow_prices"]["lambda_0"], (0.9 - 0.5) / 1e-5)
 
 
 def test_solver_shadow_price_ok_cap_false_keeps_competitor_non_viable() -> None:
@@ -329,8 +413,14 @@ def test_solver_shadow_price_utility_tie_does_not_break_loop_early() -> None:
     """`if utility_competitor > utility_m_star:` -> `>=` -- at an exact tie,
     both comparisons compute the *same* shadow price (`(tie - tie) / 1e-5 ==
     0.0`), so the value alone can't distinguish them. The mutant's `break`
-    on a tie, though, would skip every competitor that sorts after the tied
-    one -- checked here via a later competitor's mock never getting called."""
+    on a tie, though, would stop the loop right there, skipping every
+    competitor that sorts after the tied one -- but `later_caps.supports` is
+    ALSO called once, unconditionally, during the initial viable-filter pass
+    (which runs before the tie is ever reached), so a bare `.called` check
+    is True either way and can't distinguish continuing from breaking. Only
+    call_count does: 3 calls if the loop reaches `later` (viable-filter, the
+    shadow-price loop's own ok_cap check, and temp_solver._is_feasible), just
+    1 if the mutant's `break` on the tie stops it from ever getting there."""
     A = np.eye(1)
     b = np.array([1.0])
     solver = ReflectiveConstraintSolver(A, b)
@@ -347,7 +437,7 @@ def test_solver_shadow_price_utility_tie_does_not_break_loop_early() -> None:
     _, info = solver.select(xB, [m_star, tied_competitor, later_competitor], utilities)
 
     assert info["shadow_prices"]["lambda_0"] == 0.0
-    assert later_caps.supports.called
+    assert later_caps.supports.call_count == 3
 
 
 def test_solver_shadow_price_keeps_first_winner_not_last() -> None:
