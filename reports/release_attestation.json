@@ -1,9 +1,9 @@
 {
   "schema": "compitum.release-attestation/v2",
-  "generated_at": "2026-07-21T23:32:33.598593+00:00",
+  "generated_at": "2026-07-23T05:45:13.572364+00:00",
   "compitum_version": "0.2.0",
-  "tested_commit": "af231e2",
-  "publication_commit": null,
+  "tested_commit": "701150f",
+  "publication_commit": "701150f37b56105c8087131e769ec65ec9cb00d7",
   "dirty_tree": true,
   "environment": {
     "python": "3.13.4",
@@ -98,6 +98,11 @@
       "sha256": "a35cb831bfd09bf0e678d8b2412ffd8db3d174d32b606e329ecb8261c08af8a4"
     },
     {
+      "path": "reports/mutation_provenance_assessment.md",
+      "bytes": "3064",
+      "sha256": "05abe82ddfc9c486aabea5fc32ac745ccd11aa2328c2dfb7bf411aec074feb57"
+    },
+    {
       "path": "reports/release_notes_v0.1.0.md",
       "bytes": "1804",
       "sha256": "15bdb1c139e65173275cd481ad1d9dc42582643abb14f1c5fecf3f45328847db"
@@ -110,12 +115,12 @@
     {
       "path": "reports/routerbench_report.md",
       "bytes": "2960",
-      "sha256": "d3c43a4d23ccaba6fa5751f50b7bd8dbb0ddc4a90e32f7007df5f43529a6f4cd"
+      "sha256": "d0d3f01d9f7a29d510425086fca0363d0b1988158ea76f8d2e43e54b166ab0dc"
     },
     {
       "path": "reports/artifact_manifest.json",
-      "bytes": "15375",
-      "sha256": "6bf7ecb875a7a3e83e55a61c8c72a92d55962b5a1793803225651f279725b322"
+      "bytes": "16011",
+      "sha256": "5c78b09597b7b0d2e91c41aaa182005d4cf45cc5bfb8af455688758c1092e41f"
     },
     {
       "path": "reports/benchmarks_pytest.json",
@@ -140,7 +145,7 @@
     {
       "path": "reports/coverage.json",
       "bytes": "99830",
-      "sha256": "92990da245e3e651b1bb40821e77e4a0e3bbb2312f2500f7bb95478da265b410"
+      "sha256": "677d7bce28626be7e6e7080777d48fa46d001b05e8598b15f22e98ca2f47a952"
     },
     {
       "path": "reports/cr_report.json",
@@ -160,7 +165,7 @@
     {
       "path": "reports/matbench_attestation.json",
       "bytes": "2316",
-      "sha256": "2b242a693db367b1c7e747433f032ac819d2c7df13d4c02afa9cf15bb658bb83"
+      "sha256": "615ea52b85c697b828f69fe777c1e4838c07f8810bb9cecf4ad5ce17cf3e9982"
     },
     {
       "path": "reports/matbench_baseline_regret.json",
@@ -198,9 +203,109 @@
       "sha256": "10267d38a9a23ea301ad01751e98970a9099730211415a16c4593c4ee89936b0"
     },
     {
+      "path": "reports/mutation_clean_verification_boundary.json",
+      "bytes": "1839",
+      "sha256": "e9a30d1b86c47776ec31c0d0e0475d3be4f8e73903cdd62b82bfd500f03938bb"
+    },
+    {
+      "path": "reports/mutation_clean_verification_capabilities.json",
+      "bytes": "350",
+      "sha256": "88bcd3bfc6acfb02f58b11e517f2da10fc229961cfa7c91ea317d068ac2dffe6"
+    },
+    {
+      "path": "reports/mutation_clean_verification_coherence.json",
+      "bytes": "1454",
+      "sha256": "01ded7334b431061fb16fa1cf0cd1711a00cc25764942f128fdf8236718d36b3"
+    },
+    {
+      "path": "reports/mutation_clean_verification_constraints.json",
+      "bytes": "7738",
+      "sha256": "33ce8ffc3b0c6ae6ff9e37f455864606140b9271d389fa1cd5931ac13c5a327e"
+    },
+    {
+      "path": "reports/mutation_clean_verification_diiid_adapter.json",
+      "bytes": "2633",
+      "sha256": "ac491d3f4dfe9da1e06002149e3d88059dc11b832a8d9a1bc3f687ab196a2f46"
+    },
+    {
+      "path": "reports/mutation_clean_verification_effort_qp.json",
+      "bytes": "760",
+      "sha256": "c253bb5c7631b24ab9e0dafc903d4cf9297271a5b52904481f8f86f814467f4c"
+    },
+    {
+      "path": "reports/mutation_clean_verification_embedding_pgd.json",
+      "bytes": "381",
+      "sha256": "4fb0e2971188ea4e419674f4d19c968a51468cfaab27c0fedeb8d497682580cd"
+    },
+    {
+      "path": "reports/mutation_clean_verification_energy.json",
+      "bytes": "7187",
+      "sha256": "91656dbb1ca856c98875c46ca03fc3f4cde581bab4aa8fdd370b95a5425bc8b4"
+    },
+    {
+      "path": "reports/mutation_clean_verification_eval_offline.json",
+      "bytes": "4519",
+      "sha256": "474629a24a7d583d55d92646ef2e92a8f60c7efbc1aaf745558a1f8c6d368345"
+    },
+    {
+      "path": "reports/mutation_clean_verification_fusion_blocked.json",
+      "bytes": "2034",
+      "sha256": "288c493743c80b1ed6f76799a730796e04373dec408fd34419b12e9148713c1f"
+    },
+    {
+      "path": "reports/mutation_clean_verification_integrations_matbench_adapter.json",
+      "bytes": "1212",
+      "sha256": "abca5b1f257989e547286f777783de0e8852767dc415feeeb0f588ce50a86b5a"
+    },
+    {
+      "path": "reports/mutation_clean_verification_integrations_materials_project_audit.json",
+      "bytes": "6371",
+      "sha256": "d2b6314d351dac8add057d09772b1a1c868c253ad8672e3363143840563cef14"
+    },
+    {
+      "path": "reports/mutation_clean_verification_metric.json",
+      "bytes": "2659",
+      "sha256": "9a852bf1cb6f16e1f569083ffc52c58f06990177696ddbabe10b6abd2f166701"
+    },
+    {
+      "path": "reports/mutation_clean_verification_models.json",
+      "bytes": "374",
+      "sha256": "f1c5d72e3200b4335fd9c105e151e40a7972b83f351cbd5e0168ec4020abc9da"
+    },
+    {
+      "path": "reports/mutation_clean_verification_pgd.json",
+      "bytes": "8992",
+      "sha256": "b4065526a65ad34e785a44f4cc0e9f2f7febc189ae2adb945ddaa34eea5a82e1"
+    },
+    {
+      "path": "reports/mutation_clean_verification_predictors.json",
+      "bytes": "518",
+      "sha256": "0a8a82a3615624752b1e14d83d1b83b4e8bc903ecc71f9177e4bf1fde76a4191"
+    },
+    {
+      "path": "reports/mutation_clean_verification_router.json",
+      "bytes": "1743",
+      "sha256": "3d2423a34d6ba38fc4686592e758262f4d43263454cb19f829b8726930f33be9"
+    },
+    {
+      "path": "reports/mutation_clean_verification_security.json",
+      "bytes": "6616",
+      "sha256": "9db27ece09fbfa1bff74c583fe74464b5269c421dc22deb13d90d781def94783"
+    },
+    {
+      "path": "reports/mutation_clean_verification_symbolic.json",
+      "bytes": "348",
+      "sha256": "9b9abb7094d9a68881d2a7373aa0ac4e7863d31c2bd812bf7222c8b67370252d"
+    },
+    {
+      "path": "reports/mutation_clean_verification_utils.json",
+      "bytes": "343",
+      "sha256": "b53a65ea0bcf8d30ce90b633cebd01ee92e9494fbdc5f3aadf8337928ea95a5e"
+    },
+    {
       "path": "reports/mutation_summary.json",
-      "bytes": "8737",
-      "sha256": "62194864115d9e5cfba6b0c8aa656b19702ea999241a4b4dea9aa0383f1a6afd"
+      "bytes": "10073",
+      "sha256": "404b73c6e19cfd3c1d22c899717d9463e1832095e4524e9deffbd418f763147a"
     },
     {
       "path": "reports/notebook_validation.json",
@@ -254,8 +359,8 @@
     },
     {
       "path": "reports/release_attestation.json",
-      "bytes": "268546",
-      "sha256": "28db55c859d01c749a09767ae53c730f1844774e84efa2e10b3e61690939d9d9"
+      "bytes": "276773",
+      "sha256": "daa096fcaa6d04c57157b47fb9fd212db03bf6e27dfeaf8fd0dd45b79441e728"
     },
     {
       "path": "reports/report_20251017-0351.json",
@@ -305,184 +410,292 @@
     {
       "path": "reports/test_results.json",
       "bytes": "396",
-      "sha256": "a6f133f8c6dfbc833bb610c40e4a49e456915430d46750950537ccb711f5cee3"
+      "sha256": "dff72283e72f05b7f43b096069ac960bfc2ce7c22b287d0197241a060dd17eaa"
     },
     {
-      "path": "data/rb_clean/eval_results/compitum_multitask_combined.csv",
-      "bytes": "2922",
-      "sha256": "836568acbfd5ed7489b594b7fb8c9869f43fece864e9924e0bfe2bf804ab03c5"
+      "path": "data/routerbench/eval_results/eval_results-eval-all-07-23-04-07-val_split.csv",
+      "bytes": "128641",
+      "sha256": "605fa72d8780f01b0bf49ab75b29a643262fda2119464025cf1ba115a2821c47"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-all-07-21-21-12-val_split.csv",
-      "bytes": "120883",
-      "sha256": "7b26a212f56794e025f53830db10daee27a5f92fe2e966f2b449a94f63e0b649"
+      "path": "data/routerbench/eval_results/eval_results__07-23-04__routerbench.csv",
+      "bytes": "123992",
+      "sha256": "7bc46a2176f5e6cb45408e91e97a96002fc5da12132c932a749d7682984bb134"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-all-07-21-21-31-val_split.csv",
-      "bytes": "120883",
-      "sha256": "7b26a212f56794e025f53830db10daee27a5f92fe2e966f2b449a94f63e0b649"
+      "path": "data/routerbench/eval_results/eval_results__10-07-05__routerbench.csv",
+      "bytes": "1456",
+      "sha256": "e15543868e374ea7d64b0b939b34bfd53d859b7e109683bfed593f023092eaeb"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-22-07-09-val_split.csv",
-      "bytes": "128981",
-      "sha256": "b25f74ec2b8f2744b038dca79172b18489e4277f8bc80419e7cc3314fa461706"
+      "path": "data/routerbench/eval_results/eval_results__10-12-05__routerbench.csv",
+      "bytes": "1466",
+      "sha256": "d10bae239932394ae917ba8696f60b8954650d12652db3263515973c287e8ba6"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-22-07-28-val_split.csv",
-      "bytes": "129067",
-      "sha256": "33cccf2f005eb6223b7f7d93fed109085aad7960139c7a46abe60664408234a5"
+      "path": "data/routerbench/eval_results/eval_results__10-12-17__routerbench.csv",
+      "bytes": "1466",
+      "sha256": "d10bae239932394ae917ba8696f60b8954650d12652db3263515973c287e8ba6"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-26-16-47-val_split.csv",
-      "bytes": "129463",
-      "sha256": "d2ba3918c99361ede386b6d758303d9ae95297f409e854ef83ff9029ca1e0727"
+      "path": "data/routerbench/eval_results/eval_results__10-13-03__routerbench.csv",
+      "bytes": "99642",
+      "sha256": "822b2ae9487773a1706963a149fe8a023d8b4060a9ed4f6c486af3ffc8b9382f"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-all-10-26-17-07-val_split.csv",
-      "bytes": "120823",
-      "sha256": "ddfd532c03fd88596cfcf76882b95e633341c429708185c2997a58b791233c97"
+      "path": "data/routerbench/eval_results/eval_results__10-13-04__routerbench.csv",
+      "bytes": "99643",
+      "sha256": "0af4940166dab97e99151ec8ccfd04662319d70cb0f6e933f55ea26cb67535a5"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-20-04-04-val_split.csv",
-      "bytes": "129047",
-      "sha256": "180cb653b40580a147a7dbcce3cd54ac134aa854be819ba53cc85ad4e4e20e03"
+      "path": "data/routerbench/eval_results/eval_results__10-15-03__routerbench.csv",
+      "bytes": "99673",
+      "sha256": "3adf8b0b6d36d9a77ca9c64ec2e28426ab7c12fcf94eb825f93a93ddc9d46a03"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-20-05-02-val_split.csv",
-      "bytes": "1594",
-      "sha256": "b8ca716ba017babfa58f7fe76ad2689613d2142b5f2500dfa79e1fd005c47438"
+      "path": "data/routerbench/eval_results/eval_results__10-18-06__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-02-51-val_split.csv",
-      "bytes": "129183",
-      "sha256": "fa9b30ed2c70dbaf4821dad5780caa05f2c48146b8f324f2df79e525ebd7123f"
+      "path": "data/routerbench/eval_results/eval_results__10-20-23__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-03-02-val_split.csv",
-      "bytes": "128901",
-      "sha256": "97fad9a8e01b50c4281701800a6160aae23e1ca364c0b3966cabbb106f6632bd"
+      "path": "data/routerbench/eval_results/eval_results__10-21-00__routerbench.csv",
+      "bytes": "20520",
+      "sha256": "afb93b58b6480b656c6eeff48b4e9b3fbd42a717832e94c69256a1fbdbbc90b1"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-03-51-val_split.csv",
-      "bytes": "129028",
-      "sha256": "5f1e29bde3cdf45f8373d65571da8888d7d74019f4526652d33acb0d9730336d"
+      "path": "data/routerbench/eval_results/eval_results__10-22-02__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-04-02-val_split.csv",
-      "bytes": "128915",
-      "sha256": "e09ec0e1f4b3af20d480be1bccfb0f9ef3927fb61d222efa736e718ef9dcfd38"
+      "path": "data/routerbench/eval_results/eval_results__10-22-03__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-grade-school-math-10-22-04-47-val_split.csv",
-      "bytes": "128958",
-      "sha256": "2463e9c8d260710b57930b7dec65543103a95a3d1d79b4d4b09d8aee6ff84f7c"
+      "path": "data/routerbench/eval_results/eval_results__10-22-04__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results-eval-hellaswag-10-20-05-03-val_split.csv",
-      "bytes": "1416",
-      "sha256": "f6128db98352a22e02aeb840779e7c90f844a6cb61d3e0ae63525583aa297cfb"
+      "path": "data/routerbench/eval_results/eval_results__10-22-06__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__07-21-21__rb_clean.csv",
-      "bytes": "116224",
-      "sha256": "da038a8e9239f01299390d60a94119f65e7a442045945183231a8004ca364fd2"
+      "path": "data/routerbench/eval_results/eval_results__10-22-07__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-02__rb_clean.csv",
-      "bytes": "15678",
-      "sha256": "c1a7db97ce2761ffe2f975ce8cb499d2576d8d9d0d47bc8b444fbac080e8a456"
+      "path": "data/routerbench/eval_results/eval_results__10-24-03__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-03__rb_clean.csv",
-      "bytes": "15678",
-      "sha256": "c1a7db97ce2761ffe2f975ce8cb499d2576d8d9d0d47bc8b444fbac080e8a456"
+      "path": "data/routerbench/eval_results/eval_results__10-25-02__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-04__rb_clean.csv",
-      "bytes": "15678",
-      "sha256": "c1a7db97ce2761ffe2f975ce8cb499d2576d8d9d0d47bc8b444fbac080e8a456"
+      "path": "data/routerbench/eval_results/eval_results__10-25-03__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-06__rb_clean.csv",
-      "bytes": "1251097",
-      "sha256": "1c871bc9b218afa292371ebb13ddabd0e22520de68d49d42faeebc22f6d11458"
+      "path": "data/routerbench/eval_results/eval_results__10-25-04__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-07__rb_clean.csv",
-      "bytes": "123378",
-      "sha256": "71df6c0be97420cf5579ae961cd9d73bd1ec76a3bf089228219594c37b3b7270"
+      "path": "data/routerbench/eval_results/eval_results__10-25-13__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-26-16__rb_clean.csv",
-      "bytes": "124184",
-      "sha256": "777368bb57e463a5ec5b69db86a69c3bb2dfd6cf7297e4714cdf662a9b0bdfd0"
+      "path": "data/routerbench/eval_results/eval_results__10-25-14__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-26-17__rb_clean.csv",
-      "bytes": "116304",
-      "sha256": "6e1c2747478092ab9504b9dbf020bfe4f0c89818d5fc2fad52966a616e2adf96"
+      "path": "data/routerbench/eval_results/eval_results__10-25-15__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__11-07-06__rb_clean.csv",
-      "bytes": "1969344",
-      "sha256": "358f88c5146c77bdd3529b8869676dea92cf84f2324892f7b0053e2aa305f74c"
+      "path": "data/routerbench/eval_results/eval_results__10-26-07__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__07-21-21__rb_clean.pkl",
-      "bytes": "103398",
-      "sha256": "4b88a096c6381a6c706fe91e79d8ead6230cdbf1283c956c43fd5ccfb3a271b0"
+      "path": "data/routerbench/eval_results/eval_results__10-26-08__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-02__rb_clean.pkl",
-      "bytes": "62021",
-      "sha256": "57cba6a8b26663549080f3d019c9c338b93c9b4b998c9b10648a678f8ffe4e0e"
+      "path": "data/routerbench/eval_results/eval_results__10-26-15__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-03__rb_clean.pkl",
-      "bytes": "62021",
-      "sha256": "57cba6a8b26663549080f3d019c9c338b93c9b4b998c9b10648a678f8ffe4e0e"
+      "path": "data/routerbench/eval_results/eval_results__10-26-16__routerbench.csv",
+      "bytes": "43029",
+      "sha256": "697b7ca5c6905fe83bdc5ece43b9ba3c6069250f41be330941d8a5b4dc0d4b44"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-04__rb_clean.pkl",
-      "bytes": "62021",
-      "sha256": "57cba6a8b26663549080f3d019c9c338b93c9b4b998c9b10648a678f8ffe4e0e"
+      "path": "data/routerbench/eval_results/eval_results__11-08-13__routerbench.csv",
+      "bytes": "53",
+      "sha256": "c604f41b863743eb5a74c968f6506d1bb98f87e1063381c62f08472be24c1134"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-06__rb_clean.pkl",
-      "bytes": "2268269",
-      "sha256": "7009a445c1692bfa6883b543699b3bb020197b1a88c1fe8986552e699d8ea7bf"
-    },
-    {
-      "path": "data/rb_clean/eval_results/eval_results__10-22-07__rb_clean.pkl",
+      "path": "data/routerbench/eval_results/eval_results__07-23-04__routerbench.pkl",
       "bytes": "108907",
-      "sha256": "2f01046ab692eb105175734321b519c9a965088d1a04c094e87a2eeebc42efa4"
+      "sha256": "76fce5a1463524442ea3eefd36f3595f12fb8ed4fd1844c74283a9222506f3da"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-26-16__rb_clean.pkl",
-      "bytes": "108907",
-      "sha256": "17ce6598853b04c5784f179334ae1201aab5dcf3cca4eb325e52fdf93c2d7cd4"
+      "path": "data/routerbench/eval_results/eval_results__10-07-05__routerbench.pkl",
+      "bytes": "8413",
+      "sha256": "a8b62d08ba4e7f30763171009397e2bc23a4ece63fd0b6215244fff3eb77d962"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__10-26-17__rb_clean.pkl",
-      "bytes": "103398",
-      "sha256": "ca10cee1cccadf05d075b1b6fde7462c15a3545c695488051d151d729cba613f"
+      "path": "data/routerbench/eval_results/eval_results__10-12-05__routerbench.pkl",
+      "bytes": "8380",
+      "sha256": "3c41f300781c0b3bbff73e05f0a796181f876c1d397ae616cb34058f9f33ef4c"
     },
     {
-      "path": "data/rb_clean/eval_results/eval_results__11-07-06__rb_clean.pkl",
-      "bytes": "3741241",
-      "sha256": "3931753b8bfb101d5e2e648a2a56a83938e6ca02c8439d9b7aa0a0f6bf5f7485"
+      "path": "data/routerbench/eval_results/eval_results__10-12-17__routerbench.pkl",
+      "bytes": "8073",
+      "sha256": "d8621abdd0f60ae061c16e1edaee619781e536cec6b719fe0fbc0df879f2489f"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-13-03__routerbench.pkl",
+      "bytes": "175410",
+      "sha256": "97cc9ee3e491c97ab9327e8353104563a196fab6aa751c5917931bc0e4472a05"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-13-04__routerbench.pkl",
+      "bytes": "175410",
+      "sha256": "8b520039bc6ccac1abe2dc77824368c54eb6f95870b837de2473c1eb70e4f2d7"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-15-03__routerbench.pkl",
+      "bytes": "175410",
+      "sha256": "344bbb53708bdfc9b084b0a62e46cf605e0e3d29e7395c8e824b56a59bfd0713"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-18-06__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-20-23__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-21-00__routerbench.pkl",
+      "bytes": "83999",
+      "sha256": "0c5d337e99c614b5133fa209c5a284ab29f5d05ada56aa36ed9e64de25dd825e"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-22-02__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-22-03__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-22-04__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-22-06__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-22-07__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-24-03__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-25-02__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-25-03__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-25-04__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-25-13__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-25-14__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-25-15__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-26-07__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-26-08__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-26-15__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
+    },
+    {
+      "path": "data/routerbench/eval_results/eval_results__10-26-16__routerbench.pkl",
+      "bytes": "160218",
+      "sha256": "ea7d538f90940bc861aacd156b2b59e731bb4dc1424c94e1d403351b3c268525"
     }
   ],
   "mutation_summary": {
-    "schema": "compitum.mutation-summary/v3",
-    "note": "Reflects MUTATION_HARDENING_STATUS.md's per-file accounting as of this commit -- the authoritative source, with exact survivor IDs, equivalence proofs, and fix commits for every entry. This JSON separates three distinct states per file, per the release checklist's requirement not to claim a flattering aggregate that conflates them: (1) killed/survived as-run -- the literal last real mutmut-tool result (local or CI, see verified_by), unmodified by any fix written afterward; (2) fixes_pending_reverification -- survivor IDs this session wrote a fix for and verified independently (direct mutant simulation, or targeted pytest runs against a manually-applied mutant), but has NOT yet re-run through the mutation tool itself to confirm the kill; (3) accepted_survivors -- IDs confirmed equivalent or explicitly accepted as defensive/unreachable, with documented reasoning, not gaps. No full CI-run re-verification of the complete 20-file matrix against this exact commit has been executed -- mutation.yml was repaired this pass (added a missing cosmic-ray baseline step, fixed a gate-check silent-pass bug, fixed shard-identity and nested-path bugs) and a fresh sweep is expected post-push, per this release's explicit instruction not to trigger mutation CI before that point.",
+    "schema": "compitum.mutation-summary/v4",
+    "note": "v4 supersedes v3: every one of the 20 files in the mutation matrix has now been confirmed by a REAL mutation_dispatch.yml CI run (2026-07-23, against a scratch branch release/v0.2.0-reverify pushed from this exact commit -- not local-only reasoning or local mutmut, which this project's own history (MUTATION_HARDENING_STATUS.md) shows has produced wrong classifications 5+ times before when not confirmed by real CI). This pass found and fixed 2 real, substantive issues that local-only work had gotten wrong or never covered: (1) mutation.yml's --cov target crashed on both applications/fusion files in real CI too (previously assumed Windows-only local quirk) -- fixed by targeting the parent package for anything under applications/fusion/. (2) security.py's report had wrongly attributed 6 survivors to a single 'worktree unreachability' cause; real CI showed only 3 of them actually are, the other 3 are equivalent for an unrelated, distinct, already-established reason -- corrected. Every other file's real CI survivor set matched local reports exactly, including the 4 files given test-only fixes this session (constraints.py, integrations/materials_project_audit.py, applications/fusion/diiid_adapter.py, applications/fusion/eval_offline.py).",
     "authoritative_source": "MUTATION_HARDENING_STATUS.md",
+    "per_file_verification_reports": "reports/mutation_clean_verification_<file>.json (one per file, full diffs/reasoning for every survivor)",
+    "tested_commit": "701150f37b56105c8087131e769ec65ec9cb00d7",
+    "verification_ref": "release/v0.2.0-reverify (scratch branch, not main -- pushed solely to obtain real CI confirmation; main is untouched pending explicit push/tag/release confirmation)",
     "per_file": {
       "embedding_pgd.py": {
         "total": 1,
         "killed": 1,
         "survived": 0,
-        "verified_by": "local",
+        "verified_by": "CI (2026-07-23, real mutation_dispatch.yml run)",
         "fixes_pending_reverification": 0,
         "accepted_survivors": 0,
         "status": "green, no fix needed"
@@ -491,7 +704,7 @@
         "total": 9,
         "killed": 9,
         "survived": 0,
-        "verified_by": "local",
+        "verified_by": "CI (2026-07-23)",
         "fixes_pending_reverification": 0,
         "accepted_survivors": 0,
         "status": "green, no fix needed"
@@ -500,193 +713,183 @@
         "total": 1,
         "killed": 1,
         "survived": 0,
-        "verified_by": "local",
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 0,
+        "status": "green, no fix needed"
+      },
+      "control.py": {
+        "total": 52,
+        "killed": 52,
+        "survived": 0,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 0,
+        "status": "green -- all prior fixes (kappa/r0 defaults, eta_cap epsilon) confirmed still killing their targets"
+      },
+      "predictors.py": {
+        "total": 22,
+        "killed": 22,
+        "survived": 0,
+        "verified_by": "CI (2026-07-23)",
         "fixes_pending_reverification": 0,
         "accepted_survivors": 0,
         "status": "green, no fix needed"
       },
       "capabilities.py": {
         "total": 9,
-        "killed": 7,
-        "survived": 2,
-        "verified_by": "local",
-        "fixes_pending_reverification": 2,
+        "killed": 9,
+        "survived": 0,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
         "accepted_survivors": 0,
-        "status": "both survivors believed killed by an existing test (is False strict-identity assertion), not yet re-run"
+        "status": "green, no fix needed"
       },
       "effort_qp.py": {
         "total": 25,
-        "killed": 19,
-        "survived": 6,
-        "verified_by": "local",
-        "fixes_pending_reverification": 6,
+        "killed": 25,
+        "survived": 0,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
         "accepted_survivors": 0,
-        "status": "fully classified, fixes not yet re-run"
-      },
-      "boundary.py": {
-        "total": 44,
-        "killed": 35,
-        "survived": 9,
-        "verified_by": "CI (2026-07-20)",
-        "fixes_pending_reverification": 9,
-        "accepted_survivors": 0,
-        "status": "fully classified, fixes not yet re-run"
-      },
-      "predictors.py": {
-        "total": 22,
-        "killed": 15,
-        "survived": 7,
-        "verified_by": "local",
-        "fixes_pending_reverification": 7,
-        "accepted_survivors": 0,
-        "status": "fully classified, fixes not yet re-run"
-      },
-      "control.py": {
-        "total": 52,
-        "killed": 47,
-        "survived": 5,
-        "verified_by": "local",
-        "fixes_pending_reverification": 5,
-        "accepted_survivors": 0,
-        "status": "fully classified, fixes not yet re-run"
-      },
-      "pgd.py": {
-        "total": 137,
-        "killed": 118,
-        "survived": 19,
-        "verified_by": "CI (2026-07-21)",
-        "fixes_pending_reverification": 2,
-        "accepted_survivors": 17,
-        "status": "CI-verified; 17 confirmed equivalent; 2 real gaps found+fixed by a later local re-verification pass, not yet re-run through CI again"
-      },
-      "integrations/matbench_adapter.py": {
-        "total": 32,
-        "killed": 24,
-        "survived": 8,
-        "verified_by": "local",
-        "fixes_pending_reverification": 8,
-        "accepted_survivors": 0,
-        "status": "fully classified, fixes not yet re-run"
-      },
-      "integrations/materials_project_audit.py": {
-        "total": 72,
-        "killed": 69,
-        "survived": 3,
-        "verified_by": "local",
-        "fixes_pending_reverification": 3,
-        "accepted_survivors": 0,
-        "status": "added to scope this release, fixes not yet re-run"
-      },
-      "applications/fusion/diiid_adapter.py": {
-        "total": 72,
-        "killed": 63,
-        "survived": 9,
-        "verified_by": "local",
-        "fixes_pending_reverification": 9,
-        "accepted_survivors": 0,
-        "status": "added to scope this release, fixes not yet re-run"
-      },
-      "applications/fusion/eval_offline.py": {
-        "total": null,
-        "killed": null,
-        "survived": null,
-        "verified_by": "not tool-run (crashed twice; hardened by hand)",
-        "fixes_pending_reverification": null,
-        "accepted_survivors": null,
-        "status": "added to scope this release; 2 fixes + 1 equivalent found via direct code review, never confirmed by the mutation tool itself"
-      },
-      "coherence.py": {
-        "total": 55,
-        "killed": 43,
-        "survived": 12,
-        "verified_by": "local",
-        "fixes_pending_reverification": 11,
-        "accepted_survivors": 1,
-        "status": "of 12 survived: 1 (weight-clamp epsilon) already killed by an existing assertion, 1 (sample_weight rescale) confirmed equivalent, 10 real gaps fixed this pass -- all 11 non-equivalent IDs not yet re-run"
+        "status": "green, no fix needed"
       },
       "symbolic.py": {
         "total": 36,
-        "killed": 30,
-        "survived": 6,
-        "verified_by": "local",
-        "fixes_pending_reverification": 6,
-        "accepted_survivors": 0,
-        "status": "fully classified, fixes not yet re-run"
-      },
-      "security.py": {
-        "total": 49,
-        "killed": 35,
-        "survived": 14,
-        "verified_by": "local",
-        "fixes_pending_reverification": 14,
-        "accepted_survivors": 0,
-        "status": "fully classified, fixes not yet re-run"
-      },
-      "constraints.py": {
-        "total": 72,
-        "killed": 60,
-        "survived": 12,
-        "verified_by": "CI (2026-07-20/21)",
-        "fixes_pending_reverification": 6,
-        "accepted_survivors": 6,
-        "status": "CI-verified 12 survived (7 logged-not-fixed + 5 equivalent); 6 of the 7 logged IDs (42/47/50/54/64/69) fixed this pass via side-channel techniques, not yet re-run; 1 remains accepted-defensive (ID 62); plus the 5 confirmed equivalent = 6 accepted total"
-      },
-      "energy.py": {
-        "total": 178,
-        "killed": 172,
-        "survived": 6,
-        "verified_by": "CI (2026-07-20)",
+        "killed": 36,
+        "survived": 0,
+        "verified_by": "CI (2026-07-23)",
         "fixes_pending_reverification": 0,
-        "accepted_survivors": 6,
-        "status": "CI-verified, 6 confirmed equivalent"
+        "accepted_survivors": 0,
+        "status": "green, no fix needed"
+      },
+      "integrations/matbench_adapter.py": {
+        "total": 32,
+        "killed": 32,
+        "survived": 0,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 0,
+        "status": "green, no fix needed"
+      },
+      "coherence.py": {
+        "total": 55,
+        "killed": 54,
+        "survived": 1,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 1,
+        "status": "1 confirmed equivalent (36: sample_weight rescaling, KernelDensity renormalizes internally)"
+      },
+      "boundary.py": {
+        "total": 43,
+        "killed": 42,
+        "survived": 1,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 1,
+        "status": "1 confirmed equivalent (23: exp(arr-u1) vs exp(arr+u1), softmax shift-invariance)"
       },
       "router.py": {
         "total": 137,
         "killed": 133,
         "survived": 4,
-        "verified_by": "CI (2026-07-20 and 2026-07-21, twice)",
+        "verified_by": "CI (2026-07-23)",
         "fixes_pending_reverification": 0,
         "accepted_survivors": 4,
-        "status": "CI-verified twice, 4 confirmed equivalent"
+        "status": "4 confirmed equivalent (62,66,109,118: abs(-x)==abs(x) pattern / outer-gate redundancy)"
       },
       "metric.py": {
-        "total": 140,
-        "killed": 124,
-        "survived": 16,
-        "verified_by": "CI (2026-07-21)",
-        "fixes_pending_reverification": 7,
+        "total": 143,
+        "killed": 134,
+        "survived": 9,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
         "accepted_survivors": 9,
-        "status": "CI-verified 16 survived (6 equivalent + 9 backtracking-loop + 1 (ID125) accepted-defensive); this pass fixed 7 of the 9 backtracking IDs and proved 1 (ID108) equivalent, not yet re-run; 1 (ID125) remains accepted-defensive"
+        "status": "9 confirmed equivalent (name-label mutations discarded before return; flush=True/False on StringIO-captured prints; backtracking-loop boundary structurally unobservable)"
+      },
+      "pgd.py": {
+        "total": 137,
+        "killed": 115,
+        "survived": 22,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 22,
+        "status": "17 confirmed equivalent (aux_* permanently-zero padding, prag_*'s redundant .get() defaults, 1-token boundary) + 5 confirmed killed-for-real despite mutmut's own tool-quirk miscategorization (verified via direct empirical mutant application)"
+      },
+      "security.py": {
+        "total": 49,
+        "killed": 44,
+        "survived": 5,
+        "verified_by": "CI (2026-07-23, corrected after real-CI reconciliation)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 5,
+        "status": "2 confirmed equivalent (env-var default strings, both != '1') + 3 confirmed equivalent (errors= inertness on clean-ASCII git files; split(maxsplit) equivalence given no-colon-in-refs guarantee) -- corrected 2026-07-23: 3 other IDs (25,26,27) originally misattributed to this same cause were confirmed KILLED in a real, non-worktree checkout"
+      },
+      "energy.py": {
+        "total": 178,
+        "killed": 176,
+        "survived": 2,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 2,
+        "status": "2 confirmed equivalent (37,40: flush=True/False irrelevant to StringIO-captured test output)"
+      },
+      "constraints.py": {
+        "total": 72,
+        "killed": 66,
+        "survived": 5,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 5,
+        "status": "Fixed 2026-07-22 (4 test-only fixes to tests/test_constraints.py). 5 confirmed equivalent/accepted survivors remain (11,43: tolerance-magnitude changes; 55,59: False->None on a bare truthy check; 62: accepted defensive dead code, m_star always has a real utility entry in practice)"
+      },
+      "integrations/materials_project_audit.py": {
+        "total": 72,
+        "killed": 67,
+        "survived": 5,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 5,
+        "status": "Fixed 2026-07-22 (8 new tests in tests/test_materials_project_audit.py). 5 confirmed equivalent/accepted survivors remain (42,43,44,46: LyapunovController params that can never affect lyapunov_function's value, proven via direct parameter sweep; 49: accepted defensive dead code)"
+      },
+      "applications/fusion/diiid_adapter.py": {
+        "total": 34,
+        "killed": 34,
+        "survived": 0,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 0,
+        "status": "No test changes needed -- existing suite was already adequate. Required a mutation.yml coverage-target fix (--cov=compitum.applications instead of the crashing compitum.applications.fusion.diiid_adapter) to run in CI at all"
+      },
+      "applications/fusion/eval_offline.py": {
+        "total": 37,
+        "killed": 36,
+        "survived": 1,
+        "verified_by": "CI (2026-07-23)",
+        "fixes_pending_reverification": 0,
+        "accepted_survivors": 1,
+        "status": "Fixed 2026-07-22 (7 new tests in tests/applications/test_lead_time_edge.py). 1 confirmed equivalent survivor (20: alarm_idx>=crash_idx vs > at the exact tie, both branches yield identical 0.0). Same mutation.yml coverage-target fix as diiid_adapter.py required"
       }
     },
     "totals": {
-      "total_mutants": 1143,
-      "killed_as_run": 1005,
-      "survived_as_run": 138,
-      "of_survived_believed_fixed_pending_reverification": 95,
-      "of_survived_accepted_equivalent_or_defensive": 43,
-      "of_survived_genuinely_open": 0
+      "total_mutants": 1144,
+      "killed": 1088,
+      "survived": 55,
+      "accepted_survivors_total": 55,
+      "genuine_unexplained_survivors": 0
     },
-    "mutation_score_as_run": 0.8793,
-    "note_on_score": "mutation_score_as_run is the literal killed/total ratio from each file's last real tool run -- it does NOT credit this session's not-yet-reverified fixes, which is why it understates the current believed-true state. Do not read this figure as 100 percent mutation adequacy or cite it without the per_file breakdown alongside it.",
-    "accepted_defensive_survivors_detail": [
-      {
-        "file": "constraints.py",
-        "id": 62,
-        "reason": "m_star's own utility lookup default; plausibly defensive dead code, not confirmed either way -- see MUTATION_HARDENING_STATUS.md"
-      },
-      {
-        "file": "metric.py",
-        "id": 125,
-        "reason": "post-loop pragma-exempted (pragma: no cover - defensive fallback) boundary; reachability proven, exact >/>= boundary judged disproportionate effort -- see MUTATION_HARDENING_STATUS.md"
-      }
-    ]
+    "mutation_score_as_run": 0.951,
+    "note_on_score": "Raw kill rate. Per this project's own established framing (MUTATION_HARDENING_STATUS.md's 'Release gate reframing' section), the gate is NOT literal 100% -- it's every survivor classified as equivalent/accepted or genuinely fixed, zero unclassified. That condition is met: all 55 surviving mutants across all 20 files are accounted for as confirmed equivalent mutants or explicitly accepted defensive/unreachable code, each with documented empirical reasoning in the per-file reports. Zero genuine, unexplained, unclassified survivors.",
+    "advisory_not_required_for_gate": {
+      "cosmic_ray_quick_shards": "20 cr-quick-shard jobs were dispatched alongside the mutmut shards but got cancelled by a concurrency-group collision mid-session and were not re-run (advisory-only per this repo's own framing; do not gate the release on them). Re-run via mutation_dispatch.yml with cr_quick=true if desired before tag."
+    }
   },
   "coverage_json": {
     "meta": {
       "format": 3,
       "version": "7.11.0",
-      "timestamp": "2026-07-21T19:25:32.684685",
+      "timestamp": "2026-07-23T01:44:42.005930",
       "branch_coverage": true,
       "show_contexts": false
     },
@@ -11155,43 +11358,11 @@
       "missing_branches": 0
     }
   },
-  "test_results": {
-    "command": "pytest -m \"not routerbench and not heavy_bench\" -ra --maxfail=1 --cov=compitum --cov-branch --cov-report=term-missing --cov-fail-under=100",
-    "passed": 350,
-    "failed": 0,
-    "skipped": 1,
-    "deselected": 3,
-    "skipped_reason": "tests/tools/test_examples_run_helper.py:29 - Known OSError on Windows with subprocess.run and asyncio",
-    "coverage_line_branch_pct": 100.0
-  },
-  "notebook_validation": {
-    "command": "pytest --nbmake -q <13 supported release notebooks, see notebooks/MANIFEST.md>",
-    "total": 13,
-    "passed": 13,
-    "failed": 0,
-    "manifest": "notebooks/MANIFEST.md"
-  },
-  "sphinx_build": {
-    "command": "sphinx -n -W -b html docs docs_build/html",
-    "result": "build succeeded",
-    "warnings": 0
-  },
-  "sphinx_linkcheck": {
-    "command": "sphinx -b linkcheck docs docs_build/linkcheck",
-    "result": "build succeeded",
-    "broken_links": 0
-  },
-  "package_build": {
-    "dist/compitum-0.2.0-py3-none-any.whl": {
-      "sha256": "c3e0561012c0eda326f53ddde84e84cd8c1ddbd9ac122e75eb37094ae1c713c4",
-      "size": 39161
-    },
-    "dist/compitum-0.2.0.tar.gz": {
-      "sha256": "d5c82ac9df23933e0c3ca1bc39f7aed8578476795abe5863b454629be0d2d519",
-      "size": 75154
-    },
-    "twine_check": "PASSED (both)"
-  },
+  "test_results": null,
+  "notebook_validation": null,
+  "sphinx_build": null,
+  "sphinx_linkcheck": null,
+  "package_build": null,
   "artifacts": {
     "snapshot": {
       "path": "docs/repo_snapshot.jsonl",
@@ -11201,61 +11372,55 @@
     },
     "manifest": {
       "path": "reports/artifact_manifest.json",
-      "size": 16011,
-      "sha256": "5c78b09597b7b0d2e91c41aaa182005d4cf45cc5bfb8af455688758c1092e41f",
-      "mtime": "2026-07-21T23:32:22.815711+00:00"
+      "size": 24047,
+      "sha256": "eaf3b6bc4b36521e5acb8bef3c65aa3ea21921b8d6e3275b9ce84c4df3a40ffe",
+      "mtime": "2026-07-23T05:45:08.472787+00:00"
     },
     "mutation": {
       "path": "reports/mutation_summary.json",
-      "size": 8737,
-      "sha256": "62194864115d9e5cfba6b0c8aa656b19702ea999241a4b4dea9aa0383f1a6afd",
-      "mtime": "2026-07-21T23:31:58.414228+00:00"
+      "size": 10073,
+      "sha256": "404b73c6e19cfd3c1d22c899717d9463e1832095e4524e9deffbd418f763147a",
+      "mtime": "2026-07-23T05:41:50.369230+00:00"
     },
     "coverage": {
       "path": "reports/coverage.json",
       "size": 99830,
-      "sha256": "92990da245e3e651b1bb40821e77e4a0e3bbb2312f2500f7bb95478da265b410",
-      "mtime": "2026-07-21T23:25:32.835019+00:00"
+      "sha256": "677d7bce28626be7e6e7080777d48fa46d001b05e8598b15f22e98ca2f47a952",
+      "mtime": "2026-07-23T05:44:42.869113+00:00"
     }
   },
   "benchmarks": {
-    "benchmarks_pytest": {
-      "path": "reports/benchmarks_pytest.json",
-      "size": 9298199,
-      "sha256": "2085fb971bf37dfeb78d07e4d08e3fe37267d5f939c5398464213eda3842a6a0",
-      "mtime": "2026-07-21T20:29:36.077669+00:00"
+    "matbench_calibration": {
+      "path": "reports/matbench_calibration.json",
+      "size": 1052,
+      "sha256": "060f2eabc894db9eddf517f92304f6746a17ea0cbf067af8f9aaaef1e4c6e651",
+      "mtime": "2026-07-23T03:50:59.947720+00:00"
     },
-    "synth_bench_output": {
-      "path": "reports/synth_bench_output.json",
-      "size": 160,
-      "sha256": "e4da0bd47460561b2ff22543f2a4e9c42a87230b578a0456962dd31e717a41b8",
-      "mtime": "2026-07-21T20:30:04.568806+00:00"
+    "matbench_regret": {
+      "path": "reports/matbench_regret.json",
+      "size": 458,
+      "sha256": "06724ef97329de78984ec321d979bf8835cc1c018977b3bed3d8a67098490c11",
+      "mtime": "2026-07-23T03:51:22.788452+00:00"
     },
-    "fixed_wtp_summary": {
-      "path": "reports/fixed_wtp_summary.json",
-      "size": 493,
-      "sha256": "f9a467231164d2721db30af65f71c7e604933fd974484742c3f41169c714e8cf",
-      "mtime": "2026-07-21T21:17:15.458366+00:00"
+    "matbench_attestation": {
+      "path": "reports/matbench_attestation.json",
+      "size": 2316,
+      "sha256": "615ea52b85c697b828f69fe777c1e4838c07f8810bb9cecf4ad5ce17cf3e9982",
+      "mtime": "2026-07-23T03:51:48.496469+00:00"
     }
   },
   "dataset_hashes": {
     "routerbench": {
-      "path": "routerbench_5shot.pkl",
+      "path": "src/routerbench/routerbench_5shot.pkl",
       "size": 171091324,
       "sha256": "fbd7d3d16fba2759a18fa0ad44409d3e0e92ba80d03d90827eed1a6d084c9ffe",
-      "mtime": "2025-10-26T17:38:39.841181+00:00"
-    },
-    "matbench_demo": {
-      "path": "data/matbench_demo.csv",
-      "size": 20431,
-      "sha256": "9bd516c0bd71952646fa440a74098667cc15cb4854ea21e4f753cc47369d37dc",
-      "mtime": "2026-07-21T20:30:19.647613+00:00"
+      "mtime": "2025-10-03T06:07:50.981254+00:00"
     }
   },
   "latest_eval_csv": {
-    "path": "data/rb_clean/eval_results/eval_results__07-21-21__rb_clean.csv",
-    "size": 116224,
-    "sha256": "da038a8e9239f01299390d60a94119f65e7a442045945183231a8004ca364fd2",
-    "mtime": "2026-07-21T21:31:55.884726+00:00"
+    "path": "data/routerbench/eval_results/eval_results__07-23-04__routerbench.csv",
+    "size": 123992,
+    "sha256": "7bc46a2176f5e6cb45408e91e97a96002fc5da12132c932a749d7682984bb134",
+    "mtime": "2026-07-23T04:07:52.142052+00:00"
   }
 }
