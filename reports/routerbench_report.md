@@ -5,8 +5,8 @@ Higher oracle_match indicates lower regret relative to the oracle assignment.
 
 ## Metrics
 - compitum
-  - accuracy_mean: 0.5022
-  - cost_mean: 1.0159
+  - accuracy_mean: 0.7091
+  - cost_mean: 3.3715
 - WizardLM/WizardLM-13B-V1.2
   - accuracy_mean: 0.4423
   - cost_mean: 0.0902
@@ -45,33 +45,33 @@ Higher oracle_match indicates lower regret relative to the oracle assignment.
   - cost_mean: 0.2368
 
 ## Where Compitum Wins
-- Cost mean vs WizardLM/WizardLM-13B-V1.2: +0.9257
-- Accuracy mean vs WizardLM/WizardLM-13B-V1.2: +0.0599
-- Cost mean vs claude-instant-v1: +0.7588
-- Accuracy mean vs claude-instant-v1: +0.1100
-- Cost mean vs claude-v1: -1.4759
-- Accuracy mean vs claude-v1: +0.0410
-- Cost mean vs claude-v2: -1.5958
-- Accuracy mean vs claude-v2: -0.0089
-- Cost mean vs gpt-3.5-turbo-1106: +0.7152
-- Accuracy mean vs gpt-3.5-turbo-1106: -0.0820
-- Cost mean vs gpt-4-1106-preview: -2.3555
-- Accuracy mean vs gpt-4-1106-preview: -0.2069
-- Cost mean vs meta/code-llama-instruct-34b-chat: +0.7895
-- Accuracy mean vs meta/code-llama-instruct-34b-chat: +0.0747
-- Cost mean vs meta/llama-2-70b-chat: +0.7519
-- Accuracy mean vs meta/llama-2-70b-chat: +0.0169
-- Cost mean vs mistralai/mistral-7b-chat: +0.9570
-- Accuracy mean vs mistralai/mistral-7b-chat: +0.0622
-- Cost mean vs mistralai/mixtral-8x7b-chat: +0.8402
-- Accuracy mean vs mistralai/mixtral-8x7b-chat: -0.0745
-- Cost mean vs oracle: +0.8095
-- Accuracy mean vs oracle: -0.3682
-- Cost mean vs zero-one-ai/Yi-34B-Chat: +0.7791
-- Accuracy mean vs zero-one-ai/Yi-34B-Chat: -0.0860
+- Cost mean vs WizardLM/WizardLM-13B-V1.2: +3.2813
+- Accuracy mean vs WizardLM/WizardLM-13B-V1.2: +0.2668
+- Cost mean vs claude-instant-v1: +3.1144
+- Accuracy mean vs claude-instant-v1: +0.3168
+- Cost mean vs claude-v1: +0.8796
+- Accuracy mean vs claude-v1: +0.2479
+- Cost mean vs claude-v2: +0.7597
+- Accuracy mean vs claude-v2: +0.1980
+- Cost mean vs gpt-3.5-turbo-1106: +3.0708
+- Accuracy mean vs gpt-3.5-turbo-1106: +0.1249
+- Cost mean vs gpt-4-1106-preview: +0.0000
+- Accuracy mean vs gpt-4-1106-preview: +0.0000
+- Cost mean vs meta/code-llama-instruct-34b-chat: +3.1450
+- Accuracy mean vs meta/code-llama-instruct-34b-chat: +0.2816
+- Cost mean vs meta/llama-2-70b-chat: +3.1075
+- Accuracy mean vs meta/llama-2-70b-chat: +0.2238
+- Cost mean vs mistralai/mistral-7b-chat: +3.3125
+- Accuracy mean vs mistralai/mistral-7b-chat: +0.2691
+- Cost mean vs mistralai/mixtral-8x7b-chat: +3.1957
+- Accuracy mean vs mistralai/mixtral-8x7b-chat: +0.1324
+- Cost mean vs oracle: +3.1651
+- Accuracy mean vs oracle: -0.1613
+- Cost mean vs zero-one-ai/Yi-34B-Chat: +3.1346
+- Accuracy mean vs zero-one-ai/Yi-34B-Chat: +0.1209
 
 ### Regret (accuracy gap to oracle)
-- Compitum: +0.3682
+- Compitum: +0.1613
 - WizardLM/WizardLM-13B-V1.2: +0.4281
 - claude-instant-v1: +0.4782
 - claude-v1: +0.4092
