@@ -6,7 +6,23 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
-## [0.2.0] - 2026-07-21
+## [0.2.0] - 2026-07-23
+- Pre-tag hardening (2026-07-22/23): a clean, from-scratch mutation re-verification against the
+  frozen candidate found the prior certification was not a genuinely isolated single run, so it was
+  redone: 20 files re-verified locally, then confirmed for real via `mutation_dispatch.yml` CI
+  (previous local-only work in this project's history has been wrong 5+ times without that
+  confirmation). Fixed real gaps in `constraints.py`, `integrations/materials_project_audit.py`, and
+  `applications/fusion/eval_offline.py` via test-only changes; corrected a misclassified
+  `security.py` survivor set after real CI disagreed with the local reasoning. Along the way, fixed
+  a `heavy_bench`/`routerbench` marker inconsistency that let a stateful benchmark test spuriously
+  fail `release.yml`; pinned ruff/mypy versions after CI and local dev silently diverged; and found
+  and fixed a severe, previously-undiscovered bug in the Cosmic Ray CI shard
+  (`.github/workflows/mutation.yml`): `excluded-modules` had used dotted Python-import names instead
+  of the glob-path syntax Cosmic Ray actually expects, so every past `cr-quick-shard` run had been
+  mutating the entire `src/` tree (including `routerbench`) regardless of its intended target —
+  fixed, plus added coverage-scoped test selection to address the resulting per-mutant cost, fixed a
+  `mutation_dispatch.yml` concurrency setting that could silently cancel an in-progress sweep, and
+  expanded its matrix to the full 20-file set.
 - Invariants: additional deep tests for score directionality, mixture discrimination, dual scaling, batch determinism
 - Docs: Core Science 0.1.1 coverage mapped to tests; index strip and README guidance
 - CI: invariants job (PR) + nightly deep; docs linkcheck
