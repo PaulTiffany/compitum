@@ -49,8 +49,8 @@ def main() -> None:
     candidates += sorted((root / "reports").glob("*.html"))
     candidates += sorted((root / "reports").glob("*.md"))
     candidates += sorted((root / "reports").glob("*.json"))
-    candidates += sorted((root / "data" / "rb_clean" / "eval_results").glob("*.csv"))
-    candidates += sorted((root / "data" / "rb_clean" / "eval_results").glob("*.pkl"))
+    candidates += sorted((root / "data" / "routerbench" / "eval_results").glob("*.csv"))
+    candidates += sorted((root / "data" / "routerbench" / "eval_results").glob("*.pkl"))
 
     items = collect(candidates, root)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
