@@ -71,9 +71,7 @@ def test_map_material_to_srmf_exact_values_with_real_attributes():
     non-None attribute values, drift/constraint/bias must match the exact
     documented formulas: drift = 1/(band_gap+0.01), constraint =
     density*ln(nsites), bias = |formation_energy_per_atom|."""
-    doc = SimpleNamespace(
-        band_gap=0.1, density=7.2, nsites=5, formation_energy_per_atom=-1.2
-    )
+    doc = SimpleNamespace(band_gap=0.1, density=7.2, nsites=5, formation_energy_per_atom=-1.2)
     s = map_material_to_srmf(doc)
     assert np.isclose(s.drift, 1.0 / (0.1 + 0.01))
     assert np.isclose(s.constraint, 7.2 * np.log(5))
@@ -124,9 +122,7 @@ def test_map_material_to_srmf_none_band_gap_and_nsites_defaults_are_exact():
     density fixed at a real, nonzero value (so the nsites-related mutations
     show up in `constraint` instead of being masked by density's own
     default) while band_gap and nsites are both None."""
-    doc = SimpleNamespace(
-        band_gap=None, density=2.0, nsites=None, formation_energy_per_atom=-1.0
-    )
+    doc = SimpleNamespace(band_gap=None, density=2.0, nsites=None, formation_energy_per_atom=-1.0)
     s = map_material_to_srmf(doc)
     assert np.isclose(s.drift, 1.0 / (0.0 + 0.01))  # band_gap default must be 0.0, not 1.0
     assert s.constraint == 0.0  # nsites default 1 -> log(1) == 0, not log(2) != 0
@@ -137,11 +133,11 @@ def test_map_material_to_srmf_none_density_default_is_exact():
     """Mirrors the test above for density's `or 0.0` default specifically --
     nsites is a real, nonzero value here so a wrong density default (0.0 vs
     1.0) shows up as a nonzero constraint instead of being masked."""
-    doc = SimpleNamespace(
-        band_gap=1.0, density=None, nsites=5, formation_energy_per_atom=None
-    )
+    doc = SimpleNamespace(band_gap=1.0, density=None, nsites=5, formation_energy_per_atom=None)
     s = map_material_to_srmf(doc)
-    assert s.constraint == 0.0  # density default must be 0.0, not 1.0 (which would give density*ln(5) != 0)
+    assert (
+        s.constraint == 0.0
+    )  # density default must be 0.0, not 1.0 (which would give density*ln(5) != 0)
 
 
 def _patch_mp_api(monkeypatch, docs):
@@ -355,9 +351,7 @@ def test_audit_monkeypatched_missing_material_id_and_formula_use_empty_default(m
     default value itself (as opposed to the getattr key) was never
     observed. A doc without material_id/formula_pretty at all must produce
     empty strings in those columns, not some other placeholder."""
-    doc = SimpleNamespace(
-        band_gap=0.1, density=7.2, nsites=5, formation_energy_per_atom=-1.2
-    )
+    doc = SimpleNamespace(band_gap=0.1, density=7.2, nsites=5, formation_energy_per_atom=-1.2)
     assert not hasattr(doc, "material_id")
     assert not hasattr(doc, "formula_pretty")
     _patch_mp_api(monkeypatch, [doc])

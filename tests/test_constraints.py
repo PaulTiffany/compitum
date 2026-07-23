@@ -370,7 +370,9 @@ def test_solver_shadow_price_context_ok_cap_actually_used_not_nulled() -> None:
         name="competitor", center=np.array([]), capabilities=FlippingCapsWithContext(), cost=0.0
     )
 
-    _, info = solver.select(xB, [m_star, competitor], {"m_star": 0.5, "competitor": 0.9}, context=context)
+    _, info = solver.select(
+        xB, [m_star, competitor], {"m_star": 0.5, "competitor": 0.9}, context=context
+    )
     assert info["shadow_prices"]["lambda_0"] > 0.0
     assert np.isclose(info["shadow_prices"]["lambda_0"], (0.9 - 0.5) / 1e-5)
 
