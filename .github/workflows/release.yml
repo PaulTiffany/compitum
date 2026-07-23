@@ -48,7 +48,7 @@ jobs:
           MKL_NUM_THREADS: 1
           OPENBLAS_NUM_THREADS: 1
           NUMEXPR_NUM_THREADS: 1
-        run: pytest -q -m "not routerbench"
+        run: pytest -q -m "not routerbench and not heavy_bench"
 
       - name: Install build tools
         run: |

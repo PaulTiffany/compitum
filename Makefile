@@ -9,8 +9,8 @@ test:
 	PYTHONWARNINGS="ignore::RuntimeWarning" .venv\Scripts\python -m pytest
 
 test-ci:
-	# Mirror CI selection locally: exclude routerbench
-	.venv\Scripts\python -m pytest -q -m "not routerbench"
+	# Mirror CI selection locally: exclude routerbench and opt-in heavy_bench
+	.venv\Scripts\python -m pytest -q -m "not routerbench and not heavy_bench"
 
 lint:
 	.venv\Scripts\ruff check .
