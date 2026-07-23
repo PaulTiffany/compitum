@@ -131,6 +131,17 @@ jobs:
           # marker filter above) so every shard sees genuine coverage of its
           # own target regardless of where that module's tests actually live.
           TARGET_MODULE="compitum.$(echo "${TARGET_FILE%.py}" | tr '/' '.')"
+          # applications/fusion/* modules crash pytest-cov during collection
+          # ("numpy: cannot load module more than once per process") when
+          # --cov targets anything at or below compitum.applications.fusion --
+          # reproduced across 3 environments, survives a full reboot, root-caused
+          # to a coverage.py + nested-package interaction (see
+          # reports/mutation_clean_verification_diiid_adapter.json). Targeting
+          # the parent package instead works and still yields fully accurate
+          # per-file coverage for every file inside the subpackage.
+          case "${TARGET_FILE}" in
+            applications/fusion/*) TARGET_MODULE="compitum.applications" ;;
+          esac
           pytest -q --cov="${TARGET_MODULE}" --cov-branch --cov-fail-under=0
           # Run mutmut restricted to this shard for speed and determinism.
           # mutmut exits nonzero when survivors/timeouts/suspicious mutants exist, which is
