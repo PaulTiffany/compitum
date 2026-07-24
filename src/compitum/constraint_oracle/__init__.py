@@ -19,6 +19,12 @@ This package is dependency-free beyond what the frozen core already uses
 (numpy); it never imports FabricPC or JAX.
 """
 
+from .channels import (
+    CHANNEL_DIMENSION,
+    ChannelPreviousState,
+    compute_channel_vector,
+    compute_sequence_channels,
+)
 from .dataset import (
     SCENARIOS,
     ControlledCase,
@@ -37,14 +43,18 @@ from .static import (
 )
 
 __all__ = [
+    "CHANNEL_DIMENSION",
     "SCENARIOS",
+    "ChannelPreviousState",
     "ConstraintPressureResult",
     "ConstraintTarget",
     "ControlledCase",
     "ControlledSequence",
     "HorizonOracleResult",
     "SequenceStepResult",
+    "compute_channel_vector",
     "compute_constraint_pressure",
     "compute_horizon_targets",
+    "compute_sequence_channels",
     "generate_controlled_dataset",
 ]

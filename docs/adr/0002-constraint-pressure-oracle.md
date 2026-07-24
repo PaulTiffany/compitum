@@ -68,3 +68,33 @@ adaptive search:
 This is a genuine simplification discovered while implementing, not an
 assumption -- an earlier draft of the oracle modeled a third, impossible
 branch and its test suite caught the contradiction immediately.
+
+## Declared channel mapping (tranche 2.4)
+
+FabricPC observes only state Compitum itself already has; it never consumes
+the oracle's own targets. `src/compitum/constraint_oracle/channels.py`
+defines a fixed, 17-dimensional, documented-order vector: normalized
+per-constraint slack, a feasibility mask by model, per-model utilities, the
+winner/runner-up utility gap, utility-distribution entropy (same formula as
+`BoundaryAnalyzer.analyze`), the frozen `LyapunovController`'s own drift
+state (reused unmodified, mutated once per sequence step exactly as
+`CompitumRouter` does), and two step-to-step transition indicators
+(violated-constraint-set Jaccard distance; selected-model change). Not
+modeled in the controlled track: per-model utility *components* and
+resource-utilization history, since the controlled dataset generator
+bypasses `CompitumRouter` and has no `SymbolicFreeEnergy` breakdown or real
+usage telemetry to draw on -- both are candidates for a later realized
+-routing track, not fabricated here.
+
+`experiments/fabricpc/tranche2/fabricpc_channel_observer.py` (JAX-side, runs
+only under `.venv-fabricpc`) observes this vector through a
+source(17)-hidden(8)-latent(4) graph, reusing tranche 1's established
+verified-receipt/lightweight-history pattern. One finding worth recording:
+an all-zero channel vector is a degenerate probe -- a linear map of zero is
+zero regardless of network weights, so it forces "hidden"'s prediction
+error (and therefore its energy) to exactly 0.0 regardless of the network's
+random seed. Confirmed directly (two different network seeds against an
+all-zero vector both yield terminal hidden energy 0.0; a real, non
+-degenerate channel vector from an actual generated sequence does not).
+This must not be used as a "no signal" baseline probe in later comparison
+arms -- it is mathematically forced, not evidence of anything.
