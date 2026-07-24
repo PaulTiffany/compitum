@@ -99,6 +99,23 @@ def predict_two_part(model: TwoPartModel, X: np.ndarray) -> Tuple[np.ndarray, np
     return p, magnitude
 
 
+def calibrate_threshold(p_train: Sequence[float], y_train: Sequence[bool]) -> float:
+    """Pick a decision threshold from TRAINING predictions only, so the
+    classifier's predicted-positive rate matches the observed training
+    positive rate -- a fixed 0.5 cutoff is inappropriate whenever the base
+    rate is far from 50% (a plain ridge-regression score regresses toward
+    the mean and may never cross 0.5 at all, even when it carries genuine
+    separating signal). This never looks at test labels.
+    """
+    y = np.array([1.0 if v else 0.0 for v in y_train])
+    p = np.array(p_train, dtype=float)
+    positive_rate = float(y.mean()) if len(y) else 0.0
+    if len(p) == 0:
+        return 0.5
+    quantile = np.clip(1.0 - positive_rate, 0.0, 1.0)
+    return float(np.quantile(p, quantile))
+
+
 def classification_metrics(
     y_true: Sequence[bool], p_pred: Sequence[float], threshold: float = 0.5
 ) -> Dict[str, float]:

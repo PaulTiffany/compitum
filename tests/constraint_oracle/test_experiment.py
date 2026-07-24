@@ -8,6 +8,7 @@ import numpy as np
 import pytest
 
 from compitum.constraint_oracle.experiment import (
+    calibrate_threshold,
     classification_metrics,
     fit_two_part_model,
     predict_two_part,
@@ -165,3 +166,34 @@ def test_shuffle_raw_steps_missing_run_id_defaults() -> None:
     payload = {"steps": [{"e": 1}, {"e": 2}]}
     shuffled = shuffle_raw_steps(payload, seed=1)
     assert shuffled["run_id"] == "unknown-shuffled1"
+
+
+def test_calibrate_threshold_matches_training_base_rate() -> None:
+    p_train = [0.0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.9, 0.95]
+    y_train = [False] * 8 + [True] * 2  # 20% positive rate
+    threshold = calibrate_threshold(p_train, y_train)
+    predicted_positive = sum(1 for p in p_train if p >= threshold)
+    assert predicted_positive == pytest.approx(2, abs=1)
+
+
+def test_calibrate_threshold_low_base_rate_finds_a_usable_cutoff() -> None:
+    """Reproduces the pilot's real finding: scores that never reach 0.5 but
+    do separate the classes should still get a usable, lower threshold."""
+    rng = np.random.default_rng(0)
+    n = 500
+    positive_rate = 0.08
+    y_train = rng.random(n) < positive_rate
+    p_train = np.where(y_train, rng.uniform(0.1, 0.4, n), rng.uniform(0.0, 0.2, n))
+    threshold = calibrate_threshold(p_train, y_train)
+    assert threshold < 0.5
+    predicted_positive_rate = float(np.mean(p_train >= threshold))
+    assert predicted_positive_rate == pytest.approx(positive_rate, abs=0.05)
+
+
+def test_calibrate_threshold_empty_inputs() -> None:
+    assert calibrate_threshold([], []) == 0.5
+
+
+def test_calibrate_threshold_all_negative_or_all_positive() -> None:
+    assert calibrate_threshold([0.1, 0.2, 0.3], [False, False, False]) >= 0.3
+    assert calibrate_threshold([0.1, 0.2, 0.3], [True, True, True]) <= 0.1

@@ -33,6 +33,7 @@ from .dataset import (
 )
 from .experiment import (
     TwoPartModel,
+    calibrate_threshold,
     classification_metrics,
     fit_two_part_model,
     predict_two_part,
@@ -65,6 +66,7 @@ __all__ = [
     "HorizonOracleResult",
     "SequenceStepResult",
     "TwoPartModel",
+    "calibrate_threshold",
     "classification_metrics",
     "compute_channel_vector",
     "compute_constraint_pressure",
