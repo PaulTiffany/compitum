@@ -1,0 +1,186 @@
+"""Online policy simulator (tranche 3).
+
+Runs one policy across a full ``DynamicSequence``, applying a reservation
+-then-true-up ledger (immediate reservation using the forecast available at
+decision time; a correction applied once ``revelation_delay`` elapses,
+which can push the ledger negative -- recorded as a genuine violation, not
+hidden). Never reads or writes production Compitum state; this is a
+self-contained offline simulation, per docs/adr/0003-dynamic-constraint-regret.md.
+"""
+
+from __future__ import annotations
+
+import time
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+from .dual_controller import DualController, price_utilities
+from .environment import DynamicSequence
+from .metrics import PolicyRunResult
+
+Forecaster = Callable[[Dict[str, Dict[str, float]]], Dict[str, Dict[str, float]]]
+
+
+@dataclass
+class PolicyDecision:
+    step: int
+    chosen: str
+    feasible_models: List[str]
+    priced_utility: Dict[str, float]
+    violation_magnitude_so_far: float
+    latency_seconds: float
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "step": self.step,
+            "chosen": self.chosen,
+            "feasible_models": list(self.feasible_models),
+            "priced_utility": dict(self.priced_utility),
+            "violation_magnitude_so_far": self.violation_magnitude_so_far,
+            "latency_seconds": self.latency_seconds,
+        }
+
+
+@dataclass
+class _PendingCorrection:
+    due_step: int
+    resource_deltas: Dict[str, float]
+
+
+def simulate_policy(
+    seq: DynamicSequence,
+    dual_controller: Optional[DualController] = None,
+    forecaster: Optional[Forecaster] = None,
+    forecaster_update: Optional[Callable[[str, Dict[str, float], Dict[str, float]], None]] = None,
+) -> Tuple[PolicyRunResult, List[PolicyDecision]]:
+    """``dual_controller=None`` reproduces the static/frozen arm (greedy on
+    raw ``base_utility`` among expected-feasible models, no pricing).
+    ``forecaster`` (if given) replaces ``case.expected_consumption`` with a
+    prediction for both the feasibility check and pricing; pass
+    ``forecaster_update`` (e.g. an ``EWMAForecaster.update``-bound method)
+    to let it learn from the chosen model's realized outcome each step."""
+    remaining = dict(seq.initial_budget)
+    pending: List[_PendingCorrection] = []
+    cumulative_utility = 0.0
+    choices: List[str] = []
+    decisions: List[PolicyDecision] = []
+    violation_count = 0
+    violation_magnitude_total = 0.0
+    deferral_count = 0
+    avoidable_deferral_count = 0
+    depleted_budget_events = 0
+    total_consumption: Dict[str, float] = {r: 0.0 for r in seq.resource_names}
+
+    def _apply_delta(resource: str, delta: float) -> None:
+        nonlocal violation_count, violation_magnitude_total
+        remaining[resource] += delta
+        if remaining[resource] < 0:
+            violation_magnitude_total += -remaining[resource]
+            violation_count += 1
+            remaining[resource] = 0.0
+
+    for t, case in enumerate(seq.cases):
+        start = time.perf_counter()
+
+        still_pending = []
+        for corr in pending:
+            if corr.due_step <= t:
+                for r, correction in corr.resource_deltas.items():
+                    _apply_delta(r, correction)
+            else:
+                still_pending.append(corr)
+        pending = still_pending
+
+        forecast = (
+            forecaster(case.expected_consumption) if forecaster else case.expected_consumption
+        )
+        feasible = [
+            m
+            for m in seq.model_names
+            if all(remaining[r] - forecast[m][r] >= -1e-9 for r in seq.resource_names)
+        ]
+
+        if dual_controller is not None:
+            priced = price_utilities(case.base_utility, forecast, dual_controller.lambda_price)
+        else:
+            priced = dict(case.base_utility)
+
+        if feasible:
+            chosen = max(feasible, key=lambda m: priced[m])
+        else:
+            chosen = "defer"
+            deferral_count += 1
+            # "Unnecessary"/avoidable: the forecast blocked every model, but
+            # at least one model's true realized consumption would actually
+            # have fit -- a real capacity existed, only the forecast hid it.
+            if any(
+                all(
+                    remaining[r] - case.realized_consumption[m][r] >= -1e-9
+                    for r in seq.resource_names
+                )
+                for m in seq.model_names
+            ):
+                avoidable_deferral_count += 1
+
+        if chosen != "defer":
+            cumulative_utility += case.base_utility[chosen]
+            reservation = forecast[chosen]
+            for r in seq.resource_names:
+                _apply_delta(r, -reservation[r])
+            realized = case.realized_consumption[chosen]
+            delta = {r: reservation[r] - realized[r] for r in seq.resource_names}
+            if case.revelation_delay <= 0:
+                for r in seq.resource_names:
+                    _apply_delta(r, delta[r])
+            else:
+                pending.append(
+                    _PendingCorrection(due_step=t + case.revelation_delay, resource_deltas=delta)
+                )
+            if forecaster_update is not None:
+                forecaster_update(chosen, case.expected_consumption[chosen], realized)
+            for r in seq.resource_names:
+                total_consumption[r] += realized[r]
+
+        for r in seq.resource_names:
+            remaining[r] += case.replenishment[r]
+
+        if any(remaining[r] <= 1e-9 for r in seq.resource_names):
+            depleted_budget_events += 1
+
+        if dual_controller is not None and chosen != "defer":
+            reservation = forecast[chosen]
+            steps_left = max(1, len(seq.cases) - t)
+            utilization_error = {
+                r: reservation[r] - (remaining[r] / steps_left) for r in seq.resource_names
+            }
+            dual_controller.update(utilization_error)
+
+        latency = time.perf_counter() - start
+        decisions.append(
+            PolicyDecision(
+                step=t,
+                chosen=chosen,
+                feasible_models=feasible,
+                priced_utility=priced,
+                violation_magnitude_so_far=violation_magnitude_total,
+                latency_seconds=latency,
+            )
+        )
+        choices.append(chosen)
+
+    route_switch_count = sum(1 for i in range(1, len(choices)) if choices[i] != choices[i - 1])
+
+    result = PolicyRunResult(
+        sequence_id=seq.sequence_id,
+        cumulative_utility=cumulative_utility,
+        choices=choices,
+        violation_count=violation_count,
+        violation_magnitude=violation_magnitude_total,
+        deferral_count=deferral_count,
+        avoidable_deferral_count=avoidable_deferral_count,
+        route_switch_count=route_switch_count,
+        depleted_budget_events=depleted_budget_events,
+        total_consumption=total_consumption,
+        decision_latencies=[d.latency_seconds for d in decisions],
+    )
+    return result, decisions
