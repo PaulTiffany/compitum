@@ -5,6 +5,61 @@ pricing mechanism itself (tranche 6.5, frozen and reused unchanged);
 changes only the environment's payoff process, per the authorizing
 brief's explicit scope.
 
+## Gate 0 outcome
+
+**Passed, on the second development-grid pass.** The first pass (8
+configs varying only `U_NORMAL_OPPORTUNITY`/`U_HIGH_OPPORTUNITY`/initial
+budget) found genuine belief-dependent decision boundaries at 56-73 of
+77-92 reachable states, but the exact-belief policy tied EXACTLY with
+fixed-prior and shuffled belief-blind controls in nearly every config --
+diagnosed directly (inspecting real belief trajectories) as an
+observation-informativeness artifact: tranche 6's fixed
+`P_OPPORTUNITY[HIGH]=0.35` vs `P_OPPORTUNITY[NORMAL]=0.05` (gap 0.30)
+makes a single "opportunity available" observation so decisive on its
+own (`filtered_belief(0.5, True) = 0.875`) that a naive one-shot read
+already lands on the same side of the decision boundary as several steps
+of accumulated exact belief, regardless of history.
+
+A second pass, freezing payoff/budget at reasonable values
+(`u_normal=1.0`, `u_high=8.0`, `initial_budget=6.0`, the budget value the
+first pass's own data showed had far higher boundary occupancy) and
+instead varying observation informativeness and regime persistence --
+the two additional dimensions the brief itself named -- found a
+passing configuration:
+
+```text
+p_opportunity_normal=0.15, p_opportunity_high=0.25   (gap narrowed 0.30 -> 0.10)
+transition_normal_to_high=0.2, transition_high_to_high=0.6   (unchanged)
+```
+
+75.3% of reachable states (58/77) have a genuine belief-dependent action
+boundary; 19.3% of steps across 30 diagnostic sequences land within 0.1
+belief of one (exceeding the declared 10% minimum); the exact-belief
+policy beats fixed-prior, inverted, and shuffled controls in point
+-estimate regret (means -0.43, -0.43, -0.80 respectively -- Gate 0 checks
+direction, per its own literal criterion, not full statistical
+significance, which belongs to the actual pilot's larger held-out test
+set); and `exact_mean_regret_vs_online_optimum = 0.0`, confirming the
+Gate-A-prime correctness identity still holds exactly at this
+configuration. This configuration is now frozen for the ten-arm pilot
+(`experiments/fabricpc/tranche7/run_ten_arm_pilot.py`) -- see
+`experiments/fabricpc/tranche7/artifacts/gate0_report.json` for the full
+grid and selection record.
+
+Two further modules were required by necessity (not initially planned)
+once observation/transition tuning proved necessary:
+`belief_pricing.ExactBeliefEstimator`/`HmmBeliefEstimator` and
+`belief_online_optimum.run_online_optimal_policy` hardcode tranche 6's
+fixed parameters internally, so reusing them unchanged with tuned
+parameters would have silently made the "exact" belief tracker and the
+"exact online optimum" reference both wrong for the environment actually
+being evaluated. `ExactBeliefEstimatorV2`/`HmmBeliefEstimatorV2`
+(`belief_action_pricing_v2.py`) and `run_online_optimal_policy_v2`/
+`online_optimum_as_hindsight_result_v2` (new `belief_online_optimum_v2.py`)
+are minimal parameterized siblings, verified via the same
+Gate-A-prime-style exact-equivalence check at the tuned parameters (15
+seeds) plus independent scalar-vs-matrix cross-validation.
+
 ## Governing correction
 
 Tranche 6.5 proved the shadow-charge translation exactly correct (Gate

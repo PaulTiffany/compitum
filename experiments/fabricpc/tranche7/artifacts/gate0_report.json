@@ -1,0 +1,246 @@
+{
+  "first_pass_finding": "8 configs varying only u_normal/u_high/initial_budget found genuine boundary states (56-73 of 77-92 reachable states) but the exact-belief policy tied EXACTLY with fixed-prior/shuffled controls in nearly every config -- diagnosed as tranche 6's fixed observation informativeness (P_OPPORTUNITY gap 0.30) making a single observation swamp any prior.",
+  "grid": [
+    {
+      "boundary_state_fraction": 0.7272727272727273,
+      "exact_beats_all_controls": false,
+      "exact_mean_regret_vs_online_optimum": 0.0,
+      "exact_vs_belief_blind_controls": {
+        "fixed_prior": {
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "mean": 0.0
+          },
+          "exact_beats_control": false
+        },
+        "inverted": {
+          "delta": {
+            "ci_high": -0.13333333333333333,
+            "ci_low": -1.0666666666666667,
+            "mean": -0.5333333333333333
+          },
+          "exact_beats_control": true
+        },
+        "shuffled": {
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "mean": 0.0
+          },
+          "exact_beats_control": false
+        }
+      },
+      "initial_budget": 6.0,
+      "meets_min_occupancy": true,
+      "n_boundary_states": 56,
+      "n_reachable_states": 77,
+      "occupancy": {
+        "near_boundary_steps": 59,
+        "occupancy_fraction": 0.19666666666666666,
+        "total_steps": 300
+      },
+      "p_opportunity_high": 0.35,
+      "p_opportunity_normal": 0.05,
+      "passes_gate0": false,
+      "transition_high_to_high": 0.6,
+      "transition_normal_to_high": 0.2,
+      "u_high": 8.0,
+      "u_normal": 1.0
+    },
+    {
+      "boundary_state_fraction": 0.7272727272727273,
+      "exact_beats_all_controls": false,
+      "exact_mean_regret_vs_online_optimum": 0.0,
+      "exact_vs_belief_blind_controls": {
+        "fixed_prior": {
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "mean": 0.0
+          },
+          "exact_beats_control": false
+        },
+        "inverted": {
+          "delta": {
+            "ci_high": -0.26666666666666666,
+            "ci_low": -1.6033333333333333,
+            "mean": -0.9333333333333333
+          },
+          "exact_beats_control": true
+        },
+        "shuffled": {
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "mean": 0.0
+          },
+          "exact_beats_control": false
+        }
+      },
+      "initial_budget": 6.0,
+      "meets_min_occupancy": true,
+      "n_boundary_states": 56,
+      "n_reachable_states": 77,
+      "occupancy": {
+        "near_boundary_steps": 31,
+        "occupancy_fraction": 0.10333333333333333,
+        "total_steps": 300
+      },
+      "p_opportunity_high": 0.35,
+      "p_opportunity_normal": 0.05,
+      "passes_gate0": false,
+      "transition_high_to_high": 0.85,
+      "transition_normal_to_high": 0.3,
+      "u_high": 8.0,
+      "u_normal": 1.0
+    },
+    {
+      "boundary_state_fraction": 0.7532467532467533,
+      "exact_beats_all_controls": true,
+      "exact_mean_regret_vs_online_optimum": 0.0,
+      "exact_vs_belief_blind_controls": {
+        "fixed_prior": {
+          "delta": {
+            "ci_high": 0.36666666666666664,
+            "ci_low": -1.2666666666666666,
+            "mean": -0.43333333333333335
+          },
+          "exact_beats_control": true
+        },
+        "inverted": {
+          "delta": {
+            "ci_high": 0.36666666666666664,
+            "ci_low": -1.2666666666666666,
+            "mean": -0.43333333333333335
+          },
+          "exact_beats_control": true
+        },
+        "shuffled": {
+          "delta": {
+            "ci_high": 0.1,
+            "ci_low": -1.7333333333333334,
+            "mean": -0.8
+          },
+          "exact_beats_control": true
+        }
+      },
+      "initial_budget": 6.0,
+      "meets_min_occupancy": true,
+      "n_boundary_states": 58,
+      "n_reachable_states": 77,
+      "occupancy": {
+        "near_boundary_steps": 58,
+        "occupancy_fraction": 0.19333333333333333,
+        "total_steps": 300
+      },
+      "p_opportunity_high": 0.25,
+      "p_opportunity_normal": 0.15,
+      "passes_gate0": true,
+      "transition_high_to_high": 0.6,
+      "transition_normal_to_high": 0.2,
+      "u_high": 8.0,
+      "u_normal": 1.0
+    },
+    {
+      "boundary_state_fraction": 0.7402597402597403,
+      "exact_beats_all_controls": false,
+      "exact_mean_regret_vs_online_optimum": 0.0,
+      "exact_vs_belief_blind_controls": {
+        "fixed_prior": {
+          "delta": {
+            "ci_high": 0.0,
+            "ci_low": 0.0,
+            "mean": 0.0
+          },
+          "exact_beats_control": false
+        },
+        "inverted": {
+          "delta": {
+            "ci_high": 0.10083333333332879,
+            "ci_low": -1.2666666666666666,
+            "mean": -0.5666666666666667
+          },
+          "exact_beats_control": true
+        },
+        "shuffled": {
+          "delta": {
+            "ci_high": 0.3,
+            "ci_low": -0.7,
+            "mean": -0.1
+          },
+          "exact_beats_control": true
+        }
+      },
+      "initial_budget": 6.0,
+      "meets_min_occupancy": false,
+      "n_boundary_states": 57,
+      "n_reachable_states": 77,
+      "occupancy": {
+        "near_boundary_steps": 23,
+        "occupancy_fraction": 0.07666666666666666,
+        "total_steps": 300
+      },
+      "p_opportunity_high": 0.25,
+      "p_opportunity_normal": 0.15,
+      "passes_gate0": false,
+      "transition_high_to_high": 0.85,
+      "transition_normal_to_high": 0.3,
+      "u_high": 8.0,
+      "u_normal": 1.0
+    }
+  ],
+  "n_configs_evaluated": 4,
+  "n_configs_passing": 1,
+  "outcome": "Gate 0 PASSED. Selected config: p_opportunity=(0.15,0.25), transition=(0.2,0.6), u_normal=1.0, u_high=8.0, initial_budget=6.0 (occupancy=0.193), chosen solely by maximum belief-boundary occupancy among configs that also beat all belief-blind controls -- never by FabricPC/ridge/backprop performance.",
+  "pass_number": 2,
+  "schema": "compitum.fabricpc-tranche7-gate0-report/v1",
+  "selected_config": {
+    "boundary_state_fraction": 0.7532467532467533,
+    "exact_beats_all_controls": true,
+    "exact_mean_regret_vs_online_optimum": 0.0,
+    "exact_vs_belief_blind_controls": {
+      "fixed_prior": {
+        "delta": {
+          "ci_high": 0.36666666666666664,
+          "ci_low": -1.2666666666666666,
+          "mean": -0.43333333333333335
+        },
+        "exact_beats_control": true
+      },
+      "inverted": {
+        "delta": {
+          "ci_high": 0.36666666666666664,
+          "ci_low": -1.2666666666666666,
+          "mean": -0.43333333333333335
+        },
+        "exact_beats_control": true
+      },
+      "shuffled": {
+        "delta": {
+          "ci_high": 0.1,
+          "ci_low": -1.7333333333333334,
+          "mean": -0.8
+        },
+        "exact_beats_control": true
+      }
+    },
+    "initial_budget": 6.0,
+    "meets_min_occupancy": true,
+    "n_boundary_states": 58,
+    "n_reachable_states": 77,
+    "occupancy": {
+      "near_boundary_steps": 58,
+      "occupancy_fraction": 0.19333333333333333,
+      "total_steps": 300
+    },
+    "p_opportunity_high": 0.25,
+    "p_opportunity_normal": 0.15,
+    "passes_gate0": true,
+    "transition_high_to_high": 0.6,
+    "transition_normal_to_high": 0.2,
+    "u_high": 8.0,
+    "u_normal": 1.0
+  },
+  "total_elapsed_seconds": 116.66880700000911
+}
