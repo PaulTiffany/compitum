@@ -19,6 +19,12 @@ This package is dependency-free beyond what the frozen core already uses
 (numpy); it never imports FabricPC or JAX.
 """
 
+from .dataset import (
+    SCENARIOS,
+    ControlledCase,
+    ControlledSequence,
+    generate_controlled_dataset,
+)
 from .horizon import (
     HorizonOracleResult,
     SequenceStepResult,
@@ -31,10 +37,14 @@ from .static import (
 )
 
 __all__ = [
+    "SCENARIOS",
     "ConstraintPressureResult",
     "ConstraintTarget",
+    "ControlledCase",
+    "ControlledSequence",
     "HorizonOracleResult",
     "SequenceStepResult",
     "compute_constraint_pressure",
     "compute_horizon_targets",
+    "generate_controlled_dataset",
 ]
