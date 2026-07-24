@@ -16,6 +16,13 @@ JAX.
 """
 
 from .belief_bellman import BellmanOracle, BellmanStateBudgetExceeded
+from .belief_channels import CHANNEL_DIMENSION as BELIEF_CHANNEL_DIMENSION
+from .belief_channels import (
+    BeliefChannelHistory,
+    advance_belief_history,
+    compute_belief_channel_vector,
+)
+from .belief_hmm_filter import belief_high_from_scalar, hmm_filter_step
 from .belief_regime import GRID_UNIT as BELIEF_GRID_UNIT
 from .belief_regime import MODEL_NAMES as BELIEF_MODEL_NAMES
 from .belief_regime import STEPS as BELIEF_STEPS
@@ -83,6 +90,7 @@ from .simulator import ForecastContext, PolicyDecision, simulate_policy
 from .windowed_predictor import RidgeModel, fit_ridge, flatten_window, predict_ridge
 
 __all__ = [
+    "BELIEF_CHANNEL_DIMENSION",
     "BELIEF_GRID_UNIT",
     "BELIEF_MODEL_NAMES",
     "BELIEF_STEPS",
@@ -95,6 +103,7 @@ __all__ = [
     "SCARCITY_MODEL_NAMES",
     "SCARCITY_RESOURCE_NAMES",
     "SCENARIOS",
+    "BeliefChannelHistory",
     "BellmanOracle",
     "BellmanStateBudgetExceeded",
     "DualController",
@@ -115,9 +124,12 @@ __all__ = [
     "ResidualPricingController",
     "RidgeModel",
     "ScarcityParams",
+    "advance_belief_history",
     "advance_history",
+    "belief_high_from_scalar",
     "bootstrap_ci",
     "build_scarcity_sequence",
+    "compute_belief_channel_vector",
     "compute_hindsight_optimum",
     "compute_oracle_compatible_interval",
     "compute_regret_channel_vector",
@@ -132,6 +144,7 @@ __all__ = [
     "generate_dynamic_dataset",
     "generate_primary_dataset",
     "generate_secondary_dataset",
+    "hmm_filter_step",
     "observation_probability",
     "oracle_price_residual",
     "paired_regret_deltas",
