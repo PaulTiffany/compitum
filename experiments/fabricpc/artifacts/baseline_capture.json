@@ -1,0 +1,52 @@
+{
+  "schema": "compitum.fabricpc-baseline-capture/v1",
+  "recorded_at": "2026-07-24T00:24:11.781345+00:00",
+  "purpose": "Frozen Compitum v0.2.0 control baseline for the FabricPC trajectory-observer experiment (observation-only tranche).",
+  "source": {
+    "repository": "https://github.com/PaulTiffany/compitum",
+    "tag": "v0.2.0",
+    "commit": "a8de8cbafa5eb00b523f539c340ba81a146aa781",
+    "branch": "experiment/fabricpc-trajectory-observer",
+    "worktree": "C:/src/compitum-fabricpc"
+  },
+  "environment": {
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "machine": "AMD64",
+    "venv": ".venv",
+    "key_packages": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "scikit-learn": "1.9.0",
+      "pandas": "3.0.5",
+      "pydantic": "2.13.4",
+      "pytest": "9.1.1",
+      "hypothesis": "6.161.1",
+      "coverage": "7.15.2"
+    },
+    "thread_env": {
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1"
+    },
+    "hypothesis_profile": "ci"
+  },
+  "command": "pytest -m \"not routerbench and not heavy_bench\" -q --cov=compitum --cov-branch --cov-fail-under=100",
+  "result": {
+    "passed": 368,
+    "failed": 1,
+    "skipped": 1,
+    "deselected": 3,
+    "coverage_percent": 100.0,
+    "elapsed_seconds": 139.48,
+    "failures": [
+      {
+        "test": "tests/security/test_security_utils.py::test_git_commit_short_resolves_real_repo_head",
+        "cause": "known, pre-existing v0.2.0 worktree incompatibility: git_commit_short() resolves .git as a directory; in any `git worktree` checkout .git is a file, so head_file.exists() is False for real, unmutated code. Documented during the 0.2.0 release in reports/mutation_clean_verification_security.json; confirmed passing in real CI on a normal (non-worktree) clone of the same source. Orthogonal to FabricPC.",
+        "disposition": "recorded, not deselected, not patched -- the frozen tree stays frozen"
+      }
+    ]
+  },
+  "rollback": "delete the worktree branch, C:/src/FabricPC, and both venvs to return to v0.2.0 with no FabricPC installed"
+}

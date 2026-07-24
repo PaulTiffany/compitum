@@ -1,0 +1,46 @@
+{
+  "schema": "compitum.fabricpc-install-receipt/v1",
+  "recorded_at": "2026-07-24T00:31:40.340858+00:00",
+  "note": "Compitum-owned receipt for the FabricPC pin used by the experiment/fabricpc-trajectory-observer tranche. Sketched's historical receipt (sketched.fabricpc-install-receipt.v1, FabricPC 0.3.1 at b6f64adf9314863ce665085a92d544807d585819) is preserved untouched at C:/src/sketched/verification/fabricpc_install_receipt.json.",
+  "source": {
+    "repository": "https://github.com/trueagi-io/FabricPC.git",
+    "commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+    "version_tag": "v0.3.2",
+    "checkout": "C:/src/FabricPC",
+    "vendored": false
+  },
+  "environment": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "virtualenv": "C:/src/compitum-fabricpc/.venv-fabricpc",
+    "fabricpc": "0.3.2",
+    "jax": "0.10.2",
+    "device": "cpu:0",
+    "install_command": "pip install -e \"C:\\src\\FabricPC[dev,experiments]\""
+  },
+  "verification": {
+    "pip_check": "pass: no broken requirements",
+    "upstream_tests": {
+      "verdict": "pass (with a recorded Windows-encoding caveat)",
+      "passed": 296,
+      "failed_default_mode": 4,
+      "skipped": 4,
+      "warnings": 2,
+      "elapsed_seconds": 245.87,
+      "caveat": "the 4 default-mode failures are all tests/test_doc_snippets.py reading UTF-8 markdown under Windows' cp1252 default encoding; all 21 doc-snippet tests pass with PYTHONUTF8=1 (re-run: 21 passed in 0.63s). Not a functional failure of FabricPC at this pin."
+    },
+    "smoke_run": {
+      "verdict": "pass",
+      "command": "PYTHONUTF8=1 .venv-fabricpc/Scripts/python.exe experiments/fabricpc/fabricpc_probe.py --smoke",
+      "description": "deterministic supervised settling observation (source+latent clamped, sigmoid, 12 InferenceSGD steps, seeds 17/23) run twice; payloads byte-identical modulo runtime; total energy decays monotonically 0.178328 -> 0.160688; terminal hidden energy 0.004864505957812071",
+      "deterministic_repeat_identical": true,
+      "elapsed_seconds_wall": 1.85,
+      "note": "an earlier draft smoke without a clamped target sat exactly at the feedforward predictive-coding equilibrium (all node energies 0.0, latents static for all 12 steps) -- recorded because 'deterministic' alone would have been a vacuous check on a constant trajectory"
+    }
+  },
+  "verdict": "pass",
+  "hashes": {
+    "fabricpc_probe.py_sha256": "ab63490a5712776faaa1345aa7ccd43f67f09177f982638ee7f84081c0160d4e"
+  },
+  "receipt_sha256": "6f33dfc44ac0e69747e2b66a07ec83965cd4d01f45a885c83e29c07861410264"
+}

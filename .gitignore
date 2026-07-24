@@ -258,3 +258,6 @@ session*.sqlite
 /reports/cr_*windows*.txt
 /reports/cr_*windows*.jsonl
 
+
+# FabricPC experiment: isolated optional-dependency venv (experiment branch only)
+.venv-fabricpc/
