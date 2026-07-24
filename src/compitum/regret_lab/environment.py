@@ -15,6 +15,7 @@ multiples of ``GRID_UNIT`` so the hindsight oracle's integer-scaled DP
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
 
@@ -45,6 +46,15 @@ SCENARIOS: Tuple[str, ...] = (
 
 def _grid(x: float) -> float:
     return round(round(x / GRID_UNIT) * GRID_UNIT, 10)
+
+
+def _stable_hash(text: str) -> int:
+    """Process-stable string hash for RNG seeding. Python's built-in
+    ``hash()`` is randomized per process (PEP 456 SipHash salt) unless
+    ``PYTHONHASHSEED`` is fixed, which would make ``generate_dynamic_dataset``
+    only reproducible *within* one process, not across separate runs of the
+    same ``seed`` -- exactly the failure mode this function avoids."""
+    return int.from_bytes(hashlib.sha256(text.encode("utf-8")).digest()[:4], "big")
 
 
 def _jitter_utility(rng: np.random.Generator) -> Dict[str, float]:
@@ -280,7 +290,7 @@ def generate_dynamic_dataset(
     for scenario in scenarios:
         builder = _BUILDERS[scenario]
         for index in range(sequences_per_scenario):
-            rng = np.random.default_rng((seed, hash(scenario) & 0xFFFFFFFF, index))
+            rng = np.random.default_rng((seed, _stable_hash(scenario), index))
             seq = builder(rng, steps_per_sequence)
             seq.sequence_id = f"{scenario}-{index:03d}"
             out.append(seq)

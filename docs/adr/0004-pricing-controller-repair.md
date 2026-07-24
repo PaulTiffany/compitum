@@ -163,6 +163,38 @@ subject to zero increase in hard violations. The winning configuration per
 controller family is frozen before any held-out test-sequence evaluation
 and recorded verbatim in the pilot report.
 
+## Outcome (2026-07-23)
+
+The bounded pilot (`experiments/fabricpc/tranche4/`) ran the pre-registered
+six-arm comparison. Full detail, including a genuine bug found and fixed
+along the way (the dataset generator's RNG seeding used Python's
+process-randomized `hash()`, silently breaking cross-process
+reproducibility since tranche 3), is in
+`experiments/fabricpc/tranche4/REPORT.md`. Summary:
+
+- The reactive controller (tranche 3's failed reference, parameters
+  unchanged) reproduces the "bad pricing is worse than no pricing" finding
+  again under the corrected, now-genuinely-reproducible dataset (paired
+  regret delta +0.341, 95% CI `[0.065, 0.648]`, entirely positive).
+- All four repaired pacing-family controllers, once a too-narrow initial
+  parameter grid was caught and widened (found empirically, not assumed),
+  achieve a large mean regret improvement (-2.5) -- but it is concentrated
+  entirely in 2 of 16 held-out sequences (both `conserve_enables_better_future`),
+  with **exactly zero** behavioral difference from no pricing on the other
+  14 sequences across the remaining 7 scenarios. The pre-registered
+  bootstrap-CI gate correctly declines to certify this as a general
+  improvement (the upper CI bound sits exactly at 0.0, reflecting how
+  concentrated -- not broadly distributed -- the effect is).
+- A clean illustration of resource-preservation-!=-good-allocation fell
+  out directly: pacing and reactive both reject a genuinely-affordable,
+  higher-utility model 8 times each (`high_value_rejections`), but
+  pacing's rejections are net beneficial (regret improves) while
+  reactive's are net harmful (regret worsens) -- only regret, never the
+  rejection count alone, can tell hoarding from correct anticipation apart.
+- **Gate result: `passed: false` for every arm.** No non-learned pricing
+  controller is activation-ready. Per the stop boundary, no learned
+  predictor is reintroduced on top of any of these controllers.
+
 ## Scope and stop boundary
 
 Complete only: this ADR; the pricing-controller interface and variants;

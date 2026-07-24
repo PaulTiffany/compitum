@@ -1,0 +1,312 @@
+{
+  "activation_gate": {
+    "any_passed": false,
+    "criterion": "a pricing arm passes only if it has a paired bootstrap-CI-significant reduction in mean regret vs no pricing AND does not increase total violations vs no pricing",
+    "per_arm": {
+      "pacing": {
+        "beats_no_pricing": false,
+        "paired_regret_delta_vs_no_pricing": {
+          "ci_high": 0.0,
+          "ci_low": -6.23818421875,
+          "mean": -2.49558125
+        },
+        "passed": false,
+        "violations_not_increased": true
+      },
+      "pacing_asymmetric": {
+        "beats_no_pricing": false,
+        "paired_regret_delta_vs_no_pricing": {
+          "ci_high": 0.0,
+          "ci_low": -6.259402656249999,
+          "mean": -2.5042562499999996
+        },
+        "passed": false,
+        "violations_not_increased": true
+      },
+      "pacing_bounded_smoothed": {
+        "beats_no_pricing": false,
+        "paired_regret_delta_vs_no_pricing": {
+          "ci_high": 0.0,
+          "ci_low": -6.259402656249999,
+          "mean": -2.5042562499999996
+        },
+        "passed": false,
+        "violations_not_increased": true
+      },
+      "pacing_hysteresis": {
+        "beats_no_pricing": false,
+        "paired_regret_delta_vs_no_pricing": {
+          "ci_high": 0.0,
+          "ci_low": -6.23818421875,
+          "mean": -2.49558125
+        },
+        "passed": false,
+        "violations_not_increased": true
+      },
+      "reactive": {
+        "beats_no_pricing": false,
+        "paired_regret_delta_vs_no_pricing": {
+          "ci_high": 0.6480067187499996,
+          "ci_low": 0.06487499999999957,
+          "mean": 0.3413999999999997
+        },
+        "passed": false,
+        "violations_not_increased": true
+      }
+    }
+  },
+  "arms": {
+    "no_pricing": {
+      "mean_regret": 2.8512062500000006,
+      "mean_route_switch_rate": 0.125,
+      "mean_terminal_unused_resources": 20.875,
+      "median_regret": 5.329070518200751e-15,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 20.618249999999996,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 8.0,
+      "total_depleted_budget_events": 10.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.3345349655700076
+    },
+    "pacing": {
+      "mean_regret": 0.35562500000000075,
+      "mean_route_switch_rate": 0.10714285714285714,
+      "mean_terminal_unused_resources": 20.90625,
+      "median_regret": 5.329070518200751e-15,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 1.6415750000000022,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 6.0,
+      "total_depleted_budget_events": 6.0,
+      "total_high_value_rejections": 8.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.458968888888889
+    },
+    "pacing_asymmetric": {
+      "mean_regret": 0.346950000000001,
+      "mean_route_switch_rate": 0.10714285714285714,
+      "mean_terminal_unused_resources": 20.90625,
+      "median_regret": 5.329070518200751e-15,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 1.6415750000000022,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 6.0,
+      "total_depleted_budget_events": 6.0,
+      "total_high_value_rejections": 8.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.4593943295019156
+    },
+    "pacing_bounded_smoothed": {
+      "mean_regret": 0.346950000000001,
+      "mean_route_switch_rate": 0.10714285714285714,
+      "mean_terminal_unused_resources": 20.90625,
+      "median_regret": 5.329070518200751e-15,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 1.6415750000000022,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 6.0,
+      "total_depleted_budget_events": 6.0,
+      "total_high_value_rejections": 8.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.4593943295019156
+    },
+    "pacing_hysteresis": {
+      "mean_regret": 0.35562500000000075,
+      "mean_route_switch_rate": 0.10714285714285714,
+      "mean_terminal_unused_resources": 20.90625,
+      "median_regret": 5.329070518200751e-15,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 1.6415750000000022,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 6.0,
+      "total_depleted_budget_events": 6.0,
+      "total_high_value_rejections": 8.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.458968888888889
+    },
+    "reactive": {
+      "mean_regret": 3.1926062500000003,
+      "mean_route_switch_rate": 0.16964285714285712,
+      "mean_terminal_unused_resources": 21.171875,
+      "median_regret": 0.5161000000000051,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 20.619774999999997,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 7.0,
+      "total_depleted_budget_events": 8.0,
+      "total_high_value_rejections": 8.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.337257453416149
+    }
+  },
+  "conservation_depletion_diagnostics": {
+    "no_pricing": {
+      "mean_regret_from_conservation": 1.31709375,
+      "mean_regret_from_depletion": 4.202775,
+      "mean_unattributed_regret": -2.6686624999999995
+    },
+    "pacing": {
+      "mean_regret_from_conservation": 1.63919375,
+      "mean_regret_from_depletion": 1.201075,
+      "mean_unattributed_regret": -2.484643749999999
+    },
+    "pacing_asymmetric": {
+      "mean_regret_from_conservation": 1.5703125,
+      "mean_regret_from_depletion": 1.201075,
+      "mean_unattributed_regret": -2.424437499999999
+    },
+    "pacing_bounded_smoothed": {
+      "mean_regret_from_conservation": 1.5703125,
+      "mean_regret_from_depletion": 1.201075,
+      "mean_unattributed_regret": -2.424437499999999
+    },
+    "pacing_hysteresis": {
+      "mean_regret_from_conservation": 1.63919375,
+      "mean_regret_from_depletion": 1.201075,
+      "mean_unattributed_regret": -2.484643749999999
+    },
+    "reactive": {
+      "mean_regret_from_conservation": 1.81385625,
+      "mean_regret_from_depletion": 4.0474125,
+      "mean_unattributed_regret": -2.6686624999999995
+    }
+  },
+  "controller_price_volatility": {
+    "no_pricing": 0.0,
+    "pacing": 0.12013228355836447,
+    "pacing_asymmetric": 0.12955931063876983,
+    "pacing_bounded_smoothed": 0.1573599903464849,
+    "pacing_hysteresis": 0.12216444115138057,
+    "reactive": 0.21835562469743497
+  },
+  "design": "observation-only; pacing-family parameters selected on training sequences only, frozen before held-out evaluation; reactive controller retained unchanged (not tuned) as the failed tranche 3 reference",
+  "n_test_sequences": 16,
+  "n_train_sequences": 16,
+  "parameter_selection": {
+    "pacing": {
+      "family": "pacing",
+      "grid_size": 7,
+      "qualifying_configs": 7,
+      "selected_params": {
+        "eta": 1.8
+      },
+      "selected_train_mean_regret": 0.34353124999999873,
+      "selected_train_violation_count": 0.0,
+      "selection_criterion": "lowest mean regret on training sequences among configs with total_violation_count <= no-pricing reference; else lowest violation count, tie-broken by regret"
+    },
+    "pacing_asymmetric": {
+      "family": "pacing_asymmetric",
+      "grid_size": 12,
+      "qualifying_configs": 12,
+      "selected_params": {
+        "eta": 1.5,
+        "relax_gamma": 2.0,
+        "rise_scale": 1.0
+      },
+      "selected_train_mean_regret": 0.3451749999999991,
+      "selected_train_violation_count": 0.0,
+      "selection_criterion": "lowest mean regret on training sequences among configs with total_violation_count <= no-pricing reference; else lowest violation count, tie-broken by regret"
+    },
+    "pacing_bounded_smoothed": {
+      "family": "pacing_bounded_smoothed",
+      "grid_size": 36,
+      "qualifying_configs": 36,
+      "selected_params": {
+        "ema_alpha": 0.5,
+        "eta": 2.0,
+        "max_step": 1.0
+      },
+      "selected_train_mean_regret": 0.3451749999999991,
+      "selected_train_violation_count": 0.0,
+      "selection_criterion": "lowest mean regret on training sequences among configs with total_violation_count <= no-pricing reference; else lowest violation count, tie-broken by regret"
+    },
+    "pacing_hysteresis": {
+      "family": "pacing_hysteresis",
+      "grid_size": 9,
+      "qualifying_configs": 9,
+      "selected_params": {
+        "deadband": 0.05,
+        "eta": 2.0
+      },
+      "selected_train_mean_regret": 0.34353124999999873,
+      "selected_train_violation_count": 0.0,
+      "selection_criterion": "lowest mean regret on training sequences among configs with total_violation_count <= no-pricing reference; else lowest violation count, tie-broken by regret"
+    }
+  },
+  "scenario_stratified_mean_regret": {
+    "conserve_enables_better_future": {
+      "no_pricing": 20.625799999999998,
+      "pacing": 0.6611499999999992,
+      "pacing_asymmetric": 0.5917500000000011,
+      "pacing_bounded_smoothed": 0.5917500000000011,
+      "pacing_hysteresis": 0.6611499999999992,
+      "reactive": 20.628849999999996
+    },
+    "delayed_realization": {
+      "no_pricing": 0.5036000000000005,
+      "pacing": 0.5036000000000005,
+      "pacing_asymmetric": 0.5036000000000005,
+      "pacing_bounded_smoothed": 0.5036000000000005,
+      "pacing_hysteresis": 0.5036000000000005,
+      "reactive": 1.7295500000000015
+    },
+    "demand_burst": {
+      "no_pricing": 0.0,
+      "pacing": 0.0,
+      "pacing_asymmetric": 0.0,
+      "pacing_bounded_smoothed": 0.0,
+      "pacing_hysteresis": 0.0,
+      "reactive": 0.0
+    },
+    "forecast_error": {
+      "no_pricing": -1.7763568394002505e-15,
+      "pacing": -1.7763568394002505e-15,
+      "pacing_asymmetric": -1.7763568394002505e-15,
+      "pacing_bounded_smoothed": -1.7763568394002505e-15,
+      "pacing_hysteresis": -1.7763568394002505e-15,
+      "reactive": -1.7763568394002505e-15
+    },
+    "multi_resource_interaction": {
+      "no_pricing": 0.0,
+      "pacing": 0.0,
+      "pacing_asymmetric": 0.0,
+      "pacing_bounded_smoothed": 0.0,
+      "pacing_hysteresis": 0.0,
+      "reactive": 1.5021999999999984
+    },
+    "permanently_slack": {
+      "no_pricing": 0.0,
+      "pacing": 0.0,
+      "pacing_asymmetric": 0.0,
+      "pacing_bounded_smoothed": 0.0,
+      "pacing_hysteresis": 0.0,
+      "reactive": 0.0
+    },
+    "premature_conservation_regret": {
+      "no_pricing": 5.329070518200751e-15,
+      "pacing": 5.329070518200751e-15,
+      "pacing_asymmetric": 5.329070518200751e-15,
+      "pacing_bounded_smoothed": 5.329070518200751e-15,
+      "pacing_hysteresis": 5.329070518200751e-15,
+      "reactive": 5.329070518200751e-15
+    },
+    "single_resource_scarce_period": {
+      "no_pricing": 1.6802500000000027,
+      "pacing": 1.6802500000000027,
+      "pacing_asymmetric": 1.6802500000000027,
+      "pacing_bounded_smoothed": 1.6802500000000027,
+      "pacing_hysteresis": 1.6802500000000027,
+      "reactive": 1.6802500000000027
+    }
+  },
+  "schema": "compitum.pricing-controller-pilot-report/v1",
+  "total_elapsed_seconds": 0.30355389999749605
+}

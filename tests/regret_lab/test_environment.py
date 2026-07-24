@@ -8,6 +8,7 @@ from compitum.regret_lab.environment import (
     MODEL_NAMES,
     RESOURCE_NAMES,
     SCENARIOS,
+    _stable_hash,
     generate_dynamic_dataset,
 )
 
@@ -20,6 +21,17 @@ def test_generates_expected_sequence_count_and_ids() -> None:
     for scenario in SCENARIOS:
         assert f"{scenario}-000" in ids
         assert f"{scenario}-002" in ids
+
+
+def test_stable_hash_is_fixed_regardless_of_python_hash_randomization() -> None:
+    """Regression test for a real bug found empirically: the dataset
+    generator used to seed its RNG with Python's built-in hash(scenario),
+    which is randomized per-process (PEP 456) unless PYTHONHASHSEED is
+    fixed -- making generate_dynamic_dataset(seed=X) reproducible only
+    within one process, not across separate runs. _stable_hash must return
+    the same value on every invocation, in every process, forever."""
+    assert _stable_hash("permanently_slack") == 960617525
+    assert _stable_hash("demand_burst") == 924890850
 
 
 def test_deterministic_given_same_seed() -> None:
