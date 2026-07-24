@@ -27,6 +27,8 @@ class PolicyRunResult:
     route_switch_count: int
     depleted_budget_events: int
     total_consumption: Dict[str, float]
+    terminal_remaining: Dict[str, float] = field(default_factory=dict)
+    high_value_rejections: int = 0
     decision_latencies: List[float] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -41,6 +43,8 @@ class PolicyRunResult:
             "route_switch_count": self.route_switch_count,
             "depleted_budget_events": self.depleted_budget_events,
             "total_consumption": dict(self.total_consumption),
+            "terminal_remaining": dict(self.terminal_remaining),
+            "high_value_rejections": self.high_value_rejections,
             "decision_latencies": list(self.decision_latencies),
         }
 
@@ -64,6 +68,8 @@ def regret_metrics(
             "mean_route_switch_rate": float("nan"),
             "total_depleted_budget_events": 0.0,
             "utility_per_resource_unit": float("nan"),
+            "total_high_value_rejections": 0.0,
+            "mean_terminal_unused_resources": float("nan"),
             "n_sequences": 0.0,
         }
 
@@ -76,6 +82,7 @@ def regret_metrics(
         pr.route_switch_count / max(1, len(pr.choices) - 1) if len(pr.choices) > 1 else 0.0
         for pr in policy_results
     ]
+    terminal_unused = [sum(pr.terminal_remaining.values()) for pr in policy_results]
 
     return {
         "mean_regret": float(regrets.mean()),
@@ -94,6 +101,10 @@ def regret_metrics(
         "utility_per_resource_unit": (
             float(total_utility / total_consumption) if total_consumption > 0 else float("nan")
         ),
+        "total_high_value_rejections": float(
+            sum(pr.high_value_rejections for pr in policy_results)
+        ),
+        "mean_terminal_unused_resources": float(np.mean(terminal_unused)),
         "n_sequences": float(len(policy_results)),
     }
 

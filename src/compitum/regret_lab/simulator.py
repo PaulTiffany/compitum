@@ -14,9 +14,10 @@ import time
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from .dual_controller import DualController, price_utilities
+from .dual_controller import price_utilities
 from .environment import DynamicCase, DynamicSequence
 from .metrics import PolicyRunResult
+from .pricing import PricingController, PricingUpdateContext
 
 
 @dataclass
@@ -69,12 +70,16 @@ class _PendingCorrection:
 
 def simulate_policy(
     seq: DynamicSequence,
-    dual_controller: Optional[DualController] = None,
+    pricing_controller: Optional[PricingController] = None,
     forecaster: Optional[Forecaster] = None,
     forecaster_update: Optional[Callable[[str, Dict[str, float], Dict[str, float]], None]] = None,
 ) -> Tuple[PolicyRunResult, List[PolicyDecision]]:
-    """``dual_controller=None`` reproduces the static/frozen arm (greedy on
-    raw ``base_utility`` among expected-feasible models, no pricing).
+    """``pricing_controller=None`` reproduces the static/frozen arm (greedy
+    on raw ``base_utility`` among expected-feasible models, no pricing).
+    Any object exposing ``lambda_price``/``update(context)`` (see
+    ``regret_lab.pricing``) may be passed -- e.g. ``ReactiveController``
+    (reproduces tranche 3's reactive dual controller) or
+    ``PacingController`` (tranche 4's non-learned pacing family).
     ``forecaster`` (if given) replaces ``case.expected_consumption`` with a
     prediction for both the feasibility check and pricing; pass
     ``forecaster_update`` (e.g. an ``EWMAForecaster.update``-bound method)
@@ -89,6 +94,7 @@ def simulate_policy(
     deferral_count = 0
     avoidable_deferral_count = 0
     depleted_budget_events = 0
+    high_value_rejection_count = 0
     total_consumption: Dict[str, float] = {r: 0.0 for r in seq.resource_names}
 
     def _apply_delta(resource: str, delta: float) -> None:
@@ -112,7 +118,7 @@ def simulate_policy(
         pending = still_pending
 
         remaining_before = dict(remaining)
-        lambda_price_before = dict(dual_controller.lambda_price) if dual_controller else {}
+        lambda_price_before = dict(pricing_controller.lambda_price) if pricing_controller else {}
 
         if forecaster is not None:
             context = ForecastContext(
@@ -131,13 +137,23 @@ def simulate_policy(
             if all(remaining[r] - forecast[m][r] >= -1e-9 for r in seq.resource_names)
         ]
 
-        if dual_controller is not None:
-            priced = price_utilities(case.base_utility, forecast, dual_controller.lambda_price)
+        if pricing_controller is not None:
+            priced = price_utilities(case.base_utility, forecast, pricing_controller.lambda_price)
         else:
             priced = dict(case.base_utility)
 
         if feasible:
             chosen = max(feasible, key=lambda m: priced[m])
+            best_by_base_utility = max(feasible, key=lambda m: case.base_utility[m])
+            # A direct, per-step signature of hoarding: pricing picked a
+            # lower-utility model even though a higher-utility one was
+            # genuinely affordable (checked against REALIZED consumption,
+            # not just the forecast the pricing decision itself used).
+            if chosen != best_by_base_utility and all(
+                remaining[r] - case.realized_consumption[best_by_base_utility][r] >= -1e-9
+                for r in seq.resource_names
+            ):
+                high_value_rejection_count += 1
         else:
             chosen = "defer"
             deferral_count += 1
@@ -178,13 +194,16 @@ def simulate_policy(
         if any(remaining[r] <= 1e-9 for r in seq.resource_names):
             depleted_budget_events += 1
 
-        if dual_controller is not None and chosen != "defer":
-            reservation = forecast[chosen]
-            steps_left = max(1, len(seq.cases) - t)
-            utilization_error = {
-                r: reservation[r] - (remaining[r] / steps_left) for r in seq.resource_names
-            }
-            dual_controller.update(utilization_error)
+        if pricing_controller is not None and chosen != "defer":
+            update_context = PricingUpdateContext(
+                resource_names=seq.resource_names,
+                reservation=forecast[chosen],
+                remaining_before=remaining_before,
+                remaining_after=dict(remaining),
+                step=t,
+                total_steps=len(seq.cases),
+            )
+            pricing_controller.update(update_context)
 
         latency = time.perf_counter() - start
         decisions.append(
@@ -215,5 +234,7 @@ def simulate_policy(
         depleted_budget_events=depleted_budget_events,
         total_consumption=total_consumption,
         decision_latencies=[d.latency_seconds for d in decisions],
+        terminal_remaining=dict(remaining),
+        high_value_rejections=high_value_rejection_count,
     )
     return result, decisions

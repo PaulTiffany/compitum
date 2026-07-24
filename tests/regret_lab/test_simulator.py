@@ -4,9 +4,9 @@ ledger (including delayed revelation producing a real violation), dual
 
 from __future__ import annotations
 
-from compitum.regret_lab.dual_controller import DualController
 from compitum.regret_lab.environment import DynamicCase, DynamicSequence
 from compitum.regret_lab.forecaster import EWMAForecaster
+from compitum.regret_lab.pricing import ReactiveController
 from compitum.regret_lab.simulator import simulate_policy
 
 
@@ -164,7 +164,7 @@ def test_route_switch_count() -> None:
     assert result.route_switch_count == 1
 
 
-def test_dual_controller_pricing_changes_the_selected_model() -> None:
+def test_pricing_controller_changes_the_selected_model() -> None:
     case = _case(
         0,
         {"cheap": 1.0, "rich": 1.5},
@@ -176,12 +176,15 @@ def test_dual_controller_pricing_changes_the_selected_model() -> None:
     without_pricing, _ = simulate_policy(seq)
     assert without_pricing.choices == ["rich"]  # 1.5 > 1.0, no cost penalty
 
-    controller = DualController(
-        resource_names=("budget", "quota"), eta=0.0, lambda_price={"budget": 1.0, "quota": 0.0}
-    )
-    with_pricing, _ = simulate_policy(seq, dual_controller=controller)
+    controller = ReactiveController(resource_names=("budget", "quota"), eta=0.0)
+    controller._dual.lambda_price = {"budget": 1.0, "quota": 0.0}
+    with_pricing, _ = simulate_policy(seq, pricing_controller=controller)
     # priced: cheap = 1.0 - 1*1.0 = 0.0; rich = 1.5 - 1*10 = -8.5 -> cheap wins
     assert with_pricing.choices == ["cheap"]
+    # pricing away from the highest-base-utility model, despite 'rich' being
+    # genuinely affordable, is exactly the hoarding signature this tranche
+    # added a diagnostic for.
+    assert with_pricing.high_value_rejections == 1
 
 
 def test_forecaster_is_applied_to_feasibility_and_pricing() -> None:

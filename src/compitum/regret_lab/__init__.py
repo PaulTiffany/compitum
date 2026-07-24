@@ -16,6 +16,7 @@ JAX.
 """
 
 from .channels import CHANNEL_DIMENSION, compute_regret_channel_vector
+from .diagnostics import conservation_depletion_split
 from .dual_controller import DualController, price_utilities
 from .environment import (
     GRID_UNIT,
@@ -34,6 +35,13 @@ from .metrics import (
     paired_regret_deltas,
     regret_metrics,
 )
+from .pricing import (
+    PacingController,
+    PricingController,
+    PricingUpdateContext,
+    ReactiveController,
+    total_available_over_horizon,
+)
 from .simulator import ForecastContext, PolicyDecision, simulate_policy
 
 __all__ = [
@@ -48,14 +56,20 @@ __all__ = [
     "EWMAForecaster",
     "ForecastContext",
     "HindsightResult",
+    "PacingController",
     "PolicyDecision",
     "PolicyRunResult",
+    "PricingController",
+    "PricingUpdateContext",
+    "ReactiveController",
     "bootstrap_ci",
     "compute_hindsight_optimum",
     "compute_regret_channel_vector",
+    "conservation_depletion_split",
     "generate_dynamic_dataset",
     "paired_regret_deltas",
     "price_utilities",
     "regret_metrics",
     "simulate_policy",
+    "total_available_over_horizon",
 ]
