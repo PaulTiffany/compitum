@@ -154,6 +154,43 @@ correction gate (`gate[t]`) may legitimately stay closed everywhere else
 during this first pilot; arm 7 (gate forced open) exists specifically to
 test whether that restriction is protective or merely inert.
 
+## Outcome (2026-07-24)
+
+The seven-arm paired shadow pilot (`experiments/fabricpc/tranche5/`) ran on
+the 72-cell primary grid (48 train / 24 test cells, split by cell index
+since tranche 4.6 found rare-prevalence cells never consume their RNG --
+1 sequence per cell, no manufactured duplicate "seeds"). 410 feasible
+oracle-compatible training rows out of 576 possible; 1640 real FabricPC
+observations, 0 governed failures, p50/p95/max latency 0.49s/0.66s/2.24s.
+Full detail in `experiments/fabricpc/tranche5/REPORT.md`. Summary:
+
+**FabricPC's correction is genuinely inert, not harmful.** Arms 4, 5, and 7
+(FabricPC terminal-state, full-trajectory, and gate-forced-open residuals)
+all produce **byte-identical mean regret to frozen pacing alone** (2.0833),
+despite computing and applying real, nonzero corrections every gated step
+(mean absolute correction 0.34-0.35, 0% clipped, 0% failed). Route
+disagreement vs. frozen pacing is only 1.4% -- the correction exists but
+essentially never crosses a decision-relevant threshold. **Gate fails
+cleanly: `beats_frozen_pacing: false`** (paired delta exactly 0.0).
+
+**In contrast, the two arms whose corrections *do* cross decision
+boundaries more often (5.2% disagreement each) make things worse, not
+better:** the non-FabricPC windowed ridge (arm 3, mean regret 2.125,
+58% of corrections clipped at the bound -- a poorly-calibrated raw
+prediction the magnitude cap is mostly there to contain) and the
+shuffled-trajectory control (arm 6, mean regret 2.125). Arm 5 technically
+"beats" both of these worse-than-baseline arms by an identical small
+margin, but the CI does not exclude zero and, more importantly, beating an
+arm that itself underperforms the baseline is not a meaningful bar --
+the real failure is arm 5 not beating frozen pacing directly. The one gate
+criterion satisfied is `no_additional_violations: true`.
+
+**No claim of improvement is made.** Per the governing rule, FabricPC has
+not earned the right to supply a production-relevant correction in this
+pilot. No learned predictor is activated; the frozen pacing controller
+alone remains the only pricing mechanism with any demonstrated (tranche 4
+/4.5/4.6-scoped) benefit.
+
 ## Stop boundary
 
 Complete locally: this ADR; the windowed residual-target/channel

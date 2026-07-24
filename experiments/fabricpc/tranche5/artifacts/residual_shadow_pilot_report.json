@@ -1,0 +1,260 @@
+{
+  "activation_gate": {
+    "beats_frozen_pacing": false,
+    "beats_non_fabricpc_windowed": {
+      "paired_regret_delta": {
+        "ci_high": 0.0,
+        "ci_low": -0.125,
+        "mean": -0.041666666666666664
+      },
+      "passed": false
+    },
+    "beats_shuffled_control": {
+      "paired_regret_delta": {
+        "ci_high": 0.0,
+        "ci_low": -0.125,
+        "mean": -0.041666666666666664
+      },
+      "passed": false
+    },
+    "criterion": "arm 5 (FabricPC trajectory residual) must reduce regret vs frozen pacing AND vs the non-FabricPC windowed predictor AND be significantly better than the shuffled control, with no additional violations",
+    "no_additional_violations": true,
+    "passed": false
+  },
+  "arms": {
+    "fabricpc_terminal": {
+      "mean_regret": 2.0833333333333335,
+      "mean_route_switch_rate": 0.268939393939394,
+      "mean_terminal_unused_resources": 0.5,
+      "median_regret": 0.0,
+      "n_sequences": 24.0,
+      "tail_regret_p95": 15.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 82.0,
+      "total_depleted_budget_events": 44.0,
+      "total_high_value_rejections": 129.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1796875
+    },
+    "fabricpc_trajectory": {
+      "mean_regret": 2.0833333333333335,
+      "mean_route_switch_rate": 0.268939393939394,
+      "mean_terminal_unused_resources": 0.5,
+      "median_regret": 0.0,
+      "n_sequences": 24.0,
+      "tail_regret_p95": 15.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 82.0,
+      "total_depleted_budget_events": 44.0,
+      "total_high_value_rejections": 129.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1796875
+    },
+    "fabricpc_trajectory_gate_open": {
+      "mean_regret": 2.0833333333333335,
+      "mean_route_switch_rate": 0.27651515151515155,
+      "mean_terminal_unused_resources": 0.5,
+      "median_regret": 0.0,
+      "n_sequences": 24.0,
+      "tail_regret_p95": 15.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 82.0,
+      "total_depleted_budget_events": 44.0,
+      "total_high_value_rejections": 129.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1796875
+    },
+    "fabricpc_trajectory_shuffled": {
+      "mean_regret": 2.125,
+      "mean_route_switch_rate": 0.2916666666666667,
+      "mean_terminal_unused_resources": 0.5,
+      "median_regret": 0.0,
+      "n_sequences": 24.0,
+      "tail_regret_p95": 15.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 81.0,
+      "total_depleted_budget_events": 44.0,
+      "total_high_value_rejections": 127.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.17578125
+    },
+    "frozen_pacing": {
+      "mean_regret": 2.0833333333333335,
+      "mean_route_switch_rate": 0.268939393939394,
+      "mean_terminal_unused_resources": 0.5,
+      "median_regret": 0.0,
+      "n_sequences": 24.0,
+      "tail_regret_p95": 15.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 80.0,
+      "total_depleted_budget_events": 44.0,
+      "total_high_value_rejections": 131.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1796875
+    },
+    "no_pricing": {
+      "mean_regret": 2.25,
+      "mean_route_switch_rate": 0.4621212121212121,
+      "mean_terminal_unused_resources": 0.5,
+      "median_regret": 0.0,
+      "n_sequences": 24.0,
+      "tail_regret_p95": 15.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 145.0,
+      "total_depleted_budget_events": 71.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1640625
+    },
+    "windowed_non_fabricpc": {
+      "mean_regret": 2.125,
+      "mean_route_switch_rate": 0.3181818181818182,
+      "mean_terminal_unused_resources": 0.5,
+      "median_regret": 0.0,
+      "n_sequences": 24.0,
+      "tail_regret_p95": 15.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 83.0,
+      "total_depleted_budget_events": 44.0,
+      "total_high_value_rejections": 124.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.17578125
+    }
+  },
+  "conservation_depletion_diagnostics": {
+    "fabricpc_terminal": {
+      "mean_regret_from_conservation": 4.791666666666667,
+      "mean_regret_from_depletion": 3.7083333333333335
+    },
+    "fabricpc_trajectory": {
+      "mean_regret_from_conservation": 4.791666666666667,
+      "mean_regret_from_depletion": 3.7083333333333335
+    },
+    "fabricpc_trajectory_gate_open": {
+      "mean_regret_from_conservation": 4.791666666666667,
+      "mean_regret_from_depletion": 3.7083333333333335
+    },
+    "fabricpc_trajectory_shuffled": {
+      "mean_regret_from_conservation": 4.916666666666667,
+      "mean_regret_from_depletion": 3.6666666666666665
+    },
+    "frozen_pacing": {
+      "mean_regret_from_conservation": 4.875,
+      "mean_regret_from_depletion": 3.625
+    },
+    "no_pricing": {
+      "mean_regret_from_conservation": 2.75,
+      "mean_regret_from_depletion": 6.458333333333333
+    },
+    "windowed_non_fabricpc": {
+      "mean_regret_from_conservation": 4.875,
+      "mean_regret_from_depletion": 3.75
+    }
+  },
+  "design": "observation-only; frozen pacing (tranche 4/4.6) is the baseline every learned arm must beat, not the reactive controller; oracle-compatible residual targets built from the hindsight oracle, never fed to any online policy",
+  "gate_diagnostics": {
+    "fabricpc_terminal": {
+      "beats_frozen_pacing": false,
+      "paired_regret_delta_vs_frozen_pacing": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0
+      },
+      "residual_stats": {
+        "clip_rate": 0.0,
+        "failure_rate": 0.0,
+        "mean_abs_applied_correction": 0.3526015282428491,
+        "zero_gate_rate": 0.0
+      }
+    },
+    "fabricpc_trajectory": {
+      "beats_frozen_pacing": false,
+      "paired_regret_delta_vs_frozen_pacing": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0
+      },
+      "residual_stats": {
+        "clip_rate": 0.0,
+        "failure_rate": 0.0,
+        "mean_abs_applied_correction": 0.34460522203501504,
+        "zero_gate_rate": 0.0
+      }
+    },
+    "fabricpc_trajectory_gate_open": {
+      "beats_frozen_pacing": false,
+      "paired_regret_delta_vs_frozen_pacing": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0
+      },
+      "residual_stats": {
+        "clip_rate": 0.0,
+        "failure_rate": 0.0,
+        "mean_abs_applied_correction": 0.3359397346947309,
+        "zero_gate_rate": 0.0
+      }
+    },
+    "fabricpc_trajectory_shuffled": {
+      "beats_frozen_pacing": false,
+      "paired_regret_delta_vs_frozen_pacing": {
+        "ci_high": 0.125,
+        "ci_low": 0.0,
+        "mean": 0.041666666666666664
+      },
+      "residual_stats": {
+        "clip_rate": 0.004830917874396135,
+        "failure_rate": 0.0,
+        "mean_abs_applied_correction": 0.40934869946069113,
+        "zero_gate_rate": 0.024154589371980676
+      }
+    },
+    "windowed_non_fabricpc": {
+      "beats_frozen_pacing": false,
+      "paired_regret_delta_vs_frozen_pacing": {
+        "ci_high": 0.125,
+        "ci_low": 0.0,
+        "mean": 0.041666666666666664
+      },
+      "residual_stats": {
+        "clip_rate": 0.5853658536585366,
+        "failure_rate": 0.0,
+        "mean_abs_applied_correction": 1.448551772467879,
+        "zero_gate_rate": 0.0
+      }
+    }
+  },
+  "governed_failures": [],
+  "honest_limitations": [
+    "72-cell primary grid, 1 sequence per cell (opportunity_prevalence='rare' never consumes its RNG, per tranche 4.6 -- extra seeds would be duplicates, not independent draws, so none are used)",
+    "48 train / 24 test cells, split by cell index, not by RNG seed",
+    "ridge regression only, no hyperparameter search, matching every prior tranche's methodology",
+    "regional-scope gate (lambda_base > 0.01) is a simple declared proxy, not derived from scenario metadata directly"
+  ],
+  "latency_seconds": {
+    "governed_failure_rate": 0.0,
+    "observe_max": 2.2350107000092976,
+    "observe_p50": 0.4939604000028339,
+    "observe_p95": 0.6642309000017121,
+    "total_calls": 1640
+  },
+  "n_feasible_training_rows": 410,
+  "n_test_cells": 24,
+  "n_train_cells": 48,
+  "route_disagreement_vs_frozen_pacing": {
+    "fabricpc_terminal": 0.013888888888888888,
+    "fabricpc_trajectory": 0.013888888888888888,
+    "fabricpc_trajectory_gate_open": 0.013888888888888888,
+    "fabricpc_trajectory_shuffled": 0.05208333333333333,
+    "windowed_non_fabricpc": 0.052083333333333336
+  },
+  "schema": "compitum.fabricpc-residual-shadow-pilot-report/v1",
+  "total_elapsed_seconds": 722.9785744999972
+}
