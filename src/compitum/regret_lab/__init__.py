@@ -15,6 +15,12 @@ This package is dependency-free beyond numpy; it never imports FabricPC or
 JAX.
 """
 
+from .belief_action_pricing import (
+    StepTrace,
+    action_shadow_charge,
+    run_shadow_charge_policy,
+    unit_marginal_prices,
+)
 from .belief_bellman import BellmanOracle, BellmanStateBudgetExceeded
 from .belief_channels import CHANNEL_DIMENSION as BELIEF_CHANNEL_DIMENSION
 from .belief_channels import (
@@ -143,6 +149,8 @@ __all__ = [
     "RidgeBeliefEstimator",
     "RidgeModel",
     "ScarcityParams",
+    "StepTrace",
+    "action_shadow_charge",
     "advance_belief_history",
     "advance_history",
     "belief_high_from_scalar",
@@ -175,7 +183,9 @@ __all__ = [
     "primary_grid",
     "regret_metrics",
     "run_online_optimal_policy",
+    "run_shadow_charge_policy",
     "secondary_sweeps",
     "simulate_policy",
     "total_available_over_horizon",
+    "unit_marginal_prices",
 ]
