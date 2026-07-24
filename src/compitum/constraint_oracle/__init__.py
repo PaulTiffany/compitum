@@ -31,6 +31,18 @@ from .dataset import (
     ControlledSequence,
     generate_controlled_dataset,
 )
+from .experiment import (
+    TwoPartModel,
+    classification_metrics,
+    fit_two_part_model,
+    predict_two_part,
+    ranking_accuracy,
+    regression_metrics,
+    shuffle_raw_steps,
+    stratify_by_threshold,
+    terminal_features_from_evidence,
+    trajectory_features_from_evidence,
+)
 from .horizon import (
     HorizonOracleResult,
     SequenceStepResult,
@@ -52,9 +64,19 @@ __all__ = [
     "ControlledSequence",
     "HorizonOracleResult",
     "SequenceStepResult",
+    "TwoPartModel",
+    "classification_metrics",
     "compute_channel_vector",
     "compute_constraint_pressure",
     "compute_horizon_targets",
     "compute_sequence_channels",
+    "fit_two_part_model",
     "generate_controlled_dataset",
+    "predict_two_part",
+    "ranking_accuracy",
+    "regression_metrics",
+    "shuffle_raw_steps",
+    "stratify_by_threshold",
+    "terminal_features_from_evidence",
+    "trajectory_features_from_evidence",
 ]
