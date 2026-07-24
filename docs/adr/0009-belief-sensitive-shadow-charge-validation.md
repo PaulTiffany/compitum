@@ -60,6 +60,39 @@ are minimal parameterized siblings, verified via the same
 Gate-A-prime-style exact-equivalence check at the tuned parameters (15
 seeds) plus independent scalar-vs-matrix cross-validation.
 
+## Ten-arm pilot outcome (see experiments/fabricpc/tranche7/REPORT.md for full detail)
+
+**The economic mechanism works exactly as intended, and the
+belief-estimation task is genuinely learnable -- but FabricPC
+specifically does not reach the quality a plain ridge regression
+achieves on the identical declared features.** Exact belief clearly
+beats fixed-prior/inverted/shuffled controls (regret 0.000 vs.
+0.057/0.057/0.457); `recoverable_gap` over pacing is 0.371, small but
+real. Ridge achieves belief test MSE of 5.1e-7 and, as a direct
+consequence, exactly zero regret -- tied with the true exact-belief
+oracle and the true-parameter HMM filter. FabricPC (backprop and
+predictive-coding training, tied EXACTLY with each other at 0.314 mean
+regret) has belief test MSE roughly 600x worse than ridge's, and
+captures only 15.4% of the recoverable gap (`captured_fraction =
+0.154`). It does not significantly beat pacing, fixed-prior, or
+shuffled controls at this sample size (35 test sequences) -- primary
+economics gate **FAILED**.
+
+None of the ADR's four pre-declared interpretive buckets precisely fits:
+not "belief doesn't beat blind controls" (it clearly does), not "no
+learned model recovers belief" (ridge does, exactly), not "backprop
+beats FabricPC" (they tie exactly), not "FabricPC beats pacing and
+shuffled" (neither margin is significant). The precise finding is a
+fifth category the brief did not anticipate: an
+**architecture/representation bottleneck specific to FabricPC's small
+fixed topology**, not a predictive-coding-vs-backprop question (both
+converge to statistically indistinguishable, real-but-limited quality)
+and not a task-learnability question (ridge proves the task is easy to
+solve well). No hyperparameter search or architecture change was
+attempted to close this gap, per the runtime-discipline mandate --
+whether a larger or differently-tuned FabricPC topology would close it
+is an open question this tranche deliberately did not chase.
+
 ## Governing correction
 
 Tranche 6.5 proved the shadow-charge translation exactly correct (Gate

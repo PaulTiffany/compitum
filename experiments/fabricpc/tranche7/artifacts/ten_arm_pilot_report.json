@@ -1,0 +1,1256 @@
+{
+  "arms_metrics_vs_exact_online_optimum": {
+    "exact_belief": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.346031746031746,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 199.0,
+      "total_deferrals": 205.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 22.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1514285714285715
+    },
+    "fabricpc_backprop": {
+      "mean_regret": 0.3142857142857143,
+      "mean_route_switch_rate": 0.42857142857142855,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 3.0,
+      "total_avoidable_deferrals": 198.0,
+      "total_deferrals": 207.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 30.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.12
+    },
+    "fabricpc_pcn": {
+      "mean_regret": 0.3142857142857143,
+      "mean_route_switch_rate": 0.3904761904761905,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 3.0,
+      "total_avoidable_deferrals": 203.0,
+      "total_deferrals": 214.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 25.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.12
+    },
+    "fabricpc_pcn_shuffled": {
+      "mean_regret": 0.45714285714285713,
+      "mean_route_switch_rate": 0.4031746031746032,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.8999999999999915,
+      "total_avoidable_deferrals": 194.0,
+      "total_deferrals": 201.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 38.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1057142857142856
+    },
+    "fixed_prior": {
+      "mean_regret": 0.05714285714285714,
+      "mean_route_switch_rate": 0.3873015873015873,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 3.0,
+      "total_avoidable_deferrals": 216.0,
+      "total_deferrals": 221.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 19.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1457142857142857
+    },
+    "frozen_pacing": {
+      "mean_regret": 0.37142857142857144,
+      "mean_route_switch_rate": 0.4063492063492063,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 61.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 158.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1142857142857143
+    },
+    "hmm": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.346031746031746,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 199.0,
+      "total_deferrals": 205.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 22.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1514285714285715
+    },
+    "inverted_belief": {
+      "mean_regret": 0.05714285714285714,
+      "mean_route_switch_rate": 0.4253968253968254,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 3.0,
+      "total_avoidable_deferrals": 206.0,
+      "total_deferrals": 215.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 24.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1457142857142857
+    },
+    "no_pricing": {
+      "mean_regret": 0.37142857142857144,
+      "mean_route_switch_rate": 0.761904761904762,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 115.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1142857142857143
+    },
+    "ridge": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.3682539682539683,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 198.0,
+      "total_deferrals": 205.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 23.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1514285714285715
+    }
+  },
+  "arms_metrics_vs_hindsight": {
+    "exact_belief": {
+      "mean_regret": 1.9142857142857144,
+      "mean_route_switch_rate": 0.346031746031746,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 7.0,
+      "total_avoidable_deferrals": 199.0,
+      "total_deferrals": 205.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 22.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1514285714285715
+    },
+    "fabricpc_backprop": {
+      "mean_regret": 2.2285714285714286,
+      "mean_route_switch_rate": 0.42857142857142855,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 3.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 7.0,
+      "total_avoidable_deferrals": 198.0,
+      "total_deferrals": 207.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 30.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.12
+    },
+    "fabricpc_pcn": {
+      "mean_regret": 2.2285714285714286,
+      "mean_route_switch_rate": 0.3904761904761905,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 3.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 7.0,
+      "total_avoidable_deferrals": 203.0,
+      "total_deferrals": 214.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 25.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.12
+    },
+    "fabricpc_pcn_shuffled": {
+      "mean_regret": 2.3714285714285714,
+      "mean_route_switch_rate": 0.4031746031746032,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 7.0,
+      "total_avoidable_deferrals": 194.0,
+      "total_deferrals": 201.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 38.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1057142857142856
+    },
+    "fixed_prior": {
+      "mean_regret": 1.9714285714285715,
+      "mean_route_switch_rate": 0.3873015873015873,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 6.0,
+      "total_avoidable_deferrals": 216.0,
+      "total_deferrals": 221.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 19.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1457142857142857
+    },
+    "frozen_pacing": {
+      "mean_regret": 2.2857142857142856,
+      "mean_route_switch_rate": 0.4063492063492063,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 61.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 158.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1142857142857143
+    },
+    "hmm": {
+      "mean_regret": 1.9142857142857144,
+      "mean_route_switch_rate": 0.346031746031746,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 7.0,
+      "total_avoidable_deferrals": 199.0,
+      "total_deferrals": 205.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 22.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1514285714285715
+    },
+    "inverted_belief": {
+      "mean_regret": 1.9714285714285715,
+      "mean_route_switch_rate": 0.4253968253968254,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 6.0,
+      "total_avoidable_deferrals": 206.0,
+      "total_deferrals": 215.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 24.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1457142857142857
+    },
+    "no_pricing": {
+      "mean_regret": 2.2857142857142856,
+      "mean_route_switch_rate": 0.761904761904762,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 115.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1142857142857143
+    },
+    "ridge": {
+      "mean_regret": 1.9142857142857144,
+      "mean_route_switch_rate": 0.3682539682539683,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 7.0,
+      "total_avoidable_deferrals": 198.0,
+      "total_deferrals": 205.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 23.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.1514285714285715
+    }
+  },
+  "fabricpc_training": {
+    "backprop_runs": [
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.00027531781566927346,
+        "checkpoint_hash": "6d0798555e707401c2c7b71006eaea12414faf3c2d9990ca3c00ae733c14eb01",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "backprop",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 1.621582199994009,
+        "seed": 0,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.06285449423521439
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.02885433365665802
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.013119691086414228
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.007807803887152166
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.005848099666182429
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.004808458375867718
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.00401875296934086
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.0033657393636487
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.002778552716988017
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.002304975464654976
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.0019201527558911022
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.001621907324175512
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0013881777875731814
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.0011864741230154796
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0010174570186477119
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0008730269777667024
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.000775195778118719
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0007017691290756291
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0006407515832873434
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0005775606657104506
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.0005282118003933999
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.00048787631521601403
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0004515238694053736
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.0004187644149014747
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0003933997929768477
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0003663075880313566
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.0003398887413971605
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.00031965381331809325
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.00029801883446616635
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.00027531781566927346
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.0006168488859596988,
+        "checkpoint_hash": "aac2e27448e680c3fec3a7be29dfb4e4aa3b23f75f7575ea792e7bbb5a510fe5",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "backprop",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 0.38048170000547543,
+        "seed": 1,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.05819758059597512
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.027760502985521053
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.013204895588661919
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.007401091652511076
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.0051622477826569185
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.004222811925841558
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.003622007394539253
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.0031480152982465586
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.0027797256674301934
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.0024538379879933524
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.0021947192352648275
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.001984600435983217
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0017862559504232991
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.0016114939478608689
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0014634098742917134
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0013561652918197215
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.0012681997484784169
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0011972947681215859
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0011156405564860712
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0010469208522299522
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.0009823590113754424
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.000937104197434077
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0008971938753139662
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.0008492712169466464
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0008036100365012554
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0007594548603663759
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.0007246267230996841
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.0007051969582591341
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0006576550539933595
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.0006168488859596988
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.00025932737609349186,
+        "checkpoint_hash": "369630503152d4690e5c0c6209119db80de6cd5cbb703bad6b191fe304d8b19a",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "backprop",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 0.38954040000680834,
+        "seed": 2,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.031266531929743956
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.013614827851414364
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.006512431792881027
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.004197312465926854
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.0032274341908829444
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.002620737158089991
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.0021772590120029017
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.001841048624728498
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.001556450276635289
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.0013445097776862988
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.0011836436088985367
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.0010444198739465
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0009338855590429651
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.0008367746294881401
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0007645160264326148
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0007053885686394187
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.0006542875883592116
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0006011821865162388
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0005556951388736513
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0005162431958633953
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.00048190751280939467
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.00044985915409328207
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.00040940485504633044
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.0003863921552329306
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0003627364597371171
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0003538670894611818
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.00033268688397266314
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.0002988678397131272
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.00027641974850412297
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.00025932737609349186
+          }
+        ],
+        "val_examples": 135
+      }
+    ],
+    "best_backprop_seed": 2,
+    "best_pcn_seed": 2,
+    "pcn_runs": [
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.00030048608417761717,
+        "checkpoint_hash": "445cef41cb8ae7169d9b0b88bc1256c7412adadb378b9a0e9a3322f2fe0d534f",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "pcn",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 3.6528636000002734,
+        "seed": 0,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.06312080127721481
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.029845244945452296
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.01409098942836878
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.008394694883294977
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.006229322658291841
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.005112813307163029
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.004251378839452107
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.003542488316554535
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.0029393577411060295
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.002436103263597953
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.0020388678973361695
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.0017193550444034077
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0014726197354543548
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.0012700385571973018
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.001112590259939491
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0009762036495824049
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.000874794927112717
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0007879811367592894
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0007148135243387348
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0006523255687228183
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.0005991233715638237
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.0005519343829177742
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0005080241999580645
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.0004681862956230527
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.00043536555438250334
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.00040266580070074694
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.00037516501585410774
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.0003491520010686044
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0003247727104325759
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.00030048608417761717
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.0006536475202669511,
+        "checkpoint_hash": "e1a68e6d3e1303c1057c23d467ad44ffcb1b2576b699aac256b8f49ada7c5782",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "pcn",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 3.7488340999989305,
+        "seed": 1,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.05844411107331921
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.02870821176307129
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.013955383306541573
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.007975497235846821
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.005587322129973244
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.004488609632894005
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.003827598063097358
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.0033299477152491765
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.0029238275668497073
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.0025885873796956853
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.0023069057031777727
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.002084264133158422
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0018881277637927624
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.0017318448383021154
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0015932131767685603
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0014806127008327769
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.0013809419196395005
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0012944665884927597
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.001215753812303
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0011452081565321366
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.0010805480649735458
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.001020730359524181
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.000962201905039897
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.0009107424294389578
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0008632074126723708
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0008148102952678732
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.0007685709204908329
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.0007326498481564815
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0006904135435775984
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.0006536475202669511
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.000258042663626556,
+        "checkpoint_hash": "64aa82bb635599879c4d483ae7f72890fcc6b752fa4674e812e128438bca7028",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "pcn",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 3.794251400002395,
+        "seed": 2,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.03139904432704203
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.014099485731358654
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.006993488031650999
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.004491367616101439
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.003381847975133245
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.0027046490735869893
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.0022200375993721745
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.0018554858723763884
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.0015690721374851172
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.0013529356765672074
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.0011845996926063943
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.001043521484076911
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0009395537121902125
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.0008454649779537557
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0007721472971669865
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0007091877337282767
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.0006532179857942396
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0006040619050501046
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0005594399432012599
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0005196154952947427
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.00048269320169210146
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.0004505647285420461
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0004201960668512582
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.0003922888692371347
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0003651381863087959
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0003417745366143237
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.0003203816862510065
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.0002972433748489656
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0002776933778819624
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.000258042663626556
+          }
+        ],
+        "val_examples": 135
+      }
+    ]
+  },
+  "frozen_gate0_config": {
+    "initial_budget": 6.0,
+    "p_opportunity_high": 0.25,
+    "p_opportunity_normal": 0.15,
+    "transition_high_to_high": 0.6,
+    "transition_normal_to_high": 0.2,
+    "u_high": 8.0,
+    "u_normal": 1.0
+  },
+  "gate_b": {
+    "learned_quality": {
+      "fabricpc_backprop": {
+        "brier_score_vs_regime": 0.23094389949091695,
+        "hidden_regime_accuracy": 0.638095238095238,
+        "log_loss_vs_regime": 0.6546646277109782,
+        "mse_vs_belief_prior": 0.0003199158159570019
+      },
+      "fabricpc_pcn": {
+        "brier_score_vs_regime": 0.23081666570468037,
+        "hidden_regime_accuracy": 0.638095238095238,
+        "log_loss_vs_regime": 0.6543749054272969,
+        "mse_vs_belief_prior": 0.00032966253959004315
+      },
+      "ridge": {
+        "brier_score_vs_regime": 0.23027771484315573,
+        "hidden_regime_accuracy": 0.638095238095238,
+        "log_loss_vs_regime": 0.6530290938649932,
+        "mse_vs_belief_prior": 5.091054069288531e-07
+      }
+    },
+    "naive_constant_prediction_test_mse": 0.0010504049040729133,
+    "passed": true,
+    "recovers": {
+      "fabricpc_backprop": true,
+      "fabricpc_pcn": true,
+      "ridge": true
+    }
+  },
+  "gate_economics": {
+    "1_beats_pacing": {
+      "delta": {
+        "ci_high": 1.0571428571428572,
+        "ci_low": -1.2571428571428571,
+        "mean": -0.05714285714285714
+      },
+      "passed": false
+    },
+    "2_beats_fixed_prior": {
+      "delta": {
+        "ci_high": 0.8571428571428571,
+        "ci_low": -0.22857142857142856,
+        "mean": 0.2571428571428571
+      },
+      "passed": false
+    },
+    "2_beats_shuffled": {
+      "delta": {
+        "ci_high": 0.7142857142857143,
+        "ci_low": -0.9142857142857143,
+        "mean": -0.14285714285714285
+      },
+      "passed": false
+    },
+    "3_no_additional_violations": {
+      "fabricpc_violations": 0.0,
+      "pacing_violations": 0.0,
+      "passed": true
+    },
+    "4_captured_fraction_positive": {
+      "passed": true
+    },
+    "5_non_inferior_to_backprop": {
+      "delta": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0
+      },
+      "non_inferiority_margin": 0.018571428571428572,
+      "passed": true
+    },
+    "6_boundary_behavior_vs_shuffled": {
+      "exact_near_boundary_fraction": 0.3342857142857143,
+      "fabricpc_near_boundary_fraction": 0.3485714285714286
+    },
+    "7_latency": {
+      "fabricpc_mean_latency_seconds": 0.08533711685715908,
+      "pacing_mean_latency_seconds": 5.490572241667126e-06,
+      "passed": true
+    },
+    "captured_fraction": 0.15384615384615388,
+    "passed": false,
+    "recoverable_gap": 0.37142857142857144
+  },
+  "n_test_rows": 315,
+  "n_test_sequences": 35,
+  "n_train_rows": 450,
+  "n_train_sequences": 50,
+  "n_val_rows": 135,
+  "n_val_sequences": 15,
+  "outcome": "Gate B passed: True. Primary economics gate: FAILED.",
+  "schema": "compitum.fabricpc-tranche7-ten-arm-pilot-report/v1",
+  "total_elapsed_seconds": 59.51014020000002
+}
