@@ -3,6 +3,38 @@
 Status: accepted, observation-only. Supersedes nothing in ADR 0001-0006;
 corrects a foundational modeling issue in how tranche 5 tested FabricPC.
 
+## Outcome (see experiments/fabricpc/tranche6/REPORT.md for full detail)
+
+**Stopped at Gate A.** Exact-belief Bellman pricing (arm 3) did not beat
+frozen pacing (arm 2) on held-out regret against the exact online
+optimum: mean paired delta `+0.114` (arm 3 worse), 95% CI
+`[-0.229, +0.457]` -- straddles zero and leans the wrong way. Robust
+across five independent test-set seeds (deltas ranged `-0.229` to
+`+0.457`, never significantly negative). Both priced arms crushed no
+-pricing (mean regret `1.83`-`1.94` vs `2.63`), confirming pricing in
+general matters here; the null result is specifically that the
+mathematically exact marginal-value price does not outperform pacing's
+simple budget/time-ratio heuristic. Part B (ridge/HMM/FabricPC training)
+and arms 4-8 were never run, per the ADR's own "stop on Gate A failure"
+instruction -- this is the responsible, cost-disciplined outcome, not an
+oversight.
+
+This is a genuine finding about the greedy `price_utilities` decision
+rule's interaction with the Bellman price's own shape (verified sharply
+spiking at discrete feasibility boundaries, see Part A below), not a
+flaw in the price calculation: the exact-belief arm switched routes far
+more often than pacing (73% vs 48% of steps) without a matching regret
+improvement, and rejected the immediate-best-utility option more rarely
+than pacing did (139 vs 155 rejections) while still not converting that
+into lower regret -- consistent with tranche 4's established finding
+that a technically-correct price signal can still underperform a
+smoother heuristic once translated into action through linear greedy
+routing. Per the ADR's own interpretive framework: **exact belief does
+not help -> economics/environment (more precisely, the price-to-action
+translation) bottleneck**, not a prediction-quality bottleneck -- so
+training FabricPC would not have been informative here regardless of
+how well it learned to predict belief.
+
 ## Governing correction
 
 Tranche 5 tested:
@@ -100,7 +132,16 @@ signal), never future realizations. The perfect-foresight hindsight
 optimizer (tranches 3-5's oracle) is retained only as a separate,
 unattainable upper bound; both regrets are reported, never conflated.
 
-## Part B: FabricPC's genuine predictive task (planned)
+## Part B: FabricPC's genuine predictive task (built, never invoked)
+
+Built and empirically verified end-to-end against the pinned FabricPC
+checkout (`experiments/fabricpc/tranche6/fabricpc_belief_model.py`) --
+training genuinely converges, and a live per-step estimator wired
+through `simulate_policy` runs successfully. Never invoked by the final
+pilot run because Gate A stopped the pilot first (see Outcome above);
+kept and committed as verified, reusable infrastructure, not dead code,
+in case a future tranche revisits the price-to-action translation layer
+rather than the belief-estimation layer.
 
 Confirmed feasible via direct investigation of the pinned FabricPC 0.3.2
 checkout: it exposes real parameter-training machinery, not just
@@ -122,12 +163,15 @@ hidden-regime belief** (a scalar in `[0, 1]`, `P(regime=HIGH)`) from a
 declared window of observable history (previous route choices, realized
 consumption revealed so far, utility observations, replenishment
 observations, remaining resource, time remaining, opportunity indicators
-observed so far). Targets are the exact `belief_posteriors` from
-`generate_belief_sequence` -- computed by the same Bayesian filter the
-Bellman oracle itself uses, never a Bellman price or hindsight choice
-supervised directly. Regression via `IdentityActivation()` + `GaussianEnergy()`
-on the output node, per FabricPC's own documented pattern for non
--classification targets.
+observed so far). As actually built, the target is the *next step's*
+belief prior (`belief_priors[t+1]`, entering the recursion the same way
+`BellmanOracle.marginal_price` consumes it) rather than this step's own
+posterior, so the trained predictor's output is directly usable by the
+Bellman table with no extra transformation -- mathematically equivalent
+information (`predict_belief(posterior_t) == belief_priors[t+1]`), never
+a Bellman price or hindsight choice supervised directly. Regression via
+`SigmoidActivation()` (bounding the output to `[0, 1]`) + `GaussianEnergy()`
+(`Linear`'s own default energy) on the output node.
 
 Training is real: both `train_pcn` and `train_backprop` run on the same
 initialized `params`/`structure`, with topology, initialization seeds,
@@ -136,7 +180,7 @@ final checkpoint (plain-pytree pickle, since `GraphParams`/`NodeParams`
 are ordinary registered JAX pytrees -- no bespoke serialization needed)
 hashed for provenance.
 
-## Part C: deriving prices from beliefs (planned)
+## Part C: deriving prices from beliefs (built, never invoked)
 
 Per step: the predictor estimates belief -> the precomputed `BellmanOracle`
 receives `(remaining_steps, budget, estimated_belief)` -> returns

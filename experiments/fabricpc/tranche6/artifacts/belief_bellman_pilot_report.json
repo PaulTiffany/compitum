@@ -1,0 +1,68 @@
+{
+  "arms_run": {
+    "exact_belief": {
+      "mean_regret": 1.9428571428571428,
+      "mean_route_switch_rate": 0.7301587301587302,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 59.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 139.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.2190476190476192
+    },
+    "frozen_pacing": {
+      "mean_regret": 1.8285714285714285,
+      "mean_route_switch_rate": 0.4793650793650794,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 54.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 155.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.2285714285714286
+    },
+    "no_pricing": {
+      "mean_regret": 2.6285714285714286,
+      "mean_route_switch_rate": 0.6825396825396827,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 4.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 105.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.161904761904762
+    }
+  },
+  "gate_a": {
+    "arm2_violations": 0,
+    "arm3_violations": 0,
+    "beats_frozen_pacing": false,
+    "criterion": "exact-belief Bellman pricing (arm 3) must beat frozen pacing (arm 2) on held-out regret vs the exact online optimum, without increasing violations",
+    "no_additional_violations": true,
+    "paired_regret_delta_vs_frozen_pacing": {
+      "ci_high": 0.45714285714285713,
+      "ci_low": -0.22857142857142856,
+      "mean": 0.11428571428571428
+    },
+    "passed": false
+  },
+  "n_test_sequences": 35,
+  "n_train_sequences": 50,
+  "n_val_sequences": 15,
+  "outcome": "STOPPED at Gate A: the environment does not provide enough value for improved scarcity prediction to improve the current pricing baseline. Part B (ridge/HMM/FabricPC training) and the remaining five arms were never run.",
+  "schema": "compitum.fabricpc-belief-bellman-pilot-report/v1",
+  "total_elapsed_seconds": 0.17194800000288524
+}
