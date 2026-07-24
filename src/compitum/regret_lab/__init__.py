@@ -69,6 +69,7 @@ from .scarcity_scenarios import (
     secondary_sweeps,
 )
 from .simulator import ForecastContext, PolicyDecision, simulate_policy
+from .windowed_predictor import RidgeModel, fit_ridge, flatten_window, predict_ridge
 
 __all__ = [
     "CHANNEL_DIMENSION",
@@ -96,6 +97,7 @@ __all__ = [
     "ResidualChannelHistory",
     "ResidualCorrectionRecord",
     "ResidualPricingController",
+    "RidgeModel",
     "ScarcityParams",
     "advance_history",
     "bootstrap_ci",
@@ -105,12 +107,15 @@ __all__ = [
     "compute_regret_channel_vector",
     "compute_residual_channel_vector",
     "conservation_depletion_split",
+    "fit_ridge",
+    "flatten_window",
     "generate_corrected_slack_dataset",
     "generate_dynamic_dataset",
     "generate_primary_dataset",
     "generate_secondary_dataset",
     "oracle_price_residual",
     "paired_regret_deltas",
+    "predict_ridge",
     "price_utilities",
     "primary_grid",
     "regret_metrics",

@@ -112,11 +112,28 @@ def test_gate_closed_forces_zero_correction_regardless_of_predictor() -> None:
         base=_base_controller(),
         predict_residual=lambda window: 5.0,
         max_correction_magnitude=10.0,
-        gate_fn=lambda context: False,
+        gate_fn=lambda context, lambda_base: False,
     )
     controller.update(_context())
     assert controller.records[-1].status == "zero_gate"
     assert controller.records[-1].applied_correction == 0.0
+
+
+def test_gate_fn_receives_the_current_base_lambda() -> None:
+    seen_lambda_bases = []
+
+    def _gate(context, lambda_base):
+        seen_lambda_bases.append(lambda_base)
+        return True
+
+    controller = ResidualPricingController(
+        base=_base_controller(),
+        predict_residual=lambda window: 0.0,
+        max_correction_magnitude=1.0,
+        gate_fn=_gate,
+    )
+    controller.update(_context())
+    assert seen_lambda_bases == [controller.base.lambda_price["budget"]]
 
 
 def test_missing_case_or_chosen_raises() -> None:

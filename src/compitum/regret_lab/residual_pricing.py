@@ -31,10 +31,10 @@ from .residual_channels import (
 )
 
 ResidualPredictor = Callable[[List[np.ndarray]], Optional[float]]
-GateFn = Callable[[PricingUpdateContext], bool]
+GateFn = Callable[[PricingUpdateContext, float], bool]
 
 
-def _gate_always_open(context: PricingUpdateContext) -> bool:
+def _gate_always_open(context: PricingUpdateContext, lambda_base: float) -> bool:
     return True
 
 
@@ -113,7 +113,7 @@ class ResidualPricingController:
 
         self._history = advance_history(self._history, context.case, context.chosen, lambda_base)
 
-        if not self.gate_fn(context):
+        if not self.gate_fn(context, lambda_base):
             self._pending_correction = 0.0
             self.records.append(
                 ResidualCorrectionRecord(
