@@ -45,6 +45,8 @@ class ResidualCorrectionRecord:
     raw_correction: Optional[float]
     applied_correction: float
     window_size: int
+    lambda_base: float
+    window_snapshot: List[np.ndarray] = field(default_factory=list, repr=False)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -53,6 +55,7 @@ class ResidualCorrectionRecord:
             "raw_correction": self.raw_correction,
             "applied_correction": self.applied_correction,
             "window_size": self.window_size,
+            "lambda_base": self.lambda_base,
         }
 
 
@@ -113,6 +116,8 @@ class ResidualPricingController:
 
         self._history = advance_history(self._history, context.case, context.chosen, lambda_base)
 
+        window_snapshot = list(self._window)
+
         if not self.gate_fn(context, lambda_base):
             self._pending_correction = 0.0
             self.records.append(
@@ -122,6 +127,8 @@ class ResidualPricingController:
                     raw_correction=None,
                     applied_correction=0.0,
                     window_size=len(self._window),
+                    lambda_base=lambda_base,
+                    window_snapshot=window_snapshot,
                 )
             )
             return
@@ -140,6 +147,8 @@ class ResidualPricingController:
                     raw_correction=None,
                     applied_correction=0.0,
                     window_size=len(self._window),
+                    lambda_base=lambda_base,
+                    window_snapshot=window_snapshot,
                 )
             )
             return
@@ -154,5 +163,7 @@ class ResidualPricingController:
                 raw_correction=raw,
                 applied_correction=clipped,
                 window_size=len(self._window),
+                lambda_base=lambda_base,
+                window_snapshot=window_snapshot,
             )
         )

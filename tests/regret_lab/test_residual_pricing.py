@@ -208,4 +208,21 @@ def test_record_to_dict_has_all_fields() -> None:
     )
     controller.update(_context())
     d = controller.records[-1].to_dict()
-    assert set(d) == {"step", "status", "raw_correction", "applied_correction", "window_size"}
+    assert set(d) == {
+        "step",
+        "status",
+        "raw_correction",
+        "applied_correction",
+        "window_size",
+        "lambda_base",
+    }
+
+
+def test_record_window_snapshot_matches_the_window_used_this_step() -> None:
+    controller = ResidualPricingController(
+        base=_base_controller(), predict_residual=lambda window: 0.0, max_correction_magnitude=1.0
+    )
+    controller.update(_context(step=0))
+    controller.update(_context(step=1))
+    assert len(controller.records[-1].window_snapshot) == 2
+    assert len(controller.records[0].window_snapshot) == 1
