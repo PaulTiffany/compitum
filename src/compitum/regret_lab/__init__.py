@@ -23,6 +23,15 @@ from .belief_channels import (
     compute_belief_channel_vector,
 )
 from .belief_hmm_filter import belief_high_from_scalar, hmm_filter_step
+from .belief_pricing import (
+    BeliefEstimator,
+    BeliefPricingController,
+    ExactBeliefEstimator,
+    HmmBeliefEstimator,
+    LookupBeliefEstimator,
+    RidgeBeliefEstimator,
+    build_belief_training_pairs,
+)
 from .belief_regime import GRID_UNIT as BELIEF_GRID_UNIT
 from .belief_regime import MODEL_NAMES as BELIEF_MODEL_NAMES
 from .belief_regime import STEPS as BELIEF_STEPS
@@ -104,15 +113,20 @@ __all__ = [
     "SCARCITY_RESOURCE_NAMES",
     "SCENARIOS",
     "BeliefChannelHistory",
+    "BeliefEstimator",
+    "BeliefPricingController",
     "BellmanOracle",
     "BellmanStateBudgetExceeded",
     "DualController",
     "DynamicCase",
     "DynamicSequence",
     "EWMAForecaster",
+    "ExactBeliefEstimator",
     "ForecastContext",
     "HindsightResult",
+    "HmmBeliefEstimator",
     "LambdaInterval",
+    "LookupBeliefEstimator",
     "PacingController",
     "PolicyDecision",
     "PolicyRunResult",
@@ -122,12 +136,14 @@ __all__ = [
     "ResidualChannelHistory",
     "ResidualCorrectionRecord",
     "ResidualPricingController",
+    "RidgeBeliefEstimator",
     "RidgeModel",
     "ScarcityParams",
     "advance_belief_history",
     "advance_history",
     "belief_high_from_scalar",
     "bootstrap_ci",
+    "build_belief_training_pairs",
     "build_scarcity_sequence",
     "compute_belief_channel_vector",
     "compute_hindsight_optimum",
