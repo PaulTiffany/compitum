@@ -114,10 +114,23 @@ def _secondary_windows(
 
 
 def build_scarcity_sequence(
-    rng: np.random.Generator, params: ScarcityParams, steps: int, sequence_id: str
+    rng: np.random.Generator,
+    params: ScarcityParams,
+    steps: int,
+    sequence_id: str,
+    tightness_reference_rate: float = CONSERVE_RATE,
 ) -> DynamicSequence:
+    """``tightness_reference_rate`` is the per-step consumption rate
+    ``budget_tightness`` is calibrated against. The default, ``CONSERVE_RATE``,
+    matches tranche 4.5's original cells exactly (calibrated against a fully
+    -conservative reference). Tranche 4.6 found this understates true slack
+    at short horizons, since a naturally-behaving (spend-preferring) policy
+    consumes at ``params.consumption_asymmetry``'s rate, not ``CONSERVE_RATE``
+    -- passing ``tightness_reference_rate=params.consumption_asymmetry``
+    calibrates against that natural reference instead. See ADR 0005's
+    tranche-4.6 addendum."""
     t_opp = _timing_step(params.timing, steps)
-    min_budget_needed = t_opp * CONSERVE_RATE + OPPORTUNITY_COST
+    min_budget_needed = t_opp * tightness_reference_rate + OPPORTUNITY_COST
     initial_budget = {"budget": _grid(params.budget_tightness * min_budget_needed)}
     replenishment_schedule = _replenishment_schedule(params.replenishment_mode, steps)
     secondary_windows = _secondary_windows(rng, params, steps, t_opp)
@@ -218,6 +231,35 @@ def generate_primary_dataset(
             rng = np.random.default_rng((seed, _stable_hash(params.cell_id()), index))
             seq_id = f"{params.cell_id()}-{index:03d}"
             out.append(build_scarcity_sequence(rng, params, steps, seq_id))
+    return out
+
+
+def generate_corrected_slack_dataset(
+    seed: int, steps: int = STEPS, seeds_per_cell: int = PRIMARY_SEEDS_PER_CELL
+) -> List[DynamicSequence]:
+    """Tranche 4.6: regenerates the near/mid-timing slice of the primary
+    grid (all payoff_ratio x budget_tightness x replenishment_mode
+    combinations, 24 cells) calibrated against the natural
+    spend-preferring reference rate instead of the fully-conservative one.
+    Sequence ids are prefixed ``corrected-`` so they never collide with
+    ``generate_primary_dataset``'s original cells; both artifacts are kept,
+    never merged or used to overwrite each other."""
+    out = []
+    for params in primary_grid():
+        if params.timing not in ("near", "mid"):
+            continue
+        for index in range(seeds_per_cell):
+            rng = np.random.default_rng((seed, _stable_hash(params.cell_id()), index))
+            seq_id = f"corrected-{params.cell_id()}-{index:03d}"
+            out.append(
+                build_scarcity_sequence(
+                    rng,
+                    params,
+                    steps,
+                    seq_id,
+                    tightness_reference_rate=params.consumption_asymmetry,
+                )
+            )
     return out
 
 

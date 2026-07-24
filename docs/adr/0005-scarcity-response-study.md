@@ -202,6 +202,49 @@ moderate-to-high-consequence scarcity** -- not a general-purpose pricing
 baseline. No parameter was retuned based on any cell's outcome; no learned
 predictor was reintroduced.
 
+## Tranche 4.6 addendum: calibration rerun and cliff diagnostic (2026-07-24)
+
+Per user direction, before any FabricPC reintroduction, both open items
+from the tranche 4.5 outcome were resolved directly (no controller
+tuning). Full detail in `experiments/fabricpc/tranche4_6/REPORT.md`.
+
+**Corrected-slack rerun:** recalibrating `budget_tightness` against the
+natural spend-preferring rate (rather than the fully-conservative one)
+roughly halves route disagreement and regret impact across the near/mid
+-timing slice, but does not eliminate it -- H1's failure was **partially**
+a scenario-calibration artifact and **partially** a genuine, unresolved
+property of the frozen pacing controller's short-horizon behavior. Both
+the original and corrected datasets/results are retained; tranche 4.5's
+report is not rewritten.
+
+**Cliff diagnostic:** densely sampling absolute budget at the finest
+available grid resolution around the `payoff_ratio=10.0` boundary found
+the H4 cliff is not one mechanism. Of the 2 originally-flagged
+configurations, 1 (`none, mid`) is a genuine, pacing-created capability
+(no-pricing never captures the opportunity anywhere sampled; pacing
+transitions cleanly at one grid step -- the sharpness is intrinsic to a
+one-shot binary event, not evidence of instability or under-sampling), and
+1 (`partial, near`) is a shared, policy-independent feasibility threshold
+unrelated to pacing's price dynamics. A third, previously-unflagged
+configuration (`partial, mid`) revealed a genuine narrow non-monotonicity:
+pacing captures the opportunity at one budget level, loses it at the very
+next grid step, then recaptures it at every level beyond -- a real,
+reproducible controller fragility tranche 4.5's coarser two-point
+comparison could not detect.
+
+**Also found and reported (not fixed):** `opportunity_prevalence="rare"`
+(every primary-grid cell) never consumes its RNG argument, so tranche
+4.5's "3 seeds per cell" are byte-identical duplicates for the primary
+grid, not independent draws. Does not invalidate H2's cross-configuration
+finding, but affects how "not driven by isolated sequences" should be read
+for primary-grid analyses.
+
+**Consequence for tranche 5:** the residual corrector's base controller is
+not a clean reference -- it carries a known, only-partially-understood
+non-dormancy in short-horizon slack cells and at least one known narrow
+non-monotonic region. Tranche 5's non-inferiority and boundary-stability
+gate criteria inherit these imperfections as their baseline.
+
 ## Scope and stop boundary
 
 Complete only: this ADR; the scarcity scenario generator; the frozen

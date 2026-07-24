@@ -18,6 +18,7 @@ from compitum.regret_lab.scarcity_scenarios import (
     ScarcityParams,
     _secondary_windows,
     build_scarcity_sequence,
+    generate_corrected_slack_dataset,
     generate_primary_dataset,
     generate_secondary_dataset,
     primary_grid,
@@ -249,6 +250,43 @@ def test_cell_id_reflects_all_seven_axes() -> None:
     cell_id = params.cell_id()
     for fragment in ("pr3.0", "bt1.1", "repnone", "tfinal", "ca2.0", "fenone", "oprare"):
         assert fragment in cell_id
+
+
+def test_tightness_reference_rate_changes_initial_budget() -> None:
+    rng = np.random.default_rng(0)
+    default_ref = build_scarcity_sequence(rng, _params(timing="final"), 12, "s")
+    natural_ref = build_scarcity_sequence(
+        rng, _params(timing="final"), 12, "s", tightness_reference_rate=2.0
+    )
+    # consumption_asymmetry default is 2.0, double CONSERVE_RATE (1.0), so
+    # the natural-reference budget must be larger for the same cell.
+    assert natural_ref.initial_budget["budget"] > default_ref.initial_budget["budget"]
+
+
+def test_generate_corrected_slack_dataset_covers_only_near_and_mid_timing() -> None:
+    seqs = generate_corrected_slack_dataset(seed=5)
+    grid = [p for p in primary_grid() if p.timing in ("near", "mid")]
+    assert len(seqs) == len(grid) * 3  # 3 seeds per cell
+    assert all(seq.sequence_id.startswith("corrected-") for seq in seqs)
+    assert all("tfinal" not in s.scenario for s in seqs)
+
+
+def test_generate_corrected_slack_dataset_is_calibrated_against_natural_rate() -> None:
+    seqs = generate_corrected_slack_dataset(seed=5)
+    slack_near = next(
+        s for s in seqs if "bt2.0" in s.scenario and "tnear" in s.scenario and "ca2.0" in s.scenario
+    )
+    # Corrected reference uses consumption_asymmetry (2.0 default) instead
+    # of CONSERVE_RATE (1.0): budget_tightness=2.0 at t_opp=1 now yields
+    # 2.0 * (1 * 2.0 + 5.0) = 14.0, not the original 2.0 * (1*1.0+5.0)=12.0.
+    assert slack_near.initial_budget["budget"] == pytest.approx(14.0)
+
+
+def test_generate_corrected_slack_dataset_deterministic() -> None:
+    a = generate_corrected_slack_dataset(seed=9)
+    b = generate_corrected_slack_dataset(seed=9)
+    for sa, sb in zip(a, b):
+        assert sa.initial_budget == sb.initial_budget
 
 
 def test_unknown_timing_raises() -> None:

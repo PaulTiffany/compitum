@@ -1,0 +1,4290 @@
+{
+  "methodology_note": "opportunity_prevalence='rare' (every primary-grid cell) never consumes its rng argument in build_scarcity_sequence, so tranche 4.5's '3 seeds per cell' are byte-identical duplicates for the primary grid, not independent draws. Verified directly before writing this diagnostic. Does not invalidate tranche 4.5's cross-CONFIGURATION findings (which vary declared axes, not RNG), but the seed count should not be read as adding independent statistical power for rare-prevalence cells.",
+  "part1_corrected_slack_rerun": {
+    "corrected": {
+      "all_near_mid_cells": {
+        "mean_abs_regret_delta": 0.6458333333333334,
+        "mean_regret_pacing": 0.3958333333333333,
+        "mean_route_disagreement_rate": 0.3628472222222222,
+        "n_sequences": 144
+      },
+      "label": "corrected",
+      "slack_cells": {
+        "mean_abs_regret_delta": 0.625,
+        "mean_regret_pacing": 0.5,
+        "mean_route_disagreement_rate": 0.34375,
+        "n_sequences": 48
+      }
+    },
+    "original": {
+      "all_near_mid_cells": {
+        "mean_abs_regret_delta": 1.25,
+        "mean_regret_pacing": 1.5,
+        "mean_route_disagreement_rate": 0.4652777777777778,
+        "n_sequences": 144
+      },
+      "label": "original",
+      "slack_cells": {
+        "mean_abs_regret_delta": 0.6875,
+        "mean_regret_pacing": 0.3125,
+        "mean_route_disagreement_rate": 0.4322916666666667,
+        "n_sequences": 48
+      }
+    }
+  },
+  "part2_cliff_diagnostic": {
+    "configs": [
+      {
+        "config": {
+          "replenishment_mode": "none",
+          "timing": "mid"
+        },
+        "flagged_in_tranche_4_5": true,
+        "min_budget_needed": 11.0,
+        "n_points_sampled": 10,
+        "no_pricing_transition": null,
+        "pacing_transition": {
+          "from_budget": 11.75,
+          "from_captured": false,
+          "to_budget": 12.0,
+          "to_captured": true
+        },
+        "points": [
+          {
+            "budget_tightness_ratio": 0.95,
+            "hindsight_value": 25.0,
+            "initial_budget": 10.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                2.025,
+                3.15,
+                3.9749999999999996,
+                4.6499999999999995,
+                5.234999999999999,
+                5.76,
+                6.2421428571428565,
+                6.692142857142857,
+                7.1171428571428565,
+                7.1171428571428565,
+                7.1171428571428565
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                10.5,
+                8.5,
+                7.5,
+                6.5,
+                5.5,
+                4.5,
+                3.5,
+                2.5,
+                1.5,
+                0.5,
+                0.5,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.9727272727272727,
+            "hindsight_value": 25.0,
+            "initial_budget": 10.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.9874999999999998,
+                3.0749999999999997,
+                3.8625,
+                4.5,
+                5.047499999999999,
+                5.534999999999999,
+                5.979642857142856,
+                6.392142857142856,
+                6.779642857142856,
+                6.779642857142856,
+                6.779642857142856
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                10.75,
+                8.75,
+                7.75,
+                6.75,
+                5.75,
+                4.75,
+                3.75,
+                2.75,
+                1.75,
+                0.75,
+                0.75,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.9954545454545454,
+            "hindsight_value": 26.0,
+            "initial_budget": 11.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.9500000000000004,
+                3.0000000000000004,
+                3.7500000000000004,
+                4.3500000000000005,
+                4.86,
+                5.3100000000000005,
+                5.717142857142858,
+                6.092142857142858,
+                6.4421428571428585,
+                6.772142857142859,
+                6.772142857142859
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                11.0,
+                9.0,
+                8.0,
+                7.0,
+                6.0,
+                5.0,
+                4.0,
+                3.0,
+                2.0,
+                1.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.018181818181818,
+            "hindsight_value": 26.0,
+            "initial_budget": 11.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.9125,
+                2.925,
+                3.6374999999999997,
+                4.199999999999999,
+                4.672499999999999,
+                5.085,
+                5.454642857142857,
+                5.792142857142857,
+                6.104642857142857,
+                6.397142857142858,
+                6.397142857142858
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                11.25,
+                9.25,
+                8.25,
+                7.25,
+                6.25,
+                5.25,
+                4.25,
+                3.25,
+                2.25,
+                1.25,
+                0.25,
+                0.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0409090909090908,
+            "hindsight_value": 26.0,
+            "initial_budget": 11.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.8749999999999998,
+                2.8499999999999996,
+                3.5249999999999995,
+                4.049999999999999,
+                4.4849999999999985,
+                4.8599999999999985,
+                5.192142857142856,
+                5.492142857142856,
+                5.767142857142856,
+                6.022142857142856,
+                6.022142857142856
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                11.5,
+                9.5,
+                8.5,
+                7.5,
+                6.5,
+                5.5,
+                4.5,
+                3.5,
+                2.5,
+                1.5,
+                0.5,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0636363636363635,
+            "hindsight_value": 26.0,
+            "initial_budget": 11.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.8375000000000004,
+                2.7750000000000004,
+                3.4125000000000005,
+                3.900000000000001,
+                4.297500000000001,
+                4.635000000000002,
+                4.929642857142858,
+                5.1921428571428585,
+                5.429642857142858,
+                5.647142857142859,
+                5.647142857142859
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                11.75,
+                9.75,
+                8.75,
+                7.75,
+                6.75,
+                5.75,
+                4.75,
+                3.75,
+                2.75,
+                1.75,
+                0.75,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0863636363636362,
+            "hindsight_value": 27.0,
+            "initial_budget": 12.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.8,
+                2.7,
+                3.3,
+                3.75,
+                4.11,
+                4.41,
+                5.695714285714286,
+                5.695714285714286,
+                5.695714285714286,
+                5.695714285714286,
+                5.695714285714286
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.0,
+                10.0,
+                9.0,
+                8.0,
+                7.0,
+                6.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1090909090909091,
+            "hindsight_value": 27.0,
+            "initial_budget": 12.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.7625000000000002,
+                2.6250000000000004,
+                3.1875000000000004,
+                3.6000000000000005,
+                3.9225000000000008,
+                4.185000000000001,
+                5.433214285714287,
+                5.433214285714287,
+                5.433214285714287,
+                5.433214285714287,
+                5.433214285714287
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.25,
+                10.25,
+                9.25,
+                8.25,
+                7.25,
+                6.25,
+                5.25,
+                0.25,
+                0.25,
+                0.25,
+                0.25,
+                0.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1318181818181818,
+            "hindsight_value": 27.0,
+            "initial_budget": 12.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.7249999999999999,
+                2.55,
+                3.0749999999999997,
+                3.4499999999999997,
+                3.7349999999999994,
+                3.9599999999999995,
+                5.1707142857142845,
+                5.1707142857142845,
+                5.1707142857142845,
+                5.1707142857142845,
+                5.1707142857142845
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.5,
+                10.5,
+                9.5,
+                8.5,
+                7.5,
+                6.5,
+                5.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1545454545454545,
+            "hindsight_value": 27.0,
+            "initial_budget": 12.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.6875,
+                2.475,
+                2.9625,
+                3.3,
+                3.5475,
+                3.735,
+                4.908214285714285,
+                4.908214285714285,
+                4.908214285714285,
+                4.908214285714285,
+                4.908214285714285
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.75,
+                10.75,
+                9.75,
+                8.75,
+                7.75,
+                6.75,
+                5.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "config": {
+          "replenishment_mode": "partial",
+          "timing": "near"
+        },
+        "flagged_in_tranche_4_5": true,
+        "min_budget_needed": 6.0,
+        "n_points_sampled": 6,
+        "no_pricing_transition": {
+          "from_budget": 6.25,
+          "from_captured": false,
+          "to_budget": 6.5,
+          "to_captured": true
+        },
+        "pacing_transition": {
+          "from_budget": 6.25,
+          "from_captured": false,
+          "to_budget": 6.5,
+          "to_captured": true
+        },
+        "points": [
+          {
+            "budget_tightness_ratio": 0.9499999999999998,
+            "hindsight_value": 26.0,
+            "initial_budget": 5.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.8375000000000004,
+                2.7750000000000004,
+                3.4125000000000005,
+                3.900000000000001,
+                4.297500000000001,
+                4.635000000000002,
+                4.929642857142858,
+                5.1921428571428585,
+                5.1921428571428585,
+                5.229642857142858,
+                5.229642857142858
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                5.75,
+                4.25,
+                3.75,
+                3.25,
+                2.75,
+                2.25,
+                1.75,
+                1.25,
+                0.75,
+                1.25,
+                0.75,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.9916666666666666,
+            "hindsight_value": 26.0,
+            "initial_budget": 6.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.8,
+                2.7,
+                3.3,
+                3.75,
+                4.11,
+                4.41,
+                4.667142857142857,
+                4.892142857142857,
+                5.092142857142857,
+                5.092142857142857,
+                5.092142857142857
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                6.0,
+                4.5,
+                4.0,
+                3.5,
+                3.0,
+                2.5,
+                2.0,
+                1.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0333333333333332,
+            "hindsight_value": 26.0,
+            "initial_budget": 6.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.7625000000000002,
+                2.6250000000000004,
+                3.1875000000000004,
+                3.6000000000000005,
+                3.9225000000000008,
+                4.185000000000001,
+                4.404642857142859,
+                4.592142857142859,
+                4.754642857142859,
+                4.754642857142859,
+                4.71714285714286
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                6.25,
+                4.75,
+                4.25,
+                3.75,
+                3.25,
+                2.75,
+                2.25,
+                1.75,
+                1.25,
+                0.75,
+                1.25,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.075,
+            "hindsight_value": 27.0,
+            "initial_budget": 6.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.7249999999999999,
+                6.1499999999999995,
+                6.1499999999999995,
+                7.874999999999999,
+                7.874999999999999,
+                8.7,
+                8.7,
+                9.075,
+                9.075,
+                9.18,
+                9.18
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                6.5,
+                5.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1166666666666665,
+            "hindsight_value": 27.0,
+            "initial_budget": 6.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.6875,
+                6.075,
+                6.075,
+                7.7625,
+                7.7625,
+                8.55,
+                8.55,
+                8.887500000000001,
+                8.887500000000001,
+                8.955000000000002,
+                8.955000000000002
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                6.75,
+                5.25,
+                0.75,
+                1.25,
+                0.75,
+                1.25,
+                0.75,
+                1.25,
+                0.75,
+                1.25,
+                0.75,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1583333333333332,
+            "hindsight_value": 27.0,
+            "initial_budget": 7.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.6500000000000001,
+                6.000000000000001,
+                8.850000000000001,
+                8.850000000000001,
+                10.140000000000002,
+                10.140000000000002,
+                10.761428571428574,
+                10.761428571428574,
+                11.011428571428574,
+                11.011428571428574,
+                11.025064935064938
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                7.0,
+                5.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "config": {
+          "replenishment_mode": "none",
+          "timing": "near"
+        },
+        "flagged_in_tranche_4_5": false,
+        "min_budget_needed": 6.0,
+        "n_points_sampled": 6,
+        "no_pricing_transition": {
+          "from_budget": 6.75,
+          "from_captured": false,
+          "to_budget": 7.0,
+          "to_captured": true
+        },
+        "pacing_transition": {
+          "from_budget": 6.75,
+          "from_captured": false,
+          "to_budget": 7.0,
+          "to_captured": true
+        },
+        "points": [
+          {
+            "budget_tightness_ratio": 0.9499999999999998,
+            "hindsight_value": 20.0,
+            "initial_budget": 5.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                2.7375,
+                4.574999999999999,
+                6.112499999999999,
+                7.499999999999999,
+                7.499999999999999,
+                7.499999999999999,
+                7.499999999999999,
+                7.499999999999999,
+                7.499999999999999,
+                7.499999999999999,
+                7.499999999999999
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                5.75,
+                3.75,
+                2.75,
+                1.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.9916666666666666,
+            "hindsight_value": 21.0,
+            "initial_budget": 6.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                2.7,
+                4.5,
+                6.0,
+                7.35,
+                8.61,
+                8.61,
+                8.61,
+                8.61,
+                8.61,
+                8.61,
+                8.61
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                6.0,
+                4.0,
+                3.0,
+                2.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0333333333333332,
+            "hindsight_value": 21.0,
+            "initial_budget": 6.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                2.6624999999999996,
+                4.425,
+                5.887499999999999,
+                7.199999999999999,
+                8.4225,
+                8.4225,
+                8.4225,
+                8.4225,
+                8.4225,
+                8.4225,
+                8.4225
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                6.25,
+                4.25,
+                3.25,
+                2.25,
+                1.25,
+                0.25,
+                0.25,
+                0.25,
+                0.25,
+                0.25,
+                0.25,
+                0.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.075,
+            "hindsight_value": 21.0,
+            "initial_budget": 6.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                2.6250000000000004,
+                4.3500000000000005,
+                5.775,
+                7.050000000000001,
+                8.235000000000001,
+                8.235000000000001,
+                8.235000000000001,
+                8.235000000000001,
+                8.235000000000001,
+                8.235000000000001,
+                8.235000000000001
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                6.5,
+                4.5,
+                3.5,
+                2.5,
+                1.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1166666666666665,
+            "hindsight_value": 21.0,
+            "initial_budget": 6.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                2.5875,
+                4.275,
+                5.6625000000000005,
+                6.9,
+                8.0475,
+                8.0475,
+                8.0475,
+                8.0475,
+                8.0475,
+                8.0475,
+                8.0475
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                6.75,
+                4.75,
+                3.75,
+                2.75,
+                1.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1583333333333332,
+            "hindsight_value": 22.0,
+            "initial_budget": 7.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "opportunity",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                2.55,
+                7.8,
+                7.8,
+                7.8,
+                7.8,
+                7.8,
+                7.8,
+                7.8,
+                7.8,
+                7.8,
+                7.8
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                7.0,
+                5.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "config": {
+          "replenishment_mode": "none",
+          "timing": "final"
+        },
+        "flagged_in_tranche_4_5": false,
+        "min_budget_needed": 16.0,
+        "n_points_sampled": 14,
+        "no_pricing_transition": null,
+        "pacing_transition": null,
+        "points": [
+          {
+            "budget_tightness_ratio": 0.95,
+            "hindsight_value": 30.0,
+            "initial_budget": 15.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.3125000000000002,
+                1.7250000000000003,
+                1.8375000000000004,
+                1.8000000000000005,
+                1.6725000000000005,
+                1.4850000000000008,
+                1.2546428571428578,
+                0.9921428571428579,
+                0.9046428571428582,
+                0.9571428571428584,
+                1.124188311688313
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                15.25,
+                13.25,
+                12.25,
+                11.25,
+                10.25,
+                9.25,
+                8.25,
+                7.25,
+                6.25,
+                4.25,
+                2.25,
+                0.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.965625,
+            "hindsight_value": 30.0,
+            "initial_budget": 15.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.275,
+                1.65,
+                1.7249999999999996,
+                1.6499999999999995,
+                1.4849999999999992,
+                1.2599999999999991,
+                0.992142857142856,
+                0.9171428571428558,
+                0.9921428571428555,
+                1.1871428571428553,
+                1.3166883116883095
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                15.5,
+                13.5,
+                12.5,
+                11.5,
+                10.5,
+                9.5,
+                8.5,
+                7.5,
+                5.5,
+                3.5,
+                1.5,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.98125,
+            "hindsight_value": 30.0,
+            "initial_budget": 15.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.2375,
+                1.5750000000000002,
+                1.6125,
+                1.5,
+                1.2974999999999999,
+                1.035,
+                0.7296428571428569,
+                0.6171428571428569,
+                0.6546428571428567,
+                0.8121428571428566,
+                0.9041883116883109
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                15.75,
+                13.75,
+                12.75,
+                11.75,
+                10.75,
+                9.75,
+                8.75,
+                7.75,
+                5.75,
+                3.75,
+                1.75,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.996875,
+            "hindsight_value": 31.0,
+            "initial_budget": 16.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.2000000000000002,
+                1.5000000000000004,
+                1.5000000000000004,
+                1.3500000000000005,
+                1.1100000000000005,
+                0.8100000000000007,
+                0.7242857142857153,
+                0.7992857142857155,
+                0.9992857142857156,
+                1.2992857142857157,
+                1.5174675324675342
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.0,
+                14.0,
+                13.0,
+                12.0,
+                11.0,
+                10.0,
+                9.0,
+                7.0,
+                5.0,
+                3.0,
+                1.0,
+                0.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0125,
+            "hindsight_value": 31.0,
+            "initial_budget": 16.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.1624999999999999,
+                1.4249999999999998,
+                1.3874999999999995,
+                1.1999999999999993,
+                0.922499999999999,
+                0.8849999999999987,
+                1.01892857142857,
+                1.05642857142857,
+                1.0189285714285696,
+                0.9214285714285696,
+                0.9384740259740239
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.25,
+                14.25,
+                13.25,
+                12.25,
+                11.25,
+                10.25,
+                8.25,
+                6.25,
+                5.25,
+                4.25,
+                3.25,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.028125,
+            "hindsight_value": 31.0,
+            "initial_budget": 16.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.125,
+                1.35,
+                1.275,
+                1.0499999999999998,
+                0.7349999999999997,
+                0.6599999999999995,
+                0.756428571428571,
+                0.981428571428571,
+                1.306428571428571,
+                1.5314285714285711,
+                1.6746103896103894
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.5,
+                14.5,
+                13.5,
+                12.5,
+                11.5,
+                10.5,
+                8.5,
+                6.5,
+                4.5,
+                2.5,
+                1.5,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.04375,
+            "hindsight_value": 31.0,
+            "initial_budget": 16.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.0875000000000001,
+                1.2750000000000004,
+                1.1625000000000003,
+                0.9000000000000004,
+                0.9075000000000003,
+                1.0950000000000004,
+                1.153928571428572,
+                1.1164285714285722,
+                1.0039285714285722,
+                0.8314285714285724,
+                0.7734740259740269
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.75,
+                14.75,
+                13.75,
+                12.75,
+                11.75,
+                9.75,
+                7.75,
+                6.75,
+                5.75,
+                4.75,
+                3.75,
+                1.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.059375,
+            "hindsight_value": 32.0,
+            "initial_budget": 17.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.0499999999999998,
+                1.1999999999999997,
+                1.0499999999999994,
+                0.7499999999999992,
+                0.719999999999999,
+                0.8699999999999989,
+                1.1485714285714272,
+                1.2985714285714272,
+                1.348571428571427,
+                1.3185714285714267,
+                1.223116883116881
+              ],
+              "opportunity_captured": false,
+              "regret": 16.0,
+              "remaining_trajectory": [
+                17.0,
+                15.0,
+                14.0,
+                13.0,
+                12.0,
+                10.0,
+                8.0,
+                6.0,
+                5.0,
+                4.0,
+                3.0,
+                2.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.075,
+            "hindsight_value": 32.0,
+            "initial_budget": 17.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "conserve",
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.0125,
+                1.125,
+                0.9374999999999999,
+                1.0499999999999998,
+                0.9824999999999997,
+                1.0949999999999998,
+                1.0789285714285712,
+                0.9664285714285712,
+                0.9789285714285711,
+                1.0914285714285712,
+                1.1221103896103894
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                17.25,
+                15.25,
+                14.25,
+                13.25,
+                11.25,
+                10.25,
+                8.25,
+                7.25,
+                6.25,
+                4.25,
+                2.25,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.090625,
+            "hindsight_value": 32.0,
+            "initial_budget": 17.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.9750000000000002,
+                1.9500000000000004,
+                2.3250000000000006,
+                2.400000000000001,
+                2.295000000000001,
+                2.0700000000000007,
+                1.7592857142857152,
+                1.3842857142857152,
+                0.9592857142857155,
+                0.6742857142857157,
+                0.5038311688311702
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                17.5,
+                15.5,
+                13.5,
+                12.5,
+                11.5,
+                10.5,
+                9.5,
+                8.5,
+                7.5,
+                6.5,
+                4.5,
+                2.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.10625,
+            "hindsight_value": 32.0,
+            "initial_budget": 17.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.9374999999999999,
+                1.8749999999999998,
+                2.2125,
+                2.25,
+                2.1075,
+                1.8449999999999998,
+                1.4967857142857142,
+                1.084285714285714,
+                0.6217857142857142,
+                0.2992857142857141,
+                0.09133116883116832
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                17.75,
+                15.75,
+                13.75,
+                12.75,
+                11.75,
+                10.75,
+                9.75,
+                8.75,
+                7.75,
+                6.75,
+                4.75,
+                2.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.121875,
+            "hindsight_value": 33.0,
+            "initial_budget": 18.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.9,
+                1.8,
+                2.1,
+                2.1,
+                1.92,
+                1.6199999999999997,
+                1.234285714285714,
+                0.784285714285714,
+                0.4842857142857139,
+                0.3042857142857137,
+                0.22246753246753198
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                18.0,
+                16.0,
+                14.0,
+                13.0,
+                12.0,
+                11.0,
+                10.0,
+                9.0,
+                8.0,
+                6.0,
+                4.0,
+                2.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1375,
+            "hindsight_value": 33.0,
+            "initial_budget": 18.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.8625000000000002,
+                1.7250000000000003,
+                1.9875000000000007,
+                1.9500000000000008,
+                1.7325000000000008,
+                1.395000000000001,
+                0.9717857142857155,
+                0.7092857142857156,
+                0.5717857142857157,
+                0.5342857142857158,
+                0.5786038961038977
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                18.25,
+                16.25,
+                14.25,
+                13.25,
+                12.25,
+                11.25,
+                10.25,
+                9.25,
+                7.25,
+                5.25,
+                3.25,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.153125,
+            "hindsight_value": 33.0,
+            "initial_budget": 18.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "defer",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.8249999999999998,
+                1.6499999999999997,
+                1.8749999999999998,
+                1.7999999999999996,
+                1.5449999999999993,
+                1.169999999999999,
+                0.7092857142857134,
+                0.40928571428571325,
+                0.23428571428571307,
+                0.15928571428571292,
+                0.16610389610389453
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                18.5,
+                16.5,
+                14.5,
+                13.5,
+                12.5,
+                11.5,
+                10.5,
+                9.5,
+                7.5,
+                5.5,
+                3.5,
+                1.5
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "config": {
+          "replenishment_mode": "partial",
+          "timing": "mid"
+        },
+        "flagged_in_tranche_4_5": false,
+        "min_budget_needed": 11.0,
+        "n_points_sampled": 10,
+        "no_pricing_transition": null,
+        "pacing_transition": {
+          "from_budget": 10.5,
+          "from_captured": true,
+          "to_budget": 10.75,
+          "to_captured": false
+        },
+        "points": [
+          {
+            "budget_tightness_ratio": 0.95,
+            "hindsight_value": 31.0,
+            "initial_budget": 10.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "opportunity",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.125,
+                1.35,
+                1.275,
+                1.0499999999999998,
+                0.7349999999999997,
+                0.6599999999999995,
+                1.5278571428571426,
+                2.202857142857143,
+                2.202857142857143,
+                2.427857142857143,
+                2.427857142857143
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                10.5,
+                9.0,
+                8.5,
+                8.0,
+                7.5,
+                7.0,
+                5.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.9727272727272727,
+            "hindsight_value": 31.0,
+            "initial_budget": 10.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.0875000000000001,
+                1.2750000000000004,
+                1.1625000000000003,
+                0.9000000000000004,
+                0.9075000000000003,
+                1.0950000000000004,
+                1.153928571428572,
+                1.1164285714285722,
+                1.0039285714285722,
+                0.8314285714285724,
+                0.7734740259740269
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                10.75,
+                9.25,
+                8.75,
+                8.25,
+                7.75,
+                6.25,
+                4.75,
+                4.25,
+                3.75,
+                3.25,
+                2.75,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.9954545454545454,
+            "hindsight_value": 31.0,
+            "initial_budget": 11.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "opportunity",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.0499999999999998,
+                1.1999999999999997,
+                1.0499999999999994,
+                0.7499999999999992,
+                0.719999999999999,
+                0.8699999999999989,
+                1.9199999999999986,
+                1.9199999999999986,
+                2.3699999999999988,
+                2.3699999999999988,
+                2.4381818181818167
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                11.0,
+                9.5,
+                9.0,
+                8.5,
+                8.0,
+                6.5,
+                5.0,
+                0.5,
+                1.0,
+                0.5,
+                1.0,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.018181818181818,
+            "hindsight_value": 31.0,
+            "initial_budget": 11.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "conserve",
+                "spend",
+                "opportunity",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                1.0125,
+                1.125,
+                0.9374999999999999,
+                1.0499999999999998,
+                0.9824999999999997,
+                1.0949999999999998,
+                2.1075,
+                2.1075,
+                2.52,
+                2.52,
+                2.5506818181818183
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                11.25,
+                9.75,
+                9.25,
+                8.75,
+                7.25,
+                6.75,
+                5.25,
+                0.75,
+                1.25,
+                0.75,
+                1.25,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0409090909090908,
+            "hindsight_value": 32.0,
+            "initial_budget": 11.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.9750000000000002,
+                1.9500000000000004,
+                2.3250000000000006,
+                2.400000000000001,
+                2.295000000000001,
+                2.0700000000000007,
+                2.7878571428571437,
+                3.312857142857144,
+                3.6878571428571445,
+                3.942857142857145,
+                3.942857142857145
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                11.5,
+                10.0,
+                8.5,
+                8.0,
+                7.5,
+                7.0,
+                6.5,
+                2.0,
+                1.5,
+                1.0,
+                0.5,
+                1.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0636363636363635,
+            "hindsight_value": 32.0,
+            "initial_budget": 11.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.9374999999999999,
+                1.8749999999999998,
+                2.2125,
+                2.25,
+                2.1075,
+                1.8449999999999998,
+                2.5253571428571426,
+                3.0128571428571425,
+                3.3503571428571424,
+                3.567857142857142,
+                3.567857142857142
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                11.75,
+                10.25,
+                8.75,
+                8.25,
+                7.75,
+                7.25,
+                6.75,
+                2.25,
+                1.75,
+                1.25,
+                0.75,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0863636363636362,
+            "hindsight_value": 32.0,
+            "initial_budget": 12.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.9,
+                1.8,
+                2.1,
+                2.1,
+                1.92,
+                1.6199999999999997,
+                2.2628571428571425,
+                2.7128571428571426,
+                3.012857142857143,
+                3.192857142857143,
+                3.2746753246753246
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.0,
+                10.5,
+                9.0,
+                8.5,
+                8.0,
+                7.5,
+                7.0,
+                2.5,
+                2.0,
+                1.5,
+                1.0,
+                0.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1090909090909091,
+            "hindsight_value": 32.0,
+            "initial_budget": 12.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.8625000000000002,
+                1.7250000000000003,
+                1.9875000000000007,
+                1.9500000000000008,
+                1.7325000000000008,
+                1.395000000000001,
+                2.000357142857144,
+                2.412857142857144,
+                2.6753571428571443,
+                2.817857142857145,
+                2.8621753246753268
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.25,
+                10.75,
+                9.25,
+                8.75,
+                8.25,
+                7.75,
+                7.25,
+                2.75,
+                2.25,
+                1.75,
+                1.25,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1318181818181818,
+            "hindsight_value": 33.0,
+            "initial_budget": 12.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.8249999999999998,
+                1.6499999999999997,
+                1.8749999999999998,
+                1.7999999999999996,
+                1.5449999999999993,
+                1.169999999999999,
+                1.7378571428571419,
+                2.1128571428571417,
+                2.3378571428571417,
+                2.4428571428571417,
+                2.449675324675323
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.5,
+                11.0,
+                9.5,
+                9.0,
+                8.5,
+                8.0,
+                7.5,
+                3.0,
+                2.5,
+                2.0,
+                1.5,
+                1.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1545454545454545,
+            "hindsight_value": 33.0,
+            "initial_budget": 12.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "conserve",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "opportunity",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.7875,
+                1.575,
+                1.7625000000000002,
+                1.6500000000000001,
+                1.3575,
+                0.9449999999999998,
+                1.4753571428571428,
+                1.8128571428571427,
+                2.0003571428571427,
+                2.067857142857143,
+                2.037175324675325
+              ],
+              "opportunity_captured": true,
+              "regret": 0.0,
+              "remaining_trajectory": [
+                12.75,
+                11.25,
+                9.75,
+                9.25,
+                8.75,
+                8.25,
+                7.75,
+                3.25,
+                2.75,
+                2.25,
+                1.75,
+                1.25
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "config": {
+          "replenishment_mode": "partial",
+          "timing": "final"
+        },
+        "flagged_in_tranche_4_5": false,
+        "min_budget_needed": 16.0,
+        "n_points_sampled": 14,
+        "no_pricing_transition": null,
+        "pacing_transition": null,
+        "points": [
+          {
+            "budget_tightness_ratio": 0.95,
+            "hindsight_value": 35.0,
+            "initial_budget": 15.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.41250000000000014,
+                0.8250000000000003,
+                1.2375000000000005,
+                1.2000000000000006,
+                0.892500000000001,
+                0.7050000000000012,
+                0.6032142857142868,
+                0.565714285714287,
+                0.5782142857142869,
+                0.6307142857142871,
+                0.7159415584415598
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                15.25,
+                13.75,
+                12.25,
+                10.75,
+                10.25,
+                9.75,
+                8.25,
+                6.75,
+                5.25,
+                3.75,
+                2.25,
+                0.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.965625,
+            "hindsight_value": 36.0,
+            "initial_budget": 15.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.3749999999999999,
+                0.7499999999999998,
+                1.1249999999999996,
+                1.0499999999999994,
+                0.7049999999999994,
+                0.4799999999999994,
+                0.34071428571428486,
+                0.26571428571428474,
+                0.24071428571428444,
+                0.2557142857142844,
+                0.3034415584415569
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                15.5,
+                14.0,
+                12.5,
+                11.0,
+                10.5,
+                10.0,
+                8.5,
+                7.0,
+                5.5,
+                4.0,
+                2.5,
+                1.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.98125,
+            "hindsight_value": 36.0,
+            "initial_budget": 15.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.3375,
+                0.675,
+                1.0125000000000002,
+                0.9000000000000001,
+                0.8775000000000002,
+                0.915,
+                0.995357142857143,
+                1.107857142857143,
+                1.0453571428571429,
+                0.8428571428571427,
+                0.6894480519480519
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                15.75,
+                14.25,
+                12.75,
+                11.25,
+                10.75,
+                9.25,
+                7.75,
+                6.25,
+                4.75,
+                4.25,
+                3.75,
+                2.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 0.996875,
+            "hindsight_value": 36.0,
+            "initial_budget": 16.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.30000000000000016,
+                0.6000000000000003,
+                0.9000000000000005,
+                1.2000000000000006,
+                1.1400000000000008,
+                0.840000000000001,
+                0.6257142857142867,
+                0.47571428571428676,
+                0.3757142857142867,
+                0.31571428571428695,
+                0.2884415584415597
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.0,
+                14.5,
+                13.0,
+                11.5,
+                10.0,
+                9.5,
+                9.0,
+                7.5,
+                6.0,
+                4.5,
+                3.0,
+                1.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.0125,
+            "hindsight_value": 36.0,
+            "initial_budget": 16.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.2624999999999999,
+                0.5249999999999998,
+                0.7874999999999996,
+                1.0499999999999996,
+                0.9524999999999996,
+                0.9149999999999993,
+                0.9203571428571421,
+                0.957857142857142,
+                1.0203571428571419,
+                0.9228571428571418,
+                0.8580844155844143
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.25,
+                14.75,
+                13.25,
+                11.75,
+                10.25,
+                9.75,
+                8.25,
+                6.75,
+                5.25,
+                3.75,
+                3.25,
+                1.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.028125,
+            "hindsight_value": 37.0,
+            "initial_budget": 16.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.225,
+                0.45,
+                0.675,
+                0.9,
+                1.125,
+                1.0499999999999998,
+                0.7607142857142853,
+                0.5357142857142854,
+                0.3607142857142852,
+                0.22571428571428528,
+                0.1234415584415579
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.5,
+                15.0,
+                13.5,
+                12.0,
+                10.5,
+                9.0,
+                8.5,
+                8.0,
+                6.5,
+                5.0,
+                3.5,
+                2.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.04375,
+            "hindsight_value": 37.0,
+            "initial_budget": 16.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "spend"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.18750000000000014,
+                0.3750000000000003,
+                0.5625000000000004,
+                0.7500000000000006,
+                0.9375000000000007,
+                1.1250000000000009,
+                1.055357142857144,
+                0.792857142857144,
+                0.580357142857144,
+                0.40785714285714425,
+                0.268084415584417
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                16.75,
+                15.25,
+                13.75,
+                12.25,
+                10.75,
+                9.25,
+                7.75,
+                7.25,
+                6.75,
+                5.25,
+                3.75,
+                2.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.059375,
+            "hindsight_value": 37.0,
+            "initial_budget": 17.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.14999999999999988,
+                0.29999999999999977,
+                0.4499999999999996,
+                0.5999999999999995,
+                0.7499999999999994,
+                0.8999999999999994,
+                1.0499999999999992,
+                0.974999999999999,
+                0.9249999999999987,
+                0.8949999999999985,
+                0.8813636363636348
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                17.0,
+                15.5,
+                14.0,
+                12.5,
+                11.0,
+                9.5,
+                8.0,
+                6.5,
+                6.0,
+                4.5,
+                3.0,
+                1.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.075,
+            "hindsight_value": 37.0,
+            "initial_budget": 17.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "defer"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.1125,
+                0.225,
+                0.3375,
+                0.45,
+                0.5625,
+                0.675,
+                0.7875000000000001,
+                0.9000000000000001,
+                1.0125000000000002,
+                0.9450000000000001,
+                0.8938636363636365
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                17.25,
+                15.75,
+                14.25,
+                12.75,
+                11.25,
+                9.75,
+                8.25,
+                6.75,
+                5.25,
+                3.75,
+                3.25,
+                1.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.090625,
+            "hindsight_value": 38.0,
+            "initial_budget": 17.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.07500000000000014,
+                0.15000000000000027,
+                0.22500000000000042,
+                0.30000000000000054,
+                0.37500000000000067,
+                0.4500000000000008,
+                0.5250000000000009,
+                0.6000000000000011,
+                0.6750000000000013,
+                0.7500000000000014,
+                0.8250000000000016
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                17.5,
+                16.0,
+                14.5,
+                13.0,
+                11.5,
+                10.0,
+                8.5,
+                7.0,
+                5.5,
+                4.0,
+                2.5,
+                1.0
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.10625,
+            "hindsight_value": 38.0,
+            "initial_budget": 17.75,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.03749999999999987,
+                0.07499999999999973,
+                0.1124999999999996,
+                0.14999999999999947,
+                0.18749999999999933,
+                0.2249999999999992,
+                0.26249999999999907,
+                0.29999999999999893,
+                0.3374999999999988,
+                0.37499999999999867,
+                0.41249999999999853
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                17.75,
+                16.25,
+                14.75,
+                13.25,
+                11.75,
+                10.25,
+                8.75,
+                7.25,
+                5.75,
+                4.25,
+                2.75,
+                1.25
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.121875,
+            "hindsight_value": 38.0,
+            "initial_budget": 18.0,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                18.0,
+                16.5,
+                15.0,
+                13.5,
+                12.0,
+                10.5,
+                9.0,
+                7.5,
+                6.0,
+                4.5,
+                3.0,
+                1.5
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.1375,
+            "hindsight_value": 38.0,
+            "initial_budget": 18.25,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "conserve"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                18.25,
+                16.75,
+                15.25,
+                13.75,
+                12.25,
+                10.75,
+                9.25,
+                7.75,
+                6.25,
+                4.75,
+                3.25,
+                1.75
+              ]
+            }
+          },
+          {
+            "budget_tightness_ratio": 1.153125,
+            "hindsight_value": 39.0,
+            "initial_budget": 18.5,
+            "no_pricing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend"
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0
+            },
+            "pacing": {
+              "choices": [
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend",
+                "spend"
+              ],
+              "lambda_trajectory": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "opportunity_captured": false,
+              "regret": 15.0,
+              "remaining_trajectory": [
+                18.5,
+                17.0,
+                15.5,
+                14.0,
+                12.5,
+                11.0,
+                9.5,
+                8.0,
+                6.5,
+                5.0,
+                3.5,
+                2.0
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "grid_unit": 0.25
+  },
+  "schema": "compitum.tranche4-6-diagnostic-report/v1",
+  "total_elapsed_seconds": 0.3495755000039935
+}
