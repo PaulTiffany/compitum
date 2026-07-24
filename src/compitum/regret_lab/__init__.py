@@ -42,6 +42,20 @@ from .pricing import (
     ReactiveController,
     total_available_over_horizon,
 )
+from .residual_channels import (
+    CHANNEL_DIMENSION as RESIDUAL_CHANNEL_DIMENSION,
+)
+from .residual_channels import (
+    ResidualChannelHistory,
+    advance_history,
+    compute_residual_channel_vector,
+)
+from .residual_pricing import ResidualCorrectionRecord, ResidualPricingController
+from .residual_target import (
+    LambdaInterval,
+    compute_oracle_compatible_interval,
+    oracle_price_residual,
+)
 from .scarcity_scenarios import (
     REFERENCE_PARAMS,
     SCARCITY_MODEL_NAMES,
@@ -61,6 +75,7 @@ __all__ = [
     "GRID_UNIT",
     "MODEL_NAMES",
     "REFERENCE_PARAMS",
+    "RESIDUAL_CHANNEL_DIMENSION",
     "RESOURCE_NAMES",
     "SCARCITY_MODEL_NAMES",
     "SCARCITY_RESOURCE_NAMES",
@@ -71,22 +86,30 @@ __all__ = [
     "EWMAForecaster",
     "ForecastContext",
     "HindsightResult",
+    "LambdaInterval",
     "PacingController",
     "PolicyDecision",
     "PolicyRunResult",
     "PricingController",
     "PricingUpdateContext",
     "ReactiveController",
+    "ResidualChannelHistory",
+    "ResidualCorrectionRecord",
+    "ResidualPricingController",
     "ScarcityParams",
+    "advance_history",
     "bootstrap_ci",
     "build_scarcity_sequence",
     "compute_hindsight_optimum",
+    "compute_oracle_compatible_interval",
     "compute_regret_channel_vector",
+    "compute_residual_channel_vector",
     "conservation_depletion_split",
     "generate_corrected_slack_dataset",
     "generate_dynamic_dataset",
     "generate_primary_dataset",
     "generate_secondary_dataset",
+    "oracle_price_residual",
     "paired_regret_deltas",
     "price_utilities",
     "primary_grid",

@@ -24,14 +24,20 @@ from dataclasses import dataclass, field
 from typing import Dict, Optional, Protocol, Tuple
 
 from .dual_controller import DualController
-from .environment import DynamicSequence
+from .environment import DynamicCase, DynamicSequence
 
 
 @dataclass
 class PricingUpdateContext:
     """Raw per-step ingredients every controller variant needs -- not a
     single pre-derived error number, since pacing-family controllers need
-    cumulative history the old single-step reactive formula discarded."""
+    cumulative history the old single-step reactive formula discarded.
+
+    ``case`` and ``chosen`` are optional (default ``None``) and unused by
+    ``ReactiveController``/``PacingController``; tranche 5's
+    ``ResidualPricingController`` uses them to build its declared
+    multi-step channel window, which needs every model's utility/
+    consumption at this step, not just the chosen model's reservation."""
 
     resource_names: Tuple[str, ...]
     reservation: Dict[str, float]
@@ -39,6 +45,8 @@ class PricingUpdateContext:
     remaining_after: Dict[str, float]
     step: int
     total_steps: int
+    case: Optional[DynamicCase] = None
+    chosen: Optional[str] = None
 
 
 class PricingController(Protocol):

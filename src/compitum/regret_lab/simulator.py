@@ -202,6 +202,8 @@ def simulate_policy(
                 remaining_after=dict(remaining),
                 step=t,
                 total_steps=len(seq.cases),
+                case=case,
+                chosen=chosen,
             )
             pricing_controller.update(update_context)
 
