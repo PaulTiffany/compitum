@@ -42,13 +42,27 @@ from .pricing import (
     ReactiveController,
     total_available_over_horizon,
 )
+from .scarcity_scenarios import (
+    REFERENCE_PARAMS,
+    SCARCITY_MODEL_NAMES,
+    SCARCITY_RESOURCE_NAMES,
+    ScarcityParams,
+    build_scarcity_sequence,
+    generate_primary_dataset,
+    generate_secondary_dataset,
+    primary_grid,
+    secondary_sweeps,
+)
 from .simulator import ForecastContext, PolicyDecision, simulate_policy
 
 __all__ = [
     "CHANNEL_DIMENSION",
     "GRID_UNIT",
     "MODEL_NAMES",
+    "REFERENCE_PARAMS",
     "RESOURCE_NAMES",
+    "SCARCITY_MODEL_NAMES",
+    "SCARCITY_RESOURCE_NAMES",
     "SCENARIOS",
     "DualController",
     "DynamicCase",
@@ -62,14 +76,20 @@ __all__ = [
     "PricingController",
     "PricingUpdateContext",
     "ReactiveController",
+    "ScarcityParams",
     "bootstrap_ci",
+    "build_scarcity_sequence",
     "compute_hindsight_optimum",
     "compute_regret_channel_vector",
     "conservation_depletion_split",
     "generate_dynamic_dataset",
+    "generate_primary_dataset",
+    "generate_secondary_dataset",
     "paired_regret_deltas",
     "price_utilities",
+    "primary_grid",
     "regret_metrics",
+    "secondary_sweeps",
     "simulate_policy",
     "total_available_over_horizon",
 ]
