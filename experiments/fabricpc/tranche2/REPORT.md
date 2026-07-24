@@ -157,26 +157,24 @@ price-adjusted shadow utility, online primal-dual variables, route-affecting
 activation) is introduced. `constraints.shadow_prices` and the finite
 -difference implementation remain exactly as in `v0.2.0`.
 
-## Open items and smallest defensible next step
+## Open items and superseded next step
 
-Unresolved: whether this negative result reflects a genuine absence of
-useful trajectory structure for this problem, or an artifact of the toy PC
-graph (source→hidden→latent, 17→8→4, fixed eta/steps) and the controlled
-dataset's scenario design (synthetic slack ramps rather than realized
-routing dynamics). The two-part model is a plain ridge fit with no
-hyperparameter search, matching tranche 1's methodology but not ruling out
-that a better-tuned model would find signal a linear one cannot.
+An earlier draft of this report proposed testing a non-FabricPC sequential
+model against this same static-slack oracle as the smallest next step. That
+proposal is superseded (see ADR 0002's tranche-2-outcome addendum, added
+after user review): this oracle target is substantially a deterministic
+function of *current* slack alone, which the static arm already receives in
+full, because the frozen constraint representation does not ordinarily
+create a route-specific feasible set (shared `xB`, `np.all` feasibility —
+see "Independent oracle, not a copy of shadow_prices" above). Re-testing
+another architecture against a target with little temporal information to
+give in the first place has low expected information value and was
+explicitly not pursued.
 
-Smallest defensible next step, still observation-only and still not
-assuming FabricPC helps: before spending more effort on FabricPC graph
-architecture, check whether a **non-FabricPC sequential model** (e.g. a
-small recurrent or windowed model over the same static channel history,
-with no PC-graph observation at all) beats the static single-step baseline
-on this same oracle target. If a simple sequential baseline over Compitum's
-own state already can't beat the static arm, that would suggest the
-bottleneck is the amount of exploitable temporal structure in this
-controlled dataset design generally, not FabricPC specifically — informing
-whether tranche 3 (were it ever authorized) should focus on richer PC-graph
-inputs or on a fundamentally different dataset (realized routing dynamics,
-per the deferred track 2 design) before revisiting trajectory features at
-all.
+The actual next step (tranche 3, see ADR 0003) is to build an experimental
+substrate where different model choices genuinely consume different,
+cumulative, time-varying resources, and to test FabricPC against **held-out
+cumulative constrained regret** in that substrate — not against a
+present-slack classification/MAE target. Classification accuracy and MAE
+remain useful diagnostics but are not, on their own, the activation
+criterion going forward.

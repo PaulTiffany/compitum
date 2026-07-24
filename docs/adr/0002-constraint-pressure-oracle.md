@@ -98,3 +98,49 @@ all-zero vector both yield terminal hidden energy 0.0; a real, non
 -degenerate channel vector from an actual generated sequence does not).
 This must not be used as a "no signal" baseline probe in later comparison
 arms -- it is mathematically forced, not evidence of anything.
+
+## Tranche 2 outcome, and a central structural finding (2026-07-23)
+
+The bounded pilot (`experiments/fabricpc/tranche2/`) ran the pre-registered
+comparison. After fixing a real threshold-calibration bug in the pilot's own
+evaluation code (see `experiments/fabricpc/tranche2/REPORT.md`), the
+activation gate failed honestly: the FabricPC trajectory arm did not beat
+both the static baseline and the shuffled-trajectory control on held-out
+classification accuracy and regression MAE. This falsifies a specific,
+narrower claim -- not the same claim tranche 1 falsified:
+
+```text
+Tranche 1 falsified: generic FabricPC trajectory summaries add held-out
+                      routing information beyond frozen Compitum v0.2.0.
+Tranche 2 falsified: FabricPC can add useful trajectory information to a
+                      present-slack-derived pressure target, under the
+                      frozen shared-constraint representation.
+```
+
+Both negative results stand as published, are not reinterpreted more
+favorably, and are not superseded by tranche 3.
+
+**Central structural finding, elevated from an implementation detail to a
+scientific conclusion.** The two facts recorded above under "Independent
+oracle, not a copy of shadow_prices" (shared `xB` across models; `np.all`
+feasibility collapsing every case to exactly two branches) mean the frozen
+constraint representation does not ordinarily create a *route-specific*
+feasible set: relaxing `b_i` cannot normally admit a different, better route
+than relaxing it would admit for every other model simultaneously. Under
+this representation, the existing `shadow_prices` are not merely a
+fixed-epsilon diagnostic -- they are largely structurally unable to price
+*substitution among model actions*, because the constraint system as
+currently written does not usually distinguish one model's resource
+consumption from another's. A direct consequence: tranche 2's oracle target
+(`critical_relaxation` / consequential-or-not) is substantially a
+deterministic function of the *current* slack vector alone, which the static
+comparison arm already receives in full. FabricPC was therefore being asked
+to supply temporal information to a target that has little temporal
+information to give in the first place -- a low-expected-value experiment
+to repeat with a different architecture.
+
+This finding, not classification accuracy, is tranche 2's most important
+output. It redirects tranche 3 away from testing another predictor against
+the same static-slack oracle, and toward building an experimental substrate
+where different model choices genuinely consume different, cumulative,
+time-varying resources -- see ADR 0003.
