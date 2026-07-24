@@ -1,0 +1,13 @@
+{
+  "algorithm": "sha256",
+  "bundle_sha256": "12bae77630af59dafc12277ae47013b9ed31597f3a2b8ae24f2b4f490f8c53f8",
+  "generated_at": "2026-07-24T00:50:06.476248+00:00",
+  "members": {
+    "audit_record.json": "ed1b3849ca4a4a28104e52a3cc27673bc2801201dde1eff36b9390bb938c591e",
+    "experiment_manifest.json": "58428848b79411ffaf4ea65764c9e1ddfc7e9358ac83a8bea5cee313f305c7e7",
+    "raw_trace.json": "59f892a291e0ef56ece0401a2d81a29b9c472f5fc75ff37a764374c12e2064da",
+    "trajectory_evidence.json": "661d5eb98e7bbad75be94dc6a4b6848216bbb9d67330d65c4e81244fe5955598",
+    "validation_summary.json": "c8eeb216ece1da4683e198b4aaf91259df66bcb6389ad95a7ad6a335d8a2f10c"
+  },
+  "schema": "compitum.fabricpc-observation-checksums/v1"
+}

@@ -1,0 +1,169 @@
+{
+  "candidate_count": 1,
+  "dimension": 4,
+  "method": {
+    "global_lipschitz_claim": false,
+    "imagination_claim": false,
+    "quantity": "paired finite-difference directional gain",
+    "thresholds": {
+      "directional_gain": 1.0,
+      "orientation_cosine": 0.0,
+      "zero_tolerance": 1e-12
+    }
+  },
+  "provenance": "ported from sketched fabricpc_orientation_sensor.py",
+  "schema": "compitum.trajectory-orientation-certificate/v1",
+  "source": {
+    "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+    "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+    "input_sha256": "93cfec2c93c261c4faa406f848ee772a85bed238b9f66e1d7ac58287635fd8f2",
+    "run_id": "paired-pseed17-sseed23-eta0.05-eps0.001-dir1,0-nonlinear0"
+  },
+  "transition_count": 12,
+  "transitions": [
+    {
+      "candidate_transition": true,
+      "degenerate_orientation": false,
+      "directional_gain": 1.593764517607882,
+      "gain_breach": true,
+      "input_perturbation_norm": 0.001000046730041504,
+      "interpretation": "candidate: audit latent traversal, operator order, and projection",
+      "orientation_cosine": 0.5961066589056567,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0015938389942899373,
+      "step": 0
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9500011594456416,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0015938389942899373,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999987533055,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0015141488925451156,
+      "step": 1
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9499674034204391,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0015141488925451156,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999992064335,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0014383920918430168,
+      "step": 2
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9499327957512255,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0014383920918430168,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999980498328,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0013663758211908904,
+      "step": 3
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9499158993494778,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0013663758211908904,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999996909542,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.001297942117035926,
+      "step": 4
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.949933785339499,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.001297942117035926,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999995314836,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0012329590683875001,
+      "step": 5
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9499844485256277,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0012329590683875001,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999985155272,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.001171291940636771,
+      "step": 6
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9500088919607401,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.001171291940636771,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999985230658,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0011127377586868839,
+      "step": 7
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9500430428259355,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0011127377586868839,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999999772604,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0010571487661301987,
+      "step": 8
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9499687735064865,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0010571487661301987,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999966478371,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0010042583167746003,
+      "step": 9
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9500713490334884,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0010042583167746003,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999949167017,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0009541170537961449,
+      "step": 10
+    },
+    {
+      "candidate_transition": false,
+      "degenerate_orientation": false,
+      "directional_gain": 0.9499218383467452,
+      "gain_breach": false,
+      "input_perturbation_norm": 0.0009541170537961449,
+      "interpretation": "no configured breach observed",
+      "orientation_cosine": 0.9999999973953375,
+      "orientation_reversal": false,
+      "output_perturbation_norm": 0.0009063366257400144,
+      "step": 11
+    }
+  ]
+}

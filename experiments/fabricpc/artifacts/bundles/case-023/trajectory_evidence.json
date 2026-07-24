@@ -1,0 +1,30 @@
+{
+  "config_sha256": "59b2fbd3537b7f4ea1f96bd613093c5422135ae35dda5d9f82f150a807578150",
+  "convergence": {},
+  "dependency_commit": null,
+  "dependency_repository": null,
+  "energy_trajectory": [],
+  "error_trajectory": [],
+  "latent_grad_trajectory": [],
+  "nonclaims": [
+    "directional gain is a finite-difference observation, not a global Lipschitz constant",
+    "external node energy is not Compitum Symbolic Free Energy, utility, or constraint slack",
+    "no field here is a shadow price or an online dual variable",
+    "full-state norm growth is not instability until blockwise transport is audited",
+    "observation-only: this evidence does not alter route selection"
+  ],
+  "observer": "fabricpc",
+  "observer_version": "0.3.2",
+  "per_node": {},
+  "per_step": [],
+  "perturbation_diagnostics": null,
+  "raw_trace_reference": null,
+  "raw_trace_sha256": null,
+  "reason": "steps[0]['source'].energy is missing or non-finite",
+  "request_case_id": "case-023",
+  "runtime_seconds": 4.410000110510737e-05,
+  "schema": "compitum.trajectory-evidence/v1",
+  "status": "invalid",
+  "terminal": {},
+  "warnings": []
+}

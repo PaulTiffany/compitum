@@ -1,0 +1,68 @@
+{
+  "design": "observation-only; FabricPC evidence never consulted by the router",
+  "governed_failures": {
+    "count": 1,
+    "detail": [
+      {
+        "case_id": "case-023",
+        "reason": "steps[0]['source'].energy is missing or non-finite",
+        "status": "invalid"
+      }
+    ]
+  },
+  "honest_limitations": [
+    "N=23 usable synthetic cases: far too small for scientific conclusions",
+    "toy routing pool and toy FabricPC graph: pipeline validation, not evidence of value",
+    "targets are frozen-router proxies (utility margin), not realized outcome labels",
+    "any apparent arm-3 gain must beat arm-4 (shuffled control) before it means anything"
+  ],
+  "incremental_information": {
+    "holdout_mse": {
+      "arm1_baseline": 0.0075646993041424025,
+      "arm2_terminal_only": 0.010644190614742144,
+      "arm3_trajectory_summary": 0.010081757528530019,
+      "arm4_shuffled_control": 0.007687777509144751
+    },
+    "reading": "lower MSE than arm1 on held-out cases would indicate incremental information; the shuffled/mismatched arm4 calibrates how much apparent improvement is attributable to extra free parameters",
+    "target": "top-2 utility margin (deferral-need proxy from the frozen router)"
+  },
+  "instruments": {
+    "blockwise_first_step": {
+      "block_breaches": {
+        "hidden": false,
+        "latent": false
+      },
+      "block_emergence": {
+        "hidden": false,
+        "latent": true
+      },
+      "max_block_breach": true,
+      "product_breach": true
+    },
+    "orientation": {
+      "candidates": 1,
+      "transitions": 12
+    },
+    "second_order": {
+      "linear_max_residue": 0.0,
+      "linear_steps_above_threshold": 0,
+      "nonlinear_max_residue": 0.0017851115632471575,
+      "nonlinear_steps_above_threshold": 12
+    }
+  },
+  "latency_seconds": {
+    "note": "the first observation pays one-off JAX compilation; observation runs alongside routing and does not gate route selection in this tranche",
+    "observe_max": 1.4815506000013556,
+    "observe_p50": 0.16311970000242582,
+    "observe_p95": 0.23368029999255668,
+    "route_p50": 0.004793349995452445,
+    "route_p95": 0.005205699999351054
+  },
+  "n_cases": 24,
+  "observed": 23,
+  "schema": "compitum.fabricpc-observation-pilot-report/v1",
+  "train_test_split": [
+    16,
+    7
+  ]
+}

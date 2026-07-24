@@ -1,0 +1,14 @@
+{
+  "config_sha256": "59b2fbd3537b7f4ea1f96bd613093c5422135ae35dda5d9f82f150a807578150",
+  "dependency_commit": null,
+  "dependency_repository": null,
+  "frozen_route_certificate_unchanged": true,
+  "generated_at": "2026-07-24T00:50:12.787561+00:00",
+  "observer": "fabricpc",
+  "observer_version": "0.3.2",
+  "raw_trace_reference": null,
+  "raw_trace_sha256": null,
+  "request_case_id": "case-023",
+  "route_certificate_sha256": null,
+  "schema": "compitum.fabricpc-observation-audit/v1"
+}

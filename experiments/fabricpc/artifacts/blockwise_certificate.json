@@ -1,0 +1,268 @@
+{
+  "dimension": 4,
+  "first_step": {
+    "block_breaches": {
+      "hidden": false,
+      "latent": false
+    },
+    "block_emergence": {
+      "hidden": false,
+      "latent": true
+    },
+    "max_block_breach": true,
+    "product_breach": true
+  },
+  "method": {
+    "blocks": {
+      "hidden": [
+        0,
+        2
+      ],
+      "latent": [
+        2,
+        4
+      ]
+    },
+    "breach_threshold": 1.0,
+    "interpretation_boundary": "a product-metric breach with no per-block breach indicates transport across a block interface, not intrinsic expansion",
+    "metrics": {
+      "max_block": "maximum over declared block Euclidean norms",
+      "per_block": "Euclidean norm restricted to each declared block",
+      "product_l2": "Euclidean norm on the full concatenated state"
+    },
+    "zero_tolerance": 1e-12
+  },
+  "provenance": "generalized from sketched fabricpc_orientation_block_sweep.py",
+  "schema": "compitum.trajectory-blockwise-audit/v1",
+  "step_count": 12,
+  "steps": [
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0009500980377197266,
+          "before_norm": 0.001000046730041504,
+          "emergence": false,
+          "gain": 0.9500536416736202
+        },
+        "latent": {
+          "after_norm": 0.001279701706820884,
+          "before_norm": 0.0,
+          "emergence": true,
+          "gain": null
+        }
+      },
+      "max_block_gain": 1.2796419091013616,
+      "product_l2_gain": 1.593764517607882,
+      "step": 0
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0009025335311889648,
+          "before_norm": 0.0009500980377197266,
+          "emergence": false,
+          "gain": 0.9499372647427854
+        },
+        "latent": {
+          "after_norm": 0.001215763173432712,
+          "before_norm": 0.001279701706820884,
+          "emergence": false,
+          "gain": 0.9500363771905781
+        }
+      },
+      "max_block_gain": 0.9500363771905781,
+      "product_l2_gain": 0.9500011594456416,
+      "step": 1
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0008573532104492188,
+          "before_norm": 0.0009025335311889648,
+          "emergence": false,
+          "gain": 0.9499405626733589
+        },
+        "latent": {
+          "after_norm": 0.0011549533680668442,
+          "before_norm": 0.001215763173432712,
+          "emergence": false,
+          "gain": 0.9499821949745598
+        }
+      },
+      "max_block_gain": 0.9499821949745598,
+      "product_l2_gain": 0.9499674034204391,
+      "step": 2
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0008144378662109375,
+          "before_norm": 0.0008573532104492188,
+          "emergence": false,
+          "gain": 0.949944382647386
+        },
+        "latent": {
+          "after_norm": 0.0010971207074961511,
+          "before_norm": 0.0011549533680668442,
+          "emergence": false,
+          "gain": 0.9499264107368308
+        }
+      },
+      "max_block_gain": 0.9499264107368308,
+      "product_l2_gain": 0.9499327957512255,
+      "step": 3
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0007736682891845703,
+          "before_norm": 0.0008144378662109375,
+          "emergence": false,
+          "gain": 0.9499414519906323
+        },
+        "latent": {
+          "after_norm": 0.0010421569543432128,
+          "before_norm": 0.0010971207074961511,
+          "emergence": false,
+          "gain": 0.9499018177513242
+        }
+      },
+      "max_block_gain": 0.9499018177513242,
+      "product_l2_gain": 0.9499158993494778,
+      "step": 4
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0007349252700805664,
+          "before_norm": 0.0007736682891845703,
+          "emergence": false,
+          "gain": 0.9499229583975347
+        },
+        "latent": {
+          "after_norm": 0.0009899863189539433,
+          "before_norm": 0.0010421569543432128,
+          "emergence": false,
+          "gain": 0.949939752191983
+        }
+      },
+      "max_block_gain": 0.949939752191983,
+      "product_l2_gain": 0.949933785339499,
+      "step": 5
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0006982088088989258,
+          "before_norm": 0.0007349252700805664,
+          "emergence": false,
+          "gain": 0.9500405515004056
+        },
+        "latent": {
+          "after_norm": 0.000940440997286165,
+          "before_norm": 0.0009899863189539433,
+          "emergence": false,
+          "gain": 0.9499535289334808
+        }
+      },
+      "max_block_gain": 0.9499535289334808,
+      "product_l2_gain": 0.9499844485256277,
+      "step": 6
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0006632804870605469,
+          "before_norm": 0.0006982088088989258,
+          "emergence": false,
+          "gain": 0.949974389619259
+        },
+        "latent": {
+          "after_norm": 0.0008934451942297488,
+          "before_norm": 0.000940440997286165,
+          "emergence": false,
+          "gain": 0.9500279090426383
+        }
+      },
+      "max_block_gain": 0.9500279090426383,
+      "product_l2_gain": 0.9500088919607401,
+      "step": 7
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0006301403045654297,
+          "before_norm": 0.0006632804870605469,
+          "emergence": false,
+          "gain": 0.9500359453630481
+        },
+        "latent": {
+          "after_norm": 0.0008488148857629614,
+          "before_norm": 0.0008934451942297488,
+          "emergence": false,
+          "gain": 0.9500469544690273
+        }
+      },
+      "max_block_gain": 0.9500469544690273,
+      "product_l2_gain": 0.9500430428259355,
+      "step": 8
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0005986690521240234,
+          "before_norm": 0.0006301403045654297,
+          "emergence": false,
+          "gain": 0.9500567536889898
+        },
+        "latent": {
+          "after_norm": 0.0008063064757521651,
+          "before_norm": 0.0008488148857629614,
+          "emergence": false,
+          "gain": 0.9499202821206565
+        }
+      },
+      "max_block_gain": 0.9499202821206565,
+      "product_l2_gain": 0.9499687735064865,
+      "step": 9
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0005687475204467773,
+          "before_norm": 0.0005986690521240234,
+          "emergence": false,
+          "gain": 0.9500199123855038
+        },
+        "latent": {
+          "after_norm": 0.0007660715438719012,
+          "before_norm": 0.0008063064757521651,
+          "emergence": false,
+          "gain": 0.9500997039088261
+        }
+      },
+      "max_block_gain": 0.9500997039088261,
+      "product_l2_gain": 0.9500713490334884,
+      "step": 10
+    },
+    {
+      "blocks": {
+        "hidden": {
+          "after_norm": 0.0005402565002441406,
+          "before_norm": 0.0005687475204467773,
+          "emergence": false,
+          "gain": 0.9499056801509118
+        },
+        "latent": {
+          "after_norm": 0.0007277149119687928,
+          "before_norm": 0.0007660715438719012,
+          "emergence": false,
+          "gain": 0.9499307444455577
+        }
+      },
+      "max_block_gain": 0.9499307444455577,
+      "product_l2_gain": 0.9499218383467452,
+      "step": 11
+    }
+  ]
+}

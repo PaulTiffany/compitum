@@ -1,0 +1,17 @@
+{
+  "bundle_schema": "compitum.fabricpc-observation/v1",
+  "experiment": {
+    "case_index": 15,
+    "pilot": "observation-only"
+  },
+  "generated_at": "2026-07-24T00:50:10.440531+00:00",
+  "members": [
+    "audit_record.json",
+    "checksums.json",
+    "raw_trace.json",
+    "trajectory_evidence.json",
+    "validation_summary.json"
+  ],
+  "observation_status": "observed",
+  "schema": "compitum.fabricpc-observation-manifest/v1"
+}

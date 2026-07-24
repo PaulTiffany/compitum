@@ -1,0 +1,7 @@
+{
+  "evidence_sha256": "ec354b417872f308c874460efa3fb32186d1b7ef5889fd657fa3dc85b88bfae9",
+  "generated_at": "2026-07-24T00:50:05.505683+00:00",
+  "ok": true,
+  "problems": [],
+  "schema": "compitum.fabricpc-observation-validation/v1"
+}

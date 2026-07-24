@@ -1,0 +1,311 @@
+{
+  "case_id": "case-016",
+  "config": {
+    "clamp": [
+      -0.7878844102121814,
+      0.7324002839216281
+    ],
+    "eta_infer": 0.05,
+    "graph": "source->hidden->latent (2,2,2), InferenceSGD, x and y clamped",
+    "history": "lightweight (run_inference_with_history)",
+    "infer_steps": 12,
+    "nonlinear": true,
+    "target": [
+      0.6,
+      0.4
+    ]
+  },
+  "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+  "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+  "node_order": [
+    "source",
+    "hidden",
+    "latent"
+  ],
+  "run_id": "case-016-pseed17-sseed116-eta0.05-steps12-nonlinear1",
+  "runtime_seconds": 0.12954929999250453,
+  "schema": "compitum.fabricpc-observation-raw/v1",
+  "seeds": {
+    "parameter_seed": 17,
+    "state_seed": 116
+  },
+  "steps": [
+    {
+      "hidden": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.2318347990512848,
+        "z_latent_mean": 0.28472620248794556,
+        "z_latent_std": 0.22958876192569733
+      },
+      "latent": {
+        "energy": 0.10165469348430634,
+        "error_norm": 0.4508984088897705,
+        "latent_grad_norm": 0.4508984088897705,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 6.718399527017027e-05,
+        "error_norm": 0.011591720394790173,
+        "latent_grad_norm": 0.220015287399292,
+        "z_latent_mean": 0.27731308341026306,
+        "z_latent_std": 0.2272319346666336
+      },
+      "latent": {
+        "energy": 0.09896852821111679,
+        "error_norm": 0.44490116834640503,
+        "latent_grad_norm": 0.44490116834640503,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0011347639374434948,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.00025521035422571003,
+        "error_norm": 0.022592492401599884,
+        "latent_grad_norm": 0.20868457853794098,
+        "z_latent_mean": 0.27028515934944153,
+        "z_latent_std": 0.22498594224452972
+      },
+      "latent": {
+        "energy": 0.09642238914966583,
+        "error_norm": 0.4391409456729889,
+        "latent_grad_norm": 0.4391409456729889,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0022116489708423615,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0005453814519569278,
+        "error_norm": 0.03302669897675514,
+        "latent_grad_norm": 0.19783234596252441,
+        "z_latent_mean": 0.2636258006095886,
+        "z_latent_std": 0.22284698486328125
+      },
+      "latent": {
+        "energy": 0.09401127696037292,
+        "error_norm": 0.43361568450927734,
+        "latent_grad_norm": 0.43361568450927734,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0032330492977052927,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0009209893178194761,
+        "error_norm": 0.04291827976703644,
+        "latent_grad_norm": 0.18744778633117676,
+        "z_latent_mean": 0.257318913936615,
+        "z_latent_std": 0.22081127762794495
+      },
+      "latent": {
+        "energy": 0.09173006564378738,
+        "error_norm": 0.4283224642276764,
+        "latent_grad_norm": 0.4283224642276764,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.004201312083750963,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0013671547640115023,
+        "error_norm": 0.052290625870227814,
+        "latent_grad_norm": 0.17751960456371307,
+        "z_latent_mean": 0.2513487637042999,
+        "z_latent_std": 0.21887508034706116
+      },
+      "latent": {
+        "energy": 0.08957352489233017,
+        "error_norm": 0.42325764894485474,
+        "latent_grad_norm": 0.42325764894485474,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0051187328062951565,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.001870672102086246,
+        "error_norm": 0.06116652861237526,
+        "latent_grad_norm": 0.16803620755672455,
+        "z_latent_mean": 0.24570006132125854,
+        "z_latent_std": 0.21703460812568665
+      },
+      "latent": {
+        "energy": 0.08753640204668045,
+        "error_norm": 0.4184170365333557,
+        "latent_grad_norm": 0.4184170365333557,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.005987546406686306,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0024198703467845917,
+        "error_norm": 0.06956824660301208,
+        "latent_grad_norm": 0.15898548066616058,
+        "z_latent_mean": 0.2403579205274582,
+        "z_latent_std": 0.21528618037700653
+      },
+      "latent": {
+        "energy": 0.08561335504055023,
+        "error_norm": 0.41379550099372864,
+        "latent_grad_norm": 0.41379550099372864,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.006809934973716736,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.003004472702741623,
+        "error_norm": 0.07751739025115967,
+        "latent_grad_norm": 0.15035511553287506,
+        "z_latent_mean": 0.23530793190002441,
+        "z_latent_std": 0.21362608671188354
+      },
+      "latent": {
+        "energy": 0.08379919081926346,
+        "error_norm": 0.40938782691955566,
+        "latent_grad_norm": 0.40938782691955566,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.007588017266243696,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.003615474794059992,
+        "error_norm": 0.08503498882055283,
+        "latent_grad_norm": 0.14213226735591888,
+        "z_latent_mean": 0.23053613305091858,
+        "z_latent_std": 0.21205070614814758
+      },
+      "latent": {
+        "energy": 0.08208871632814407,
+        "error_norm": 0.4051881432533264,
+        "latent_grad_norm": 0.4051881432533264,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.00832385290414095,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.004245020914822817,
+        "error_norm": 0.09214141964912415,
+        "latent_grad_norm": 0.13430404663085938,
+        "z_latent_mean": 0.22602900862693787,
+        "z_latent_std": 0.2105564922094345
+      },
+      "latent": {
+        "energy": 0.08047688752412796,
+        "error_norm": 0.40119045972824097,
+        "latent_grad_norm": 0.40119045972824097,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.009019437246024609,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.004886295646429062,
+        "error_norm": 0.09885641932487488,
+        "latent_grad_norm": 0.1268572211265564,
+        "z_latent_mean": 0.22177352011203766,
+        "z_latent_std": 0.20913991332054138
+      },
+      "latent": {
+        "energy": 0.07895869761705399,
+        "error_norm": 0.397388219833374,
+        "latent_grad_norm": 0.397388219833374,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.009676706977188587,
+        "z_latent_mean": -0.027742058038711548,
+        "z_latent_std": 0.7601423263549805
+      }
+    }
+  ],
+  "terminal": {}
+}

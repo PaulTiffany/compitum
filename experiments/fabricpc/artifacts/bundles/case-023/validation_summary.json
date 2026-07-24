@@ -1,0 +1,9 @@
+{
+  "evidence_sha256": "f996b9a2e9bff761c87a547cde55bcb0eee6f35769e58eff9effd2e7fa798252",
+  "generated_at": "2026-07-24T00:50:12.787561+00:00",
+  "ok": false,
+  "problems": [
+    "governed non-success: invalid: steps[0]['source'].energy is missing or non-finite"
+  ],
+  "schema": "compitum.fabricpc-observation-validation/v1"
+}

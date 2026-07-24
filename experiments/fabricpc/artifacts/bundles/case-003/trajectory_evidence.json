@@ -1,0 +1,376 @@
+{
+  "config_sha256": "acaac1a00decc77c7413feb4f018ab654aa7ce7410e824969a60f9754c1fe74c",
+  "convergence": {
+    "energy_reduction_ratio": 0.8532307788241412,
+    "initial_total_energy": 0.1258452832698822,
+    "monotone_decreasing_fraction": 1.0,
+    "steps": 12.0,
+    "terminal_latent_grad_norm_total": 0.6029269844293594,
+    "terminal_total_energy": 0.10737506905570626
+  },
+  "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+  "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+  "energy_trajectory": [
+    0.1258452832698822,
+    0.12322346965083852,
+    0.12084312128718011,
+    0.11868382460670546,
+    0.11672662512864918,
+    0.1149540557526052,
+    0.113349967636168,
+    0.11189943691715598,
+    0.11058880644850433,
+    0.1094054402783513,
+    0.10833773855119944,
+    0.10737506905570626
+  ],
+  "error_trajectory": [
+    0.5016877055168152,
+    0.5078854793682694,
+    0.5137225110083818,
+    0.5192197635769844,
+    0.5243969075381756,
+    0.529272548854351,
+    0.533864289522171,
+    0.5381885468959808,
+    0.5422610640525818,
+    0.5460964739322662,
+    0.5497086495161057,
+    0.5531106293201447
+  ],
+  "latent_grad_trajectory": [
+    0.7334169298410416,
+    0.7191204619593918,
+    0.7053356396500021,
+    0.69205535762012,
+    0.6792718111537397,
+    0.6669767647981644,
+    0.6551612224429846,
+    0.6438156869262457,
+    0.6329302368685603,
+    0.6224943613633513,
+    0.6124970894306898,
+    0.6029269844293594
+  ],
+  "nonclaims": [
+    "directional gain is a finite-difference observation, not a global Lipschitz constant",
+    "external node energy is not Compitum Symbolic Free Energy, utility, or constraint slack",
+    "no field here is a shadow price or an online dual variable",
+    "full-state norm growth is not instability until blockwise transport is audited",
+    "observation-only: this evidence does not alter route selection"
+  ],
+  "observer": "fabricpc",
+  "observer_version": "0.3.2",
+  "per_node": {
+    "hidden": {
+      "mean_energy": 0.0019889793256879784,
+      "terminal_energy": 0.0050796628929674625,
+      "terminal_error_norm": 0.10079348087310791,
+      "terminal_latent_grad_norm": 0.13342049717903137
+    },
+    "latent": {
+      "mean_energy": 0.11311375722289085,
+      "terminal_energy": 0.1022954061627388,
+      "terminal_error_norm": 0.45231714844703674,
+      "terminal_latent_grad_norm": 0.45231714844703674
+    },
+    "source": {
+      "mean_energy": 0.0,
+      "terminal_energy": 0.0,
+      "terminal_error_norm": 0.0,
+      "terminal_latent_grad_norm": 0.01718933880329132
+    }
+  },
+  "per_step": [
+    {
+      "hidden": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.23172922432422638,
+        "z_latent_mean": 0.37215930223464966,
+        "z_latent_std": 0.19569559395313263
+      },
+      "latent": {
+        "energy": 0.1258452832698822,
+        "error_norm": 0.5016877055168152,
+        "latent_grad_norm": 0.5016877055168152,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 6.71232701279223e-05,
+        "error_norm": 0.011586480773985386,
+        "latent_grad_norm": 0.22082176804542542,
+        "z_latent_mean": 0.36468374729156494,
+        "z_latent_std": 0.1934441477060318
+      },
+      "latent": {
+        "energy": 0.1231563463807106,
+        "error_norm": 0.49629899859428406,
+        "latent_grad_norm": 0.49629899859428406,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0019996953196823597,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0002560033171903342,
+        "error_norm": 0.022627564147114754,
+        "latent_grad_norm": 0.2103407084941864,
+        "z_latent_mean": 0.35756662487983704,
+        "z_latent_std": 0.19128760695457458
+      },
+      "latent": {
+        "energy": 0.12058711796998978,
+        "error_norm": 0.4910949468612671,
+        "latent_grad_norm": 0.4910949468612671,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.0038999842945486307,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0005492813070304692,
+        "error_norm": 0.033144570887088776,
+        "latent_grad_norm": 0.20027503371238708,
+        "z_latent_mean": 0.3507934808731079,
+        "z_latent_std": 0.18922309577465057
+      },
+      "latent": {
+        "energy": 0.11813454329967499,
+        "error_norm": 0.48607519268989563,
+        "latent_grad_norm": 0.48607519268989563,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.005705131217837334,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0009313182672485709,
+        "error_norm": 0.04315827414393425,
+        "latent_grad_norm": 0.19061391055583954,
+        "z_latent_mean": 0.34435027837753296,
+        "z_latent_std": 0.18724775314331055
+      },
+      "latent": {
+        "energy": 0.1157953068614006,
+        "error_norm": 0.48123863339424133,
+        "latent_grad_norm": 0.48123863339424133,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.007419267203658819,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.001388059463351965,
+        "error_norm": 0.05268888920545578,
+        "latent_grad_norm": 0.18134671449661255,
+        "z_latent_mean": 0.33822330832481384,
+        "z_latent_std": 0.1853586733341217
+      },
+      "latent": {
+        "energy": 0.11356599628925323,
+        "error_norm": 0.47658365964889526,
+        "latent_grad_norm": 0.47658365964889526,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.009046390652656555,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0019069099798798561,
+        "error_norm": 0.061756134033203125,
+        "latent_grad_norm": 0.17246270179748535,
+        "z_latent_mean": 0.33239930868148804,
+        "z_latent_std": 0.18355302512645721
+      },
+      "latent": {
+        "energy": 0.11144305765628815,
+        "error_norm": 0.4721081554889679,
+        "latent_grad_norm": 0.4721081554889679,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.010590365156531334,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.002476611640304327,
+        "error_norm": 0.07037913799285889,
+        "latent_grad_norm": 0.1639513522386551,
+        "z_latent_mean": 0.32686540484428406,
+        "z_latent_std": 0.18182800710201263
+      },
+      "latent": {
+        "energy": 0.10942282527685165,
+        "error_norm": 0.46780940890312195,
+        "latent_grad_norm": 0.46780940890312195,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.01205492578446865,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0030871357303112745,
+        "error_norm": 0.07857653498649597,
+        "latent_grad_norm": 0.15580202639102936,
+        "z_latent_mean": 0.3216090202331543,
+        "z_latent_std": 0.18018077313899994
+      },
+      "latent": {
+        "energy": 0.10750167071819305,
+        "error_norm": 0.4636845290660858,
+        "latent_grad_norm": 0.4636845290660858,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.01344368141144514,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0037295790389180183,
+        "error_norm": 0.08636641502380371,
+        "latent_grad_norm": 0.1480041891336441,
+        "z_latent_mean": 0.31661808490753174,
+        "z_latent_std": 0.17860858142375946
+      },
+      "latent": {
+        "energy": 0.10567586123943329,
+        "error_norm": 0.4597300589084625,
+        "latent_grad_norm": 0.4597300589084625,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.014760113321244717,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.004396067000925541,
+        "error_norm": 0.09376637637615204,
+        "latent_grad_norm": 0.1405472308397293,
+        "z_latent_mean": 0.31188076734542847,
+        "z_latent_std": 0.17710866034030914
+      },
+      "latent": {
+        "energy": 0.1039416715502739,
+        "error_norm": 0.4559422731399536,
+        "latent_grad_norm": 0.4559422731399536,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.01600758545100689,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    },
+    {
+      "hidden": {
+        "energy": 0.0050796628929674625,
+        "error_norm": 0.10079348087310791,
+        "latent_grad_norm": 0.13342049717903137,
+        "z_latent_mean": 0.30738571286201477,
+        "z_latent_std": 0.17567835748195648
+      },
+      "latent": {
+        "energy": 0.1022954061627388,
+        "error_norm": 0.45231714844703674,
+        "latent_grad_norm": 0.45231714844703674,
+        "z_latent_mean": 0.5,
+        "z_latent_std": 0.10000000894069672
+      },
+      "source": {
+        "energy": 0.0,
+        "error_norm": 0.0,
+        "latent_grad_norm": 0.01718933880329132,
+        "z_latent_mean": -0.44527706503868103,
+        "z_latent_std": 0.3252940773963928
+      }
+    }
+  ],
+  "perturbation_diagnostics": null,
+  "raw_trace_reference": null,
+  "raw_trace_sha256": null,
+  "reason": null,
+  "request_case_id": "case-003",
+  "runtime_seconds": 0.15603220000048168,
+  "schema": "compitum.trajectory-evidence/v1",
+  "status": "observed",
+  "terminal": {
+    "total_energy": 0.10737506905570626,
+    "total_error_norm": 0.5531106293201447,
+    "total_latent_grad_norm": 0.6029269844293594
+  },
+  "warnings": []
+}

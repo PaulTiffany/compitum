@@ -1,0 +1,14 @@
+{
+  "config_sha256": "b4ecd1997d03bdb96149e09245fe3b9efd49a5041335326c363297a154c3bde5",
+  "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+  "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+  "frozen_route_certificate_unchanged": true,
+  "generated_at": "2026-07-24T00:50:12.279046+00:00",
+  "observer": "fabricpc",
+  "observer_version": "0.3.2",
+  "raw_trace_reference": null,
+  "raw_trace_sha256": null,
+  "request_case_id": "case-021",
+  "route_certificate_sha256": null,
+  "schema": "compitum.fabricpc-observation-audit/v1"
+}
