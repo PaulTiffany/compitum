@@ -12,7 +12,7 @@ the error is closer to unbiased noise (``delayed_realization``).
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 
 @dataclass
@@ -21,7 +21,7 @@ class EWMAForecaster:
     _bias: Dict[Tuple[str, str], float] = field(default_factory=dict)
 
     def predict(
-        self, expected_consumption: Dict[str, Dict[str, float]]
+        self, expected_consumption: Dict[str, Dict[str, float]], context: Optional[Any] = None
     ) -> Dict[str, Dict[str, float]]:
         predicted: Dict[str, Dict[str, float]] = {}
         for model, resources in expected_consumption.items():
@@ -47,6 +47,6 @@ class EWMAForecaster:
             self._bias[key] = (1.0 - self.alpha) * previous + self.alpha * residual
 
     def __call__(
-        self, expected_consumption: Dict[str, Dict[str, float]]
+        self, expected_consumption: Dict[str, Dict[str, float]], context: Optional[Any] = None
     ) -> Dict[str, Dict[str, float]]:
-        return self.predict(expected_consumption)
+        return self.predict(expected_consumption, context)

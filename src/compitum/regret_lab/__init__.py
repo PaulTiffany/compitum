@@ -15,6 +15,7 @@ This package is dependency-free beyond numpy; it never imports FabricPC or
 JAX.
 """
 
+from .channels import CHANNEL_DIMENSION, compute_regret_channel_vector
 from .dual_controller import DualController, price_utilities
 from .environment import (
     GRID_UNIT,
@@ -33,9 +34,10 @@ from .metrics import (
     paired_regret_deltas,
     regret_metrics,
 )
-from .simulator import PolicyDecision, simulate_policy
+from .simulator import ForecastContext, PolicyDecision, simulate_policy
 
 __all__ = [
+    "CHANNEL_DIMENSION",
     "GRID_UNIT",
     "MODEL_NAMES",
     "RESOURCE_NAMES",
@@ -44,11 +46,13 @@ __all__ = [
     "DynamicCase",
     "DynamicSequence",
     "EWMAForecaster",
+    "ForecastContext",
     "HindsightResult",
     "PolicyDecision",
     "PolicyRunResult",
     "bootstrap_ci",
     "compute_hindsight_optimum",
+    "compute_regret_channel_vector",
     "generate_dynamic_dataset",
     "paired_regret_deltas",
     "price_utilities",

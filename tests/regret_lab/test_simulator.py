@@ -193,7 +193,7 @@ def test_forecaster_is_applied_to_feasibility_and_pricing() -> None:
     seq = _seq([case], initial_budget={"budget": 0.5, "quota": 0.5}, model_names=("a",))
 
     class _AlwaysZeroForecaster:
-        def __call__(self, expected):
+        def __call__(self, expected, context=None):
             return {m: {r: 0.0 for r in v} for m, v in expected.items()}
 
     result, _ = simulate_policy(seq, forecaster=_AlwaysZeroForecaster())

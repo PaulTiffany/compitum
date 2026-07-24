@@ -1,0 +1,112 @@
+{
+  "activation_gate": {
+    "beats_dual_ewma": false,
+    "beats_dual_no_predictor": false,
+    "criterion": "arm 4 (dual+FabricPC) must show a paired bootstrap-CI-significant reduction in mean regret vs BOTH arm 2 (dual, no predictor) and arm 3 (dual+EWMA), must not increase total violations vs either, and must be significantly better than arm 5 (shuffled control)",
+    "distinguishable_from_shuffled_control": false,
+    "paired_regret_delta_vs_dual_ewma": {
+      "ci_high": 0.49690671874999937,
+      "ci_low": -0.4547626562500006,
+      "mean": -0.0026500000000004853
+    },
+    "paired_regret_delta_vs_dual_no_predictor": {
+      "ci_high": 1.2816140625000003,
+      "ci_low": 0.15918890624999962,
+      "mean": 0.6868749999999992
+    },
+    "paired_regret_delta_vs_shuffled_control": {
+      "ci_high": 3.6651957812499947,
+      "ci_low": -1.7442126562500002,
+      "mean": 0.24203750000000057
+    },
+    "passed": false,
+    "violations_not_increased": true
+  },
+  "arms": {
+    "dual_ewma": {
+      "mean_regret": 3.6712500000000015,
+      "mean_route_switch_rate": 0.17857142857142855,
+      "median_regret": 1.4381500000000003,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 20.850575,
+      "total_avoidable_deferrals": 6.0,
+      "total_deferrals": 6.0,
+      "total_depleted_budget_events": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.3221904012588515
+    },
+    "dual_fabricpc": {
+      "mean_regret": 3.6686000000000005,
+      "mean_route_switch_rate": 0.23214285714285712,
+      "median_regret": 1.177999999999999,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 20.180125,
+      "total_avoidable_deferrals": 2.0,
+      "total_deferrals": 3.0,
+      "total_depleted_budget_events": 2.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.326498500394633
+    },
+    "dual_fabricpc_shuffled": {
+      "mean_regret": 3.4265625,
+      "mean_route_switch_rate": 0.3839285714285714,
+      "median_regret": 3.0590999999999955,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 9.298149999999996,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 2.0,
+      "total_depleted_budget_events": 3.0,
+      "total_violation_count": 1.0,
+      "total_violation_magnitude": 1.0,
+      "utility_per_resource_unit": 1.4241511335012593
+    },
+    "dual_no_predictor": {
+      "mean_regret": 2.9817250000000017,
+      "mean_route_switch_rate": 0.18749999999999997,
+      "median_regret": 7.105427357601002e-15,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 20.55815,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 8.0,
+      "total_depleted_budget_events": 10.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.3358896979085984
+    },
+    "static": {
+      "mean_regret": 2.7779625000000014,
+      "mean_route_switch_rate": 0.125,
+      "median_regret": 5.329070518200751e-15,
+      "n_sequences": 16.0,
+      "tail_regret_p95": 20.575125,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 8.0,
+      "total_depleted_budget_events": 10.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.3315512643678162
+    }
+  },
+  "design": "observation-only; hindsight oracle and dataset never consult FabricPC; sequence-level train/test split; FabricPC ridge models and EWMA fit offline on training sequences, then frozen for all test-time arms",
+  "governed_failures": [],
+  "honest_limitations": [
+    "4 sequences per scenario (2 train / 2 test), 8 steps each: a bounded pipeline-validation pilot, not a high-powered study",
+    "FabricPC ridge models are trained on channel-vector trajectories induced by an EWMA-forecaster reference rollout on training sequences, not on trajectories induced by their own eventual test-time deployment policy -- a legitimate but imperfect offline-training setup, consistent with tranche 2's own methodology",
+    "FabricPC 'trajectory' means the PC graph's own settling dynamics within one inference call (as in tranches 1-2), not a multi-environment-step window; testing whether windowing several past environment steps into FabricPC's own input helps is untested",
+    "ridge regression per (model, resource) pair, no hyperparameter search, matching tranches 1-2's own methodology",
+    "controlled synthetic scenarios only -- no realized routing labels in this tranche"
+  ],
+  "latency_seconds": {
+    "governed_failure_rate": 0.0,
+    "observe_max": 2.4593144000100438,
+    "observe_p50": 0.4128915999972378,
+    "observe_p95": 0.49913240000023507,
+    "total_calls": 384
+  },
+  "n_test_sequences": 16,
+  "n_train_sequences": 16,
+  "schema": "compitum.regret-pilot-report/v1",
+  "total_elapsed_seconds": 130.98645260000194
+}

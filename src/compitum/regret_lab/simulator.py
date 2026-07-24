@@ -15,10 +15,26 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from .dual_controller import DualController, price_utilities
-from .environment import DynamicSequence
+from .environment import DynamicCase, DynamicSequence
 from .metrics import PolicyRunResult
 
-Forecaster = Callable[[Dict[str, Dict[str, float]]], Dict[str, Dict[str, float]]]
+
+@dataclass
+class ForecastContext:
+    """Extra decision-time state a forecaster may use beyond the raw
+    ``expected_consumption`` it is handed -- e.g. a FabricPC-backed
+    forecaster needs the live remaining budget and dual price to build its
+    declared observation channel (``regret_lab.channels``). Simple
+    forecasters (like ``EWMAForecaster``) ignore this entirely."""
+
+    case: DynamicCase
+    remaining: Dict[str, float]
+    lambda_price: Dict[str, float]
+    steps_left: int
+    total_steps: int
+
+
+Forecaster = Callable[[Dict[str, Dict[str, float]], ForecastContext], Dict[str, Dict[str, float]]]
 
 
 @dataclass
@@ -29,6 +45,8 @@ class PolicyDecision:
     priced_utility: Dict[str, float]
     violation_magnitude_so_far: float
     latency_seconds: float
+    remaining_before: Dict[str, float]
+    lambda_price_before: Dict[str, float]
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -38,6 +56,8 @@ class PolicyDecision:
             "priced_utility": dict(self.priced_utility),
             "violation_magnitude_so_far": self.violation_magnitude_so_far,
             "latency_seconds": self.latency_seconds,
+            "remaining_before": dict(self.remaining_before),
+            "lambda_price_before": dict(self.lambda_price_before),
         }
 
 
@@ -91,9 +111,20 @@ def simulate_policy(
                 still_pending.append(corr)
         pending = still_pending
 
-        forecast = (
-            forecaster(case.expected_consumption) if forecaster else case.expected_consumption
-        )
+        remaining_before = dict(remaining)
+        lambda_price_before = dict(dual_controller.lambda_price) if dual_controller else {}
+
+        if forecaster is not None:
+            context = ForecastContext(
+                case=case,
+                remaining=remaining_before,
+                lambda_price=lambda_price_before,
+                steps_left=len(seq.cases) - t,
+                total_steps=len(seq.cases),
+            )
+            forecast = forecaster(case.expected_consumption, context)
+        else:
+            forecast = case.expected_consumption
         feasible = [
             m
             for m in seq.model_names
@@ -164,6 +195,8 @@ def simulate_policy(
                 priced_utility=priced,
                 violation_magnitude_so_far=violation_magnitude_total,
                 latency_seconds=latency,
+                remaining_before=remaining_before,
+                lambda_price_before=lambda_price_before,
             )
         )
         choices.append(chosen)

@@ -175,6 +175,23 @@ passes. The simulated policies exist purely to compute counterfactual
 regret in `regret_lab`'s own offline environment — they never feed back
 into live Compitum routing.
 
+## Outcome (2026-07-23)
+
+The bounded pilot (`experiments/fabricpc/tranche3/`) ran the pre-registered
+five-arm comparison. The gate failed: arm 4 (dual + FabricPC) was
+significantly *worse* than arm 2 (dual, no predictor; 95% CI on the paired
+regret delta `[0.159, 1.282]`, entirely positive), statistically
+indistinguishable from arm 3 (EWMA), and statistically indistinguishable
+from its own shuffled-trajectory control (arm 5). Full detail, including a
+second, FabricPC-independent finding (both forecast-correction mechanisms
+tested trade higher regret for fewer depleted-budget events -- a genuine
+instance of the `premature_conservation_regret` failure mode showing up in
+aggregate), is in `experiments/fabricpc/tranche3/REPORT.md`. This falsifies
+the tranche 3 hypothesis as stated in the governing correction above, under
+the specific dual-controller/forecaster/graph design tested here. Per the
+stop boundary, no tranche 4 activation mechanism is introduced and no
+claim of improvement is made.
+
 ## Stop boundary for this tranche
 
 Complete only: this ADR; a tested offline sequence environment; an exact
