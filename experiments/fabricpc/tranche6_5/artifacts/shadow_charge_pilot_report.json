@@ -1,0 +1,1252 @@
+{
+  "arms_metrics_vs_exact_online_optimum": {
+    "exact_belief_scalar_price": {
+      "mean_regret": 1.9428571428571428,
+      "mean_route_switch_rate": 0.7301587301587302,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 59.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 139.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.2190476190476192
+    },
+    "exact_belief_shadow_charge": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "fabricpc_backprop_shadow_charge": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "fabricpc_pcn_shadow_charge": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "fabricpc_pcn_shuffled_shadow_charge": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "frozen_pacing": {
+      "mean_regret": 1.8285714285714285,
+      "mean_route_switch_rate": 0.4793650793650794,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 54.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 155.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.2285714285714286
+    },
+    "hmm_shadow_charge": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "no_pricing": {
+      "mean_regret": 2.6285714285714286,
+      "mean_route_switch_rate": 0.6825396825396827,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 4.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 105.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.161904761904762
+    },
+    "ridge_shadow_charge": {
+      "mean_regret": 0.0,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 0.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    }
+  },
+  "arms_metrics_vs_hindsight": {
+    "exact_belief_scalar_price": {
+      "mean_regret": 2.6285714285714286,
+      "mean_route_switch_rate": 0.7301587301587302,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 4.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 59.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 139.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.2190476190476192
+    },
+    "exact_belief_shadow_charge": {
+      "mean_regret": 0.6857142857142857,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "fabricpc_backprop_shadow_charge": {
+      "mean_regret": 0.6857142857142857,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "fabricpc_pcn_shadow_charge": {
+      "mean_regret": 0.6857142857142857,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "fabricpc_pcn_shuffled_shadow_charge": {
+      "mean_regret": 0.6857142857142857,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "frozen_pacing": {
+      "mean_regret": 2.5142857142857142,
+      "mean_route_switch_rate": 0.4793650793650794,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 4.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 54.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 155.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.2285714285714286
+    },
+    "hmm_shadow_charge": {
+      "mean_regret": 0.6857142857142857,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    },
+    "no_pricing": {
+      "mean_regret": 3.3142857142857145,
+      "mean_route_switch_rate": 0.6825396825396827,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 4.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 8.0,
+      "total_avoidable_deferrals": 0.0,
+      "total_deferrals": 105.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.161904761904762
+    },
+    "ridge_shadow_charge": {
+      "mean_regret": 0.6857142857142857,
+      "mean_route_switch_rate": 0.3396825396825397,
+      "mean_terminal_unused_resources": 1.0,
+      "median_regret": 0.0,
+      "n_sequences": 35.0,
+      "tail_regret_p95": 4.0,
+      "total_avoidable_deferrals": 178.0,
+      "total_deferrals": 180.0,
+      "total_depleted_budget_events": 0.0,
+      "total_high_value_rejections": 0.0,
+      "total_violation_count": 0.0,
+      "total_violation_magnitude": 0.0,
+      "utility_per_resource_unit": 1.380952380952381
+    }
+  },
+  "boundary_crossing_rate_vs_online_optimum": {
+    "fabricpc_backprop_shadow_charge": 0.0,
+    "fabricpc_pcn_shadow_charge": 0.0,
+    "fabricpc_pcn_shuffled_shadow_charge": 0.0,
+    "hmm_shadow_charge": 0.0,
+    "ridge_shadow_charge": 0.0
+  },
+  "fabricpc_training": {
+    "backprop_runs": [
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.0009385707983562861,
+        "checkpoint_hash": "9d70c7f1814b554ba2d1b60ceffec9f2b0e07cd9e62b31dacd50f1e0db8bad04",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "backprop",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 2.597521900010179,
+        "seed": 0,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.06945210212861043
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.03339264666859923
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.01752039998890774
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.011767712877879968
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.009171754740655055
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.007555253324210916
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.006492414878248072
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.005600849143302747
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.00494500779606864
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.0045114441601129774
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.004142269112814263
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.003725179884823903
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0033785913547391276
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.003096811151882175
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.00283200424810365
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0025850036908139896
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.0023981090125937514
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.002281076170877803
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0021384612761391275
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0019730429805395492
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.0018331601391244955
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.001722108485229351
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0015891326483222748
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.0015008051173584333
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0013983947575517196
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0012969805613149005
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.001211238539920851
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.001196069494366785
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0010776858562298122
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.0009385707983562861
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.0020237904736295767,
+        "checkpoint_hash": "cc1c8b4707b6ea2739eacad539cf011358960e7a43856bd515a98936c3101b22",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "backprop",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 1.629668199995649,
+        "seed": 1,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.06559870181803133
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.033141381755742834
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.018105789252592628
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.012051571281202184
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.009286689851362554
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.00791915989067649
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.006991185099080813
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.006288939651923086
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.005916628395498752
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.005590414158739826
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.005121734077049254
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.004781513390212052
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.004515337012304059
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.004244743884450126
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.003984709555149634
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0037928311233165605
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.003665565676676348
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0035321512391720076
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0033583209730932632
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0032116016960200885
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.0030867191626439134
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.002973509494486125
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0028366221942476987
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.002694422793945134
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.00256531614933455
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.002456327746397506
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.0024213222884958935
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.0023857500200247517
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.002110760886988631
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.0020237904736295767
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.0018966309116751805,
+        "checkpoint_hash": "d7437806f85e2361f94f2bc46ade2e8af309f021dddfda98b65cb4eba5d507b2",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "backprop",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 1.59648219999508,
+        "seed": 2,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.03540340957430223
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.018130635063799288
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.011153058782377441
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.008210873608187898
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.006785955648374192
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.005851032383810707
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.005241537882972324
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.004959484776974937
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.004768799981703649
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.004377424598751985
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.004089734374014283
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.003928051579784265
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0037628413193838217
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.003578873996729366
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0034331126089240382
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.003379826630090568
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.003246099653577838
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0031295484426762427
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.003020873926902184
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.0029057853081250664
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.0027872432499698686
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.0027937476708275104
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0026181357077795747
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.002437427646451436
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0023564971576936614
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0024620291179278716
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.0023606443346243134
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.002045410506056942
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.001992801931777331
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.0018966309116751805
+          }
+        ],
+        "val_examples": 135
+      }
+    ],
+    "best_backprop_seed": 0,
+    "best_pcn_seed": 0,
+    "pcn_runs": [
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.0009746820429093399,
+        "checkpoint_hash": "17efd9ca0a4a61830fec9409af113cc94d46dd5162a682bf59780061dcca352f",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "pcn",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 13.187766300005023,
+        "seed": 0,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.06976438713114633
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.03441150093361813
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.018257554234093372
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.012310710846316682
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.009670772211092117
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.00809090419670121
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.0069313179022573975
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.0059958754820267695
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.005287366149746166
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.004708996083332047
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.004214077681578094
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.0038173730291039347
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0034831990258909406
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.003181509739550922
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0029675016068489504
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.002743859985426031
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.0025273403346173623
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.0023541364417260947
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0022008196069828534
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.002040892989330238
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.001888882184262995
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.001768361460453046
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0016435012403513691
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.00151797056235215
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.0014192696125054727
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.001311255922753538
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.001207974199743271
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.001127481222884846
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0010677371726520483
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.0009746820429093399
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.002035317838719481,
+        "checkpoint_hash": "f7e89a76c3a3bd6e5411c1f604b4fd2b48068c72364f243aa9d6c4874f8578bc",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "pcn",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 12.28022190000047,
+        "seed": 1,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.06578823020666717
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.0339292250056313
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.01875705582371844
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.01256680410288491
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.009824888371165736
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.008344241491666552
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.00736430265458322
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.0066374426486214815
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.006105504980402709
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.0056404799861835015
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.005245965098951997
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.004902954126119978
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.004598286957977994
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.0043826370373571955
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.004148499032960951
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.003922798254541274
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.003751318626480917
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.003598652654237836
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.0034221175648344163
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.00326521345224422
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.003128386864292993
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.0029981615067922137
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0028489539523190556
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.002737693832970226
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.002602308025804544
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.0024631763410324836
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.002338377449067444
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.002282292317371802
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0021409639573953324
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.002035317838719481
+          }
+        ],
+        "val_examples": 135
+      },
+      {
+        "batch_size": 32,
+        "best_epoch": 29,
+        "best_val_mse": 0.0018249134059072495,
+        "checkpoint_hash": "cf22fbee1feeddbc7d9ff45a754faabb296f353779de1adcc19d25a4c7d8af87",
+        "dependency_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+        "dependency_repository": "https://github.com/trueagi-io/FabricPC.git",
+        "early_stopping_rule": "fixed epoch budget; best-validation-MSE epoch snapshot kept",
+        "method": "pcn",
+        "num_epochs": 30,
+        "objective": "mean squared error (GaussianEnergy free energy for PC; MSE loss for backprop) against the next-step belief_prior target",
+        "optimizer": "optax.adamw(lr=0.001, weight_decay=0.0001)",
+        "runtime_seconds": 10.927863099990645,
+        "seed": 2,
+        "topology": "source(55, IdentityNode) -> hidden(16, Linear, SigmoidActivation) -> belief(1, Linear, SigmoidActivation, GaussianEnergy); InferenceSGD(eta_infer=0.05, infer_steps=20); default FeedforwardStateInit (shared by both train_pcn and train_backprop)",
+        "train_examples": 450,
+        "training_history": [
+          {
+            "epoch": 0.0,
+            "val_mse": 0.035542553901641454
+          },
+          {
+            "epoch": 1.0,
+            "val_mse": 0.018446350982508745
+          },
+          {
+            "epoch": 2.0,
+            "val_mse": 0.01129318113875004
+          },
+          {
+            "epoch": 3.0,
+            "val_mse": 0.008302482363202187
+          },
+          {
+            "epoch": 4.0,
+            "val_mse": 0.0067768789770250295
+          },
+          {
+            "epoch": 5.0,
+            "val_mse": 0.0058595947112514675
+          },
+          {
+            "epoch": 6.0,
+            "val_mse": 0.0052728804579506095
+          },
+          {
+            "epoch": 7.0,
+            "val_mse": 0.004888471437189045
+          },
+          {
+            "epoch": 8.0,
+            "val_mse": 0.004570720182621215
+          },
+          {
+            "epoch": 9.0,
+            "val_mse": 0.004307514594457115
+          },
+          {
+            "epoch": 10.0,
+            "val_mse": 0.004075868738435533
+          },
+          {
+            "epoch": 11.0,
+            "val_mse": 0.0038662183061769456
+          },
+          {
+            "epoch": 12.0,
+            "val_mse": 0.0037591042695121943
+          },
+          {
+            "epoch": 13.0,
+            "val_mse": 0.003607792708208259
+          },
+          {
+            "epoch": 14.0,
+            "val_mse": 0.0034274676537555835
+          },
+          {
+            "epoch": 15.0,
+            "val_mse": 0.0033316098383794172
+          },
+          {
+            "epoch": 16.0,
+            "val_mse": 0.0032331595266224915
+          },
+          {
+            "epoch": 17.0,
+            "val_mse": 0.003094694893046781
+          },
+          {
+            "epoch": 18.0,
+            "val_mse": 0.002978027891623711
+          },
+          {
+            "epoch": 19.0,
+            "val_mse": 0.00287940626932324
+          },
+          {
+            "epoch": 20.0,
+            "val_mse": 0.002766527690380178
+          },
+          {
+            "epoch": 21.0,
+            "val_mse": 0.0026584726599956816
+          },
+          {
+            "epoch": 22.0,
+            "val_mse": 0.0025844037349493977
+          },
+          {
+            "epoch": 23.0,
+            "val_mse": 0.002437426777097363
+          },
+          {
+            "epoch": 24.0,
+            "val_mse": 0.002319347015134336
+          },
+          {
+            "epoch": 25.0,
+            "val_mse": 0.002228755079595581
+          },
+          {
+            "epoch": 26.0,
+            "val_mse": 0.0022008915102735087
+          },
+          {
+            "epoch": 27.0,
+            "val_mse": 0.002034094860971428
+          },
+          {
+            "epoch": 28.0,
+            "val_mse": 0.0019464989180499545
+          },
+          {
+            "epoch": 29.0,
+            "val_mse": 0.0018249134059072495
+          }
+        ],
+        "val_examples": 135
+      }
+    ]
+  },
+  "gate_a_prime": {
+    "mismatches": [],
+    "n_sequences_checked": 35,
+    "passed": true,
+    "robustness": {
+      "passed": true,
+      "per_seed": {
+        "1": {
+          "n_mismatches": 0,
+          "passed": true
+        },
+        "100": {
+          "n_mismatches": 0,
+          "passed": true
+        },
+        "2": {
+          "n_mismatches": 0,
+          "passed": true
+        },
+        "3": {
+          "n_mismatches": 0,
+          "passed": true
+        },
+        "4242": {
+          "n_mismatches": 0,
+          "passed": true
+        }
+      }
+    }
+  },
+  "gate_b": {
+    "learned_quality": {
+      "fabricpc_backprop": {
+        "brier_score_vs_regime": 0.22534823827685865,
+        "hidden_regime_accuracy": 0.6412698412698413,
+        "log_loss_vs_regime": 0.6425944073805734,
+        "mse_vs_belief_prior": 0.00128740740264029
+      },
+      "fabricpc_pcn": {
+        "brier_score_vs_regime": 0.22503332672786092,
+        "hidden_regime_accuracy": 0.6412698412698413,
+        "log_loss_vs_regime": 0.6418752845317598,
+        "mse_vs_belief_prior": 0.001273342890333004
+      },
+      "ridge": {
+        "brier_score_vs_regime": 0.22583700817623828,
+        "hidden_regime_accuracy": 0.6349206349206349,
+        "log_loss_vs_regime": 0.6435027214721677,
+        "mse_vs_belief_prior": 1.6909503202711274e-05
+      }
+    },
+    "naive_constant_prediction_test_mse": 0.006094735021128153,
+    "passed": true,
+    "recovers": {
+      "fabricpc_backprop": true,
+      "fabricpc_pcn": true,
+      "ridge": true
+    },
+    "recovery_threshold_fraction_of_naive_mse": 0.5
+  },
+  "gate_c": {
+    "beats_pacing": {
+      "delta": {
+        "ci_high": -1.1428571428571428,
+        "ci_low": -2.6285714285714286,
+        "mean": -1.8285714285714285
+      },
+      "passed": true
+    },
+    "beats_shuffled": {
+      "delta": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0
+      },
+      "passed": false
+    },
+    "captured_fraction": 1.0,
+    "captured_fraction_positive_with_ci_support": {
+      "passed": true
+    },
+    "materially_improves_on_ridge": {
+      "delta": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0
+      },
+      "passed": false
+    },
+    "non_inferior_to_backprop": {
+      "delta": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0
+      },
+      "non_inferiority_margin": 0.09142857142857143,
+      "passed": true
+    },
+    "passed": false,
+    "recoverable_gap": 1.8285714285714285
+  },
+  "honest_limitations": [
+    "boundary-sensitive belief diagnostics were narrowed to a boundary-crossing rate (fraction of steps where an arm's shadow-charge choice differs from the true online optimum's own choice at that state) rather than precomputing explicit belief-interval decision boundaries per (time, budget, observation) state -- a scope simplification given runtime discipline; the crossing rate is the economically-relevant consequence of a belief error, whether or not an explicit interval was precomputed",
+    "arm 5 (true-parameter HMM) is not required to beat arm 4 (exact belief); it is reported as an oracle-quality structured ceiling, per ADR 0008",
+    "50 train / 15 val / 35 test sequences, 3 declared training seeds per FabricPC training method, one fixed topology, no hyperparameter search -- reusing tranche 6's Part B infrastructure unchanged"
+  ],
+  "n_test_rows": 315,
+  "n_test_sequences": 35,
+  "n_train_rows": 450,
+  "n_train_sequences": 50,
+  "n_val_rows": 135,
+  "n_val_sequences": 15,
+  "outcome": "Gate A-prime passed. Gate B passed: True. Gate C FAILED.",
+  "recoverable_gap_summary": {
+    "exact_belief_scalar_price_mean_regret": 1.9428571428571428,
+    "exact_belief_shadow_charge_mean_regret": 0.0,
+    "pacing_mean_regret": 1.8285714285714285,
+    "recoverable_gap": 1.8285714285714285
+  },
+  "schema": "compitum.fabricpc-shadow-charge-pilot-report/v1",
+  "total_elapsed_seconds": 141.99056389999168
+}

@@ -4,6 +4,43 @@ Status: accepted, observation-only. Corrects tranche 6's price-to-action
 translation; does not reopen tranche 6's own environment, oracle, or
 belief-estimation infrastructure, all of which are reused unchanged.
 
+## Outcome (see experiments/fabricpc/tranche6_5/REPORT.md for full detail)
+
+**Gate A-prime passed perfectly**: zero mismatches between the
+corrected shadow-charge policy and the literal Bellman-optimal online
+policy, across all 35 held-out test sequences and 5 independent
+robustness seeds. The translation is proven correct, not merely close.
+
+**The correction works, decisively**: exact belief + shadow charge
+achieves exactly zero regret against the true online optimum (a
+guaranteed identity) and clearly beats both frozen pacing (regret 1.829)
+and tranche 6's scalar-price arm (regret 1.943). `recoverable_gap =
+1.829` -- confirming the diagnosis this tranche was authorized to test:
+tranche 6's bottleneck was the linear scalarization, not the
+environment's economics or belief quality. Gate B also passed: all three
+learned predictors (ridge, FabricPC-backprop, FabricPC-predictive
+-coding) recover belief quality far beyond a naive constant baseline.
+
+**Gate C's literal criteria fail, but not because FabricPC
+underperforms**: every arm -- HMM, ridge, both FabricPC variants, and
+even the deliberately shuffled FabricPC control -- achieves identical,
+exactly-zero regret and a 0.0% boundary-crossing rate against the true
+online optimum. Directly verified (scanning belief across `[0, 1]` at
+every one of the 350 states actually visited in the test set): the
+optimal action never changes as belief varies, at any reachable state,
+once the shadow-charge correction is applied. This environment's
+"opportunity" action has flat, non-varying utility, and its discrete
+consumption granularity is coarse enough that no belief value ever
+flips the argmax action. `captured_fraction = 1.0` for every learned
+arm -- the best possible economic outcome, but it means this specific
+environment cannot further discriminate belief-estimation *quality*
+once the scalarization bug is fixed, since the decision task collapsed
+to something belief-invariant. A future test of FabricPC against
+alternatives on belief-estimation quality specifically needs an
+environment with at least one genuinely belief-dependent decision point
+(e.g. regime-varying opportunity utility, or a tighter budget/wider
+-utility-gap regime) -- this one, as parameterized, has none.
+
 ## Governing correction
 
 Tranche 6 was accepted as identifying a precise translation failure, not
