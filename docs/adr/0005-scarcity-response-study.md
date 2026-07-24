@@ -152,6 +152,56 @@ that specific internally-paired execution; they are not rewritten and are
 not compared numerically against fresh reruns. All tranche 4.5 sequences
 use the corrected stable-hash generator exclusively.
 
+## Outcome (2026-07-24)
+
+The phase-diagram pilot (`experiments/fabricpc/tranche4_5/`) ran the
+pre-registered 72-cell primary grid (216 sequences) plus four secondary
+sweeps, with the pacing controller frozen at tranche 4's selected
+parameters throughout. Full detail in
+`experiments/fabricpc/tranche4_5/REPORT.md`. Summary:
+
+- **H2 (benefit under consequential scarcity): passed.** The improvement
+  generalizes across 4 distinct `(payoff_ratio, replenishment_mode,
+  timing)` configurations, not only the one extreme case tranche 4 found
+  -- this directly answers tranche 4.5's governing question in the
+  affirmative: the earlier result is not purely an artifact of one
+  scenario.
+- **H1 (dormancy under slack): failed**, but the failure is concentrated
+  specifically in short-horizon (`near`/`mid` timing) slack cells and
+  traced to a scenario-calibration mismatch discovered while
+  investigating: `budget_tightness` is calibrated against a fully
+  -conservative reference consumption rate, not against the environment's
+  natural spend-preferring default behavior, which understates true slack
+  at short horizons specifically. This was caught by direct inspection
+  (per this project's standing practice) rather than accepted at face
+  value, but was **not** corrected and re-run within this tranche --
+  whether a corrected calibration would restore dormancy is an open
+  question, not a settled negative about the controller itself.
+- **H3 (interpretable response): passed** -- no flagged engagement
+  reversals across any of the 6 sliced configurations.
+- **H4 (boundary behavior): failed.** At extreme `payoff_ratio=10.0`,
+  regret jumps discontinuously (by the full missed-opportunity magnitude)
+  between adjacent `budget_tightness` levels in 2 of 6 configurations,
+  rather than changing smoothly -- a genuine cliff, not gradual
+  sensitivity.
+- **H5 (robustness to false scarcity): passed** on its primary check
+  (terminal unused resources match no-pricing exactly in `payoff_ratio=1.0`
+  cells); a secondary diagnostic (elevated `high_value_rejections`) in
+  those same cells is explained by `spend` and the non-materializing
+  `opportunity` being utility-equivalent there, not by genuine waste.
+- **Gate: 5 of 7 criteria passed** (significant in the consequential
+  region; holds across multiple configs; no additional violations; not
+  driven by isolated sequences; lower aggregate mixture regret). **Failed:
+  non-inferiority in slack/false-scarcity cells (linked to the H1
+  calibration issue) and stable boundary behavior (linked to H4's extreme
+  -payoff cliff). `passed: false` overall.**
+
+Per the user's own framing: the frozen pacing controller is reported as a
+**specialized, conditionally-useful controller for longer-horizon,
+moderate-to-high-consequence scarcity** -- not a general-purpose pricing
+baseline. No parameter was retuned based on any cell's outcome; no learned
+predictor was reintroduced.
+
 ## Scope and stop boundary
 
 Complete only: this ADR; the scarcity scenario generator; the frozen
