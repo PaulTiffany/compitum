@@ -69,3 +69,52 @@ def test_git_commit_short_git_dir_cases(tmp_path: Path) -> None:
     (git_dir / "HEAD").unlink()
     (git_dir / "HEAD").mkdir()
     assert git_commit_short(repo_root=tmp_path) is None
+
+
+def test_git_commit_short_worktree_cases(tmp_path: Path) -> None:
+    # Layout: a main repo with refs, plus a separate worktree directory whose
+    # .git is a pointer FILE (not a directory) -- the real structure `git
+    # worktree add` creates, and the case the original implementation missed.
+    main_repo = tmp_path / "main"
+    worktree = tmp_path / "worktree"
+    main_git = main_repo / ".git"
+    worktree_private_git = main_git / "worktrees" / "wt"
+    worktree.mkdir(parents=True)
+    worktree_private_git.mkdir(parents=True)
+
+    ref_path = main_git / "refs" / "heads" / "feature"
+    ref_path.parent.mkdir(parents=True, exist_ok=True)
+    ref_path.write_text("abcdef1234567890", encoding="utf-8")
+
+    (worktree / ".git").write_text(f"gitdir: {worktree_private_git}\n", encoding="utf-8")
+    (worktree_private_git / "HEAD").write_text("ref: refs/heads/feature", encoding="utf-8")
+    (worktree_private_git / "commondir").write_text("../..\n", encoding="utf-8")
+
+    assert git_commit_short(repo_root=worktree) == "abcdef1"
+
+    # Detached HEAD inside a worktree resolves directly, no commondir lookup.
+    (worktree_private_git / "HEAD").write_text("1122334455667788", encoding="utf-8")
+    assert git_commit_short(repo_root=worktree) == "1122334"
+
+    # A relative gitdir pointer (resolved against repo_root) works too.
+    relative_worktree = main_repo / "linked"
+    relative_worktree.mkdir(parents=True)
+    (relative_worktree / ".git").write_text("gitdir: ../.git/worktrees/wt\n", encoding="utf-8")
+    assert git_commit_short(repo_root=relative_worktree) == "1122334"
+
+    # A .git file that isn't a recognized worktree pointer -> None.
+    bogus = tmp_path / "bogus"
+    bogus.mkdir()
+    (bogus / ".git").write_text("not a gitdir line\n", encoding="utf-8")
+    assert git_commit_short(repo_root=bogus) is None
+
+    # No .git at all (neither directory nor file) -> None.
+    no_git = tmp_path / "no_git"
+    no_git.mkdir()
+    assert git_commit_short(repo_root=no_git) is None
+
+    # An absolute commondir pointer is used as-is, without re-resolving
+    # against git_dir.
+    (worktree_private_git / "commondir").write_text(str(main_git), encoding="utf-8")
+    (worktree_private_git / "HEAD").write_text("ref: refs/heads/feature", encoding="utf-8")
+    assert git_commit_short(repo_root=worktree) == "abcdef1"

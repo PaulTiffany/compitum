@@ -69,13 +69,52 @@ def write_audit_record(record: AuditRecord, out_dir: Path) -> Path:
     return out_path
 
 
+def _resolve_git_dir(repo_root: Path) -> Optional[Path]:
+    """Resolve the real git directory for ``repo_root``.
+
+    Handles both a plain repository (``.git`` is a directory) and a git
+    worktree (``.git`` is a file containing ``gitdir: <path>`` pointing at
+    the worktree's private git directory under the main repo's
+    ``.git/worktrees/<name>``).
+    """
+    dotgit = repo_root / ".git"
+    if dotgit.is_dir():
+        return dotgit
+    if dotgit.is_file():
+        content = dotgit.read_text(encoding="utf-8", errors="ignore").strip()
+        if content.startswith("gitdir:"):
+            pointed = Path(content.split(":", 1)[1].strip())
+            if not pointed.is_absolute():
+                pointed = (repo_root / pointed).resolve()
+            return pointed
+    return None
+
+
+def _resolve_common_dir(git_dir: Path) -> Path:
+    """Resolve the git directory that holds shared refs.
+
+    A worktree's private git directory has a ``commondir`` file pointing
+    back at the main repository's ``.git`` directory, where branch refs
+    actually live (each worktree only keeps its own ``HEAD``). A plain
+    repository has no ``commondir`` file, so refs live in ``git_dir`` itself.
+    """
+    commondir_file = git_dir / "commondir"
+    if commondir_file.exists():
+        content = commondir_file.read_text(encoding="utf-8", errors="ignore").strip()
+        common = Path(content)
+        if not common.is_absolute():
+            common = (git_dir / common).resolve()
+        return common
+    return git_dir
+
+
 def git_commit_short(repo_root: Optional[Path] = None) -> Optional[str]:
     """Return the short git commit hash if available, else None.
 
     By default, this inspects the repository containing this file by reading
     from the local ``.git`` directory (no subprocess calls). For tests or
     tooling, an explicit ``repo_root`` may be provided to point to a directory
-    that contains a ``.git`` folder.
+    that contains a ``.git`` folder or worktree pointer file.
     """
     try:
         if repo_root is None:
@@ -83,14 +122,16 @@ def git_commit_short(repo_root: Optional[Path] = None) -> Optional[str]:
             here = Path(__file__).resolve()
             # repo_root = .../compitum (one up from src)
             repo_root = here.parents[2]
-        git_dir = repo_root / ".git"
+        git_dir = _resolve_git_dir(repo_root)
+        if git_dir is None:
+            return None
         head_file = git_dir / "HEAD"
         if not head_file.exists():
             return None
         head = head_file.read_text(encoding="utf-8", errors="ignore").strip()
         if head.startswith("ref:"):
             ref = head.split(":", 1)[1].strip()
-            ref_path = git_dir / ref
+            ref_path = _resolve_common_dir(git_dir) / ref
             if ref_path.exists():
                 commit = ref_path.read_text(encoding="utf-8", errors="ignore").strip()
                 return commit[:7] if commit else None
