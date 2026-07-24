@@ -1,0 +1,118 @@
+{
+  "schema": "compitum.bellman-shadow-pricing-artifact-manifest/v1",
+  "title": "Bellman-Consistent Discrete Shadow-Charge Pricing for FabricPC x Compitum",
+  "canonical_repository": "git@github.com:PaulTiffany/compitum.git",
+  "canonical_branch": "experiment/fabricpc-trajectory-observer",
+  "canonical_commit": "617f8979daa921d326301266e55740c0746ab95c",
+  "tag": "fabricpc-compitum-shadow-pricing-v1",
+  "fabricpc_repository": "https://github.com/trueagi-io/FabricPC.git",
+  "fabricpc_commit": "32ae295182ab944b8f084abaf4a40da2c50bab5f",
+  "fabricpc_version_tag": "v0.3.2",
+  "entry_document": "SUBMISSION.md",
+  "source_modules": {
+    "bellman_continuation_value": [
+      "src/compitum/regret_lab/belief_bellman.py",
+      "src/compitum/regret_lab/belief_bellman_v2.py"
+    ],
+    "discrete_unit_marginal_curve": [
+      "src/compitum/regret_lab/belief_action_pricing.py"
+    ],
+    "action_shadow_charge": [
+      "src/compitum/regret_lab/belief_action_pricing.py",
+      "src/compitum/regret_lab/belief_action_pricing_v2.py"
+    ],
+    "online_optimum": [
+      "src/compitum/regret_lab/belief_online_optimum.py",
+      "src/compitum/regret_lab/belief_online_optimum_v2.py"
+    ],
+    "belief_sensitive_environment": [
+      "src/compitum/regret_lab/belief_regime.py",
+      "src/compitum/regret_lab/belief_regime_v2.py",
+      "experiments/fabricpc/tranche7/run_gate0_identifiability.py"
+    ],
+    "ridge_estimator": [
+      "src/compitum/regret_lab/belief_pricing.py",
+      "src/compitum/regret_lab/windowed_predictor.py"
+    ],
+    "fabricpc_pcn_estimator": [
+      "experiments/fabricpc/tranche6/fabricpc_belief_model.py"
+    ],
+    "fabricpc_backprop_control": [
+      "experiments/fabricpc/tranche6/fabricpc_belief_model.py"
+    ]
+  },
+  "reports": {
+    "final_synthesis": {
+      "path": "experiments/fabricpc/FINAL_SYNTHESIS.md",
+      "sha256": "40c55ff93f929f9bfc9066ca2bef46dd5d15aeda84b0ea968d673ca51c842b48"
+    },
+    "tranche_6_5_report": {
+      "path": "experiments/fabricpc/tranche6_5/REPORT.md",
+      "sha256": "00916ed971d220710c39c27fa9555f37b13b75bc818d124909e5a5f267beb376"
+    },
+    "tranche_7_report": {
+      "path": "experiments/fabricpc/tranche7/REPORT.md",
+      "sha256": "b16946c47616e812d3646891de4e5e62edd1a8ec12c59620348d004e5ce318d5"
+    }
+  },
+  "machine_readable_results": {
+    "tranche_6_5_shadow_charge_pilot": {
+      "path": "experiments/fabricpc/tranche6_5/artifacts/shadow_charge_pilot_report.json",
+      "sha256": "433ba6a4f6a9c5483ce7793a93f1d77a57b68555d3403883b8cb7813081ebb63"
+    },
+    "tranche_7_gate0": {
+      "path": "experiments/fabricpc/tranche7/artifacts/gate0_report.json",
+      "sha256": "722ed2512c00b6f2345e945093a7d4ebf2fe997a683e006a36f473ac4cf0579e"
+    },
+    "tranche_7_ten_arm_pilot": {
+      "path": "experiments/fabricpc/tranche7/artifacts/ten_arm_pilot_report.json",
+      "sha256": "59e2a0e3750e20c848cbbc1507a53a427987670ef808d45f1f22031e2b28f2ef"
+    }
+  },
+  "ADRs": {
+    "adr_0008_shadow_charge_curve": {
+      "path": "docs/adr/0008-bellman-consistent-shadow-price-curve.md",
+      "sha256": "c1b93f8a8dba57b6402b7025f593b4d6930af0935fdfed42fca1fea704ad900d"
+    },
+    "adr_0009_belief_sensitive_validation": {
+      "path": "docs/adr/0009-belief-sensitive-shadow-charge-validation.md",
+      "sha256": "1f149bffe111d3f60e11c700bf372c1f978e7ff90d10e98dcf180e33e6504136"
+    }
+  },
+  "dependency_receipt": {
+    "path": "experiments/fabricpc/fabricpc_install_receipt.json",
+    "sha256": "f4b7afc70fd705cdecad6a65078e5f4828119b7a1b7b13bdcbecd4c3dd448aad"
+  },
+  "test_count": {
+    "passed": 905,
+    "skipped": 1,
+    "deselected": 3,
+    "skipped_reason": "documented pre-existing Windows subprocess/asyncio issue, unrelated to this work",
+    "deselected_reason": "routerbench marker, out of scope for this program"
+  },
+  "quality_gate_status": {
+    "pytest": "pass",
+    "mypy_strict": "pass",
+    "ruff": "pass",
+    "gate_a_prime_tranche_6_5": "pass (0 mismatches, 35 test sequences + 5 robustness seeds)",
+    "gate_0_tranche_7": "pass (second development-grid pass; first pass failed on observation-informativeness, diagnosed and corrected)",
+    "gate_b_tranche_7": "pass (ridge, FabricPC-backprop, FabricPC-pcn all recover belief above naive baseline)",
+    "primary_economics_gate_tranche_7": "fail (FabricPC does not significantly beat pacing/fixed-prior/shuffled controls; captured_fraction=0.154)"
+  },
+  "claims": [
+    "Discrete action shadow charge is algebraically equivalent, up to an action-independent constant, to full Bellman-Q action selection.",
+    "The shadow-charge policy is bit-identical to the exact online Bellman optimum given the exact belief, verified with zero mismatches.",
+    "Exact-belief shadow-charge pricing recovers the full economic gap over frozen pacing in the belief-sensitive environment (regret 0.000 vs recoverable gap 0.371).",
+    "The belief-estimation task is genuinely learnable: ridge regression recovers exactly zero regret, tied with the exact-belief oracle.",
+    "A genuinely trained FabricPC model recovers belief information above a naive baseline, under both predictive-coding and backprop training.",
+    "FabricPC's predictive-coding and same-topology-backprop training are statistically indistinguishable from each other under the tested bounded design.",
+    "FabricPC's belief-prediction MSE is approximately 600x worse than ridge's on the same declared features, and FabricPC captures only 15.4% of the recoverable regret gap."
+  ],
+  "nonclaims": [
+    "FabricPC did not improve Compitum's production routing; no production code path was changed.",
+    "This work does not claim predictive coding is generally inferior to backpropagation -- only that the two tied under one small, fixed, bounded-training topology.",
+    "This work does not claim the belief-sensitive environment or shadow-charge mechanism is unsuitable for further research -- the opposite is demonstrated for the economic mechanism and task learnability.",
+    "This work does not justify or recommend any change to production constraints.shadow_prices or SwitchCertificate.",
+    "Whether a larger or differently configured FabricPC topology would close the measured gap with ridge was not investigated and is not claimed either way."
+  ]
+}
