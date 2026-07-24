@@ -9,15 +9,33 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from compitum.regret_lab.belief_action_pricing_v2 import run_shadow_charge_policy_v2
+from compitum.regret_lab.belief_action_pricing_v2 import (
+    ExactBeliefEstimatorV2,
+    HmmBeliefEstimatorV2,
+    run_shadow_charge_policy_v2,
+)
 from compitum.regret_lab.belief_bellman_v2 import BeliefSensitiveBellmanOracle
 from compitum.regret_lab.belief_online_optimum import run_online_optimal_policy
 from compitum.regret_lab.belief_pricing import ExactBeliefEstimator, LookupBeliefEstimator
 from compitum.regret_lab.belief_regime import INITIAL_BELIEF
 from compitum.regret_lab.belief_regime_v2 import generate_belief_sequence_v2
+from compitum.regret_lab.pricing import PricingUpdateContext
 
 U_NORMAL = 1.0
 U_HIGH = 8.0
+
+
+def _decision_context(case, step: int, total_steps: int) -> PricingUpdateContext:
+    return PricingUpdateContext(
+        resource_names=("budget",),
+        reservation={},
+        remaining_before={"budget": 6.0},
+        remaining_after={"budget": 6.0},
+        step=step,
+        total_steps=total_steps,
+        case=case,
+        chosen="defer",
+    )
 
 
 def _sequence(seed: int, sequence_id: str, initial_budget: float = 8.0):
@@ -134,3 +152,60 @@ class TestHighValueRejectionIsLive:
                 found_nonzero = True
                 break
         assert found_nonzero
+
+
+class TestExactAndHmmEstimatorV2CrossValidation:
+    """Independently-coded (scalar closed-form vs. generic matrix)
+    filters of the same parameterized dynamics -- must agree exactly,
+    mirroring tranche 6's own ExactBeliefEstimator/HmmBeliefEstimator
+    cross-check."""
+
+    def test_initial_belief_matches(self) -> None:
+        exact = ExactBeliefEstimatorV2(belief=0.3)
+        hmm = HmmBeliefEstimatorV2(belief_vector=np.array([0.7, 0.3]))
+        assert hmm.current_belief() == pytest.approx(exact.current_belief())
+
+    def test_agrees_over_a_multi_step_trajectory(self) -> None:
+        seq, _, _, _ = _sequence(seed=11, sequence_id="cross11")
+        exact = ExactBeliefEstimatorV2(belief=INITIAL_BELIEF)
+        hmm = HmmBeliefEstimatorV2(belief_vector=np.array([1.0 - INITIAL_BELIEF, INITIAL_BELIEF]))
+        for t, case in enumerate(seq.cases):
+            assert hmm.current_belief() == pytest.approx(exact.current_belief(), abs=1e-9)
+            ctx = _decision_context(case, step=t, total_steps=len(seq.cases))
+            exact.advance(ctx)
+            hmm.advance(ctx)
+        assert hmm.current_belief() == pytest.approx(exact.current_belief(), abs=1e-9)
+
+    def test_agrees_at_tuned_parameters(self) -> None:
+        p_normal, p_high, t_n2h, t_h2h = 0.15, 0.25, 0.3, 0.85
+        rng = np.random.default_rng(21)
+        seq, _, _, _ = generate_belief_sequence_v2(
+            rng,
+            "cross-tuned",
+            initial_budget=6.0,
+            u_normal=U_NORMAL,
+            u_high=U_HIGH,
+            p_opportunity_normal=p_normal,
+            p_opportunity_high=p_high,
+            transition_normal_to_high=t_n2h,
+            transition_high_to_high=t_h2h,
+        )
+        exact = ExactBeliefEstimatorV2(
+            belief=INITIAL_BELIEF,
+            p_opportunity_normal=p_normal,
+            p_opportunity_high=p_high,
+            transition_normal_to_high=t_n2h,
+            transition_high_to_high=t_h2h,
+        )
+        hmm = HmmBeliefEstimatorV2(
+            belief_vector=np.array([1.0 - INITIAL_BELIEF, INITIAL_BELIEF]),
+            p_opportunity_normal=p_normal,
+            p_opportunity_high=p_high,
+            transition_normal_to_high=t_n2h,
+            transition_high_to_high=t_h2h,
+        )
+        for t, case in enumerate(seq.cases):
+            ctx = _decision_context(case, step=t, total_steps=len(seq.cases))
+            exact.advance(ctx)
+            hmm.advance(ctx)
+        assert hmm.current_belief() == pytest.approx(exact.current_belief(), abs=1e-9)

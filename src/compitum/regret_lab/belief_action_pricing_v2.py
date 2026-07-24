@@ -26,16 +26,47 @@ never computes a per-action score itself, only calling
 ``oracle.best_action_given_observation(...)``, which (via
 ``BeliefSensitiveBellmanOracle``) already performs the correct
 belief-weighted computation internally.
+
+Gate 0's development grid found that "opportunity" payoff/budget tuning
+alone was not enough: tranche 6's fixed observation informativeness
+(``P_OPPORTUNITY[HIGH]=0.35`` vs ``P_OPPORTUNITY[NORMAL]=0.05``) makes a
+single current-step observation so decisive on its own that a naive
+single-step read already lands on the same side of the decision boundary
+as several steps of accumulated exact belief, making the exact-belief
+policy tie exactly with fixed-prior/shuffled controls regardless of
+payoff magnitudes. Tuning observation noise and transition persistence
+(``belief_regime_v2.filtered_belief_v2``/``predict_belief_v2``) fixes
+this, but ``belief_pricing.ExactBeliefEstimator``/``HmmBeliefEstimator``
+hardcode tranche 6's FIXED parameters internally (not configurable), so
+they cannot be reused unchanged once those parameters differ from
+tranche 6's defaults. ``ExactBeliefEstimatorV2``/``HmmBeliefEstimatorV2``
+below are minimal, parameterized siblings -- ``RidgeBeliefEstimator``,
+``LookupBeliefEstimator``, and ``FabricPCBeliefEstimator`` needed no such
+sibling, since none of them ever call the transition/observation
+formulas directly (they only ever predict from a declared window or a
+precomputed array).
 """
 
 from __future__ import annotations
 
 import time
+from dataclasses import dataclass, field
 from typing import Any, Dict, List, Tuple
 
+import numpy as np
+
 from .belief_action_pricing import StepTrace, action_shadow_charge
-from .belief_regime import filtered_belief, predict_belief
-from .belief_regime_v2 import expected_opportunity_utility
+from .belief_hmm_filter import hmm_filter_step
+from .belief_regime import INITIAL_BELIEF
+from .belief_regime_v2 import (
+    P_OPPORTUNITY_HIGH_DEFAULT,
+    P_OPPORTUNITY_NORMAL_DEFAULT,
+    TRANSITION_HIGH_TO_HIGH_DEFAULT,
+    TRANSITION_NORMAL_TO_HIGH_DEFAULT,
+    expected_opportunity_utility,
+    filtered_belief_v2,
+    predict_belief_v2,
+)
 from .environment import DynamicSequence
 from .metrics import PolicyRunResult
 from .pricing import PricingUpdateContext
@@ -44,18 +75,93 @@ from .simulator import PolicyDecision
 RESOURCE = "budget"
 
 
+def _observed_opportunity(context: PricingUpdateContext) -> bool:
+    assert context.case is not None
+    return context.case.base_utility.get("opportunity", 0.0) > 0.0
+
+
+@dataclass
+class ExactBeliefEstimatorV2:
+    """Parameterized sibling of ``belief_pricing.ExactBeliefEstimator``;
+    identical behavior when constructed with the default parameters."""
+
+    belief: float = INITIAL_BELIEF
+    p_opportunity_normal: float = P_OPPORTUNITY_NORMAL_DEFAULT
+    p_opportunity_high: float = P_OPPORTUNITY_HIGH_DEFAULT
+    transition_normal_to_high: float = TRANSITION_NORMAL_TO_HIGH_DEFAULT
+    transition_high_to_high: float = TRANSITION_HIGH_TO_HIGH_DEFAULT
+
+    def current_belief(self) -> float:
+        return self.belief
+
+    def advance(self, context: PricingUpdateContext) -> None:
+        observed = _observed_opportunity(context)
+        posterior = filtered_belief_v2(
+            self.belief, observed, self.p_opportunity_normal, self.p_opportunity_high
+        )
+        self.belief = predict_belief_v2(
+            posterior, self.transition_normal_to_high, self.transition_high_to_high
+        )
+
+
+@dataclass
+class HmmBeliefEstimatorV2:
+    """Parameterized sibling of ``belief_pricing.HmmBeliefEstimator`` --
+    the generic matrix-based filter given the environment's true
+    (possibly Gate-0-tuned) transition/emission parameters as known
+    constants, mathematically equivalent to ``ExactBeliefEstimatorV2`` by
+    construction."""
+
+    belief_vector: np.ndarray = field(
+        default_factory=lambda: np.array([1.0 - INITIAL_BELIEF, INITIAL_BELIEF])
+    )
+    p_opportunity_normal: float = P_OPPORTUNITY_NORMAL_DEFAULT
+    p_opportunity_high: float = P_OPPORTUNITY_HIGH_DEFAULT
+    transition_normal_to_high: float = TRANSITION_NORMAL_TO_HIGH_DEFAULT
+    transition_high_to_high: float = TRANSITION_HIGH_TO_HIGH_DEFAULT
+
+    def current_belief(self) -> float:
+        return float(self.belief_vector[1])
+
+    def advance(self, context: PricingUpdateContext) -> None:
+        observed = _observed_opportunity(context)
+        if observed:
+            likelihood = np.array([self.p_opportunity_normal, self.p_opportunity_high])
+        else:
+            likelihood = np.array(
+                [1.0 - self.p_opportunity_normal, 1.0 - self.p_opportunity_high]
+            )
+        transition = np.array(
+            [
+                [1.0 - self.transition_normal_to_high, self.transition_normal_to_high],
+                [1.0 - self.transition_high_to_high, self.transition_high_to_high],
+            ]
+        )
+        _, next_prior = hmm_filter_step(self.belief_vector, transition, likelihood)
+        self.belief_vector = next_prior
+
+
 def run_shadow_charge_policy_v2(
     seq: DynamicSequence,
     oracle: Any,
     belief_estimator: Any,
     u_normal: float,
     u_high: float,
+    p_opportunity_normal: float = P_OPPORTUNITY_NORMAL_DEFAULT,
+    p_opportunity_high: float = P_OPPORTUNITY_HIGH_DEFAULT,
+    transition_normal_to_high: float = TRANSITION_NORMAL_TO_HIGH_DEFAULT,
+    transition_high_to_high: float = TRANSITION_HIGH_TO_HIGH_DEFAULT,
 ) -> Tuple[PolicyRunResult, List[PolicyDecision], List[StepTrace]]:
     """Identical routing logic to ``belief_action_pricing.run_shadow_charge_policy``
     (same tie-breaking, same reliance on ``action_shadow_charge`` for the
     continuation-value term) except that a candidate "opportunity"'s
     scoring utility is ``expected_opportunity_utility(posterior, u_normal, u_high)``
-    -- the estimator's own posterior, not the case's true realized value."""
+    -- the estimator's own posterior, not the case's true realized value.
+    Observation/transition parameters default to tranche 6's exact fixed
+    values (matching ``BeliefSensitiveBellmanOracle``'s own defaults) but
+    must be passed explicitly whenever the oracle itself was constructed
+    with non-default values, so the belief-timing formulas here stay
+    consistent with what the oracle's own recursion assumes."""
     total_steps = len(seq.cases)
     remaining: Dict[str, float] = dict(seq.initial_budget)
     cumulative_utility = 0.0
@@ -74,8 +180,12 @@ def run_shadow_charge_policy_v2(
         observed_opportunity = case.base_utility.get("opportunity", 0.0) > 0.0
 
         prior = belief_estimator.current_belief()
-        posterior = filtered_belief(prior, observed_opportunity)
-        belief_next = predict_belief(posterior)
+        posterior = filtered_belief_v2(
+            prior, observed_opportunity, p_opportunity_normal, p_opportunity_high
+        )
+        belief_next = predict_belief_v2(
+            posterior, transition_normal_to_high, transition_high_to_high
+        )
         remaining_steps_after = total_steps - t - 1
         scalar_price = oracle.marginal_price(total_steps - t, budget, prior)
 

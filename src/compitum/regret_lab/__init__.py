@@ -21,7 +21,11 @@ from .belief_action_pricing import (
     run_shadow_charge_policy,
     unit_marginal_prices,
 )
-from .belief_action_pricing_v2 import run_shadow_charge_policy_v2
+from .belief_action_pricing_v2 import (
+    ExactBeliefEstimatorV2,
+    HmmBeliefEstimatorV2,
+    run_shadow_charge_policy_v2,
+)
 from .belief_bellman import BellmanOracle, BellmanStateBudgetExceeded
 from .belief_bellman_v2 import BeliefSensitiveBellmanOracle
 from .belief_channels import CHANNEL_DIMENSION as BELIEF_CHANNEL_DIMENSION
@@ -34,6 +38,10 @@ from .belief_hmm_filter import belief_high_from_scalar, hmm_filter_step
 from .belief_online_optimum import (
     online_optimum_as_hindsight_result,
     run_online_optimal_policy,
+)
+from .belief_online_optimum_v2 import (
+    online_optimum_as_hindsight_result_v2,
+    run_online_optimal_policy_v2,
 )
 from .belief_pricing import (
     BeliefEstimator,
@@ -55,11 +63,18 @@ from .belief_regime import (
     predict_belief,
 )
 from .belief_regime_v2 import (
+    P_OPPORTUNITY_HIGH_DEFAULT,
+    P_OPPORTUNITY_NORMAL_DEFAULT,
+    TRANSITION_HIGH_TO_HIGH_DEFAULT,
+    TRANSITION_NORMAL_TO_HIGH_DEFAULT,
     U_HIGH_OPPORTUNITY_DEFAULT,
     U_NORMAL_OPPORTUNITY_DEFAULT,
     expected_opportunity_utility,
+    filtered_belief_v2,
     generate_belief_dataset_v2,
     generate_belief_sequence_v2,
+    observation_probability_v2,
+    predict_belief_v2,
 )
 from .channels import CHANNEL_DIMENSION, compute_regret_channel_vector
 from .diagnostics import conservation_depletion_split
@@ -131,6 +146,10 @@ __all__ = [
     "SCARCITY_MODEL_NAMES",
     "SCARCITY_RESOURCE_NAMES",
     "SCENARIOS",
+    "P_OPPORTUNITY_HIGH_DEFAULT",
+    "P_OPPORTUNITY_NORMAL_DEFAULT",
+    "TRANSITION_HIGH_TO_HIGH_DEFAULT",
+    "TRANSITION_NORMAL_TO_HIGH_DEFAULT",
     "U_HIGH_OPPORTUNITY_DEFAULT",
     "U_NORMAL_OPPORTUNITY_DEFAULT",
     "BeliefChannelHistory",
@@ -144,9 +163,11 @@ __all__ = [
     "DynamicSequence",
     "EWMAForecaster",
     "ExactBeliefEstimator",
+    "ExactBeliefEstimatorV2",
     "ForecastContext",
     "HindsightResult",
     "HmmBeliefEstimator",
+    "HmmBeliefEstimatorV2",
     "LambdaInterval",
     "LookupBeliefEstimator",
     "PacingController",
@@ -177,6 +198,7 @@ __all__ = [
     "conservation_depletion_split",
     "expected_opportunity_utility",
     "filtered_belief",
+    "filtered_belief_v2",
     "fit_ridge",
     "flatten_window",
     "generate_belief_dataset",
@@ -189,15 +211,19 @@ __all__ = [
     "generate_secondary_dataset",
     "hmm_filter_step",
     "observation_probability",
+    "observation_probability_v2",
     "online_optimum_as_hindsight_result",
+    "online_optimum_as_hindsight_result_v2",
     "oracle_price_residual",
     "paired_regret_deltas",
     "predict_belief",
+    "predict_belief_v2",
     "predict_ridge",
     "price_utilities",
     "primary_grid",
     "regret_metrics",
     "run_online_optimal_policy",
+    "run_online_optimal_policy_v2",
     "run_shadow_charge_policy",
     "run_shadow_charge_policy_v2",
     "secondary_sweeps",
