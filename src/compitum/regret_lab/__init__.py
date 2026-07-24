@@ -23,6 +23,10 @@ from .belief_channels import (
     compute_belief_channel_vector,
 )
 from .belief_hmm_filter import belief_high_from_scalar, hmm_filter_step
+from .belief_online_optimum import (
+    online_optimum_as_hindsight_result,
+    run_online_optimal_policy,
+)
 from .belief_pricing import (
     BeliefEstimator,
     BeliefPricingController,
@@ -162,6 +166,7 @@ __all__ = [
     "generate_secondary_dataset",
     "hmm_filter_step",
     "observation_probability",
+    "online_optimum_as_hindsight_result",
     "oracle_price_residual",
     "paired_regret_deltas",
     "predict_belief",
@@ -169,6 +174,7 @@ __all__ = [
     "price_utilities",
     "primary_grid",
     "regret_metrics",
+    "run_online_optimal_policy",
     "secondary_sweeps",
     "simulate_policy",
     "total_available_over_horizon",
