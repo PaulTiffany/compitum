@@ -15,6 +15,17 @@ This package is dependency-free beyond numpy; it never imports FabricPC or
 JAX.
 """
 
+from .belief_bellman import BellmanOracle, BellmanStateBudgetExceeded
+from .belief_regime import GRID_UNIT as BELIEF_GRID_UNIT
+from .belief_regime import MODEL_NAMES as BELIEF_MODEL_NAMES
+from .belief_regime import STEPS as BELIEF_STEPS
+from .belief_regime import (
+    filtered_belief,
+    generate_belief_dataset,
+    generate_belief_sequence,
+    observation_probability,
+    predict_belief,
+)
 from .channels import CHANNEL_DIMENSION, compute_regret_channel_vector
 from .diagnostics import conservation_depletion_split
 from .dual_controller import DualController, price_utilities
@@ -72,6 +83,9 @@ from .simulator import ForecastContext, PolicyDecision, simulate_policy
 from .windowed_predictor import RidgeModel, fit_ridge, flatten_window, predict_ridge
 
 __all__ = [
+    "BELIEF_GRID_UNIT",
+    "BELIEF_MODEL_NAMES",
+    "BELIEF_STEPS",
     "CHANNEL_DIMENSION",
     "GRID_UNIT",
     "MODEL_NAMES",
@@ -81,6 +95,8 @@ __all__ = [
     "SCARCITY_MODEL_NAMES",
     "SCARCITY_RESOURCE_NAMES",
     "SCENARIOS",
+    "BellmanOracle",
+    "BellmanStateBudgetExceeded",
     "DualController",
     "DynamicCase",
     "DynamicSequence",
@@ -107,14 +123,19 @@ __all__ = [
     "compute_regret_channel_vector",
     "compute_residual_channel_vector",
     "conservation_depletion_split",
+    "filtered_belief",
     "fit_ridge",
     "flatten_window",
+    "generate_belief_dataset",
+    "generate_belief_sequence",
     "generate_corrected_slack_dataset",
     "generate_dynamic_dataset",
     "generate_primary_dataset",
     "generate_secondary_dataset",
+    "observation_probability",
     "oracle_price_residual",
     "paired_regret_deltas",
+    "predict_belief",
     "predict_ridge",
     "price_utilities",
     "primary_grid",
