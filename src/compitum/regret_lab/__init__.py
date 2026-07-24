@@ -21,7 +21,9 @@ from .belief_action_pricing import (
     run_shadow_charge_policy,
     unit_marginal_prices,
 )
+from .belief_action_pricing_v2 import run_shadow_charge_policy_v2
 from .belief_bellman import BellmanOracle, BellmanStateBudgetExceeded
+from .belief_bellman_v2 import BeliefSensitiveBellmanOracle
 from .belief_channels import CHANNEL_DIMENSION as BELIEF_CHANNEL_DIMENSION
 from .belief_channels import (
     BeliefChannelHistory,
@@ -51,6 +53,13 @@ from .belief_regime import (
     generate_belief_sequence,
     observation_probability,
     predict_belief,
+)
+from .belief_regime_v2 import (
+    U_HIGH_OPPORTUNITY_DEFAULT,
+    U_NORMAL_OPPORTUNITY_DEFAULT,
+    expected_opportunity_utility,
+    generate_belief_dataset_v2,
+    generate_belief_sequence_v2,
 )
 from .channels import CHANNEL_DIMENSION, compute_regret_channel_vector
 from .diagnostics import conservation_depletion_split
@@ -122,9 +131,12 @@ __all__ = [
     "SCARCITY_MODEL_NAMES",
     "SCARCITY_RESOURCE_NAMES",
     "SCENARIOS",
+    "U_HIGH_OPPORTUNITY_DEFAULT",
+    "U_NORMAL_OPPORTUNITY_DEFAULT",
     "BeliefChannelHistory",
     "BeliefEstimator",
     "BeliefPricingController",
+    "BeliefSensitiveBellmanOracle",
     "BellmanOracle",
     "BellmanStateBudgetExceeded",
     "DualController",
@@ -163,11 +175,14 @@ __all__ = [
     "compute_regret_channel_vector",
     "compute_residual_channel_vector",
     "conservation_depletion_split",
+    "expected_opportunity_utility",
     "filtered_belief",
     "fit_ridge",
     "flatten_window",
     "generate_belief_dataset",
+    "generate_belief_dataset_v2",
     "generate_belief_sequence",
+    "generate_belief_sequence_v2",
     "generate_corrected_slack_dataset",
     "generate_dynamic_dataset",
     "generate_primary_dataset",
@@ -184,6 +199,7 @@ __all__ = [
     "regret_metrics",
     "run_online_optimal_policy",
     "run_shadow_charge_policy",
+    "run_shadow_charge_policy_v2",
     "secondary_sweeps",
     "simulate_policy",
     "total_available_over_horizon",
